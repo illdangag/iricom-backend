@@ -1,0 +1,133 @@
+package com.illdangag.iricom.server.service.implement;
+
+import com.illdangag.iricom.server.data.entity.Account;
+import com.illdangag.iricom.server.data.entity.Board;
+import com.illdangag.iricom.server.data.entity.BoardAdmin;
+import com.illdangag.iricom.server.data.request.BoardAdminInfoCreate;
+import com.illdangag.iricom.server.data.request.BoardAdminInfoDelete;
+import com.illdangag.iricom.server.data.request.BoardAdminInfoSearch;
+import com.illdangag.iricom.server.data.response.AccountInfo;
+import com.illdangag.iricom.server.data.response.BoardAdminInfo;
+import com.illdangag.iricom.server.data.response.BoardAdminInfoList;
+import com.illdangag.iricom.server.exception.IricomErrorCode;
+import com.illdangag.iricom.server.exception.IricomException;
+import com.illdangag.iricom.server.repository.BoardAdminRepository;
+import com.illdangag.iricom.server.repository.BoardRepository;
+import com.illdangag.iricom.server.service.AccountService;
+import com.illdangag.iricom.server.service.BoardAuthorizationService;
+import com.illdangag.iricom.server.service.BoardService;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+import org.springframework.validation.annotation.Validated;
+
+import javax.validation.Valid;
+import java.util.*;
+import java.util.stream.Collectors;
+
+@Validated
+@Service
+public class BoardAuthorizationServiceImpl implements BoardAuthorizationService {
+    private final AccountService accountService;
+    private final BoardService boardService;
+    private final BoardRepository boardRepository;
+    private final BoardAdminRepository boardAdminRepository;
+
+    @Autowired
+    public BoardAuthorizationServiceImpl(AccountService accountService, BoardService boardService, BoardAdminRepository boardAdminRepository,
+                                         BoardRepository boardRepository) {
+        this.accountService = accountService;
+        this.boardService = boardService;
+        this.boardAdminRepository = boardAdminRepository;
+        this.boardRepository = boardRepository;
+    }
+
+    /**
+     * 게시판 관리자 권한 추가
+     */
+    public void createBoardAdminAuth(BoardAdminInfoCreate boardAdminInfoCreate) {
+        Account account = this.accountService.getAccount(boardAdminInfoCreate.getAccountId());
+        Board board = this.boardService.getBoard(boardAdminInfoCreate.getBoardId());
+
+        Optional<BoardAdmin> optionalBoardAdmin = this.boardAdminRepository.getBoardAdmin(board, account);
+        if (optionalBoardAdmin.isEmpty() || optionalBoardAdmin.get().getDeleted()) {
+            // 이전에 해당 게시판에 권한을 추가한 적이 없거나 해당 게시판의 권한이 삭제 되었다면
+            BoardAdmin boardAdmin = BoardAdmin.builder()
+                    .account(account)
+                    .board(board)
+                    .deleted(false)
+                    .build();
+            this.boardAdminRepository.save(boardAdmin);
+        }
+    }
+
+    /**
+     * 게시판 관리지 권한 삭제
+     */
+    public void deleteBoardAdminAuth(BoardAdminInfoDelete boardAdminInfoDelete) {
+        Account account = this.accountService.getAccount(boardAdminInfoDelete.getAccountId());
+        Board board = this.boardService.getBoard(boardAdminInfoDelete.getBoardId());
+
+        // 이미 동일 계정과 게시판으로 권한이 있는 경우 권한을 삭제
+        Optional<BoardAdmin> optionalBoardAdmin = this.boardAdminRepository.getBoardAdmin(board, account);
+        if (optionalBoardAdmin.isPresent() && !optionalBoardAdmin.get().getDeleted()) {
+            // 이전에 해당 게시판에 권한이 추가 되었다면
+            BoardAdmin boardAdmin = BoardAdmin.builder()
+                    .account(account)
+                    .board(board)
+                    .deleted(true)
+                    .build();
+            this.boardAdminRepository.save(boardAdmin);
+        }
+    }
+
+    /**
+     * 게시판 관리자 목록 조회
+     */
+    @Override
+    public BoardAdminInfoList getBoardAdminInfoList(@Valid BoardAdminInfoSearch boardAdminInfoSearch) {
+        // 게시판 조회
+        List<Board> boardList;
+        long totalBoardCount;
+
+        if (boardAdminInfoSearch.getEnabled() != null) {
+            boardList = this.boardRepository.getBoardList(boardAdminInfoSearch.getKeyword(), boardAdminInfoSearch.getEnabled(), boardAdminInfoSearch.getSkip(), boardAdminInfoSearch.getLimit());
+            totalBoardCount = this.boardRepository.getBoardCount(boardAdminInfoSearch.getKeyword(), boardAdminInfoSearch.getEnabled());
+        } else {
+            boardList = this.boardRepository.getBoardList(boardAdminInfoSearch.getKeyword(), boardAdminInfoSearch.getSkip(), boardAdminInfoSearch.getLimit());
+            totalBoardCount = this.boardRepository.getBoardCount(boardAdminInfoSearch.getKeyword());
+        }
+
+        List<BoardAdmin> boardAdminList = this.boardAdminRepository.getBoardAdminList(boardList);
+
+        Set<BoardAdmin> filteredBoardAdminSet = new LinkedHashSet<>(boardAdminList);
+        List<BoardAdmin> filteredBoardList = filteredBoardAdminSet.stream()
+                .filter(boardAdmin -> !boardAdmin.getDeleted())
+                .collect(Collectors.toList()); // 유효한 게시판 관리자 목록
+
+        List<BoardAdminInfo> boardAdminInfoList = new LinkedList<>();
+        for (Board board : boardList) {
+            List<AccountInfo> accountInfoList = filteredBoardList.stream()
+                    .filter(boardAdmin -> boardAdmin.getBoard().equals(board))
+                    .map(boardAdmin -> {
+                        Account account = boardAdmin.getAccount();
+                        return this.accountService.getAccountInfo(account);
+                    }).sorted(Comparator.comparing(AccountInfo::getEmail)).collect(Collectors.toList());
+            BoardAdminInfo boardAdminInfo = new BoardAdminInfo(board);
+            boardAdminInfo.setAccountInfoList(accountInfoList);
+            boardAdminInfoList.add(boardAdminInfo);
+        }
+
+        return BoardAdminInfoList.builder()
+                .total(totalBoardCount)
+                .skip(boardAdminInfoSearch.getSkip())
+                .limit(boardAdminInfoSearch.getLimit())
+                .boardAdminInfoList(boardAdminInfoList)
+                .build();
+    }
+
+    @Override
+    public BoardAdmin getBoardAdmin(Account account, Board board) {
+        Optional<BoardAdmin> boardAdminOptional = this.boardAdminRepository.getEnableBoardAdmin(board, account);
+        return boardAdminOptional.orElseThrow(() -> new IricomException(IricomErrorCode.NOT_EXIST_BOARD_ADMIN));
+    }
+}

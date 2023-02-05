@@ -1,0 +1,110 @@
+package com.illdangag.iricom.server.controller.v1;
+
+import com.illdangag.iricom.server.configuration.annotation.ApiCallLog;
+import com.illdangag.iricom.server.configuration.annotation.Auth;
+import com.illdangag.iricom.server.configuration.annotation.AuthRole;
+import com.illdangag.iricom.server.configuration.annotation.RequestContext;
+import com.illdangag.iricom.server.data.entity.Account;
+import com.illdangag.iricom.server.data.request.CommentInfoCreate;
+import com.illdangag.iricom.server.data.request.CommentInfoSearch;
+import com.illdangag.iricom.server.data.request.CommentInfoUpdate;
+import com.illdangag.iricom.server.data.response.CommentInfo;
+import com.illdangag.iricom.server.data.response.CommentInfoList;
+import com.illdangag.iricom.server.exception.IricomErrorCode;
+import com.illdangag.iricom.server.exception.IricomException;
+import com.illdangag.iricom.server.service.CommentService;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
+
+import javax.validation.Valid;
+
+@Slf4j
+@RestController
+@RequestMapping(value = "/v1/boards/{board_id}/posts/{post_id}")
+public class CommentController {
+    private final CommentService commentService;
+
+    @Autowired
+    public CommentController(CommentService commentService) {
+        this.commentService = commentService;
+    }
+
+    @ApiCallLog(apiCode = "CM_001")
+    @Auth(role = AuthRole.ACCOUNT)
+    @RequestMapping(method = RequestMethod.POST, value = "/comments")
+    public ResponseEntity<CommentInfo> createComment(@PathVariable(value = "board_id") String boardId,
+                                                     @PathVariable(value = "post_id") String postId,
+                                                     @RequestBody @Valid CommentInfoCreate commentInfoCreate,
+                                                     @RequestContext Account account) {
+        CommentInfo commentInfo = this.commentService.createCommentInfo(account, boardId, postId, commentInfoCreate);
+        return ResponseEntity.status(HttpStatus.OK).body(commentInfo);
+    }
+
+    @ApiCallLog(apiCode = "CM_002")
+    @Auth(role = AuthRole.ACCOUNT)
+    @RequestMapping(method = RequestMethod.GET, value = "/comments")
+    public ResponseEntity<CommentInfoList> getCommentList(@PathVariable(value = "board_id") String boardId,
+                                                          @PathVariable(value = "post_id") String postId,
+                                                          @RequestParam(name = "skip", defaultValue = "0", required = false) String skipVariable,
+                                                          @RequestParam(name = "limit", defaultValue = "20", required = false) String limitVariable,
+                                                          @RequestParam(name = "includeComment", defaultValue = "false", required = false) String includeCommentVariable,
+                                                          @RequestParam(name = "referenceCommentId", defaultValue = "", required = false) String referenceCommentId) {
+        int skip;
+        int limit;
+        boolean includeComment;
+
+        try {
+            skip = Integer.parseInt(skipVariable);
+        } catch (Exception exception) {
+            throw new IricomException(IricomErrorCode.INVALID_REQUEST, "Skip value is invalid");
+        }
+
+        try {
+            limit = Integer.parseInt(limitVariable);
+        } catch (Exception exception) {
+            throw new IricomException(IricomErrorCode.INVALID_REQUEST, "Limit value is invalid");
+        }
+
+        try {
+            includeComment = Boolean.parseBoolean(includeCommentVariable);
+        } catch (Exception exception) {
+            throw new IricomException(IricomErrorCode.INVALID_REQUEST, "IncludeComment value is invalid");
+        }
+
+        CommentInfoSearch commentInfoSearch = CommentInfoSearch.builder()
+                .skip(skip)
+                .limit(limit)
+                .includeComment(includeComment)
+                .referenceCommentId(referenceCommentId)
+                .build();
+        CommentInfoList commentInfoList = this.commentService.getComment(boardId, postId, commentInfoSearch);
+        return ResponseEntity.status(HttpStatus.OK).body(commentInfoList);
+    }
+
+    @ApiCallLog(apiCode = "CM_003")
+    @Auth(role = AuthRole.ACCOUNT)
+    @RequestMapping(method = RequestMethod.PATCH, value = "/comments/{comment_id}")
+    public ResponseEntity<CommentInfo> updateComment(@PathVariable(value = "board_id") String boardId,
+                                                     @PathVariable(value = "post_id") String postId,
+                                                     @PathVariable(value = "comment_id") String commentId,
+                                                     @RequestBody @Valid CommentInfoUpdate commentInfoUpdate,
+                                                     @RequestContext Account account) {
+
+        CommentInfo commentInfo = this.commentService.updateComment(account, boardId, postId, commentId, commentInfoUpdate);
+        return ResponseEntity.status(HttpStatus.OK).body(commentInfo);
+    }
+
+    @ApiCallLog(apiCode = "CM_004")
+    @Auth(role = AuthRole.ACCOUNT)
+    @RequestMapping(method = RequestMethod.DELETE, value = "/comments/{comment_id}")
+    public ResponseEntity<CommentInfo> deleteComment(@PathVariable(value = "board_id") String boardId,
+                                                     @PathVariable(value = "post_id") String postId,
+                                                     @PathVariable(value = "comment_id") String commentId,
+                                                     @RequestContext Account account) {
+        CommentInfo commentInfo = this.commentService.deleteComment(account, boardId, postId, commentId);
+        return ResponseEntity.status(HttpStatus.OK).body(commentInfo);
+    }
+}
