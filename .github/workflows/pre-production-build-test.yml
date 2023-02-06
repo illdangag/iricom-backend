@@ -32,7 +32,7 @@ jobs:
       run: |
         cd ./src/test/resources
         touch ./firebase-adminsdk.json
-        echo "${{ secrets.DEV_FIREBASE_ADMIN_ADK }}" > ./firebase-adminsdk.json
+        echo "${{ secrets.TEST_FIREBASE_ADMIN_ADK }}" > ./firebase-adminsdk.json
       shell: bash
 
     - name: Build with Gradle

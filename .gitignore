@@ -188,3 +188,4 @@ gradle-app.setting
 
 log
 src/main/resources/firebase-adminsdk.json
+src/test/resources/firebase-adminsdk.json
