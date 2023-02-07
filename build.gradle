@@ -3,6 +3,7 @@ plugins {
     id 'org.springframework.boot' version '2.7.6'
     id 'io.spring.dependency-management' version '1.0.15.RELEASE'
     id 'checkstyle' // code convention을 확인 하기 위함
+    id 'com.gorylenko.gradle-git-properties' version '2.4.1' // git 정보
 }
 
 group = 'com.illdangag.iricom'
