@@ -113,6 +113,21 @@ public class AccountRepositoryImpl implements AccountRepository {
     }
 
     @Override
+    public Optional<Account> getAccount(String nickname) {
+        final String jpql = "SELECT a FROM Account a " +
+                "WHERE a.accountDetail IS NOT NULL " +
+                "AND a.accountDetail.nickname = :nickname";
+        TypedQuery<Account> query = this.entityManager.createQuery(jpql, Account.class)
+                .setParameter("nickname", nickname);
+        List<Account> list = query.getResultList();
+        if (list.isEmpty()) {
+            return Optional.empty();
+        } else {
+            return Optional.of(list.get(0));
+        }
+    }
+
+    @Override
     public void saveAccount(Account account) {
         EntityTransaction transaction = this.entityManager.getTransaction();
         transaction.begin();
@@ -132,35 +147,6 @@ public class AccountRepositoryImpl implements AccountRepository {
             this.entityManager.persist(accountDetail);
         } else {
             this.entityManager.merge(accountDetail);
-        }
-        transaction.commit();
-    }
-
-
-    @Override
-    public void saveAccount(Collection<Account> accounts) {
-        EntityTransaction transaction = this.entityManager.getTransaction();
-        transaction.begin();
-        for (Account account : accounts) {
-            if (account.getId() == null) {
-                this.entityManager.persist(account);
-            } else {
-                this.entityManager.merge(account);
-            }
-        }
-        transaction.commit();
-    }
-
-    @Override
-    public void saveAccountDetail(Collection<AccountDetail> accountDetails) {
-        EntityTransaction transaction = this.entityManager.getTransaction();
-        transaction.begin();
-        for (AccountDetail accountDetail : accountDetails) {
-            if (accountDetail.getId() == null) {
-                this.entityManager.persist(accountDetail);
-            } else {
-                this.entityManager.merge(accountDetail);
-            }
         }
         transaction.commit();
     }

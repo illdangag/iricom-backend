@@ -25,6 +25,7 @@ public enum IricomErrorCode {
     NOT_EXIST_ACCOUNT("02000000", 404, "Not exist account."),
     NOT_EXIST_ACCOUNT_DETAIL_INFO("02000001", 404, "Not exist account detail info."),
     MISSING_ACCOUNT_NICKNAME_FILED("02000002", 400, IricomErrorMessage.MESSING_REQUIRED_FIELDS + ": nickname"),
+    ALREADY_ACCOUNT_NICKNAME("02000002", 400, "Already exists nickname."),
 
     // board: 03XXXXXX
     NOT_EXIST_BOARD("03000000", 404, "Not exist board."),

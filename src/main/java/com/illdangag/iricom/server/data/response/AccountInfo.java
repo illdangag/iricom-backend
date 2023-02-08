@@ -21,11 +21,18 @@ public class AccountInfo {
 
     private String description;
 
-    public AccountInfo(Account account, AccountDetail accountDetail) {
+    public AccountInfo(Account account) {
         this.id = account.getId().toString();
         this.email = account.getEmail();
         this.createDate = DateTimeUtils.getLong(account.getCreateDate());
         this.lastActivityDate = DateTimeUtils.getLong(account.getLastActivityDate());
+
+        AccountDetail accountDetail;
+        if (account.getAccountDetail() == null) {
+            accountDetail = AccountDetail.builder().build();
+        } else {
+            accountDetail = account.getAccountDetail();
+        }
         this.nickname = accountDetail.getNickname();
         this.description = accountDetail.getDescription();
     }

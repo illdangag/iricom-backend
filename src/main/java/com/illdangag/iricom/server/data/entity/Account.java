@@ -35,6 +35,10 @@ public class Account {
     @UpdateTimestamp
     private LocalDateTime lastActivityDate = LocalDateTime.now();
 
+    @OneToOne
+    @JoinColumn(name = "account_detail_id")
+    private AccountDetail accountDetail;
+
     @Builder.Default
     @Column(name = "is_deleted")
     private boolean deleted = false;

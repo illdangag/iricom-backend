@@ -50,7 +50,10 @@ public class AccountServiceImpl implements AccountService {
                 .build();
         this.accountRepository.saveAccountDetail(accountDetail);
 
-        return new AccountInfo(account, accountDetail);
+        account.setAccountDetail(accountDetail);
+        this.accountRepository.saveAccount(account);
+
+        return new AccountInfo(account);
     }
 
     @Override
@@ -81,11 +84,8 @@ public class AccountServiceImpl implements AccountService {
             totalAccountCount = this.accountRepository.getAccountCount(accountInfoSearch.getKeyword());
         }
 
-        Map<Account, AccountDetail> accountDetailMap = this.accountRepository.getAccountDetailList(accountList);
-
         List<AccountInfo> accountInfoList = accountList.stream().map(account -> {
-            AccountDetail accountDetail = accountDetailMap.getOrDefault(account, new AccountDetail());
-            return new AccountInfo(account, accountDetail);
+            return new AccountInfo(account);
         }).collect(Collectors.toList());
 
         return AccountInfoList.builder()
@@ -108,9 +108,7 @@ public class AccountServiceImpl implements AccountService {
             throw new IricomException(IricomErrorCode.NOT_EXIST_ACCOUNT);
         }
 
-        Optional<AccountDetail> accountDetailOptional  = this.accountRepository.getAccountDetail(account);
-        AccountDetail accountDetail = accountDetailOptional.orElseGet(() -> AccountDetail.builder().build());
-        return new AccountInfo(account, accountDetail);
+        return new AccountInfo(account);
     }
 
     @Override
@@ -130,7 +128,12 @@ public class AccountServiceImpl implements AccountService {
         }
 
         if (accountInfoUpdate.getNickname() != null) {
-            accountDetail.setNickname(accountInfoUpdate.getNickname());
+            String nickname = accountInfoUpdate.getNickname();
+            Optional<Account> accountOptional = this.accountRepository.getAccount(nickname);
+            if (accountOptional.isPresent() && !accountOptional.get().equals(account)) {
+                throw new IricomException(IricomErrorCode.ALREADY_ACCOUNT_NICKNAME);
+            }
+            accountDetail.setNickname(nickname);
         }
 
         if (accountInfoUpdate.getDescription() != null) {
@@ -139,15 +142,17 @@ public class AccountServiceImpl implements AccountService {
 
         accountDetail.setUpdateDate(LocalDateTime.now());
         this.accountRepository.saveAccountDetail(accountDetail);
-        return new AccountInfo(account, accountDetail);
+
+        account.setAccountDetail(accountDetail);
+        this.accountRepository.saveAccount(account);
+        return new AccountInfo(account);
     }
 
     @Override
     public Map<Account, AccountInfo> getAccountInfoMap(List<Account> accountList) {
-        Map<Account, AccountDetail> accountAccountDetailMap = this.accountRepository.getAccountDetailList(accountList);
         Map<Account, AccountInfo> accountAccountInfoMap = new HashMap<>();
         accountList.forEach(account -> {
-            AccountInfo accountInfo = new AccountInfo(account, accountAccountDetailMap.getOrDefault(account, AccountDetail.builder().build()));
+            AccountInfo accountInfo = new AccountInfo(account);
             accountAccountInfoMap.put(account, accountInfo);
         });
         return accountAccountInfoMap;

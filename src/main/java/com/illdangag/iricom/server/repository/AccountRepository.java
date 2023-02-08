@@ -3,7 +3,6 @@ package com.illdangag.iricom.server.repository;
 import com.illdangag.iricom.server.data.entity.Account;
 import com.illdangag.iricom.server.data.entity.AccountDetail;
 
-import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -25,11 +24,9 @@ public interface AccountRepository {
 
     Map<Account, AccountDetail> getAccountDetailList(List<Account> accountList);
 
+    Optional<Account> getAccount(String nickname);
+
     void saveAccount(Account account);
 
     void saveAccountDetail(AccountDetail accountDetail);
-
-    void saveAccount(Collection<Account> accounts);
-
-    void saveAccountDetail(Collection<AccountDetail> accountDetails);
 }

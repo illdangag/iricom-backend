@@ -189,7 +189,7 @@ public class AccountControllerTest extends IricomTestSuite {
             @DisplayName("닉네임, 설명")
             public void testCase00() throws Exception {
                 Map<String, Object> requestBody = new HashMap<>();
-                requestBody.put("nickname", "update_nickname");
+                requestBody.put("nickname", "common00_00");
                 requestBody.put("description", "update_description");
 
                 MockHttpServletRequestBuilder requestBuilder = patch("/v1/accounts/")
@@ -199,7 +199,7 @@ public class AccountControllerTest extends IricomTestSuite {
 
                 mockMvc.perform(requestBuilder)
                         .andExpect(status().is(200))
-                        .andExpect(jsonPath("$.nickname").value("update_nickname"))
+                        .andExpect(jsonPath("$.nickname").value("common00_00"))
                         .andExpect(jsonPath("$.description").value("update_description"))
                         .andDo(print());
             }
@@ -209,7 +209,7 @@ public class AccountControllerTest extends IricomTestSuite {
             @DisplayName("닉네임")
             public void testCase01() throws Exception {
                 Map<String, Object> requestBody = new HashMap<>();
-                requestBody.put("nickname", "only_nickname");
+                requestBody.put("nickname", "common00_01");
 
                 MockHttpServletRequestBuilder requestBuilder = patch("/v1/accounts/")
                         .content(getJsonString(requestBody))
@@ -218,7 +218,7 @@ public class AccountControllerTest extends IricomTestSuite {
 
                 mockMvc.perform(requestBuilder)
                         .andExpect(status().is(200))
-                        .andExpect(jsonPath("$.nickname").value("only_nickname"))
+                        .andExpect(jsonPath("$.nickname").value("common00_01"))
                         .andDo(print());
             }
 
@@ -311,6 +311,24 @@ public class AccountControllerTest extends IricomTestSuite {
                         .andExpect(jsonPath("$.code").value("01020000"))
                         .andDo(print());
             }
+
+            @Test
+            @Order(7)
+            @DisplayName("닉네임 중복")
+            public void testCase07() throws Exception {
+                Map<String, Object> requestBody = new HashMap<>();
+                requestBody.put("nickname", "admin");
+
+                MockHttpServletRequestBuilder requestBuilder = patch("/v1/accounts/")
+                        .content(getJsonString(requestBody))
+                        .contentType(MediaType.APPLICATION_JSON);
+                setAuthToken(requestBuilder, common00);
+
+                mockMvc.perform(requestBuilder)
+                        .andExpect(status().is(400))
+                        .andExpect(jsonPath("$.code").value("02000002"))
+                        .andDo(print());
+            }
         }
 
         @Nested
@@ -322,7 +340,7 @@ public class AccountControllerTest extends IricomTestSuite {
             @DisplayName("닉네임과 설명 수정")
             public void testCase00() throws Exception {
                 Map<String, Object> requestBody = new HashMap<>();
-                requestBody.put("nickname", "update_nickname");
+                requestBody.put("nickname", "update_unknown01");
                 requestBody.put("description", "update_description");
 
                 MockHttpServletRequestBuilder requestBuilder = patch("/v1/accounts/")
@@ -332,7 +350,7 @@ public class AccountControllerTest extends IricomTestSuite {
 
                 mockMvc.perform(requestBuilder)
                         .andExpect(status().is(200))
-                        .andExpect(jsonPath("$.nickname").value("update_nickname"))
+                        .andExpect(jsonPath("$.nickname").value("update_unknown01"))
                         .andExpect(jsonPath("$.description").value("update_description"))
                         .andDo(print());
             }
@@ -342,7 +360,7 @@ public class AccountControllerTest extends IricomTestSuite {
             @DisplayName("닉네임 수정")
             public void testCase01() throws Exception {
                 Map<String, Object> requestBody = new HashMap<>();
-                requestBody.put("nickname", "update_nickname");
+                requestBody.put("nickname", "update_unknown02");
 
                 MockHttpServletRequestBuilder requestBuilder = patch("/v1/accounts/")
                         .content(getJsonString(requestBody))
@@ -351,7 +369,7 @@ public class AccountControllerTest extends IricomTestSuite {
 
                 mockMvc.perform(requestBuilder)
                         .andExpect(status().is(200))
-                        .andExpect(jsonPath("$.nickname").value("update_nickname"))
+                        .andExpect(jsonPath("$.nickname").value("update_unknown02"))
                         .andDo(print());
             }
 
