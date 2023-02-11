@@ -950,4 +950,187 @@ public class PostControllerTest extends IricomTestSuite {
                     .andDo(print());
         }
     }
+
+    @Nested
+    @DisplayName("게시물 투표")
+    class VoteTest {
+
+        @Test
+        @Order(0)
+        @DisplayName("좋아요")
+        public void testCase00() throws Exception {
+            Board board = getBoard(voteBoard);
+            Post post = getPost(votePost00);
+
+            Map<String, Object> requestBody = new HashMap<>();
+            requestBody.put("type", "upvote");
+
+            MockHttpServletRequestBuilder requestBuilder = patch("/v1/boards/" + board.getId() + "/posts/" + post.getId() + "/vote")
+                    .content(getJsonString(requestBody))
+                    .contentType(MediaType.APPLICATION_JSON);
+            setAuthToken(requestBuilder, common00);
+
+            mockMvc.perform(requestBuilder)
+                    .andExpect(status().is(200))
+                    .andExpect(jsonPath("$.upvote").value(1))
+                    .andDo(print());
+        }
+
+        @Test
+        @Order(1)
+        @DisplayName("싫어요")
+        public void testCase01() throws Exception {
+            Board board = getBoard(voteBoard);
+            Post post = getPost(votePost00);
+
+            Map<String, Object> requestBody = new HashMap<>();
+            requestBody.put("type", "downvote");
+
+            MockHttpServletRequestBuilder requestBuilder = patch("/v1/boards/" + board.getId() + "/posts/" + post.getId() + "/vote")
+                    .content(getJsonString(requestBody))
+                    .contentType(MediaType.APPLICATION_JSON);
+            setAuthToken(requestBuilder, common00);
+
+            mockMvc.perform(requestBuilder)
+                    .andExpect(status().is(200))
+                    .andExpect(jsonPath("$.downvote").value(1))
+                    .andDo(print());
+        }
+
+        @Test
+        @Order(2)
+        @DisplayName("중복 좋아요")
+        public void testCase02() throws Exception {
+            Board board = getBoard(voteBoard);
+            Post post = getPost(votePost00);
+
+            Map<String, Object> requestBody = new HashMap<>();
+            requestBody.put("type", "upvote");
+
+            MockHttpServletRequestBuilder requestBuilder = patch("/v1/boards/" + board.getId() + "/posts/" + post.getId() + "/vote")
+                    .content(getJsonString(requestBody))
+                    .contentType(MediaType.APPLICATION_JSON);
+            setAuthToken(requestBuilder, common01);
+            mockMvc.perform(requestBuilder);
+
+            requestBuilder = patch("/v1/boards/" + board.getId() + "/posts/" + post.getId() + "/vote")
+                    .content(getJsonString(requestBody))
+                    .contentType(MediaType.APPLICATION_JSON);
+            setAuthToken(requestBuilder, common01);
+            mockMvc.perform(requestBuilder)
+                    .andExpect(status().is(400))
+                    .andExpect(jsonPath("$.code").value("04000006"))
+                    .andDo(print());
+        }
+
+        @Test
+        @Order(3)
+        @DisplayName("중복 싫어요")
+        public void testCase03() throws Exception {
+            Board board = getBoard(voteBoard);
+            Post post = getPost(votePost00);
+
+            Map<String, Object> requestBody = new HashMap<>();
+            requestBody.put("type", "downvote");
+
+            MockHttpServletRequestBuilder requestBuilder = patch("/v1/boards/" + board.getId() + "/posts/" + post.getId() + "/vote")
+                    .content(getJsonString(requestBody))
+                    .contentType(MediaType.APPLICATION_JSON);
+            setAuthToken(requestBuilder, common01);
+            mockMvc.perform(requestBuilder);
+
+            requestBuilder = patch("/v1/boards/" + board.getId() + "/posts/" + post.getId() + "/vote")
+                    .content(getJsonString(requestBody))
+                    .contentType(MediaType.APPLICATION_JSON);
+            setAuthToken(requestBuilder, common01);
+            mockMvc.perform(requestBuilder)
+                    .andExpect(status().is(400))
+                    .andExpect(jsonPath("$.code").value("04000006"))
+                    .andDo(print());
+        }
+
+        @Test
+        @Order(4)
+        @DisplayName("발행되지 않은 게시물")
+        public void testCase04() throws Exception {
+            Board board = getBoard(voteBoard);
+            Post post = getPost(votePost01);
+
+            Map<String, Object> requestBody = new HashMap<>();
+            requestBody.put("type", "upvote");
+
+            MockHttpServletRequestBuilder requestBuilder = patch("/v1/boards/" + board.getId() + "/posts/" + post.getId() + "/vote")
+                    .content(getJsonString(requestBody))
+                    .contentType(MediaType.APPLICATION_JSON);
+            setAuthToken(requestBuilder, common00);
+
+            mockMvc.perform(requestBuilder)
+                    .andExpect(status().is(404))
+                    .andExpect(jsonPath("$.code").value("04000005"))
+                    .andDo(print());
+        }
+
+        @Test
+        @Order(5)
+        @DisplayName("다른 게시판의 게시물")
+        public void testCase05() throws Exception {
+            Board board = getBoard(enableBoard);
+            Post post = getPost(votePost00);
+
+            Map<String, Object> requestBody = new HashMap<>();
+            requestBody.put("type", "upvote");
+
+            MockHttpServletRequestBuilder requestBuilder = patch("/v1/boards/" + board.getId() + "/posts/" + post.getId() + "/vote")
+                    .content(getJsonString(requestBody))
+                    .contentType(MediaType.APPLICATION_JSON);
+            setAuthToken(requestBuilder, common00);
+
+            mockMvc.perform(requestBuilder)
+                    .andExpect(status().is(404))
+                    .andExpect(jsonPath("$.code").value("04000002"))
+                    .andDo(print());
+        }
+
+        @Test
+        @Order(6)
+        @DisplayName("비활성화 게시판")
+        public void testCase06() throws Exception {
+            Board board = getBoard(disableBoard);
+            Post post = getPost(disableBoardPost00);
+
+            Map<String, Object> requestBody = new HashMap<>();
+            requestBody.put("type", "upvote");
+
+            MockHttpServletRequestBuilder requestBuilder = patch("/v1/boards/" + board.getId() + "/posts/" + post.getId() + "/vote")
+                    .content(getJsonString(requestBody))
+                    .contentType(MediaType.APPLICATION_JSON);
+            setAuthToken(requestBuilder, common00);
+
+            mockMvc.perform(requestBuilder)
+                    .andExpect(status().is(400))
+                    .andExpect(jsonPath("$.code").value("04000005"))
+                    .andDo(print());
+        }
+
+        @Test
+        @Order(7)
+        @DisplayName("올바르지 않은 요청")
+        public void testCase07() throws Exception {
+            Board board = getBoard(voteBoard);
+            Post post = getPost(votePost00);
+
+            Map<String, Object> requestBody = new HashMap<>();
+            requestBody.put("type", "unknown");
+
+            MockHttpServletRequestBuilder requestBuilder = patch("/v1/boards/" + board.getId() + "/posts/" + post.getId() + "/vote")
+                    .content(getJsonString(requestBody))
+                    .contentType(MediaType.APPLICATION_JSON);
+            setAuthToken(requestBuilder, common00);
+
+            mockMvc.perform(requestBuilder)
+                    .andExpect(status().is(400))
+                    .andExpect(jsonPath("$.code").value("04000007"))
+                    .andDo(print());
+        }
+    }
 }

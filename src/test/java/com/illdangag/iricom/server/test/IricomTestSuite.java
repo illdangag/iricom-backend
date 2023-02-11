@@ -96,12 +96,16 @@ public abstract class IricomTestSuite {
     protected static final TestBoardInfo commentBoard = TestBoardInfo.builder()
             .title("commentBoard").isEnabled(true).adminList(Arrays.asList(allBoardAdmin)).build();
 
+    protected static final TestBoardInfo voteBoard = TestBoardInfo.builder()
+            .title("voteBoard").isEnabled(true).adminList(Arrays.asList(allBoardAdmin)).build();
+
     private static final TestBoardInfo[] testBoardInfos = {
             enableBoard, // 활성화 게시판
             disableBoard, // 비활성화 게시판
             updateBoard, // 게시판 정보 수정 테스트용 게시판
             createBoard, // 문서 생성 테스트용 게시판
             commentBoard, // 댓글 테스트용 게시판
+            voteBoard, // 투표 테스트용 게시판
     };
 
     // 게시물 설정
@@ -230,6 +234,16 @@ public abstract class IricomTestSuite {
             .postType(PostType.POST).postState(PostState.POST)
             .creator(common00).board(commentBoard).build();
 
+    protected static final TestPostInfo votePost00 = TestPostInfo.builder()
+            .title("votePost00").content("content").isAllowComment(false)
+            .postType(PostType.POST).postState(PostState.POST)
+            .creator(common00).board(voteBoard).build();
+
+    protected static final TestPostInfo votePost01 = TestPostInfo.builder()
+            .title("votePost01").content("content").isAllowComment(false)
+            .postType(PostType.POST).postState(PostState.TEMPORARY)
+            .creator(common00).board(voteBoard).build();
+
     private static final TestPostInfo[] testPostInfos = {
             enableBoardPost00, enableBoardPost01, enableBoardPost02, enableBoardPost03,
             enableBoardNotification00,
@@ -246,6 +260,9 @@ public abstract class IricomTestSuite {
             commentUpdatePost00,
             commentUpdatePost01, // 발행되지 않음
             commentUpdatePost02, // 댓글을 허용하지 않음
+
+            votePost00, // 투표 게시물
+            votePost01,
     };
 
     // 댓글 설정

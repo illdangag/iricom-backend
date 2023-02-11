@@ -47,10 +47,10 @@ public class Post {
     private PostContent temporaryContent;
 
     @Builder.Default
-    private Long likeCount = 0L;
+    private Long upvote = 0L;
 
     @Builder.Default
-    private Long dislikeCount = 0L;
+    private Long downvote = 0L;
 
     @Builder.Default
     private Long viewCount = 0L;

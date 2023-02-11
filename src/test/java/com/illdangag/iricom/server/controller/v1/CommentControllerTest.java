@@ -386,11 +386,11 @@ public class CommentControllerTest extends IricomTestSuite {
 
             mockMvc.perform(requestBuilder)
                     .andExpect(status().is(200))
-                    .andExpect(jsonPath("$.total").value(2))
+                    .andExpect(jsonPath("$.total").value(4))
                     .andExpect(jsonPath("$.skip").value(0))
                     .andExpect(jsonPath("$.limit").value(20))
                     .andExpect(jsonPath("$.comments").isArray())
-                    .andExpect(jsonPath("$.comments", hasSize(2)))
+                    .andExpect(jsonPath("$.comments", hasSize(4)))
                     .andDo(print());
         }
     }

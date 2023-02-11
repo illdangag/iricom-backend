@@ -28,6 +28,10 @@ public class PostInfo {
 
     private String content;
 
+    private Long upvote;
+
+    private Long downvote;
+
     @JsonProperty("account")
     private AccountInfo accountInfo;
 
@@ -39,6 +43,8 @@ public class PostInfo {
         this.status = postContent.getState().getText();
         this.title = postContent.getTitle();
         this.isAllowComment = postContent.getAllowComment();
+        this.upvote = post.getUpvote();
+        this.downvote = post.getDownvote();
 
         if (type == Type.INCLUDE_CONTENT) {
             this.content = postContent.getContent();

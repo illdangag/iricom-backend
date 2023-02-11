@@ -10,6 +10,7 @@ import com.illdangag.iricom.server.data.response.PostInfo;
 import com.illdangag.iricom.server.data.response.PostInfoList;
 import com.illdangag.iricom.server.exception.IricomErrorCode;
 import com.illdangag.iricom.server.exception.IricomException;
+import com.illdangag.iricom.server.repository.PostVoteRepository;
 import com.illdangag.iricom.server.service.AccountService;
 import com.illdangag.iricom.server.service.BoardAuthorizationService;
 import com.illdangag.iricom.server.service.BoardService;
@@ -31,19 +32,35 @@ import java.util.stream.Collectors;
 @Service
 public class PostServiceImpl implements PostService {
     private final PostRepository postRepository;
-
+    private final PostVoteRepository postVoteRepository;
     private final BoardService boardService;
     private final BoardAuthorizationService boardAuthorizationService;
     private final AccountService accountService;
 
     @Autowired
-    public PostServiceImpl(PostRepository postRepository,
+    public PostServiceImpl(PostRepository postRepository, PostVoteRepository postVoteRepository,
                            BoardAuthorizationService boardAuthorizationService, BoardService boardService,
                            AccountService accountService) {
         this.postRepository = postRepository;
+        this.postVoteRepository = postVoteRepository;
         this.boardService = boardService;
         this.boardAuthorizationService = boardAuthorizationService;
         this.accountService = accountService;
+    }
+
+    @Override
+    public Post getPost(String id) {
+        try {
+            return this.getPost(Long.parseLong(id));
+        } catch (Exception exception) {
+            throw new IricomException(IricomErrorCode.NOT_EXIST_POST);
+        }
+    }
+
+    @Override
+    public Post getPost(long id) {
+        Optional<Post> postOptional = this.postRepository.getPost(id);
+        return postOptional.orElseThrow(() -> new IricomException(IricomErrorCode.NOT_EXIST_POST));
     }
 
     @Override
@@ -286,19 +303,48 @@ public class PostServiceImpl implements PostService {
         return new PostInfo(post, content, PostInfo.Type.INCLUDE_CONTENT);
     }
 
-    @Override
-    public Post getPost(String id) {
-        try {
-            return this.getPost(Long.parseLong(id));
-        } catch (Exception exception) {
-            throw new IricomException(IricomErrorCode.NOT_EXIST_POST);
-        }
+    public PostInfo votePost(Account account, String boardId, String postId, VoteType voteType) {
+        Board board = this.boardService.getBoard(boardId);
+        Post post = this.getPost(postId);
+        return this.votePost(account, board, post, voteType);
     }
 
     @Override
-    public Post getPost(long id) {
-        Optional<Post> postOptional = this.postRepository.getPost(id);
-        return postOptional.orElseThrow(() -> new IricomException(IricomErrorCode.NOT_EXIST_POST));
+    public PostInfo votePost(Account account, Board board, Post post, VoteType voteType) {
+        if (!board.equals(post.getBoard())) {
+            throw new IricomException(IricomErrorCode.NOT_EXIST_POST);
+        }
+
+        if (!board.getEnabled()) {
+            throw new IricomException(IricomErrorCode.DISABLED_BOARD_TO_VOTE);
+        }
+
+        if (post.getContent() == null) {
+            throw new IricomException(IricomErrorCode.NOT_EXIST_PUBLISH_CONTENT);
+        }
+
+        Optional<PostVote> postVoteOptional = this.postVoteRepository.getPostVote(account, post, voteType);
+        if (postVoteOptional.isPresent()) {
+            throw new IricomException(IricomErrorCode.ALREADY_VOTE_POST);
+        }
+
+        PostVote postVote = PostVote.builder()
+                .post(post)
+                .type(voteType)
+                .account(account)
+                .build();
+        if (voteType == VoteType.UPVOTE) {
+            long upvoteCount = this.postVoteRepository.getPostVoteCount(post, VoteType.UPVOTE);
+            post.setUpvote(upvoteCount + 1);
+        } else {
+            long downvoteCount = this.postVoteRepository.getPostVoteCount(post, VoteType.DOWNVOTE);
+            post.setDownvote(downvoteCount + 1);
+        }
+
+        this.postRepository.save(post);
+        this.postVoteRepository.save(postVote);
+
+        return new PostInfo(post, post.getContent(), PostInfo.Type.INCLUDE_CONTENT);
     }
 
     /**

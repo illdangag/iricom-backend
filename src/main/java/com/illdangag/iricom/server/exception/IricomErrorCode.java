@@ -38,6 +38,9 @@ public enum IricomErrorCode {
     INVALID_POST_STATE("04000003", 400, "Invalid state."),
     NOT_EXIST_TEMPORARY_CONTENT("04000004", 404, "Not exist temporary content."),
     NOT_EXIST_PUBLISH_CONTENT("04000005", 404, "Not exist publish content."),
+    DISABLED_BOARD_TO_VOTE("04000005", 400, "Board is disabled."),
+    ALREADY_VOTE_POST("04000006", 400, "Already vote post."),
+    INVALID_POST_VOTE("04000007", 400, "Invalid vote type."),
 
     // comment: 05XXXXXX
     NOT_EXIST_COMMENT("05000000", 404, "Not exist comment."),

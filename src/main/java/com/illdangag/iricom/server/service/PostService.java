@@ -1,9 +1,6 @@
 package com.illdangag.iricom.server.service;
 
-import com.illdangag.iricom.server.data.entity.Account;
-import com.illdangag.iricom.server.data.entity.Board;
-import com.illdangag.iricom.server.data.entity.Post;
-import com.illdangag.iricom.server.data.entity.PostState;
+import com.illdangag.iricom.server.data.entity.*;
 import com.illdangag.iricom.server.data.request.PostInfoCreate;
 import com.illdangag.iricom.server.data.request.PostInfoSearch;
 import com.illdangag.iricom.server.data.request.PostInfoUpdate;
@@ -34,6 +31,10 @@ public interface PostService {
     PostInfo deletePostInfo(Account account, String boardId, String postId);
 
     PostInfo deletePostInfo(Account account, Board board, Post post);
+
+    PostInfo votePost(Account account, String boardId, String postId, VoteType voteType);
+
+    PostInfo votePost(Account account, Board board, Post post, VoteType voteType);
 
     Post getPost(String id);
 
