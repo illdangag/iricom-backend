@@ -21,6 +21,7 @@ public class CommentVote {
     @GeneratedValue
     private Long id;
 
+    @Builder.Default
     private LocalDateTime createDate = LocalDateTime.now();
 
     @ManyToOne

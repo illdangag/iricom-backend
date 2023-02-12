@@ -25,6 +25,10 @@ public class CommentInfo {
 
     private Long updateDate;
 
+    private Long upvote;
+
+    private Long downvote;
+
     private Boolean hasNestedComment;
 
     private Boolean deleted;
@@ -40,6 +44,8 @@ public class CommentInfo {
         this.account = accountInfo;
         this.createDate = DateTimeUtils.getLong(comment.getCreateDate());
         this.updateDate = comment.getUpdateDate() == null ? null : DateTimeUtils.getLong(comment.getUpdateDate());
+        this.upvote = comment.getUpvote();
+        this.downvote = comment.getDownvote();
         this.hasNestedComment = comment.getHasNestedComment();
         this.deleted = comment.getDeleted();
         if (!this.deleted) {

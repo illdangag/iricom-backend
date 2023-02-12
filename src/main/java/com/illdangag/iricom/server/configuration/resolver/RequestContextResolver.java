@@ -26,8 +26,7 @@ public class RequestContextResolver implements HandlerMethodArgumentResolver {
         }
 
         Class<?> targetClass = methodParameter.getParameterType();
-        return targetClass.equals(Account.class)
-                || targetClass.equals(Board[].class);
+        return targetClass.equals(Account.class) || targetClass.equals(Board[].class);
     }
 
     @Override

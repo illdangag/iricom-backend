@@ -18,6 +18,7 @@ import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilde
 import org.springframework.util.StopWatch;
 
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -88,16 +89,16 @@ public abstract class IricomTestSuite {
             .title("disable").isEnabled(false).adminList(Arrays.asList(allBoardAdmin, disableBoardAdmin)).build();
 
     protected static final TestBoardInfo updateBoard = TestBoardInfo.builder()
-            .title("update").isEnabled(true).adminList(Arrays.asList(allBoardAdmin)).build();
+            .title("update").isEnabled(true).adminList(Collections.singletonList(allBoardAdmin)).build();
 
     protected static final TestBoardInfo createBoard = TestBoardInfo.builder()
-            .title("createBoard").isEnabled(true).adminList(Arrays.asList(allBoardAdmin)).build();
+            .title("createBoard").isEnabled(true).adminList(Collections.singletonList(allBoardAdmin)).build();
 
     protected static final TestBoardInfo commentBoard = TestBoardInfo.builder()
-            .title("commentBoard").isEnabled(true).adminList(Arrays.asList(allBoardAdmin)).build();
+            .title("commentBoard").isEnabled(true).adminList(Collections.singletonList(allBoardAdmin)).build();
 
     protected static final TestBoardInfo voteBoard = TestBoardInfo.builder()
-            .title("voteBoard").isEnabled(true).adminList(Arrays.asList(allBoardAdmin)).build();
+            .title("voteBoard").isEnabled(true).adminList(Collections.singletonList(allBoardAdmin)).build();
 
     private static final TestBoardInfo[] testBoardInfos = {
             enableBoard, // 활성화 게시판
@@ -244,6 +245,16 @@ public abstract class IricomTestSuite {
             .postType(PostType.POST).postState(PostState.TEMPORARY)
             .creator(common00).board(voteBoard).build();
 
+    protected static final TestPostInfo voteCommentPost00 = TestPostInfo.builder()
+            .title("voteCommentPost00").content("content").isAllowComment(true)
+            .postType(PostType.POST).postState(PostState.POST)
+            .creator(common00).board(voteBoard).build();
+
+    protected static final TestPostInfo voteCommentPost01 = TestPostInfo.builder()
+            .title("voteCommentPost00").content("content").isAllowComment(false)
+            .postType(PostType.POST).postState(PostState.POST)
+            .creator(common00).board(voteBoard).build();
+
     private static final TestPostInfo[] testPostInfos = {
             enableBoardPost00, enableBoardPost01, enableBoardPost02, enableBoardPost03,
             enableBoardNotification00,
@@ -261,8 +272,12 @@ public abstract class IricomTestSuite {
             commentUpdatePost01, // 발행되지 않음
             commentUpdatePost02, // 댓글을 허용하지 않음
 
-            votePost00, // 투표 게시물
+            // 게시물 투표
+            votePost00,
             votePost01,
+
+            // 댓글 투표
+            voteCommentPost00, voteCommentPost01,
     };
 
     // 댓글 설정
@@ -274,7 +289,6 @@ public abstract class IricomTestSuite {
             .content("disableBoardComment00")
             .creator(common00).post(disableBoardPost00)
             .build();
-
     protected static final TestCommentInfo commentGetComment00 = TestCommentInfo.builder()
             .content("commentGetComment00")
             .creator(common00).post(commentGetPost00)
@@ -331,16 +345,37 @@ public abstract class IricomTestSuite {
             .content("commentDeleteComment03")
             .creator(common00).post(commentUpdatePost00)
             .build();
+    protected static final TestCommentInfo voteComment00 = TestCommentInfo.builder()
+            .content("voteComment00")
+            .creator(common00).post(voteCommentPost00)
+            .build();
+    protected static final TestCommentInfo voteComment01 = TestCommentInfo.builder()
+            .content("voteComment01")
+            .creator(common00).post(voteCommentPost00).referenceComment(voteComment00)
+            .build();
+    protected static final TestCommentInfo voteComment02 = TestCommentInfo.builder()
+            .content("voteComment02")
+            .creator(common00).post(voteCommentPost00)
+            .build();
+    protected static final TestCommentInfo voteComment03 = TestCommentInfo.builder()
+            .content("voteComment03")
+            .creator(common00).post(voteCommentPost01)
+            .build();
+    protected static final TestCommentInfo voteComment04 = TestCommentInfo.builder()
+            .content("voteComment04")
+            .creator(common00).post(disableBoardPost00)
+            .build();
 
     private static final TestCommentInfo[] testCommentInfos = {
             enableBoardComment00,
             disableBoardComment00,
 
-            commentGetComment00, commentGetComment01, commentGetComment03, commentGetComment04,
-            commentGetComment05, commentGetComment06, commentGetComment07, commentGetComment08,
-            commentGetComment09,
+            commentGetComment00, commentGetComment01, commentGetComment03, commentGetComment04, commentGetComment05,
+            commentGetComment06, commentGetComment07, commentGetComment08, commentGetComment09,
             commentUpdateComment00,
             commentDeleteComment00, commentDeleteComment01, commentDeleteComment02, commentDeleteComment03,
+
+            voteComment00, voteComment01, voteComment02, voteComment03, voteComment04,
     };
 
     private static final Map<TestAccountInfo, Account> accountMap = new HashMap<>();
@@ -415,6 +450,12 @@ public abstract class IricomTestSuite {
                 .filter(TestCommentInfo::isDeleted)
                 .forEach(this::deleteComment);
 
+        for (TestPostInfo testPostInfo : testPostInfos) {
+            if (!testPostInfo.isAllowComment()) {
+                this.updateDisabledAllowComment(testPostInfo);
+            }
+        }
+
         // 게시판 비활성화
         for (TestBoardInfo testBoardInfo : testBoardInfos) {
             Board board = boardMap.get(testBoardInfo);
@@ -467,11 +508,26 @@ public abstract class IricomTestSuite {
         PostInfoCreate postInfoCreate = PostInfoCreate.builder()
                 .title(testPostInfo.getTitle())
                 .content(testPostInfo.getContent())
-                .isAllowComment(testPostInfo.isAllowComment())
+                .isAllowComment(true)
                 .type(testPostInfo.getPostType())
                 .build();
         PostInfo postInfo = this.postService.createPostInfo(account, board, postInfoCreate);
         return this.postService.getPost(postInfo.getId());
+    }
+
+    private void updateDisabledAllowComment(TestPostInfo testPostInfo) {
+        Account account = accountMap.get(testPostInfo.getCreator());
+        Board board = boardMap.get(testPostInfo.getBoard());
+        Post post = postMap.get(testPostInfo);
+
+        PostInfoUpdate postInfoUpdate = PostInfoUpdate.builder()
+                .isAllowComment(false)
+                .build();
+        this.postService.updatePostInfo(account, board, post, postInfoUpdate);
+
+        if (testPostInfo.getPostState() == PostState.POST) {
+            this.publishPost(testPostInfo);
+        }
     }
 
     private void publishPost(TestPostInfo testPostInfo) {

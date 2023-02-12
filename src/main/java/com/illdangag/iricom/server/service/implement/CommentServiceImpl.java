@@ -209,11 +209,19 @@ public class CommentServiceImpl implements CommentService {
         }
 
         if (!board.equals(post.getBoard())) {
-            throw new IricomException(IricomErrorCode.NOT_EXIST_COMMENT);
+            throw new IricomException(IricomErrorCode.NOT_EXIST_BOARD);
         }
 
         if (!post.isPublish()) {
             throw new IricomException(IricomErrorCode.NOT_EXIST_PUBLISH_CONTENT);
+        }
+
+        if (!post.equals(comment.getPost())) {
+            throw new IricomException(IricomErrorCode.NOT_EXIST_COMMENT);
+        }
+
+        if (!post.getContent().getAllowComment()) {
+            throw new IricomException(IricomErrorCode.NOT_ALLOW_COMMENT);
         }
 
         Optional<CommentVote> commentVoteOptional = this.commentVoteRepository.getCommentVote(account, comment, voteType);
