@@ -12,7 +12,7 @@ public class StringUtilsTest {
 
     @Test
     @Order(0)
-    @DisplayName("탈출 문자 처리 00")
+    @DisplayName("기본")
     public void escapeTest00() {
         String result = StringUtils.escape("TEST");
         Assertions.assertEquals(result, "TEST");
@@ -20,7 +20,7 @@ public class StringUtilsTest {
 
     @Test
     @Order(1)
-    @DisplayName("탈출 문자 처리 01")
+    @DisplayName("단일 탈출 문자")
     public void escapeTest01() {
         String result = StringUtils.escape("TEST.TEST");
         Assertions.assertEquals(result, "TEST\\.TEST");
@@ -28,7 +28,7 @@ public class StringUtilsTest {
 
     @Test
     @Order(2)
-    @DisplayName("탈출 문자 처리 02")
+    @DisplayName("모든 문자가 탈출 문자")
     public void escapeTest02() {
         String result = StringUtils.escape("\\.?![]{}()<>*+-=^$|%");
         Assertions.assertEquals(result, "\\\\\\.\\?\\!\\[\\]\\{\\}\\(\\)\\<\\>\\*\\+\\-\\=\\^\\$\\|\\%");

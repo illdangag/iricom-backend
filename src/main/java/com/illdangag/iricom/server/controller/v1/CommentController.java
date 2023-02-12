@@ -5,9 +5,11 @@ import com.illdangag.iricom.server.configuration.annotation.Auth;
 import com.illdangag.iricom.server.configuration.annotation.AuthRole;
 import com.illdangag.iricom.server.configuration.annotation.RequestContext;
 import com.illdangag.iricom.server.data.entity.Account;
+import com.illdangag.iricom.server.data.entity.VoteType;
 import com.illdangag.iricom.server.data.request.CommentInfoCreate;
 import com.illdangag.iricom.server.data.request.CommentInfoSearch;
 import com.illdangag.iricom.server.data.request.CommentInfoUpdate;
+import com.illdangag.iricom.server.data.request.CommentInfoVote;
 import com.illdangag.iricom.server.data.response.CommentInfo;
 import com.illdangag.iricom.server.data.response.CommentInfoList;
 import com.illdangag.iricom.server.exception.IricomErrorCode;
@@ -105,6 +107,27 @@ public class CommentController {
                                                      @PathVariable(value = "comment_id") String commentId,
                                                      @RequestContext Account account) {
         CommentInfo commentInfo = this.commentService.deleteComment(account, boardId, postId, commentId);
+        return ResponseEntity.status(HttpStatus.OK).body(commentInfo);
+    }
+
+    @ApiCallLog(apiCode = "CM_005")
+    @Auth(role = AuthRole.ACCOUNT)
+    @RequestMapping(method = RequestMethod.PATCH, value = "/comments/{comment_id}/vote")
+    public ResponseEntity<CommentInfo> voteComment(@PathVariable(value = "board_id") String boardId,
+                                                   @PathVariable(value = "post_id") String postId,
+                                                   @PathVariable(value = "comment_id") String commentId,
+                                                   @RequestBody CommentInfoVote commentInfoVote,
+                                                   @RequestContext Account account) {
+        VoteType voteType;
+        if ("upvote".equalsIgnoreCase(commentInfoVote.getType())) {
+            voteType = VoteType.UPVOTE;
+        } else if ("downvote".equalsIgnoreCase(commentInfoVote.getType())) {
+            voteType = VoteType.DOWNVOTE;
+        } else {
+            throw new IricomException(IricomErrorCode.INVALID_VOTE_POST);
+        }
+
+        CommentInfo commentInfo = this.commentService.voteComment(account, boardId, postId, commentId, voteType);
         return ResponseEntity.status(HttpStatus.OK).body(commentInfo);
     }
 }

@@ -40,7 +40,7 @@ public enum IricomErrorCode {
     NOT_EXIST_PUBLISH_CONTENT("04000005", 404, "Not exist publish content."),
     DISABLED_BOARD_TO_VOTE("04000005", 400, "Board is disabled."),
     ALREADY_VOTE_POST("04000006", 400, "Already vote post."),
-    INVALID_POST_VOTE("04000007", 400, "Invalid vote type."),
+    INVALID_VOTE_POST("04000007", 400, "Invalid vote type."),
 
     // comment: 05XXXXXX
     NOT_EXIST_COMMENT("05000000", 404, "Not exist comment."),
@@ -49,7 +49,8 @@ public enum IricomErrorCode {
     DISABLED_BOARD_TO_COMMENT("05000003", 400, "Board is disabled."),
     INVALID_AUTHORIZATION_TO_UPDATE_COMMENT("05000004", 401, "Invalid authorization."),
     INVALID_AUTHORIZATION_TO_DELETE_COMMENT("05000005", 401, "Invalid authorization."),
-    ALREADY_VOTE_COMMENT("05000006", 400, "Already vote comment.");
+    ALREADY_VOTE_COMMENT("05000006", 400, "Already vote comment."),
+    INVALID_VOTE_COMMENT("05000007", 400, "Invalid vote type.");
 
 
     private final String code;

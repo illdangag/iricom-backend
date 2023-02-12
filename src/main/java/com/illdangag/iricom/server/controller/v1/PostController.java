@@ -191,7 +191,7 @@ public class PostController {
         } else if ("downvote".equalsIgnoreCase(postInfoVote.getType())) {
             voteType = VoteType.DOWNVOTE;
         } else {
-            throw new IricomException(IricomErrorCode.INVALID_POST_VOTE);
+            throw new IricomException(IricomErrorCode.INVALID_VOTE_POST);
         }
 
         PostInfo postInfo = this.postService.votePost(account, boardId, postId, voteType);
