@@ -1,9 +1,6 @@
 package com.illdangag.iricom.server.service;
 
-import com.illdangag.iricom.server.data.entity.Account;
-import com.illdangag.iricom.server.data.entity.Board;
-import com.illdangag.iricom.server.data.entity.Comment;
-import com.illdangag.iricom.server.data.entity.Post;
+import com.illdangag.iricom.server.data.entity.*;
 import com.illdangag.iricom.server.data.request.CommentInfoCreate;
 import com.illdangag.iricom.server.data.request.CommentInfoSearch;
 import com.illdangag.iricom.server.data.request.CommentInfoUpdate;
@@ -32,4 +29,8 @@ public interface CommentService {
     CommentInfo deleteComment(Account account, String boardId, String postId, String commentId);
 
     CommentInfo deleteComment(Account account, Board board, Post post, Comment comment);
+
+    CommentInfo voteComment(Account account, String boardId, String postId, String commentId, VoteType voteType);
+
+    CommentInfo voteComment(Account account, Board board, Post post, Comment comment, VoteType voteType);
 }

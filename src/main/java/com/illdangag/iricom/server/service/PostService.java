@@ -10,6 +10,10 @@ import com.illdangag.iricom.server.data.response.PostInfoList;
 import javax.validation.Valid;
 
 public interface PostService {
+    Post getPost(String id);
+
+    Post getPost(long id);
+
     PostInfo createPostInfo(Account account, String boardId, PostInfoCreate postInfoCreate);
 
     PostInfo createPostInfo(Account account, Board board, @Valid PostInfoCreate postInfoCreate);
@@ -35,8 +39,4 @@ public interface PostService {
     PostInfo votePost(Account account, String boardId, String postId, VoteType voteType);
 
     PostInfo votePost(Account account, Board board, Post post, VoteType voteType);
-
-    Post getPost(String id);
-
-    Post getPost(long id);
 }

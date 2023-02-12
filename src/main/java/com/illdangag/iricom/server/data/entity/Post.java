@@ -10,7 +10,7 @@ import java.time.LocalDateTime;
 
 @Getter
 @Setter
-@Builder(builderMethodName = "innerBuilder")
+@Builder
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 @Entity
@@ -59,11 +59,6 @@ public class Post {
     @Column(name = "is_deleted")
     private Boolean deleted = false;
 
-    public static PostBuilder builder(Account account, Board board) {
-        return innerBuilder()
-                .account(account)
-                .board(board);
-    }
 
     @Override
     public boolean equals(Object object) {
@@ -77,5 +72,9 @@ public class Post {
     @Override
     public int hashCode() {
         return Objects.hashCode(this.id);
+    }
+
+    public boolean isPublish() {
+        return this.content != null;
     }
 }

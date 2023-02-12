@@ -48,7 +48,9 @@ public enum IricomErrorCode {
     NOT_ALLOW_COMMENT("05000002", 400, "This post does not allow comments."),
     DISABLED_BOARD_TO_COMMENT("05000003", 400, "Board is disabled."),
     INVALID_AUTHORIZATION_TO_UPDATE_COMMENT("05000004", 401, "Invalid authorization."),
-    INVALID_AUTHORIZATION_TO_DELETE_COMMENT("05000005", 401, "Invalid authorization.");
+    INVALID_AUTHORIZATION_TO_DELETE_COMMENT("05000005", 401, "Invalid authorization."),
+    ALREADY_VOTE_COMMENT("05000006", 400, "Already vote comment.");
+
 
     private final String code;
     private final int httpStatusCode;

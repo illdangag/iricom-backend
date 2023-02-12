@@ -84,7 +84,10 @@ public class PostServiceImpl implements PostService {
             }
         }
 
-        Post post = Post.builder(account, board).build();
+        Post post = Post.builder()
+                .account(account)
+                .board(board)
+                .build();
         PostContent postContent = PostContent.builder(post, PostState.TEMPORARY)
                 .type(postInfoCreate.getType())
                 .title(postInfoCreate.getTitle())
@@ -319,7 +322,7 @@ public class PostServiceImpl implements PostService {
             throw new IricomException(IricomErrorCode.DISABLED_BOARD_TO_VOTE);
         }
 
-        if (post.getContent() == null) {
+        if (!post.isPublish()) {
             throw new IricomException(IricomErrorCode.NOT_EXIST_PUBLISH_CONTENT);
         }
 

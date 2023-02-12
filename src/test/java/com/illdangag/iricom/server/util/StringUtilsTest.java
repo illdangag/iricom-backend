@@ -1,6 +1,5 @@
-package com.illdangag.iricom.server.test.util;
+package com.illdangag.iricom.server.util;
 
-import com.illdangag.iricom.server.util.StringUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;

@@ -45,10 +45,10 @@ public class Comment {
     private String content = "";
 
     @Builder.Default
-    private Long likeCount = 0L;
+    private Long upvote = 0L;
 
     @Builder.Default
-    private Long dislikeCount = 0L;
+    private Long downvote = 0L;
 
     @Builder.Default
     @Column(name = "is_deleted")

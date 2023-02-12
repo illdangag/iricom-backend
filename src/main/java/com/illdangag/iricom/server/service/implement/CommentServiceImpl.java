@@ -1,9 +1,6 @@
 package com.illdangag.iricom.server.service.implement;
 
-import com.illdangag.iricom.server.data.entity.Account;
-import com.illdangag.iricom.server.data.entity.Board;
-import com.illdangag.iricom.server.data.entity.Comment;
-import com.illdangag.iricom.server.data.entity.Post;
+import com.illdangag.iricom.server.data.entity.*;
 import com.illdangag.iricom.server.data.request.CommentInfoCreate;
 import com.illdangag.iricom.server.data.request.CommentInfoSearch;
 import com.illdangag.iricom.server.data.request.CommentInfoUpdate;
@@ -13,6 +10,7 @@ import com.illdangag.iricom.server.data.response.CommentInfoList;
 import com.illdangag.iricom.server.exception.IricomErrorCode;
 import com.illdangag.iricom.server.exception.IricomException;
 import com.illdangag.iricom.server.repository.CommentRepository;
+import com.illdangag.iricom.server.repository.CommentVoteRepository;
 import com.illdangag.iricom.server.service.AccountService;
 import com.illdangag.iricom.server.service.BoardService;
 import com.illdangag.iricom.server.service.CommentService;
@@ -33,17 +31,16 @@ import java.util.stream.Collectors;
 @Service
 public class CommentServiceImpl implements CommentService {
     private final CommentRepository commentRepository;
-
+    private final CommentVoteRepository commentVoteRepository;
     private final BoardService boardService;
-
     private final PostService postService;
-
     private final AccountService accountService;
 
     @Autowired
-    public CommentServiceImpl(CommentRepository commentRepository, BoardService boardService, PostService postService,
-                              AccountService accountService) {
+    public CommentServiceImpl(CommentRepository commentRepository, CommentVoteRepository commentVoteRepository,
+                              BoardService boardService, PostService postService, AccountService accountService) {
         this.commentRepository = commentRepository;
+        this.commentVoteRepository = commentVoteRepository;
         this.boardService = boardService;
         this.postService = postService;
         this.accountService = accountService;
@@ -194,6 +191,53 @@ public class CommentServiceImpl implements CommentService {
         comment.setDeleted(true);
         this.commentRepository.save(comment);
         AccountInfo accountInfo = this.accountService.getAccountInfo(comment.getAccount());
+        return new CommentInfo(comment, accountInfo);
+    }
+
+    @Override
+    public CommentInfo voteComment(Account account, String boardId, String postId, String commentId, VoteType voteType) {
+        Board board = this.boardService.getBoard(boardId);
+        Post post = this.postService.getPost(postId);
+        Comment comment = this.getComment(commentId);
+        return this.voteComment(account, board, post, comment, voteType);
+    }
+
+    @Override
+    public CommentInfo voteComment(Account account, Board board, Post post, Comment comment, VoteType voteType) {
+        if (!board.getEnabled()) {
+            throw new IricomException(IricomErrorCode.DISABLED_BOARD_TO_VOTE);
+        }
+
+        if (!board.equals(post.getBoard())) {
+            throw new IricomException(IricomErrorCode.NOT_EXIST_COMMENT);
+        }
+
+        if (!post.isPublish()) {
+            throw new IricomException(IricomErrorCode.NOT_EXIST_PUBLISH_CONTENT);
+        }
+
+        Optional<CommentVote> commentVoteOptional = this.commentVoteRepository.getCommentVote(account, comment, voteType);
+        if (commentVoteOptional.isPresent()) {
+            throw new IricomException(IricomErrorCode.ALREADY_VOTE_COMMENT);
+        }
+
+        long count = this.commentVoteRepository.getCommentVoteCount(comment, voteType);
+        CommentVote commentVote = CommentVote.builder()
+                .comment(comment)
+                .account(account)
+                .type(voteType)
+                .build();
+
+        if (voteType == VoteType.UPVOTE) {
+            comment.setUpvote(count + 1);
+        } else {
+            comment.setDownvote(count + 1);
+        }
+
+        this.commentRepository.save(comment);
+        this.commentVoteRepository.save(commentVote);
+
+        AccountInfo accountInfo = this.accountService.getAccountInfo(account);
         return new CommentInfo(comment, accountInfo);
     }
 
