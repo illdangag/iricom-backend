@@ -17,8 +17,5 @@ public class PostInfoSearch extends SearchRequest {
     private String accountId = "";
 
     @Builder.Default
-    private Boolean includeContent = false;
-
-    @Builder.Default
     private String title = "";
 }

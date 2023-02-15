@@ -59,7 +59,6 @@ public class PostController {
                                                         @RequestParam(name = "skip", defaultValue = "0", required = false) String skipVariable,
                                                         @RequestParam(name = "limit", defaultValue = "20", required = false) String limitVariable,
                                                         @RequestParam(name = "type", defaultValue = "post", required = false) String typeVariable,
-                                                        @RequestParam(name = "includeContent", defaultValue = "", required = false) String includeContentVariable,
                                                         @RequestParam(name = "title", defaultValue = "", required = false) String title) {
         Board board = this.boardService.getBoard(boardId);
 
@@ -81,20 +80,6 @@ public class PostController {
         }
 
         try {
-            if ("true".equalsIgnoreCase(includeContentVariable)) {
-                includeContent = true;
-            } else if ("false".equalsIgnoreCase(includeContentVariable)) {
-                includeContent = false;
-            } else if (includeContentVariable.isEmpty()) {
-                includeContent = null;
-            } else {
-                throw new Exception();
-            }
-        } catch (Exception exception) {
-            throw new IricomException(IricomErrorCode.INVALID_REQUEST, "IncludeContent value is invalid");
-        }
-
-        try {
             type = PostType.setValue(typeVariable);
         } catch (Exception exception) {
             throw new IricomException(IricomErrorCode.INVALID_REQUEST, "Type value is invalid");
@@ -106,9 +91,6 @@ public class PostController {
                 .limit(limit)
                 .title(title)
                 .build();
-        if (includeContent != null) {
-            postInfoSearch.setIncludeContent(includeContent);
-        }
 
         PostInfoList postInfoList = this.postService.getPostInfoList(board, postInfoSearch);
         return ResponseEntity.status(HttpStatus.OK).body(postInfoList);

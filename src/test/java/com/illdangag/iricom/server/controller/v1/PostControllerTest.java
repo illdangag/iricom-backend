@@ -1,8 +1,9 @@
 package com.illdangag.iricom.server.controller.v1;
 
-import com.illdangag.iricom.server.test.IricomTestSuite;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.illdangag.iricom.server.data.entity.Board;
 import com.illdangag.iricom.server.data.entity.Post;
+import com.illdangag.iricom.server.test.IricomTestSuite;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
@@ -16,6 +17,7 @@ import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilde
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.atomic.AtomicInteger;
 
 import static org.hamcrest.Matchers.hasSize;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
@@ -438,6 +440,35 @@ public class PostControllerTest extends IricomTestSuite {
                         .andExpect(jsonPath("$.code").value("04000002"))
                         .andDo(print());
             }
+
+            @Test
+            @Order(6)
+            @DisplayName("조회수")
+            public void testCase06() throws Exception {
+                Board board = getBoard(enableBoard);
+                Post post = getPost(enableBoardPost00);
+
+                MockHttpServletRequestBuilder requestBuilder = get("/v1/boards/" + board.getId() + "/posts/" + post.getId());
+                setAuthToken(requestBuilder, common00);
+
+                AtomicInteger viewCount = new AtomicInteger();
+                mockMvc.perform(requestBuilder)
+                        .andExpect(status().is(200))
+                        .andDo(mvnResult -> {
+                            String responseBody = mvnResult.getResponse().getContentAsString();
+                            ObjectMapper mapper = new ObjectMapper();
+                            Map<String, Object> map = mapper.readValue(responseBody, Map.class);
+                            viewCount.set((Integer) map.get("viewCount"));
+                        });
+
+                requestBuilder = get("/v1/boards/" + board.getId() + "/posts/" + post.getId());
+                setAuthToken(requestBuilder, common00);
+
+                mockMvc.perform(requestBuilder)
+                        .andExpect(status().is(200))
+                        .andExpect(jsonPath("$.viewCount").value(viewCount.get() + 1))
+                        .andDo(print());
+            }
         }
 
         @Nested
@@ -471,34 +502,8 @@ public class PostControllerTest extends IricomTestSuite {
 
             @Test
             @Order(1)
-            @DisplayName("내용을 포함")
-            public void testCase01() throws Exception {
-                Board board = getBoard(enableBoard);
-
-                MockHttpServletRequestBuilder requestBuilder = get("/v1/boards/" + board.getId() + "/posts")
-                        .param("includeContent", "true");
-                setAuthToken(requestBuilder, common00);
-
-                mockMvc.perform(requestBuilder)
-                        .andExpect(status().is(200))
-                        .andExpect(jsonPath("$.total").value(3))
-                        .andExpect(jsonPath("$.skip").value(0))
-                        .andExpect(jsonPath("$.limit").value(20))
-                        .andExpect(jsonPath("$.posts").isArray())
-                        .andExpect(jsonPath("$.posts", hasSize(3)))
-                        .andExpect(jsonPath("$.posts[0].title").value("enableBoardPost02"))
-                        .andExpect(jsonPath("$.posts[0].content").exists())
-                        .andExpect(jsonPath("$.posts[1].title").value("enableBoardPost01"))
-                        .andExpect(jsonPath("$.posts[1].content").exists())
-                        .andExpect(jsonPath("$.posts[2].title").value("enableBoardPost00"))
-                        .andExpect(jsonPath("$.posts[2].content").exists())
-                        .andDo(print());
-            }
-
-            @Test
-            @Order(2)
             @DisplayName("skip")
-            public void testCase02() throws Exception {
+            public void testCase01() throws Exception {
                 Board board = getBoard(enableBoard);
 
                 MockHttpServletRequestBuilder requestBuilder = get("/v1/boards/" + board.getId() + "/posts")
@@ -520,9 +525,9 @@ public class PostControllerTest extends IricomTestSuite {
             }
 
             @Test
-            @Order(3)
+            @Order(2)
             @DisplayName("limit")
-            public void testCase03() throws Exception {
+            public void testCase02() throws Exception {
                 Board board = getBoard(enableBoard);
 
                 MockHttpServletRequestBuilder requestBuilder = get("/v1/boards/" + board.getId() + "/posts")
@@ -542,9 +547,9 @@ public class PostControllerTest extends IricomTestSuite {
             }
 
             @Test
-            @Order(4)
+            @Order(3)
             @DisplayName("title")
-            public void testCase04() throws Exception {
+            public void testCase03() throws Exception {
                 Board board = getBoard(enableBoard);
 
                 MockHttpServletRequestBuilder requestBuilder = get("/v1/boards/" + board.getId() + "/posts")
@@ -564,9 +569,9 @@ public class PostControllerTest extends IricomTestSuite {
             }
 
             @Test
-            @Order(5)
+            @Order(4)
             @DisplayName("공지 사항")
-            public void testCase05() throws Exception {
+            public void testCase04() throws Exception {
                 Board board = getBoard(enableBoard);
 
                 MockHttpServletRequestBuilder requestBuilder = get("/v1/boards/" + board.getId() + "/posts")

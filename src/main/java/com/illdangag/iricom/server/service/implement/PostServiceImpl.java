@@ -188,6 +188,9 @@ public class PostServiceImpl implements PostService {
             postContent = post.getContent();
         }
 
+        post.setViewCount(post.getViewCount() + 1);
+        this.postRepository.save(post);
+
         Account creator = post.getAccount();
         AccountInfo creatorInfo = this.accountService.getAccountInfo(creator);
 
@@ -234,8 +237,6 @@ public class PostServiceImpl implements PostService {
 
     @Override
     public PostInfoList getPostInfoList(Board board, @Valid PostInfoSearch postInfoSearch) {
-        final PostInfo.Type postInfoType = postInfoSearch.getIncludeContent() ? PostInfo.Type.INCLUDE_CONTENT : PostInfo.Type.SIMPLE;
-
         List<Post> postList;
         long totalPostCount;
         if (postInfoSearch.getTitle().isEmpty()) {
@@ -254,7 +255,7 @@ public class PostServiceImpl implements PostService {
         Map<Account, AccountInfo> accountAccountInfoMap = this.accountService.getAccountInfoMap(accountList);
         List<PostInfo> postInfoList = postList.stream().map(post -> {
             AccountInfo accountInfo = accountAccountInfoMap.get(post.getAccount());
-            return new PostInfo(post, post.getContent(), accountInfo, postInfoType);
+            return new PostInfo(post, post.getContent(), accountInfo, PostInfo.Type.SIMPLE);
         }).collect(Collectors.toList());
 
         return PostInfoList.builder()

@@ -28,6 +28,8 @@ public class PostInfo {
 
     private String content;
 
+    private Long viewCount;
+
     private Long upvote;
 
     private Long downvote;
@@ -43,6 +45,7 @@ public class PostInfo {
         this.status = postContent.getState().getText();
         this.title = postContent.getTitle();
         this.isAllowComment = postContent.getAllowComment();
+        this.viewCount = post.getViewCount();
         this.upvote = post.getUpvote();
         this.downvote = post.getDownvote();
 
