@@ -13,13 +13,15 @@ public class AccountInfo {
 
     private String email;
 
-    private long createDate;
+    private Long createDate;
 
-    private long lastActivityDate;
+    private Long lastActivityDate;
 
     private String nickname;
 
     private String description;
+
+    private Boolean isAdmin;
 
     public AccountInfo(Account account) {
         this.id = account.getId().toString();
@@ -35,5 +37,8 @@ public class AccountInfo {
         }
         this.nickname = accountDetail.getNickname();
         this.description = accountDetail.getDescription();
+        if (account.isAdmin()) {
+            isAdmin = true;
+        }
     }
 }
