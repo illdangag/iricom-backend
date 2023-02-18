@@ -23,7 +23,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @Slf4j
-@DisplayName("게시판 관리자 테스트")
+@DisplayName("게시판 관리자")
 public class BoardAuthorizationControllerTest extends IricomTestSuite {
     @Autowired
     MockMvc mockMvc;

@@ -34,12 +34,14 @@ public class BoardAdminRepositoryImpl implements BoardAdminRepository {
     }
 
     @Override
-    public List<BoardAdmin> getBoardAdminList(Account account) {
+    public List<BoardAdmin> getBoardAdminList(Account account, boolean deleted) {
         final String jpql = "SELECT ba FROM BoardAdmin ba " +
-                "WHERE ba.account = :admin " +
+                "WHERE ba.account = :account " +
+                "AND ba.deleted = :deleted " +
                 "ORDER BY ba.createDate DESC";
-        TypedQuery<BoardAdmin> query = this.entityManager.createQuery(jpql, BoardAdmin.class);
-        query.setParameter("admin", account);
+        TypedQuery<BoardAdmin> query = this.entityManager.createQuery(jpql, BoardAdmin.class)
+                .setParameter("account", account)
+                .setParameter("deleted", deleted);
         return query.getResultList();
     }
 

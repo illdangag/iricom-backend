@@ -24,7 +24,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @Slf4j
-@DisplayName("계정 테스트")
+@DisplayName("계정")
 public class AccountControllerTest extends IricomTestSuite {
     @Autowired
     MockMvc mockMvc;
@@ -39,8 +39,8 @@ public class AccountControllerTest extends IricomTestSuite {
     class GetTest {
 
         @Nested
-        @DisplayName("본인 계정 정보 조회")
-        class MyInfoGetTest {
+        @DisplayName("계정 정보 조회")
+        class AccountGetTest {
 
             @Test
             @Order(0)
@@ -54,7 +54,7 @@ public class AccountControllerTest extends IricomTestSuite {
                 mockMvc.perform(requestBuilder)
                         .andExpect(status().is(200))
                         .andExpect(jsonPath("$.email").value(systemAdmin.getEmail()))
-                        .andExpect(jsonPath("$.isAdmin").value(true))
+                        .andExpect(jsonPath("$.type").value("systemAdmin"))
                         .andDo(print());
             }
 
@@ -70,7 +70,7 @@ public class AccountControllerTest extends IricomTestSuite {
                 mockMvc.perform(requestBuilder)
                         .andExpect(status().is(200))
                         .andExpect(jsonPath("$.email").value(allBoardAdmin.getEmail()))
-                        .andExpect(jsonPath("$.isAdmin").doesNotExist())
+                        .andExpect(jsonPath("$.type").value("boardAdmin"))
                         .andDo(print());
             }
 
@@ -86,7 +86,7 @@ public class AccountControllerTest extends IricomTestSuite {
                 mockMvc.perform(requestBuilder)
                         .andExpect(status().is(200))
                         .andExpect(jsonPath("$.email").value(common00.getEmail()))
-                        .andExpect(jsonPath("$.isAdmin").doesNotExist())
+                        .andExpect(jsonPath("$.type").value("account"))
                         .andDo(print());
             }
         }

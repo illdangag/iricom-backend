@@ -1,6 +1,7 @@
 package com.illdangag.iricom.server.service.implement;
 
 import com.illdangag.iricom.server.data.entity.Account;
+import com.illdangag.iricom.server.data.entity.AccountType;
 import com.illdangag.iricom.server.data.entity.Board;
 import com.illdangag.iricom.server.data.entity.BoardAdmin;
 import com.illdangag.iricom.server.data.request.BoardAdminInfoCreate;
@@ -48,8 +49,8 @@ public class BoardAuthorizationServiceImpl implements BoardAuthorizationService 
         Account account = this.accountService.getAccount(boardAdminInfoCreate.getAccountId());
         Board board = this.boardService.getBoard(boardAdminInfoCreate.getBoardId());
 
-        Optional<BoardAdmin> optionalBoardAdmin = this.boardAdminRepository.getBoardAdmin(board, account);
-        if (optionalBoardAdmin.isEmpty() || optionalBoardAdmin.get().getDeleted()) {
+        Optional<BoardAdmin> boardAdminOptional = this.boardAdminRepository.getBoardAdmin(board, account);
+        if (boardAdminOptional.isEmpty() || boardAdminOptional.get().getDeleted()) {
             // 이전에 해당 게시판에 권한을 추가한 적이 없거나 해당 게시판의 권한이 삭제 되었다면
             BoardAdmin boardAdmin = BoardAdmin.builder()
                     .account(account)
@@ -58,18 +59,25 @@ public class BoardAuthorizationServiceImpl implements BoardAuthorizationService 
                     .build();
             this.boardAdminRepository.save(boardAdmin);
         }
+
+        if (account.getType() == AccountType.ACCOUNT) {
+            // 일반 계정인 경우에 게시판 관리자 계정으로 정보 수정
+            account.setType(AccountType.BOARD_ADMIN);
+            this.accountService.saveAccount(account);
+        }
     }
 
     /**
      * 게시판 관리지 권한 삭제
      */
+    @Override
     public void deleteBoardAdminAuth(BoardAdminInfoDelete boardAdminInfoDelete) {
         Account account = this.accountService.getAccount(boardAdminInfoDelete.getAccountId());
         Board board = this.boardService.getBoard(boardAdminInfoDelete.getBoardId());
 
         // 이미 동일 계정과 게시판으로 권한이 있는 경우 권한을 삭제
-        Optional<BoardAdmin> optionalBoardAdmin = this.boardAdminRepository.getBoardAdmin(board, account);
-        if (optionalBoardAdmin.isPresent() && !optionalBoardAdmin.get().getDeleted()) {
+        Optional<BoardAdmin> boardAdminOptional = this.boardAdminRepository.getBoardAdmin(board, account);
+        if (boardAdminOptional.isPresent() && !boardAdminOptional.get().getDeleted()) {
             // 이전에 해당 게시판에 권한이 추가 되었다면
             BoardAdmin boardAdmin = BoardAdmin.builder()
                     .account(account)
@@ -77,6 +85,14 @@ public class BoardAuthorizationServiceImpl implements BoardAuthorizationService 
                     .deleted(true)
                     .build();
             this.boardAdminRepository.save(boardAdmin);
+        }
+
+        // 게시판 관리자 권한이 남아 있지 않은 경우
+        // 계정 정보를 일반 계정으로 수정
+        List<BoardAdmin> boardAdminList = this.boardAdminRepository.getBoardAdminList(account, false);
+        if (boardAdminList.isEmpty()) {
+            account.setType(AccountType.ACCOUNT);
+            this.accountService.saveAccount(account);
         }
     }
 

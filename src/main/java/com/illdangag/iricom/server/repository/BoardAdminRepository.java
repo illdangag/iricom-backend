@@ -10,7 +10,7 @@ import java.util.Optional;
 public interface BoardAdminRepository {
     List<BoardAdmin> getBoardAdminList(List<Board> boardList);
 
-    List<BoardAdmin> getBoardAdminList(Account account);
+    List<BoardAdmin> getBoardAdminList(Account account, boolean deleted);
 
     List<BoardAdmin> getBoardAdminList(Board board, Account account);
 

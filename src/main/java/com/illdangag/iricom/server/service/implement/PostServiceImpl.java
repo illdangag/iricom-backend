@@ -355,7 +355,7 @@ public class PostServiceImpl implements PostService {
      * 시스템 관리자 이거나 해당 게시판에 관리자 권한이 있는 계정인지 확인
      */
     private boolean hasAuthorization(Account account, Board board) {
-        if (account.isAdmin()) {
+        if (account.getType() == AccountType.SYSTEM_ADMIN) {
             return true;
         }
 

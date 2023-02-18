@@ -26,7 +26,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @Slf4j
-@DisplayName("게시물 테스트")
+@DisplayName("게시물")
 public class PostControllerTest extends IricomTestSuite {
     @Autowired
     MockMvc mockMvc;

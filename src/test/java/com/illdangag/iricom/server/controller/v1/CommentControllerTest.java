@@ -23,7 +23,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-@DisplayName("댓글 테스트")
+@DisplayName("댓글")
 public class CommentControllerTest extends IricomTestSuite {
     @Autowired
     MockMvc mockMvc;

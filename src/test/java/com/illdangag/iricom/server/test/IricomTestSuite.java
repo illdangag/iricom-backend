@@ -2,6 +2,7 @@ package com.illdangag.iricom.server.test;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.illdangag.iricom.server.data.response.CommentInfo;
+import com.illdangag.iricom.server.repository.AccountRepository;
 import com.illdangag.iricom.server.service.*;
 import com.illdangag.iricom.server.test.data.*;
 import com.illdangag.iricom.server.data.entity.*;
@@ -31,6 +32,8 @@ public abstract class IricomTestSuite {
     private final BoardAuthorizationService boardAuthorizationService;
     private final PostService postService;
     private final CommentService commentService;
+
+    private final AccountRepository accountRepository;
 
     // 계정 설정
     private static final String ACCOUNT_PASSWORD = "111111";
@@ -392,6 +395,7 @@ public abstract class IricomTestSuite {
         this.boardAuthorizationService = context.getBean(BoardAuthorizationService.class);
         this.postService = context.getBean(PostService.class);
         this.commentService = context.getBean(CommentService.class);
+        this.accountRepository = context.getBean(AccountRepository.class);
 
         if (!isInit) {
             this.init();
@@ -468,12 +472,16 @@ public abstract class IricomTestSuite {
     private Account createAccount(TestAccountInfo testAccountInfo) {
         AccountInfoCreate accountInfoCreate = AccountInfoCreate.builder()
                 .email(testAccountInfo.getEmail())
-                .isAdmin(testAccountInfo.isAdmin())
                 .nickname(testAccountInfo.getNickname())
                 .description(testAccountInfo.getDescription())
                 .build();
         AccountInfo accountInfo = this.accountService.createAccountInfo(accountInfoCreate);
-        return this.accountService.getAccount(accountInfo.getId());
+        Account account = this.accountService.getAccount(accountInfo.getId());
+        if (testAccountInfo.isAdmin()) {
+            account.setType(AccountType.SYSTEM_ADMIN);
+            this.accountRepository.saveAccount(account);
+        }
+        return account;
     }
 
     private Board createBoard(TestBoardInfo testBoardInfo) {

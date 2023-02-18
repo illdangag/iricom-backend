@@ -85,16 +85,15 @@ public class FirebaseAuthInterceptor implements HandlerInterceptor {
     }
 
     private void checkSystemAdminAuth(Account account) {
-        if (!account.isAdmin()) {
+        if (account.getType() != AccountType.SYSTEM_ADMIN) {
             throw new IricomException(IricomErrorCode.INVALID_AUTHORIZATION);
         }
     }
 
     private List<Board> checkBoardAdminAuth(Account account) {
-        List<BoardAdmin> boardAdminList = this.boardAdminRepository.getBoardAdminList(account);
+        List<BoardAdmin> boardAdminList = this.boardAdminRepository.getBoardAdminList(account, false);
         Set<BoardAdmin> set = new LinkedHashSet<>(boardAdminList);
         List<Board> boardList = set.stream()
-                .filter(boardAdmin -> !boardAdmin.getDeleted())
                 .map(BoardAdmin::getBoard)
                 .sorted(Comparator.comparing(Board::getId))
                 .collect(Collectors.toList());

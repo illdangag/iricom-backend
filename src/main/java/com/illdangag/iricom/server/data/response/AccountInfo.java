@@ -21,7 +21,7 @@ public class AccountInfo {
 
     private String description;
 
-    private Boolean isAdmin;
+    private String type;
 
     public AccountInfo(Account account) {
         this.id = account.getId().toString();
@@ -37,8 +37,6 @@ public class AccountInfo {
         }
         this.nickname = accountDetail.getNickname();
         this.description = accountDetail.getDescription();
-        if (account.isAdmin()) {
-            isAdmin = true;
-        }
+        this.type = account.getType().getText();
     }
 }

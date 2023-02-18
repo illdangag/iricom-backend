@@ -46,8 +46,8 @@ public class Account {
     private String email;
 
     @Builder.Default
-    @Column(name = "is_admin")
-    private boolean admin = false;
+    @Column(name = "type")
+    private AccountType type = AccountType.ACCOUNT;
 
     @Override
     public boolean equals(Object object) {

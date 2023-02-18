@@ -29,4 +29,6 @@ public interface AccountService {
     Account getAccount(String id);
 
     Account getAccount(long id);
+
+    void saveAccount(Account account);
 }

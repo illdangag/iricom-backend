@@ -39,7 +39,6 @@ public class AccountServiceImpl implements AccountService {
     public AccountInfo createAccountInfo(@Valid AccountInfoCreate accountInfoCreate) {
         Account account = Account.builder()
                 .email(accountInfoCreate.getEmail())
-                .admin(accountInfoCreate.getIsAdmin())
                 .build();
         this.accountRepository.saveAccount(account);
 
@@ -69,6 +68,11 @@ public class AccountServiceImpl implements AccountService {
     public Account getAccount(long id) {
         Optional<Account> accountOptional = this.accountRepository.getAccount(id);
         return accountOptional.orElseThrow(() -> new IricomException(IricomErrorCode.NOT_EXIST_ACCOUNT));
+    }
+
+    @Override
+    public void saveAccount(Account account) {
+        this.accountRepository.saveAccount(account);
     }
 
     @Override
