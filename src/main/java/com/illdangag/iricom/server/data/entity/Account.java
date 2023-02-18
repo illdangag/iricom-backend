@@ -46,6 +46,7 @@ public class Account {
     private String email;
 
     @Builder.Default
+    @Enumerated(EnumType.STRING)
     @Column(name = "type")
     private AccountType type = AccountType.ACCOUNT;
 
