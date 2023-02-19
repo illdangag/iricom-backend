@@ -478,7 +478,7 @@ public abstract class IricomTestSuite {
         AccountInfo accountInfo = this.accountService.createAccountInfo(accountInfoCreate);
         Account account = this.accountService.getAccount(accountInfo.getId());
         if (testAccountInfo.isAdmin()) {
-            account.setType(AccountType.SYSTEM_ADMIN);
+            account.setAuth(AccountAuth.SYSTEM_ADMIN);
             this.accountRepository.saveAccount(account);
         }
         return account;

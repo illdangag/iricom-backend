@@ -54,7 +54,7 @@ public class AccountControllerTest extends IricomTestSuite {
                 mockMvc.perform(requestBuilder)
                         .andExpect(status().is(200))
                         .andExpect(jsonPath("$.email").value(systemAdmin.getEmail()))
-                        .andExpect(jsonPath("$.type").value("systemAdmin"))
+                        .andExpect(jsonPath("$.auth").value("systemAdmin"))
                         .andDo(print());
             }
 
@@ -70,7 +70,7 @@ public class AccountControllerTest extends IricomTestSuite {
                 mockMvc.perform(requestBuilder)
                         .andExpect(status().is(200))
                         .andExpect(jsonPath("$.email").value(allBoardAdmin.getEmail()))
-                        .andExpect(jsonPath("$.type").value("boardAdmin"))
+                        .andExpect(jsonPath("$.auth").value("boardAdmin"))
                         .andDo(print());
             }
 
@@ -86,7 +86,7 @@ public class AccountControllerTest extends IricomTestSuite {
                 mockMvc.perform(requestBuilder)
                         .andExpect(status().is(200))
                         .andExpect(jsonPath("$.email").value(common00.getEmail()))
-                        .andExpect(jsonPath("$.type").value("account"))
+                        .andExpect(jsonPath("$.auth").value("account"))
                         .andDo(print());
             }
         }

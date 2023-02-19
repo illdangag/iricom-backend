@@ -85,7 +85,7 @@ public class FirebaseAuthInterceptor implements HandlerInterceptor {
     }
 
     private void checkSystemAdminAuth(Account account) {
-        if (account.getType() != AccountType.SYSTEM_ADMIN) {
+        if (account.getAuth() != AccountAuth.SYSTEM_ADMIN) {
             throw new IricomException(IricomErrorCode.INVALID_AUTHORIZATION);
         }
     }

@@ -1,7 +1,7 @@
 package com.illdangag.iricom.server.service.implement;
 
 import com.illdangag.iricom.server.data.entity.Account;
-import com.illdangag.iricom.server.data.entity.AccountType;
+import com.illdangag.iricom.server.data.entity.AccountAuth;
 import com.illdangag.iricom.server.data.entity.Board;
 import com.illdangag.iricom.server.data.entity.BoardAdmin;
 import com.illdangag.iricom.server.data.request.BoardAdminInfoCreate;
@@ -60,9 +60,9 @@ public class BoardAuthorizationServiceImpl implements BoardAuthorizationService 
             this.boardAdminRepository.save(boardAdmin);
         }
 
-        if (account.getType() == AccountType.ACCOUNT) {
+        if (account.getAuth() == AccountAuth.ACCOUNT) {
             // 일반 계정인 경우에 게시판 관리자 계정으로 정보 수정
-            account.setType(AccountType.BOARD_ADMIN);
+            account.setAuth(AccountAuth.BOARD_ADMIN);
             this.accountService.saveAccount(account);
         }
     }
@@ -91,7 +91,7 @@ public class BoardAuthorizationServiceImpl implements BoardAuthorizationService 
         // 계정 정보를 일반 계정으로 수정
         List<BoardAdmin> boardAdminList = this.boardAdminRepository.getBoardAdminList(account, false);
         if (boardAdminList.isEmpty()) {
-            account.setType(AccountType.ACCOUNT);
+            account.setAuth(AccountAuth.ACCOUNT);
             this.accountService.saveAccount(account);
         }
     }

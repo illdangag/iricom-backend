@@ -21,7 +21,7 @@ public class AccountInfo {
 
     private String description;
 
-    private String type;
+    private String auth;
 
     public AccountInfo(Account account) {
         this.id = account.getId().toString();
@@ -37,6 +37,6 @@ public class AccountInfo {
         }
         this.nickname = accountDetail.getNickname();
         this.description = accountDetail.getDescription();
-        this.type = account.getType().getText();
+        this.auth = account.getAuth().getText();
     }
 }
