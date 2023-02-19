@@ -53,7 +53,7 @@ public class PostController {
      * 게시물 목록 조회
      */
     @ApiCallLog(apiCode = "PS_002")
-    @Auth(role = AuthRole.ACCOUNT)
+    @Auth(role = AuthRole.NONE)
     @RequestMapping(method = RequestMethod.GET, value = "/posts")
     public ResponseEntity<PostInfoList> getPostInfoList(@PathVariable(value = "board_id") String boardId,
                                                         @RequestParam(name = "skip", defaultValue = "0", required = false) String skipVariable,
@@ -100,7 +100,7 @@ public class PostController {
      * 게시물 정보 조회
      */
     @ApiCallLog(apiCode = "PS_003")
-    @Auth(role = AuthRole.ACCOUNT)
+    @Auth(role = AuthRole.NONE)
     @RequestMapping(method = RequestMethod.GET, value = "/posts/{post_id}")
     public ResponseEntity<PostInfo> getPost(@PathVariable(value = "board_id") String boardId,
                                             @PathVariable(value = "post_id") String postId,

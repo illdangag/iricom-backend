@@ -34,6 +34,9 @@ public class CommentController {
         this.commentService = commentService;
     }
 
+    /**
+     * 댓글 생성
+     */
     @ApiCallLog(apiCode = "CM_001")
     @Auth(role = AuthRole.ACCOUNT)
     @RequestMapping(method = RequestMethod.POST, value = "/comments")
@@ -45,8 +48,11 @@ public class CommentController {
         return ResponseEntity.status(HttpStatus.OK).body(commentInfo);
     }
 
+    /**
+     * 댓글 목록 조회
+     */
     @ApiCallLog(apiCode = "CM_002")
-    @Auth(role = AuthRole.ACCOUNT)
+    @Auth(role = AuthRole.NONE)
     @RequestMapping(method = RequestMethod.GET, value = "/comments")
     public ResponseEntity<CommentInfoList> getCommentList(@PathVariable(value = "board_id") String boardId,
                                                           @PathVariable(value = "post_id") String postId,
@@ -86,6 +92,9 @@ public class CommentController {
         return ResponseEntity.status(HttpStatus.OK).body(commentInfoList);
     }
 
+    /**
+     * 댓글 수정
+     */
     @ApiCallLog(apiCode = "CM_003")
     @Auth(role = AuthRole.ACCOUNT)
     @RequestMapping(method = RequestMethod.PATCH, value = "/comments/{comment_id}")
@@ -99,6 +108,9 @@ public class CommentController {
         return ResponseEntity.status(HttpStatus.OK).body(commentInfo);
     }
 
+    /**
+     * 댓글 삭제
+     */
     @ApiCallLog(apiCode = "CM_004")
     @Auth(role = AuthRole.ACCOUNT)
     @RequestMapping(method = RequestMethod.DELETE, value = "/comments/{comment_id}")
@@ -110,6 +122,9 @@ public class CommentController {
         return ResponseEntity.status(HttpStatus.OK).body(commentInfo);
     }
 
+    /**
+     * 댓글 좋아요, 싫어요
+     */
     @ApiCallLog(apiCode = "CM_005")
     @Auth(role = AuthRole.ACCOUNT)
     @RequestMapping(method = RequestMethod.PATCH, value = "/comments/{comment_id}/vote")
