@@ -7,7 +7,7 @@ plugins {
 }
 
 group = 'com.illdangag.iricom'
-version = '0.4.2-SNAPSHOT'
+version = '0.4.3'
 sourceCompatibility = '11'
 
 configurations {
