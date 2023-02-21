@@ -271,7 +271,7 @@ public class BoardAuthorizationControllerTest extends IricomTestSuite {
 
                 mockMvc.perform(requestBuilder)
                         .andExpect(status().is(401))
-                        .andExpect(jsonPath("$.code").value("01000001"))
+                        .andExpect(jsonPath("$.code").value("01000004"))
                         .andDo(print());
             }
 
@@ -284,7 +284,7 @@ public class BoardAuthorizationControllerTest extends IricomTestSuite {
 
                 mockMvc.perform(requestBuilder)
                         .andExpect(status().is(401))
-                        .andExpect(jsonPath("$.code").value("01000001"))
+                        .andExpect(jsonPath("$.code").value("01000004"))
                         .andDo(print());
             }
         }

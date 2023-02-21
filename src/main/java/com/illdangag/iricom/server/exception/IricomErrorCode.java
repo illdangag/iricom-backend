@@ -10,9 +10,12 @@ import lombok.Getter;
 @AllArgsConstructor
 @Getter
 public enum IricomErrorCode {
-    // auth: 01XXXXXX
-    // system auth: 0100XXXX
-    INVALID_AUTHORIZATION("01000001", 401, "Invalid authorization."),
+    // auth: 0100XXXX
+    NOT_REGISTERED_ACCOUNT("01000001", 401, "Invalid authorization."),
+    NOT_REGISTERED_ACCOUNT_DETAIL("01000002", 401, "Invalid authorization."),
+    NOT_REGISTERED_BOARD_ADMIN("01000003", 401, "Invalid authorization."),
+    NOT_REGISTERED_SYSTEM_ADMIN("01000004", 401, "Invalid authorization."),
+
     // auth firebase: 0101XXXX
     NOT_EXIST_FIREBASE_ID_TOKEN("01010000", 401, "Invalid header."),
     INVALID_FIREBASE_ID_TOKEN("01010001", 401, "Parse token error."),

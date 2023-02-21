@@ -70,27 +70,43 @@ public class FirebaseAuthInterceptor implements HandlerInterceptor {
         this.accountRepository.saveAccount(account);
 
         if (role == AuthRole.SYSTEM_ADMIN) {
-            this.checkSystemAdminAuth(account);
+            // 시스템 관리자
+            this.checkAccount(account);
+            this.checkAccountDetail(account);
+            this.checkSystemAdmin(account);
         } else if (role == AuthRole.BOARD_ADMIN) {
-            List<Board> boardList = this.checkBoardAdminAuth(account);
+            // 게시판 관리자
+            this.checkAccount(account);
+            this.checkAccountDetail(account);
+            List<Board> boardList = this.checkBoardAdmin(account);
             request.setAttribute("boards", boardList.toArray(new Board[0]));
         } else if (role == AuthRole.ACCOUNT) {
-            this.checkAccountAuth(account);
+            // 등록된 계정
+            this.checkAccount(account);
+            this.checkAccountDetail(account);
         } else if (role == AuthRole.UNREGISTERED_ACCOUNT) {
-            this.checkUnregisteredAccountAuth(account);
+            // 등롣괴지 않은 계정
+            this.checkAccount(account);
         }
 
         request.setAttribute("account", account);
         return HandlerInterceptor.super.preHandle(request, response, handler);
     }
 
-    private void checkSystemAdminAuth(Account account) {
-        if (account.getAuth() != AccountAuth.SYSTEM_ADMIN) {
-            throw new IricomException(IricomErrorCode.INVALID_AUTHORIZATION);
+    private void checkAccount(Account account) {
+        if (account == null) {
+            throw new IricomException(IricomErrorCode.NOT_REGISTERED_ACCOUNT);
         }
     }
 
-    private List<Board> checkBoardAdminAuth(Account account) {
+    private void checkAccountDetail(Account account) {
+        Optional<AccountDetail> accountDetailOptional = this.accountRepository.getAccountDetail(account);
+        if (accountDetailOptional.isEmpty()) {
+            throw new IricomException(IricomErrorCode.NOT_REGISTERED_ACCOUNT_DETAIL);
+        }
+    }
+
+    private List<Board> checkBoardAdmin(Account account) {
         List<BoardAdmin> boardAdminList = this.boardAdminRepository.getBoardAdminList(account, false);
         Set<BoardAdmin> set = new LinkedHashSet<>(boardAdminList);
         List<Board> boardList = set.stream()
@@ -98,23 +114,42 @@ public class FirebaseAuthInterceptor implements HandlerInterceptor {
                 .sorted(Comparator.comparing(Board::getId))
                 .collect(Collectors.toList());
         if (boardList.isEmpty()) {
-            throw new IricomException(IricomErrorCode.INVALID_AUTHORIZATION);
+            throw new IricomException(IricomErrorCode.NOT_REGISTERED_BOARD_ADMIN);
         }
         return boardList;
     }
 
-    private void checkAccountAuth(Account account) {
-        Optional<AccountDetail> accountDetailOptional = this.accountRepository.getAccountDetail(account);
-        if (accountDetailOptional.isEmpty()) {
-            throw new IricomException(IricomErrorCode.INVALID_AUTHORIZATION);
+    private void checkSystemAdmin(Account account) {
+        if (account.getAuth() != AccountAuth.SYSTEM_ADMIN) {
+            throw new IricomException(IricomErrorCode.NOT_REGISTERED_SYSTEM_ADMIN);
         }
     }
 
-    private void checkUnregisteredAccountAuth(Account account) {
-        if (account == null) {
-            throw new IricomException(IricomErrorCode.INVALID_AUTHORIZATION);
-        }
-    }
+//    private List<Board> checkBoardAdminAuth(Account account) {
+//        List<BoardAdmin> boardAdminList = this.boardAdminRepository.getBoardAdminList(account, false);
+//        Set<BoardAdmin> set = new LinkedHashSet<>(boardAdminList);
+//        List<Board> boardList = set.stream()
+//                .map(BoardAdmin::getBoard)
+//                .sorted(Comparator.comparing(Board::getId))
+//                .collect(Collectors.toList());
+//        if (boardList.isEmpty()) {
+//            throw new IricomException(IricomErrorCode.INVALID_AUTHORIZATION);
+//        }
+//        return boardList;
+//    }
+//
+//    private void checkAccountAuth(Account account) {
+//        Optional<AccountDetail> accountDetailOptional = this.accountRepository.getAccountDetail(account);
+//        if (accountDetailOptional.isEmpty()) {
+//            throw new IricomException(IricomErrorCode.INVALID_AUTHORIZATION);
+//        }
+//    }
+//
+//    private void checkUnregisteredAccountAuth(Account account) {
+//        if (account == null) {
+//            throw new IricomException(IricomErrorCode.INVALID_AUTHORIZATION);
+//        }
+//    }
 
     private FirebaseToken getFirebaseToken(HttpServletRequest request) throws IricomException {
         String authorization = request.getHeader("Authorization");
