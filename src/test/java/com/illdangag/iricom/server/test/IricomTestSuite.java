@@ -12,6 +12,7 @@ import com.illdangag.iricom.server.data.response.BoardInfo;
 import com.illdangag.iricom.server.data.response.PostInfo;
 import com.illdangag.iricom.server.test.util.FirebaseUtils;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.boot.test.autoconfigure.restdocs.AutoConfigureRestDocs;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.context.ApplicationContext;
@@ -26,6 +27,7 @@ import java.util.Map;
 @Slf4j
 @SpringBootTest
 @AutoConfigureMockMvc
+@AutoConfigureRestDocs
 public abstract class IricomTestSuite {
     private final AccountService accountService;
     private final BoardService boardService;
