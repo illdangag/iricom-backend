@@ -2,11 +2,15 @@
 REST API
 :doctype: book
 :icons: font
-:source-highlighter: highlightjs // 문서에 표기되는 코드들의 하이라이팅을 highlightjs를 사용
-:toc: left // toc (Table Of Contents)를 문서의 좌측에 두기
+:source-highlighter: highlightjs
+:toc: left
 :toclevels: 2
 :sectlinks:
 
-[[서버-정보-조회]]
-=== 서버 정보 조회
-operation::info[snippets='http-request,http-response,response-fields']
+== 서버
+=== 정보 조회
+operation::info[snippets='curl-request,http-response,response-fields']
+
+== 계정
+=== 계정 정보 조회
+operation::account[snippets='http-request,request-headers,http-response,response-fields']

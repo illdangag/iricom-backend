@@ -449,6 +449,7 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <div id="toctitle">Table of Contents</div>
 <ul class="sectlevel2">
 <li><a href="#서버-정보-조회">서버 정보 조회</a></li>
+<li><a href="#계정">계정</a></li>
 </ul>
 </div>
 </div>
@@ -475,7 +476,7 @@ Vary: Access-Control-Request-Headers
 Content-Type: application/json
 Content-Length: 106
 
-{"branch":"main","commit":"dc4f6802940938f20c4a316ea6382df53206dad5","tags":"","version":"0.4.3-SNAPSHOT"}</code></pre>
+{"branch":"main","commit":"314e8393365454ce2e47ce1d8e6cb50a445894a8","tags":"","version":"0.4.3-SNAPSHOT"}</code></pre>
 </div>
 </div>
 </div>
@@ -519,11 +520,114 @@ Content-Length: 106
 </table>
 </div>
 </div>
+<div class="sect2">
+<h3 id="계정"><a class="link" href="#계정">계정</a></h3>
+<div class="sect3">
+<h4 id="계정_http_request"><a class="link" href="#계정_http_request">HTTP request</a></h4>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight nowrap"><code class="language-http" data-lang="http">GET /v1/accounts/1 HTTP/1.1
+Authorization: Bearer eyJhbGciOiJSUzI1NiIsImtpZCI6IjE1YzJiNDBhYTJmMzIyNzk4NjY2YTZiMzMyYWFhMDNhNjc3MzAxOWIiLCJ0eXAiOiJKV1QifQ.eyJpc3MiOiJodHRwczovL3NlY3VyZXRva2VuLmdvb2dsZS5jb20vaXJpY29tLXRlc3QiLCJhdWQiOiJpcmljb20tdGVzdCIsImF1dGhfdGltZSI6MTY3NzA1OTA1MiwidXNlcl9pZCI6Ikh6RWk5NERPbzZOTzJ4YnM1RFhIVjlCU0JPMDIiLCJzdWIiOiJIekVpOTRET282Tk8yeGJzNURYSFY5QlNCTzAyIiwiaWF0IjoxNjc3MDU5MDUyLCJleHAiOjE2NzcwNjI2NTIsImVtYWlsIjoiYWRtaW5AaXJpY29tLmNvbSIsImVtYWlsX3ZlcmlmaWVkIjpmYWxzZSwiZmlyZWJhc2UiOnsiaWRlbnRpdGllcyI6eyJlbWFpbCI6WyJhZG1pbkBpcmljb20uY29tIl19LCJzaWduX2luX3Byb3ZpZGVyIjoicGFzc3dvcmQifX0.QKDbIse38L7kna6a4BW9Uhu6PX93XbZjFfj7WOoVHV9JaX_stBiKJ-tSKAto6Ej62hyqduIpEkHWKdkEyOK3JaKEupEWdAFRelr9u4g8QYRmgZm7NPsefGIZw_cgIGemeu2SMh2LaBcZkd0BvweJWs70NP0YdWMs2X1OZxHx3rhNfrMTyjP6dVIhITy4P7R0U33ysoN4cX6jAn-MGdlH2IV2egINlC-B3kLOP_GlTQdlHyiTtwGtr9tt_9O7CxUZJllt0zFSoRfPQJog8GmWBDTxH5w2WTSOPB1IDBSLciPjMc0t9lRv9BZ7OSjnzsrxLW9Ls12gSFNkDMRwhmPqNg
+Host: localhost:8080</code></pre>
+</div>
+</div>
+</div>
+<div class="sect3">
+<h4 id="계정_request_headers"><a class="link" href="#계정_request_headers">Request headers</a></h4>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 50%;">
+<col style="width: 50%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Name</th>
+<th class="tableblock halign-left valign-top">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Authorization</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">firebase 토큰</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="sect3">
+<h4 id="계정_http_response"><a class="link" href="#계정_http_response">HTTP response</a></h4>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight nowrap"><code class="language-http" data-lang="http">HTTP/1.1 200 OK
+Vary: Origin
+Vary: Access-Control-Request-Method
+Vary: Access-Control-Request-Headers
+Content-Type: application/json
+Content-Length: 166
+
+{"id":"1","email":"admin@iricom.com","createDate":1677059050765,"lastActivityDate":1677059050880,"nickname":"admin","description":"system admin","auth":"systemAdmin"}</code></pre>
+</div>
+</div>
+</div>
+<div class="sect3">
+<h4 id="계정_response_fields"><a class="link" href="#계정_response_fields">Response fields</a></h4>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 33.3333%;">
+<col style="width: 33.3333%;">
+<col style="width: 33.3334%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Path</th>
+<th class="tableblock halign-left valign-top">Type</th>
+<th class="tableblock halign-left valign-top">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>id</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">아이디</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>email</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">이메일</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>createDate</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Number</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">생성일</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>lastActivityDate</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Number</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">최근 활동일</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>nickname</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">닉네임</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>description</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">설명</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>auth</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">권한</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 </div>
 <div id="footer">
 <div id="footer-text">
 Version 0.4.3-SNAPSHOT<br>
-Last updated 2023-02-22 09:12:47 +0900
+Last updated 2023-02-22 18:41:40 +0900
 </div>
 </div>
 </body>

@@ -1,4 +1,4 @@
-package com.illdangag.iricom.server.controller;
+package com.illdangag.iricom.server.restdocs;
 
 import com.illdangag.iricom.server.test.IricomTestSuite;
 import org.junit.jupiter.api.DisplayName;
@@ -9,6 +9,9 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilder;
 
+import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document;
+import static org.springframework.restdocs.payload.PayloadDocumentation.fieldWithPath;
+import static org.springframework.restdocs.payload.PayloadDocumentation.responseFields;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
@@ -35,6 +38,12 @@ public class MainControllerTest extends IricomTestSuite {
                 .andExpect(jsonPath("$.commit").exists())
                 .andExpect(jsonPath("$.tags").exists())
                 .andExpect(jsonPath("$.version").exists())
-                .andDo(print());
+                .andDo(print())
+                .andDo(document("info",
+                        responseFields(
+                                fieldWithPath("branch").description("git branch"),
+                                fieldWithPath("commit").description("git commit"),
+                                fieldWithPath("tags").description("git tags"),
+                                fieldWithPath("version").description("service version"))));
     }
 }

@@ -4,7 +4,7 @@ plugins {
     id 'io.spring.dependency-management' version '1.0.15.RELEASE'
     id 'checkstyle' // code convention을 확인 하기 위함
     id 'com.gorylenko.gradle-git-properties' version '2.4.1' // git 정보
-    id "org.asciidoctor.jvm.convert" version "3.3.2"
+    id "org.asciidoctor.jvm.convert" version "3.3.2" // spring rest docs의 asciidoc을 지원 하기 위함
 }
 
 group = 'com.illdangag.iricom'
@@ -58,11 +58,8 @@ dependencies {
     // 테스트 환경에서 사용 할 데이터베이스
     testImplementation 'com.h2database:h2:2.1.214'
 
+    // spring rest docs
     testImplementation 'org.springframework.restdocs:spring-restdocs-mockmvc'
-}
-
-ext {
-    snippetsDir = file('build/generated-snippets')
 }
 
 // code convention을 확인 하기 위한 checkstyle 결과 추출
@@ -76,20 +73,24 @@ tasks.named('test') {
     useJUnitPlatform()
 }
 
+// spring rest docs
+ext {
+    snippetsDir = file('build/generated-snippets')
+}
+
 test {
-    // 위에서 작성한 snippetsDir 디렉토리를 test의 output으로 구성하는 설정 -> 스니펫 조각들이 build/generated-snippets로 출력
+    // 위에서 작성한 snippetsDir 디렉토리를 test의 output으로 구성하는 설정
+    // 스니펫 조각들이 build/generated-snippets로 출력
     outputs.dir snippetsDir
     useJUnitPlatform()
 }
 
 asciidoctor { // asciidoctor 작업 구성
-    dependsOn test // test 작업 이후에 작동하도록 하는 설정
-    configurations 'asciidoctorExtensions' // 위에서 작성한 configuration 적용
+    dependsOn test // test 작업 이후에 작동
+    configurations 'asciidoctorExtensions'
     inputs.dir snippetsDir // snippetsDir 를 입력으로 구성
 
-    // source가 없으면 .adoc파일을 전부 html로 만들어버림
-    // source 지정시 특정 adoc만 HTML로 만든다.
-//    sources{
+//    sources { // 적용할 파일을 지정
 //        include("**/index.adoc","**/common/*.adoc")
 //    }
 
@@ -98,23 +99,19 @@ asciidoctor { // asciidoctor 작업 구성
     baseDirFollowsSourceFile()
 }
 
-// static/docs 폴더 비우기
-asciidoctor.doFirst {
+asciidoctor.doFirst { // static/docs 폴더 비우기
     delete file('src/main/resources/static/docs')
 }
 
-// asccidoctor 작업 이후 생성된 HTML 파일을 static/docs 로 copy
-task copyDocument(type: Copy) {
+task copyDocument(type: Copy) { // asccidoctor 작업 이후 생성된 HTML 파일을 static/docs 로 copy
     dependsOn asciidoctor
     from file("build/docs/asciidoc")
     into file("src/main/resources/static/docs")
 }
 
-// build 의 의존작업 명시
-build {
+build { // build 의 의존작업 명시
     dependsOn copyDocument
 }
-
 
 // 참고사항 //
 // 공식 문서에서는 위의 ascidoctor.doFirst부터 아래 내용은 없고 이와 같은 내용만 있습니다.
