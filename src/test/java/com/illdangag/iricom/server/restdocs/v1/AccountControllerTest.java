@@ -10,9 +10,7 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilder;
 
-import java.util.regex.Pattern;
 
-import static org.springframework.restdocs.headers.HeaderDocumentation.headerWithName;
 import static org.springframework.restdocs.headers.HeaderDocumentation.requestHeaders;
 import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document;
 import static org.springframework.restdocs.operation.preprocess.Preprocessors.*;
@@ -49,9 +47,6 @@ public class AccountControllerTest extends IricomTestSuite {
                 .andDo(print())
                 .andDo(document("account",
                                 preprocessRequest(removeHeaders("Authorization")),
-                                requestHeaders(
-//                                        headerWithName("Authorization").description("firebase 토큰")
-                                ),
                                 responseFields(
                                         fieldWithPath("id").description("아이디"),
                                         fieldWithPath("email").description("이메일"),

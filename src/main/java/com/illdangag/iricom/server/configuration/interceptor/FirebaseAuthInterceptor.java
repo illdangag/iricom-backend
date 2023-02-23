@@ -1,6 +1,7 @@
 package com.illdangag.iricom.server.configuration.interceptor;
 
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseAuthException;
 import com.google.firebase.auth.FirebaseToken;
 import com.illdangag.iricom.server.configuration.annotation.Auth;
 import com.illdangag.iricom.server.configuration.annotation.AuthRole;
@@ -125,32 +126,6 @@ public class FirebaseAuthInterceptor implements HandlerInterceptor {
         }
     }
 
-//    private List<Board> checkBoardAdminAuth(Account account) {
-//        List<BoardAdmin> boardAdminList = this.boardAdminRepository.getBoardAdminList(account, false);
-//        Set<BoardAdmin> set = new LinkedHashSet<>(boardAdminList);
-//        List<Board> boardList = set.stream()
-//                .map(BoardAdmin::getBoard)
-//                .sorted(Comparator.comparing(Board::getId))
-//                .collect(Collectors.toList());
-//        if (boardList.isEmpty()) {
-//            throw new IricomException(IricomErrorCode.INVALID_AUTHORIZATION);
-//        }
-//        return boardList;
-//    }
-//
-//    private void checkAccountAuth(Account account) {
-//        Optional<AccountDetail> accountDetailOptional = this.accountRepository.getAccountDetail(account);
-//        if (accountDetailOptional.isEmpty()) {
-//            throw new IricomException(IricomErrorCode.INVALID_AUTHORIZATION);
-//        }
-//    }
-//
-//    private void checkUnregisteredAccountAuth(Account account) {
-//        if (account == null) {
-//            throw new IricomException(IricomErrorCode.INVALID_AUTHORIZATION);
-//        }
-//    }
-
     private FirebaseToken getFirebaseToken(HttpServletRequest request) throws IricomException {
         String authorization = request.getHeader("Authorization");
 
@@ -164,8 +139,14 @@ public class FirebaseAuthInterceptor implements HandlerInterceptor {
         try {
             FirebaseAuth firebaseAuth = this.firebaseInitializer.getFirebaseAuth();
             firebaseToken = firebaseAuth.verifyIdToken(token);
+        } catch (FirebaseAuthException exception) {
+            if (exception.getAuthErrorCode().name().equals("EXPIRED_ID_TOKEN")) {
+                // 토큰 만료
+                throw new IricomException(IricomErrorCode.EXPIRED_FIREBASE_ID_TOKEN);
+            } else {
+                throw new IricomException(IricomErrorCode.INVALID_FIREBASE_ID_TOKEN);
+            }
         } catch (Exception exception) {
-            log.debug("Parse token error. token: {}", token, exception);
             throw new IricomException(IricomErrorCode.INVALID_FIREBASE_ID_TOKEN);
         }
 
