@@ -10,6 +10,7 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilder;
 
 import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document;
+import static org.springframework.restdocs.operation.preprocess.Preprocessors.*;
 import static org.springframework.restdocs.payload.PayloadDocumentation.fieldWithPath;
 import static org.springframework.restdocs.payload.PayloadDocumentation.responseFields;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
@@ -17,7 +18,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-@DisplayName("서버 정보")
+@DisplayName("restdoc: 서버 정보")
 public class MainControllerTest extends IricomTestSuite {
     @Autowired
     MockMvc mockMvc;
@@ -39,7 +40,9 @@ public class MainControllerTest extends IricomTestSuite {
                 .andExpect(jsonPath("$.tags").exists())
                 .andExpect(jsonPath("$.version").exists())
                 .andDo(print())
-                .andDo(document("info",
+                .andDo(document("SERVER_INFO",
+                        preprocessRequest(prettyPrint()),
+                        preprocessResponse(prettyPrint()),
                         responseFields(
                                 fieldWithPath("branch").description("git branch"),
                                 fieldWithPath("commit").description("git commit"),

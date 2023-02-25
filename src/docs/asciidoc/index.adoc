@@ -9,8 +9,36 @@ REST API
 
 == 서버
 === 정보 조회
-operation::info[snippets='curl-request,http-response,response-fields']
+서버의 버전 및 상태 조회
+
+operation::SERVER_INFO[snippets='curl-request,http-response,response-fields']
 
 == 계정
+
+=== 내 정보 조회
+==== IF_001
+operation::IF_001[snippets='curl-request,http-response,response-fields']
+
+=== 계정 목록 조회
+==== AC_001
+계정 목록 조회, 페이지네이션, 키워드를 지원
+
+operation::AC_001[snippets='curl-request,request-parameters,http-response,response-fields']
+
 === 계정 정보 조회
-operation::account[snippets='http-request,request-headers,http-response,response-fields']
+==== AC_002
+특정 계정의 정보 조회
+
+operation::AC_002[snippets='curl-request,path-parameters,http-response,response-fields']
+
+=== 계정 정보 수정
+==== AC_003
+자신의 정보 수정
+
+operation::AC_003[snippets='curl-request,request-fields,http-response,response-fields']
+
+=== 계정 정보 수정
+==== AC_004
+다른 계정의 정보 수정
+
+operation::AC_004[snippets='curl-request,path-parameters,request-fields,http-response,response-fields']
