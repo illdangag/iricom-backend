@@ -68,7 +68,7 @@ public class FirebaseAuthInterceptor implements HandlerInterceptor {
         FirebaseToken firebaseToken = this.getFirebaseToken(request);
         FirebaseAuthentication firebaseAuthentication = this.getFirebaseAuthentication(firebaseToken);
         Account account = firebaseAuthentication.getAccount();
-        this.accountRepository.saveAccount(account);
+//        this.accountRepository.saveAccount(account); // lastActivityDate 갱신을 위해서 저장
 
         if (role == AuthRole.SYSTEM_ADMIN) {
             // 시스템 관리자
