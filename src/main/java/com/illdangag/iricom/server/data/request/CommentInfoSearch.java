@@ -3,21 +3,15 @@ package com.illdangag.iricom.server.data.request;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
+import lombok.experimental.SuperBuilder;
 
+import javax.validation.constraints.Max;
 import javax.validation.constraints.Min;
 
 @Getter
 @Setter
-@Builder
-public class CommentInfoSearch {
-    @Min(value = 0, message = "Skip must be 0 or greater.")
-    @Builder.Default
-    private int skip = 0;
-
-    @Min(value = 1, message = "Limit must be 1 or greater.")
-    @Builder.Default
-    private int limit = 20;
-
+@SuperBuilder
+public class CommentInfoSearch extends SearchRequest {
     /**
      * 대댓글 포함 여부
      */

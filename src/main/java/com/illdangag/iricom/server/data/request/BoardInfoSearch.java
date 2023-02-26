@@ -4,23 +4,17 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
+import lombok.experimental.SuperBuilder;
 
+import javax.validation.constraints.Max;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
 
 @Getter
 @Setter
-@Builder
+@SuperBuilder
 @ToString
-public class BoardInfoSearch {
-    @Min(value = 0, message = "Skip must be 0 or greater.")
-    @Builder.Default
-    private int skip = 0;
-
-    @Min(value = 1, message = "Limit must be 1 or greater.")
-    @Builder.Default
-    private int limit = 20;
-
+public class BoardInfoSearch extends SearchRequest {
     @NotNull(message = "Keyword is required.")
     @Builder.Default
     private String keyword = "";
