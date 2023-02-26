@@ -59,7 +59,6 @@ public class Post {
     @Column(name = "is_deleted")
     private Boolean deleted = false;
 
-
     @Override
     public boolean equals(Object object) {
         if (!(object instanceof Post)) {

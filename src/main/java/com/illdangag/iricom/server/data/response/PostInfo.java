@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.illdangag.iricom.server.data.entity.Post;
 import com.illdangag.iricom.server.data.entity.PostContent;
+import com.illdangag.iricom.server.util.DateTimeUtils;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -21,6 +22,10 @@ public class PostInfo {
     private String id;
 
     private String type;
+
+    private Long createDate;
+
+    private Long updateDate;
 
     private String status;
 
@@ -42,6 +47,8 @@ public class PostInfo {
     public PostInfo(Post post, PostContent postContent, Type type) {
         this.id = "" + post.getId();
         this.type = postContent.getType().getText();
+        this.createDate = DateTimeUtils.getLong(post.getCreateDate());
+        this.updateDate = DateTimeUtils.getLong(post.getUpdateDate());
         this.status = postContent.getState().getText();
         this.title = postContent.getTitle();
         this.isAllowComment = postContent.getAllowComment();
