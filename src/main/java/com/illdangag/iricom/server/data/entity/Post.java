@@ -47,12 +47,6 @@ public class Post {
     private PostContent temporaryContent;
 
     @Builder.Default
-    private Long upvote = 0L;
-
-    @Builder.Default
-    private Long downvote = 0L;
-
-    @Builder.Default
     private Long viewCount = 0L;
 
     @Builder.Default

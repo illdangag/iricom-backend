@@ -39,12 +39,14 @@ public class PostInfo {
 
     private Long downvote;
 
+    private Long commentCount;
+
     @JsonProperty("account")
     private AccountInfo accountInfo;
 
     private Boolean isAllowComment;
 
-    public PostInfo(Post post, PostContent postContent, Type type) {
+    public PostInfo(Post post, PostContent postContent, Type type, long commentCount, long upvote, long downvote) {
         this.id = "" + post.getId();
         this.type = postContent.getType().getText();
         this.createDate = DateTimeUtils.getLong(post.getCreateDate());
@@ -53,16 +55,17 @@ public class PostInfo {
         this.title = postContent.getTitle();
         this.isAllowComment = postContent.getAllowComment();
         this.viewCount = post.getViewCount();
-        this.upvote = post.getUpvote();
-        this.downvote = post.getDownvote();
+        this.upvote = upvote;
+        this.downvote = downvote;
+        this.commentCount = commentCount;
 
         if (type == Type.INCLUDE_CONTENT) {
             this.content = postContent.getContent();
         }
     }
 
-    public PostInfo(Post post, PostContent postContent, AccountInfo accountInfo, Type type) {
-        this(post, postContent, type);
+    public PostInfo(Post post, PostContent postContent, AccountInfo accountInfo, Type type, long commentCount, long upvote, long downvote) {
+        this(post, postContent, type, commentCount, upvote, downvote);
         this.accountInfo = accountInfo;
     }
 }

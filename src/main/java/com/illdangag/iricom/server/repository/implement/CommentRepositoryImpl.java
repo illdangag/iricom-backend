@@ -66,13 +66,21 @@ public class CommentRepositoryImpl implements CommentRepository {
     }
 
     @Override
-    public long getCommentList(Post post, Comment referenceComment) {
+    public long getCommentListSize(Post post, Comment referenceComment) {
         final String jpql = "SELECT COUNT(*) FROM Comment c " +
                 "WHERE c.post = :post " +
                 "AND c.referenceComment = :referenceComment";
         TypedQuery<Long> query = this.entityManager.createQuery(jpql, Long.class)
                 .setParameter("post", post)
                 .setParameter("referenceComment", referenceComment);
+        return query.getSingleResult();
+    }
+
+    @Override
+    public long getCommentListSize(Post post) {
+        final String jpql = "SELECT COUNT(*) FROM Comment c WHERE c.post = :post";
+        TypedQuery<Long> query = this.entityManager.createQuery(jpql, Long.class)
+                .setParameter("post", post);
         return query.getSingleResult();
     }
 

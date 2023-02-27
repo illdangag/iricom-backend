@@ -15,7 +15,9 @@ public interface CommentRepository {
 
     List<Comment> getCommentList(Post post, Comment referenceComment, int offset, int limit);
 
-    long getCommentList(Post post, Comment referenceComment);
+    long getCommentListSize(Post post, Comment referenceComment);
+
+    long getCommentListSize(Post post);
 
     void save(Comment comment);
 }

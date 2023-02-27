@@ -141,7 +141,7 @@ public class CommentServiceImpl implements CommentService {
         } else {
             Comment referenceComment = this.getComment(commentInfoSearch.getReferenceCommentId());
             commentList = this.commentRepository.getCommentList(post, referenceComment, commentInfoSearch.getSkip(), commentInfoSearch.getLimit());
-            total = this.commentRepository.getCommentList(post, referenceComment);
+            total = this.commentRepository.getCommentListSize(post, referenceComment);
         }
 
         List<CommentInfo> commentInfoList = commentList.stream()
