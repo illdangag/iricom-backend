@@ -10,6 +10,9 @@ import lombok.Getter;
 @AllArgsConstructor
 @Getter
 public enum IricomErrorCode {
+    // common: 0000XXXX
+    NOT_EXIST_REQUEST_BODY("00000001", 400, "Not exist request body."),
+
     // auth: 0100XXXX
     NOT_REGISTERED_ACCOUNT("01000001", 401, "Invalid authorization."),
     NOT_REGISTERED_ACCOUNT_DETAIL("01000002", 401, "Invalid authorization."),

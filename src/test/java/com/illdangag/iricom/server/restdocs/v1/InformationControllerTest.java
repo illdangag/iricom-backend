@@ -39,27 +39,27 @@ public class InformationControllerTest extends IricomTestSuite {
                 .andExpect(status().is(200))
                 .andDo(print())
                 .andDo(document("IF_001",
-                        preprocessRequest(
-                                removeHeaders("Authorization"),
-                                prettyPrint()
-                        ),
-                        preprocessResponse(
-                                prettyPrint()
-                        ),
-                        requestHeaders(
+                                preprocessRequest(
+                                        removeHeaders("Authorization"),
+                                        prettyPrint()
+                                ),
+                                preprocessResponse(
+                                        prettyPrint()
+                                ),
+                                requestHeaders(
 //                                        headerWithName("Authorization").description("firebase 토큰")
-                        ),
-                        responseFields(
-                                fieldWithPath("account").description("사용자 목록"),
-                                fieldWithPath("account..id").description("아이디"),
-                                fieldWithPath("account.email").description("이메일"),
-                                fieldWithPath("account.createDate").description("생성일"),
-                                fieldWithPath("account.lastActivityDate").description("최근 활동일"),
-                                fieldWithPath("account.nickname").description("닉네임"),
-                                fieldWithPath("account.description").description("설명"),
-                                fieldWithPath("account.auth").description("권한")
+                                ),
+                                responseFields(
+                                        fieldWithPath("account").description("사용자 목록"),
+                                        fieldWithPath("account..id").description("아이디"),
+                                        fieldWithPath("account.email").description("이메일"),
+                                        fieldWithPath("account.createDate").description("생성일"),
+                                        fieldWithPath("account.lastActivityDate").description("최근 활동일"),
+                                        fieldWithPath("account.nickname").description("닉네임"),
+                                        fieldWithPath("account.description").description("설명"),
+                                        fieldWithPath("account.auth").description("권한")
+                                )
                         )
-                )
-        );
+                );
     }
 }

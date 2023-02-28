@@ -7,6 +7,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
@@ -70,6 +71,28 @@ public class ControllerExceptionAdvice {
                 .code(IricomErrorCode.INVALID_REQUEST.getCode())
                 .message(message).build();
         return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                .contentType(MediaType.APPLICATION_JSON)
+                .body(errorResponse);
+    }
+
+    @ExceptionHandler(HttpMessageNotReadableException.class)
+    public ResponseEntity<ErrorResponse> notReadableException(HttpMessageNotReadableException exception) {
+        log.error("Unknown Exception", exception);
+        String message = exception.getMessage();
+        HttpStatus httpStatus;
+        ErrorResponse errorResponse;
+        if (message.startsWith("Required request body is missing:")) {
+            errorResponse = ErrorResponse.builder()
+                    .code(IricomErrorCode.NOT_EXIST_REQUEST_BODY.getCode())
+                    .message(IricomErrorCode.NOT_EXIST_REQUEST_BODY.getMessage())
+                    .build();
+            httpStatus = HttpStatus.BAD_REQUEST;
+        } else {
+            errorResponse = ErrorResponse.builder().build();
+            httpStatus = HttpStatus.INTERNAL_SERVER_ERROR;
+        }
+
+        return ResponseEntity.status(httpStatus)
                 .contentType(MediaType.APPLICATION_JSON)
                 .body(errorResponse);
     }

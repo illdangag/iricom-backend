@@ -231,6 +231,11 @@ public class PostServiceImpl implements PostService {
             throw new IricomException(IricomErrorCode.INVALID_AUTHORIZATION_TO_UPDATE_POST_OR_NOTIFICATION);
         }
 
+        // 임시 저장한 게시물이 없는 경우
+        if (post.getTemporaryContent() == null) {
+            throw new IricomException(IricomErrorCode.NOT_EXIST_TEMPORARY_CONTENT);
+        }
+
         // 공지 사항인 경우 시스템 관리자 또는 해당 게시판 관리자만 수정 가능
         if (post.getTemporaryContent().getType() == PostType.NOTIFICATION) {
             if (!this.hasAuthorization(account, board)) {

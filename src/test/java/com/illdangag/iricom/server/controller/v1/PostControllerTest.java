@@ -957,7 +957,7 @@ public class PostControllerTest extends IricomTestSuite {
     }
 
     @Nested
-    @DisplayName("게시물 투표")
+    @DisplayName("게시물 좋아요/싫어요")
     class VoteTest {
 
         @Test
@@ -1135,6 +1135,22 @@ public class PostControllerTest extends IricomTestSuite {
             mockMvc.perform(requestBuilder)
                     .andExpect(status().is(400))
                     .andExpect(jsonPath("$.code").value("04000007"))
+                    .andDo(print());
+        }
+
+        @Test
+        @Order(8)
+        @DisplayName("타입을 포함하지 않은 요청")
+        public void testCase08() throws Exception {
+            Board board = getBoard(voteBoard);
+            Post post = getPost(votePost00);
+
+            MockHttpServletRequestBuilder requestBuilder = patch("/v1/boards/" + board.getId() + "/posts/" + post.getId() + "/vote");
+            setAuthToken(requestBuilder, common00);
+
+            mockMvc.perform(requestBuilder)
+                    .andExpect(status().is(400))
+                    .andExpect(jsonPath("$.code").value("00000001"))
                     .andDo(print());
         }
     }

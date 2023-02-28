@@ -96,6 +96,9 @@ public abstract class IricomTestSuite {
     protected static final TestBoardInfo updateBoard = TestBoardInfo.builder()
             .title("update").isEnabled(true).adminList(Collections.singletonList(allBoardAdmin)).build();
 
+    protected static final TestBoardInfo restDocBoard = TestBoardInfo.builder()
+            .title("restDoc").isEnabled(true).adminList(Collections.singletonList(allBoardAdmin)).build();
+
     protected static final TestBoardInfo createBoard = TestBoardInfo.builder()
             .title("createBoard").isEnabled(true).adminList(Collections.singletonList(allBoardAdmin)).build();
 
@@ -112,6 +115,7 @@ public abstract class IricomTestSuite {
             createBoard, // 문서 생성 테스트용 게시판
             commentBoard, // 댓글 테스트용 게시판
             voteBoard, // 투표 테스트용 게시판
+            restDocBoard, // restDoc 게시판
     };
 
     // 게시물 설정
@@ -215,6 +219,26 @@ public abstract class IricomTestSuite {
             .postType(PostType.POST).postState(PostState.TEMPORARY)
             .creator(common00).board(updateBoard).build();
 
+    protected static final TestPostInfo updateBoardPost11 = TestPostInfo.builder()
+            .title("updateBoardPost11").content("content").isAllowComment(true)
+            .postType(PostType.POST).postState(PostState.TEMPORARY)
+            .creator(common00).board(restDocBoard).build();
+
+    protected static final TestPostInfo updateBoardPost12 = TestPostInfo.builder()
+            .title("updateBoardPost12").content("content").isAllowComment(true)
+            .postType(PostType.POST).postState(PostState.TEMPORARY)
+            .creator(allBoardAdmin).board(restDocBoard).build();
+
+    protected static final TestPostInfo updateBoardPost13 = TestPostInfo.builder()
+            .title("updateBoardPost13").content("content").isAllowComment(true)
+            .postType(PostType.POST).postState(PostState.TEMPORARY)
+            .creator(common00).board(restDocBoard).build();
+
+    protected static final TestPostInfo updateBoardPost14 = TestPostInfo.builder()
+            .title("updateBoardPost14").content("content").isAllowComment(true)
+            .postType(PostType.POST).postState(PostState.POST)
+            .creator(common00).board(restDocBoard).build();
+
     protected static final TestPostInfo updateBoardNotification00 = TestPostInfo.builder()
             .title("updateBoardNotification00").content("content").isAllowComment(true)
             .postType(PostType.NOTIFICATION).postState(PostState.TEMPORARY)
@@ -250,6 +274,11 @@ public abstract class IricomTestSuite {
             .postType(PostType.POST).postState(PostState.TEMPORARY)
             .creator(common00).board(voteBoard).build();
 
+    protected static final TestPostInfo votePost02 = TestPostInfo.builder()
+            .title("votePost02").content("content").isAllowComment(false)
+            .postType(PostType.POST).postState(PostState.POST)
+            .creator(common00).board(voteBoard).build();
+
     protected static final TestPostInfo voteCommentPost00 = TestPostInfo.builder()
             .title("voteCommentPost00").content("content").isAllowComment(true)
             .postType(PostType.POST).postState(PostState.POST)
@@ -269,7 +298,7 @@ public abstract class IricomTestSuite {
 
             updateBoardPost00, updateBoardPost01, updateBoardPost02, updateBoardPost03, updateBoardPost04,
             updateBoardPost05, updateBoardPost06, updateBoardPost07, updateBoardPost08, updateBoardPost09,
-            updateBoardPost10,
+            updateBoardPost10, updateBoardPost11, updateBoardPost12, updateBoardPost13, updateBoardPost14,
             updateBoardNotification00,
 
             commentGetPost00,
@@ -278,8 +307,7 @@ public abstract class IricomTestSuite {
             commentUpdatePost02, // 댓글을 허용하지 않음
 
             // 게시물 투표
-            votePost00,
-            votePost01,
+            votePost00, votePost01, votePost02,
 
             // 댓글 투표
             voteCommentPost00, voteCommentPost01,
