@@ -70,19 +70,19 @@ public class PostController {
         try {
             skip = Integer.parseInt(skipVariable);
         } catch (Exception exception) {
-            throw new IricomException(IricomErrorCode.INVALID_REQUEST, "Skip value is invalid");
+            throw new IricomException(IricomErrorCode.INVALID_REQUEST, "Skip value is invalid.");
         }
 
         try {
             limit = Integer.parseInt(limitVariable);
         } catch (Exception exception) {
-            throw new IricomException(IricomErrorCode.INVALID_REQUEST, "Limit value is invalid");
+            throw new IricomException(IricomErrorCode.INVALID_REQUEST, "Limit value is invalid.");
         }
 
         try {
             type = PostType.setValue(typeVariable);
         } catch (Exception exception) {
-            throw new IricomException(IricomErrorCode.INVALID_REQUEST, "Type value is invalid");
+            throw new IricomException(IricomErrorCode.INVALID_REQUEST, "Type value is invalid.");
         }
 
         PostInfoSearch postInfoSearch = PostInfoSearch.builder()

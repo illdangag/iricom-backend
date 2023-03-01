@@ -56,13 +56,13 @@ public class AccountControllerTest extends IricomTestSuite {
                                 preprocessResponse(
                                         prettyPrint()
                                 ),
+                                requestHeaders(
+//                                        headerWithName("Authorization").description("firebase 토큰")
+                                ),
                                 requestParameters(
                                         parameterWithName("skip").description("건너 뛸 수"),
                                         parameterWithName("limit").description("최대 조회 수"),
                                         parameterWithName("keyword").description("검색어")
-                                ),
-                                requestHeaders(
-//                                        headerWithName("Authorization").description("firebase 토큰")
                                 ),
                                 responseFields(
                                         fieldWithPath("total").description("모든 결과의 수"),

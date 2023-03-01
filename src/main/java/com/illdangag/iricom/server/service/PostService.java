@@ -14,11 +14,11 @@ public interface PostService {
 
     Post getPost(long id);
 
-    PostInfo createPostInfo(Account account, String boardId, PostInfoCreate postInfoCreate);
+    PostInfo createPostInfo(Account account, String boardId, @Valid PostInfoCreate postInfoCreate);
 
     PostInfo createPostInfo(Account account, Board board, @Valid PostInfoCreate postInfoCreate);
 
-    PostInfo updatePostInfo(Account account, String boardId, String postId, PostInfoUpdate postInfoUpdate);
+    PostInfo updatePostInfo(Account account, String boardId, String postId, @Valid PostInfoUpdate postInfoUpdate);
 
     PostInfo updatePostInfo(Account account, Board board, Post post, @Valid PostInfoUpdate postInfoUpdate);
 
@@ -39,4 +39,6 @@ public interface PostService {
     PostInfo votePost(Account account, String boardId, String postId, VoteType voteType);
 
     PostInfo votePost(Account account, Board board, Post post, VoteType voteType);
+
+    PostInfoList getPostInfoList(Account account, @Valid PostInfoSearch postInfoSearch);
 }

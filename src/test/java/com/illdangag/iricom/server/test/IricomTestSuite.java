@@ -285,7 +285,7 @@ public abstract class IricomTestSuite {
             .creator(common00).board(voteBoard).build();
 
     protected static final TestPostInfo voteCommentPost01 = TestPostInfo.builder()
-            .title("voteCommentPost00").content("content").isAllowComment(false)
+            .title("voteCommentPost01").content("content").isAllowComment(false)
             .postType(PostType.POST).postState(PostState.POST)
             .creator(common00).board(voteBoard).build();
 

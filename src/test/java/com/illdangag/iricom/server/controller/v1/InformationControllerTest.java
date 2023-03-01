@@ -11,7 +11,7 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilder;
 
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -75,6 +75,27 @@ public class InformationControllerTest extends IricomTestSuite {
                     .andExpect(status().is(200))
                     .andExpect(jsonPath("$.account.email").value(account.getEmail()))
                     .andExpect(jsonPath("$.account.auth").value("account"))
+                    .andDo(print());
+        }
+    }
+
+    @Nested
+    @DisplayName("작성한 게시물 목록")
+    class GetPostList {
+        @Test
+        @Order(0)
+        public void testCase00() throws Exception {
+            Account account = getAccount(common00);
+
+            MockHttpServletRequestBuilder requestBuilder = get("/v1/infos/posts");
+            setAuthToken(requestBuilder, common00);
+
+            mockMvc.perform(requestBuilder)
+                    .andExpect(status().is(200))
+                    .andExpect(jsonPath("$.total").exists())
+                    .andExpect(jsonPath("$.skip").exists())
+                    .andExpect(jsonPath("$.limit").exists())
+                    .andExpect(jsonPath("$.posts").isArray())
                     .andDo(print());
         }
     }

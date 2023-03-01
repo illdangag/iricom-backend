@@ -264,11 +264,25 @@ public class PostServiceImpl implements PostService {
         List<Post> postList;
         long totalPostCount;
         if (postInfoSearch.getTitle().isEmpty()) {
-            postList = this.postRepository.getPublishPostList(board, postInfoSearch.getType(), postInfoSearch.getSkip(), postInfoSearch.getLimit());
-            totalPostCount = this.postRepository.getPublishPostCount(board, postInfoSearch.getType());
+            if (postInfoSearch.getType() != null) {
+                // 제목 없음, 게시물 종류 있음
+                postList = this.postRepository.getPublishPostList(board, postInfoSearch.getType(), postInfoSearch.getSkip(), postInfoSearch.getLimit());
+                totalPostCount = this.postRepository.getPublishPostCount(board, postInfoSearch.getType());
+            } else {
+                // 제목 없음, 게시물 종류 없음
+                postList = this.postRepository.getPublishPostList(board,  postInfoSearch.getSkip(), postInfoSearch.getLimit());
+                totalPostCount = this.postRepository.getPublishPostCount(board);
+            }
         } else {
-            postList = this.postRepository.getPublishPostList(board, postInfoSearch.getType(), postInfoSearch.getTitle(), postInfoSearch.getSkip(), postInfoSearch.getLimit());
-            totalPostCount = this.postRepository.getPublishPostCount(board, postInfoSearch.getType(), postInfoSearch.getTitle());
+            if (postInfoSearch.getType() != null) {
+                // 제목 있음, 게시물 종류 있음
+                postList = this.postRepository.getPublishPostList(board, postInfoSearch.getType(), postInfoSearch.getTitle(), postInfoSearch.getSkip(), postInfoSearch.getLimit());
+                totalPostCount = this.postRepository.getPublishPostCount(board, postInfoSearch.getType(), postInfoSearch.getTitle());
+            } else {
+                // 제목 있음, 게시물 종류 없음
+                postList = this.postRepository.getPublishPostList(board, postInfoSearch.getTitle(), postInfoSearch.getSkip(), postInfoSearch.getLimit());
+                totalPostCount = this.postRepository.getPublishPostCount(board, postInfoSearch.getTitle());
+            }
         }
 
         List<Account> accountList = postList.stream()
@@ -376,6 +390,34 @@ public class PostServiceImpl implements PostService {
         long downvote = this.postVoteRepository.getPostVoteCount(post, VoteType.DOWNVOTE);
 
         return new PostInfo(post, post.getContent(), PostInfo.Type.INCLUDE_CONTENT, commentCount, upvote, downvote);
+    }
+
+    @Override
+    public PostInfoList getPostInfoList(Account account, @Valid PostInfoSearch postInfoSearch) {
+        List<Post> postList = this.postRepository.getPostList(account, postInfoSearch.getSkip(), postInfoSearch.getLimit());
+        long totalPostCount = this.postRepository.getPostCount(account);
+
+        AccountInfo accountInfo = this.accountService.getAccountInfo(account);
+        List<PostInfo> postInfoList = postList.stream().map(post -> {
+            long commentCount = this.commentRepository.getCommentCount(post);
+            long upvote = this.postVoteRepository.getPostVoteCount(post, VoteType.UPVOTE);
+            long downvote = this.postVoteRepository.getPostVoteCount(post, VoteType.DOWNVOTE);
+
+            PostContent postContent;
+            if (post.getTemporaryContent() != null) {
+                postContent = post.getTemporaryContent();
+            } else {
+                postContent = post.getContent();
+            }
+            return new PostInfo(post, postContent, accountInfo, PostInfo.Type.SIMPLE, commentCount, upvote, downvote);
+        }).collect(Collectors.toList());
+
+        return PostInfoList.builder()
+                .total(totalPostCount)
+                .skip(postInfoSearch.getSkip())
+                .limit(postInfoSearch.getLimit())
+                .postInfoList(postInfoList)
+                .build();
     }
 
     /**

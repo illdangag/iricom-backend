@@ -15,6 +15,8 @@ import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuild
 import static org.springframework.restdocs.operation.preprocess.Preprocessors.*;
 import static org.springframework.restdocs.payload.PayloadDocumentation.fieldWithPath;
 import static org.springframework.restdocs.payload.PayloadDocumentation.responseFields;
+import static org.springframework.restdocs.request.RequestDocumentation.parameterWithName;
+import static org.springframework.restdocs.request.RequestDocumentation.requestParameters;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -58,6 +60,63 @@ public class InformationControllerTest extends IricomTestSuite {
                                         fieldWithPath("account.nickname").description("닉네임"),
                                         fieldWithPath("account.description").description("설명"),
                                         fieldWithPath("account.auth").description("권한")
+                                )
+                        )
+                );
+    }
+
+    @Test
+    @Order(1)
+    @DisplayName("작성한 게시물 조회")
+    public void testCase01() throws Exception {
+        MockHttpServletRequestBuilder requestBuilder = get("/v1/infos/posts")
+                .param("skip", "0")
+                .param("limit", "2");
+
+        setAuthToken(requestBuilder, common00);
+
+        mockMvc.perform(requestBuilder)
+                .andExpect(status().is(200))
+                .andDo(print())
+                .andDo(document("IF_002",
+                                preprocessRequest(
+                                        removeHeaders("Authorization"),
+                                        prettyPrint()
+                                ),
+                                preprocessResponse(
+                                        prettyPrint()
+                                ),
+                                requestHeaders(
+//                                        headerWithName("Authorization").description("firebase 토큰")
+                                ),
+                                requestParameters(
+                                        parameterWithName("skip").description("건너 뛸 수"),
+                                        parameterWithName("limit").description("최대 조회 수")
+                                ),
+                                responseFields(
+                                        fieldWithPath("total").description("모든 결과의 수"),
+                                        fieldWithPath("skip").description("건너 뛸 결과 수"),
+                                        fieldWithPath("limit").description("조회 할 최대 결과 수"),
+                                        fieldWithPath("posts").description("게시물 목록"),
+                                        fieldWithPath("posts.[].id").description("아이디"),
+                                        fieldWithPath("posts.[].type").description("게시물의 종류"),
+                                        fieldWithPath("posts.[].createDate").description("작성일"),
+                                        fieldWithPath("posts.[].updateDate").description("수정일"),
+                                        fieldWithPath("posts.[].status").description("상태"),
+                                        fieldWithPath("posts.[].title").description("제목"),
+                                        fieldWithPath("posts.[].viewCount").description("조회수"),
+                                        fieldWithPath("posts.[].upvote").description("좋아요"),
+                                        fieldWithPath("posts.[].downvote").description("싫어요"),
+                                        fieldWithPath("posts.[].commentCount").description("댓글수"),
+                                        fieldWithPath("posts.[].isAllowComment").description("댓글 허용 여부"),
+                                        fieldWithPath("posts.[].account").description("작성자"),
+                                        fieldWithPath("posts.[].account.id").description("아이디"),
+                                        fieldWithPath("posts.[].account.email").description("이메일"),
+                                        fieldWithPath("posts.[].account.createDate").description("생성일"),
+                                        fieldWithPath("posts.[].account.lastActivityDate").description("최근 활동일"),
+                                        fieldWithPath("posts.[].account.nickname").description("닉네임"),
+                                        fieldWithPath("posts.[].account.description").description("설명"),
+                                        fieldWithPath("posts.[].account.auth").description("권한")
                                 )
                         )
                 );

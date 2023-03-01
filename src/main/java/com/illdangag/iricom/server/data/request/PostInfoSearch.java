@@ -11,7 +11,7 @@ import lombok.experimental.SuperBuilder;
 @SuperBuilder
 public class PostInfoSearch extends SearchRequest {
     @Builder.Default
-    private PostType type = PostType.POST;
+    private PostType type = null;
 
     @Builder.Default
     private String accountId = "";
