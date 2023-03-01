@@ -14,24 +14,32 @@ import lombok.Getter;
 @AllArgsConstructor
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class PostInfo {
-    public enum Type {
+    /**
+     * 내용 포함 여부
+     */
+    public enum ResponseType {
         SIMPLE,
         INCLUDE_CONTENT,
     }
 
     private String id;
 
-    private String type;
-
     private Long createDate;
 
     private Long updateDate;
 
+    @JsonProperty("account")
+    private AccountInfo accountInfo;
+
     private String status;
+
+    private String type;
 
     private String title;
 
     private String content;
+
+    private Boolean isAllowComment;
 
     private Long viewCount;
 
@@ -41,12 +49,7 @@ public class PostInfo {
 
     private Long commentCount;
 
-    @JsonProperty("account")
-    private AccountInfo accountInfo;
-
-    private Boolean isAllowComment;
-
-    public PostInfo(Post post, PostContent postContent, Type type, long commentCount, long upvote, long downvote) {
+    public PostInfo(Post post, PostContent postContent, ResponseType responseType, long commentCount, long upvote, long downvote) {
         this.id = "" + post.getId();
         this.type = postContent.getType().getText();
         this.createDate = DateTimeUtils.getLong(post.getCreateDate());
@@ -59,13 +62,13 @@ public class PostInfo {
         this.downvote = downvote;
         this.commentCount = commentCount;
 
-        if (type == Type.INCLUDE_CONTENT) {
+        if (responseType == ResponseType.INCLUDE_CONTENT) {
             this.content = postContent.getContent();
         }
     }
 
-    public PostInfo(Post post, PostContent postContent, AccountInfo accountInfo, Type type, long commentCount, long upvote, long downvote) {
-        this(post, postContent, type, commentCount, upvote, downvote);
+    public PostInfo(Post post, PostContent postContent, AccountInfo accountInfo, ResponseType responseType, long commentCount, long upvote, long downvote) {
+        this(post, postContent, responseType, commentCount, upvote, downvote);
         this.accountInfo = accountInfo;
     }
 }

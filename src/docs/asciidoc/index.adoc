@@ -13,7 +13,7 @@ REST API
 
 operation::SERVER_INFO[snippets='curl-request,http-response,response-fields']
 
-== 계정
+== 내 정보 조회
 
 === 내 정보 조회
 ==== IF_001
@@ -22,6 +22,8 @@ operation::IF_001[snippets='curl-request,http-response,response-fields']
 === 내가 작성한 문서 조회
 ==== IF_002
 operation::IF_002[snippets='curl-request,request-parameters,http-response,response-fields']
+
+== 계정
 
 === 계정 목록 조회
 ==== AC_001

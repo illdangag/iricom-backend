@@ -102,10 +102,7 @@ public class PostServiceImpl implements PostService {
 
         this.postRepository.save(post, postContent);
         long commentCount = this.commentRepository.getCommentCount(post);
-        long upvote = this.postVoteRepository.getPostVoteCount(post, VoteType.UPVOTE);
-        long downvote = this.postVoteRepository.getPostVoteCount(post, VoteType.DOWNVOTE);
-
-        return new PostInfo(post, postContent, PostInfo.Type.INCLUDE_CONTENT, commentCount, upvote, downvote);
+        return new PostInfo(post, postContent, PostInfo.ResponseType.INCLUDE_CONTENT, commentCount, 0, 0);
     }
 
     @Override
@@ -171,7 +168,7 @@ public class PostServiceImpl implements PostService {
         long upvote = this.postVoteRepository.getPostVoteCount(post, VoteType.UPVOTE);
         long downvote = this.postVoteRepository.getPostVoteCount(post, VoteType.DOWNVOTE);
 
-        return new PostInfo(post, temporaryPostContent, PostInfo.Type.INCLUDE_CONTENT, commentCount, upvote, downvote);
+        return new PostInfo(post, temporaryPostContent, PostInfo.ResponseType.INCLUDE_CONTENT, commentCount, upvote, downvote);
     }
 
     @Override
@@ -209,7 +206,7 @@ public class PostServiceImpl implements PostService {
         long upvote = this.postVoteRepository.getPostVoteCount(post, VoteType.UPVOTE);
         long downvote = this.postVoteRepository.getPostVoteCount(post, VoteType.DOWNVOTE);
 
-        return new PostInfo(post, postContent, creatorInfo, PostInfo.Type.INCLUDE_CONTENT, commentCount, upvote, downvote);
+        return new PostInfo(post, postContent, creatorInfo, PostInfo.ResponseType.INCLUDE_CONTENT, commentCount, upvote, downvote);
     }
 
     @Override
@@ -256,7 +253,7 @@ public class PostServiceImpl implements PostService {
         long upvote = this.postVoteRepository.getPostVoteCount(post, VoteType.UPVOTE);
         long downvote = this.postVoteRepository.getPostVoteCount(post, VoteType.DOWNVOTE);
 
-        return new PostInfo(post, post.getContent(), PostInfo.Type.INCLUDE_CONTENT, commentCount, upvote, downvote);
+        return new PostInfo(post, post.getContent(), PostInfo.ResponseType.INCLUDE_CONTENT, commentCount, upvote, downvote);
     }
 
     @Override
@@ -297,7 +294,7 @@ public class PostServiceImpl implements PostService {
             long upvote = this.postVoteRepository.getPostVoteCount(post, VoteType.UPVOTE);
             long downvote = this.postVoteRepository.getPostVoteCount(post, VoteType.DOWNVOTE);
 
-            return new PostInfo(post, post.getContent(), accountInfo, PostInfo.Type.SIMPLE, commentCount, upvote, downvote);
+            return new PostInfo(post, post.getContent(), accountInfo, PostInfo.ResponseType.SIMPLE, commentCount, upvote, downvote);
         }).collect(Collectors.toList());
 
         return PostInfoList.builder()
@@ -349,7 +346,7 @@ public class PostServiceImpl implements PostService {
         long upvote = this.postVoteRepository.getPostVoteCount(post, VoteType.UPVOTE);
         long downvote = this.postVoteRepository.getPostVoteCount(post, VoteType.DOWNVOTE);
 
-        return new PostInfo(post, content, PostInfo.Type.INCLUDE_CONTENT, commentCount, upvote, downvote);
+        return new PostInfo(post, content, PostInfo.ResponseType.INCLUDE_CONTENT, commentCount, upvote, downvote);
     }
 
     public PostInfo votePost(Account account, String boardId, String postId, VoteType voteType) {
@@ -389,7 +386,7 @@ public class PostServiceImpl implements PostService {
         long upvote = this.postVoteRepository.getPostVoteCount(post, VoteType.UPVOTE);
         long downvote = this.postVoteRepository.getPostVoteCount(post, VoteType.DOWNVOTE);
 
-        return new PostInfo(post, post.getContent(), PostInfo.Type.INCLUDE_CONTENT, commentCount, upvote, downvote);
+        return new PostInfo(post, post.getContent(), PostInfo.ResponseType.INCLUDE_CONTENT, commentCount, upvote, downvote);
     }
 
     @Override
@@ -409,7 +406,7 @@ public class PostServiceImpl implements PostService {
             } else {
                 postContent = post.getContent();
             }
-            return new PostInfo(post, postContent, accountInfo, PostInfo.Type.SIMPLE, commentCount, upvote, downvote);
+            return new PostInfo(post, postContent, accountInfo, PostInfo.ResponseType.SIMPLE, commentCount, upvote, downvote);
         }).collect(Collectors.toList());
 
         return PostInfoList.builder()
