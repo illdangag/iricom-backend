@@ -34,8 +34,6 @@ public class InformationController {
 
     /**
      * 내 계정 정보 조회
-     * @param account
-     * @return
      */
     @ApiCallLog(apiCode = "IF_001")
     @Auth(role = AuthRole.UNREGISTERED_ACCOUNT)
@@ -49,8 +47,11 @@ public class InformationController {
         return ResponseEntity.status(HttpStatus.OK).body(myInformation);
     }
 
+    /**
+     * 내 계정이 작성한 게시물 조회
+     */
     @ApiCallLog(apiCode = "IF_002")
-    @Auth(role = AuthRole.ACCOUNT)
+    @Auth(role = AuthRole.UNREGISTERED_ACCOUNT)
     @RequestMapping(method = RequestMethod.GET, value = "/posts")
     public ResponseEntity<PostInfoList> getMyPostInfoList(@RequestParam(name = "skip", defaultValue = "0", required = false) String skipVariable,
                                                           @RequestParam(name = "limit", defaultValue = "20", required = false) String limitVariable,
