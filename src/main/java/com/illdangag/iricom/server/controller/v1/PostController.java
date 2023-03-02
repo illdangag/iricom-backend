@@ -51,6 +51,8 @@ public class PostController {
 
     /**
      * 게시물 목록 조회
+     *
+     * 발행된 게시물만 조회
      */
     @ApiCallLog(apiCode = "PS_002")
     @Auth(role = AuthRole.NONE)
@@ -65,7 +67,6 @@ public class PostController {
         PostType type;
         int skip;
         int limit;
-        Boolean includeContent;
 
         try {
             skip = Integer.parseInt(skipVariable);
@@ -92,7 +93,7 @@ public class PostController {
                 .title(title)
                 .build();
 
-        PostInfoList postInfoList = this.postService.getPostInfoList(board, postInfoSearch);
+        PostInfoList postInfoList = this.postService.getPublishPostInfoList(board, postInfoSearch);
         return ResponseEntity.status(HttpStatus.OK).body(postInfoList);
     }
 

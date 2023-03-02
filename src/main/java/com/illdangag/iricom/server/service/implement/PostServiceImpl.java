@@ -195,9 +195,9 @@ public class PostServiceImpl implements PostService {
                 throw new IricomException(IricomErrorCode.NOT_EXIST_PUBLISH_CONTENT);
             }
             postContent = post.getContent();
+            post.setViewCount(post.getViewCount() + 1);
         }
 
-        post.setViewCount(post.getViewCount() + 1);
         this.postRepository.save(post);
 
         Account creator = post.getAccount();
@@ -257,7 +257,7 @@ public class PostServiceImpl implements PostService {
     }
 
     @Override
-    public PostInfoList getPostInfoList(Board board, @Valid PostInfoSearch postInfoSearch) {
+    public PostInfoList getPublishPostInfoList(Board board, @Valid PostInfoSearch postInfoSearch) {
         List<Post> postList;
         long totalPostCount;
         if (postInfoSearch.getTitle().isEmpty()) {
@@ -294,7 +294,7 @@ public class PostServiceImpl implements PostService {
             long upvote = this.postVoteRepository.getPostVoteCount(post, VoteType.UPVOTE);
             long downvote = this.postVoteRepository.getPostVoteCount(post, VoteType.DOWNVOTE);
 
-            return new PostInfo(post, post.getContent(), accountInfo, PostInfo.ResponseType.SIMPLE, commentCount, upvote, downvote);
+            return new PostInfo(post, post.getContent(), accountInfo, PostInfo.ResponseType.NOT_INCLUDE_CONTENT, commentCount, upvote, downvote);
         }).collect(Collectors.toList());
 
         return PostInfoList.builder()
@@ -406,7 +406,7 @@ public class PostServiceImpl implements PostService {
             } else {
                 postContent = post.getContent();
             }
-            return new PostInfo(post, postContent, accountInfo, PostInfo.ResponseType.SIMPLE, commentCount, upvote, downvote);
+            return new PostInfo(post, postContent, accountInfo, PostInfo.ResponseType.NOT_INCLUDE_CONTENT, commentCount, upvote, downvote);
         }).collect(Collectors.toList());
 
         return PostInfoList.builder()

@@ -26,7 +26,7 @@ public interface PostService {
 
     PostInfo getPostInfo(Board board, Post post, PostState postState);
 
-    PostInfoList getPostInfoList(Board board, @Valid PostInfoSearch postInfoSearch);
+    PostInfoList getPublishPostInfoList(Board board, @Valid PostInfoSearch postInfoSearch);
 
     PostInfo publishPostInfo(Account account, String boardId, String postId);
 

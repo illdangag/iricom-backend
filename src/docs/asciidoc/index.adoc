@@ -13,7 +13,7 @@ REST API
 
 operation::SERVER_INFO[snippets='curl-request,http-response,response-fields']
 
-== 내 정보 조회
+== 내 정보
 
 === 내 정보 조회
 ==== IF_001

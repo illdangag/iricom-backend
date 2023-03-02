@@ -18,7 +18,7 @@ public class PostInfo {
      * 내용 포함 여부
      */
     public enum ResponseType {
-        SIMPLE,
+        NOT_INCLUDE_CONTENT,
         INCLUDE_CONTENT,
     }
 
@@ -49,6 +49,10 @@ public class PostInfo {
 
     private Long commentCount;
 
+    private Boolean isPublish;
+
+    private Boolean hasTemporary;
+
     public PostInfo(Post post, PostContent postContent, ResponseType responseType, long commentCount, long upvote, long downvote) {
         this.id = "" + post.getId();
         this.type = postContent.getType().getText();
@@ -61,6 +65,8 @@ public class PostInfo {
         this.upvote = upvote;
         this.downvote = downvote;
         this.commentCount = commentCount;
+        this.isPublish = post.getContent() != null;
+        this.hasTemporary = post.getTemporaryContent() != null;
 
         if (responseType == ResponseType.INCLUDE_CONTENT) {
             this.content = postContent.getContent();
