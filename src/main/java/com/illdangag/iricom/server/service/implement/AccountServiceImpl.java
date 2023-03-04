@@ -1,6 +1,7 @@
 package com.illdangag.iricom.server.service.implement;
 
 import com.illdangag.iricom.server.data.entity.Account;
+import com.illdangag.iricom.server.data.entity.AccountAuth;
 import com.illdangag.iricom.server.data.entity.AccountDetail;
 import com.illdangag.iricom.server.repository.AccountRepository;
 import com.illdangag.iricom.server.data.request.AccountInfoCreate;
@@ -148,6 +149,10 @@ public class AccountServiceImpl implements AccountService {
         this.accountRepository.saveAccountDetail(accountDetail);
 
         account.setAccountDetail(accountDetail);
+        if (account.getAuth() == AccountAuth.UNREGISTERED_ACCOUNT) {
+            account.setAuth(AccountAuth.ACCOUNT);
+        }
+
         this.accountRepository.saveAccount(account);
         return new AccountInfo(account);
     }

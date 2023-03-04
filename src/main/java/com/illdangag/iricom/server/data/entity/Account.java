@@ -48,7 +48,7 @@ public class Account {
     @Builder.Default
     @Enumerated(EnumType.STRING)
     @Column(name = "auth")
-    private AccountAuth auth = AccountAuth.ACCOUNT;
+    private AccountAuth auth = AccountAuth.UNREGISTERED_ACCOUNT;
 
     @Override
     public boolean equals(Object object) {

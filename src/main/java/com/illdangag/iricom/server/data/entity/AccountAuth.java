@@ -6,7 +6,8 @@ import lombok.Getter;
 public enum AccountAuth {
     SYSTEM_ADMIN("systemAdmin"),
     BOARD_ADMIN("boardAdmin"),
-    ACCOUNT("account");
+    ACCOUNT("account"),
+    UNREGISTERED_ACCOUNT("unregisteredAccount");
 
     private String text;
 

@@ -47,6 +47,10 @@ public class BoardAuthorizationServiceImpl implements BoardAuthorizationService 
      */
     public void createBoardAdminAuth(BoardAdminInfoCreate boardAdminInfoCreate) {
         Account account = this.accountService.getAccount(boardAdminInfoCreate.getAccountId());
+        if (account.getAccountDetail() == null) {
+            throw new IricomException(IricomErrorCode.NOT_EXIST_ACCOUNT_DETAIL_TO_UPDATE_BOARD_ADMIN);
+        }
+
         Board board = this.boardService.getBoard(boardAdminInfoCreate.getBoardId());
 
         Optional<BoardAdmin> boardAdminOptional = this.boardAdminRepository.getBoardAdmin(board, account);

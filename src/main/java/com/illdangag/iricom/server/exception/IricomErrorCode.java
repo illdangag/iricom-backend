@@ -27,6 +27,7 @@ public enum IricomErrorCode {
     INVALID_REQUEST("01020000", 400, "Invalid request."),
     // board admin: 0103XXXX
     NOT_EXIST_BOARD_ADMIN("01030000", 400, "Invalid request."),
+    NOT_EXIST_ACCOUNT_DETAIL_TO_UPDATE_BOARD_ADMIN("01030001", 400, "Invalid request."),
 
     // account: 02XXXXXX
     NOT_EXIST_ACCOUNT("02000000", 404, "Not exist account."),
