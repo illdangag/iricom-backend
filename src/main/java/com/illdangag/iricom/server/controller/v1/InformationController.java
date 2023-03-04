@@ -7,7 +7,6 @@ import com.illdangag.iricom.server.configuration.annotation.RequestContext;
 import com.illdangag.iricom.server.data.entity.Account;
 import com.illdangag.iricom.server.data.request.PostInfoSearch;
 import com.illdangag.iricom.server.data.response.AccountInfo;
-import com.illdangag.iricom.server.data.response.MyInformation;
 import com.illdangag.iricom.server.data.response.PostInfoList;
 import com.illdangag.iricom.server.exception.IricomErrorCode;
 import com.illdangag.iricom.server.exception.IricomException;
@@ -38,13 +37,9 @@ public class InformationController {
     @ApiCallLog(apiCode = "IF_001")
     @Auth(role = AuthRole.UNREGISTERED_ACCOUNT)
     @RequestMapping(method = RequestMethod.GET, value = "")
-    public ResponseEntity<MyInformation> getMyAccountInfo(@RequestContext Account account) {
+    public ResponseEntity<AccountInfo> getMyAccountInfo(@RequestContext Account account) {
         AccountInfo accountInfo = new AccountInfo(account);
-
-        MyInformation myInformation = MyInformation.builder()
-                .account(accountInfo)
-                .build();
-        return ResponseEntity.status(HttpStatus.OK).body(myInformation);
+        return ResponseEntity.status(HttpStatus.OK).body(accountInfo);
     }
 
     /**

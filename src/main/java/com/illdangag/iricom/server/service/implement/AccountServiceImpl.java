@@ -51,6 +51,10 @@ public class AccountServiceImpl implements AccountService {
         this.accountRepository.saveAccountDetail(accountDetail);
 
         account.setAccountDetail(accountDetail);
+
+        if (!accountInfoCreate.getNickname().isEmpty()) {
+            account.setAuth(AccountAuth.ACCOUNT);
+        }
         this.accountRepository.saveAccount(account);
 
         return new AccountInfo(account);
