@@ -189,7 +189,7 @@ public class PostControllerTest extends IricomTestSuite {
 //                                        headerWithName("Authorization").description("firebase 토큰")
                         ),
                         requestParameters(
-                                parameterWithName("state").description("게시물의 상태 (post: 게시물, notification: 공지사항)")
+                                parameterWithName("state").description("게시물의 상태 (publish: 게시물, notification: 공지사항)")
                         ),
                         responseFields(
                                 fieldWithPath("id").description("아이디"),

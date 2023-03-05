@@ -93,7 +93,7 @@ operation::PS_002[snippets='curl-request,path-parameters,request-parameters,http
 ==== PS_003
 게시물 정보 조회
 
-operation::PS_003[snippets='curl-request,path-parameters,http-response,response-fields']
+operation::PS_003[snippets='curl-request,path-parameters,request-parameters,http-response,response-fields']
 
 === 게시물 수정
 ==== PS_004
