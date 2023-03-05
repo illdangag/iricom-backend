@@ -121,17 +121,17 @@ public abstract class IricomTestSuite {
     // 게시물 설정
     protected static final TestPostInfo enableBoardPost00 = TestPostInfo.builder()
             .title("enableBoardPost00").content("enableBoardPost00").isAllowComment(true)
-            .postType(PostType.POST).postState(PostState.POST)
+            .postType(PostType.POST).postState(PostState.PUBLISH)
             .creator(allBoardAdmin).board(enableBoard).build();
 
     protected static final TestPostInfo enableBoardPost01 = TestPostInfo.builder()
             .title("enableBoardPost01").content("enableBoardPost01").isAllowComment(true)
-            .postType(PostType.POST).postState(PostState.POST)
+            .postType(PostType.POST).postState(PostState.PUBLISH)
             .creator(allBoardAdmin).board(enableBoard).isAllowComment(false).build();
 
     protected static final TestPostInfo enableBoardPost02 = TestPostInfo.builder()
             .title("enableBoardPost02").content("enableBoardPost02").isAllowComment(true)
-            .postType(PostType.POST).postState(PostState.POST)
+            .postType(PostType.POST).postState(PostState.PUBLISH)
             .creator(allBoardAdmin).board(enableBoard).build();
 
     protected static final TestPostInfo enableBoardPost03 = TestPostInfo.builder()
@@ -141,22 +141,22 @@ public abstract class IricomTestSuite {
 
     protected static final TestPostInfo enableBoardNotification00 = TestPostInfo.builder()
             .title("enableBoardNotification00").content("enableBoardNotification00").isAllowComment(true)
-            .postType(PostType.NOTIFICATION).postState(PostState.POST)
+            .postType(PostType.NOTIFICATION).postState(PostState.PUBLISH)
             .creator(allBoardAdmin).board(enableBoard).build();
 
     protected static final TestPostInfo disableBoardPost00 = TestPostInfo.builder()
             .title("disableBoardPost00").content("content").isAllowComment(true)
-            .postType(PostType.POST).postState(PostState.POST)
+            .postType(PostType.POST).postState(PostState.PUBLISH)
             .creator(common00).board(disableBoard).build();
 
     protected static final TestPostInfo disableBoardPost01 = TestPostInfo.builder()
             .title("disableBoardPost01").content("content").isAllowComment(true)
-            .postType(PostType.POST).postState(PostState.POST)
+            .postType(PostType.POST).postState(PostState.PUBLISH)
             .creator(allBoardAdmin).board(disableBoard).build();
 
     protected static final TestPostInfo disableBoardPost02 = TestPostInfo.builder()
             .title("disableBoardPost02").content("content").isAllowComment(true)
-            .postType(PostType.POST).postState(PostState.POST)
+            .postType(PostType.POST).postState(PostState.PUBLISH)
             .creator(allBoardAdmin).board(disableBoard).build();
 
     protected static final TestPostInfo disableBoardNotification00 = TestPostInfo.builder()
@@ -191,17 +191,17 @@ public abstract class IricomTestSuite {
 
     protected static final TestPostInfo updateBoardPost05 = TestPostInfo.builder()
             .title("updateBoardPost05").content("content").isAllowComment(true)
-            .postType(PostType.POST).postState(PostState.POST)
+            .postType(PostType.POST).postState(PostState.PUBLISH)
             .creator(common00).board(updateBoard).build();
 
     protected static final TestPostInfo updateBoardPost06 = TestPostInfo.builder()
             .title("updateBoardPost06").content("content").isAllowComment(true)
-            .postType(PostType.POST).postState(PostState.POST)
+            .postType(PostType.POST).postState(PostState.PUBLISH)
             .creator(common00).board(updateBoard).build();
 
     protected static final TestPostInfo updateBoardPost07 = TestPostInfo.builder()
             .title("updateBoardPost07").content("content").isAllowComment(true)
-            .postType(PostType.POST).postState(PostState.POST)
+            .postType(PostType.POST).postState(PostState.PUBLISH)
             .creator(allBoardAdmin).board(updateBoard).build();
 
     protected static final TestPostInfo updateBoardPost08 = TestPostInfo.builder()
@@ -211,7 +211,7 @@ public abstract class IricomTestSuite {
 
     protected static final TestPostInfo updateBoardPost09 = TestPostInfo.builder()
             .title("updateBoardPost09").content("content").isAllowComment(true)
-            .postType(PostType.POST).postState(PostState.POST)
+            .postType(PostType.POST).postState(PostState.PUBLISH)
             .creator(common00).board(updateBoard).build();
 
     protected static final TestPostInfo updateBoardPost10 = TestPostInfo.builder()
@@ -236,7 +236,7 @@ public abstract class IricomTestSuite {
 
     protected static final TestPostInfo updateBoardPost14 = TestPostInfo.builder()
             .title("updateBoardPost14").content("content").isAllowComment(true)
-            .postType(PostType.POST).postState(PostState.POST)
+            .postType(PostType.POST).postState(PostState.PUBLISH)
             .creator(common00).board(restDocBoard).build();
 
     protected static final TestPostInfo updateBoardNotification00 = TestPostInfo.builder()
@@ -246,12 +246,12 @@ public abstract class IricomTestSuite {
 
     protected static final TestPostInfo commentGetPost00 = TestPostInfo.builder()
             .title("commentUpdatePost00").content("content").isAllowComment(true)
-            .postType(PostType.POST).postState(PostState.POST)
+            .postType(PostType.POST).postState(PostState.PUBLISH)
             .creator(common00).board(commentBoard).build();
 
     protected static final TestPostInfo commentUpdatePost00 = TestPostInfo.builder()
             .title("commentUpdatePost00").content("content").isAllowComment(true)
-            .postType(PostType.POST).postState(PostState.POST)
+            .postType(PostType.POST).postState(PostState.PUBLISH)
             .creator(common00).board(commentBoard).build();
 
     protected static final TestPostInfo commentUpdatePost01 = TestPostInfo.builder()
@@ -261,12 +261,12 @@ public abstract class IricomTestSuite {
 
     protected static final TestPostInfo commentUpdatePost02 = TestPostInfo.builder()
             .title("commentUpdatePost02").content("content").isAllowComment(false)
-            .postType(PostType.POST).postState(PostState.POST)
+            .postType(PostType.POST).postState(PostState.PUBLISH)
             .creator(common00).board(commentBoard).build();
 
     protected static final TestPostInfo votePost00 = TestPostInfo.builder()
             .title("votePost00").content("content").isAllowComment(false)
-            .postType(PostType.POST).postState(PostState.POST)
+            .postType(PostType.POST).postState(PostState.PUBLISH)
             .creator(common00).board(voteBoard).build();
 
     protected static final TestPostInfo votePost01 = TestPostInfo.builder()
@@ -276,17 +276,17 @@ public abstract class IricomTestSuite {
 
     protected static final TestPostInfo votePost02 = TestPostInfo.builder()
             .title("votePost02").content("content").isAllowComment(false)
-            .postType(PostType.POST).postState(PostState.POST)
+            .postType(PostType.POST).postState(PostState.PUBLISH)
             .creator(common00).board(voteBoard).build();
 
     protected static final TestPostInfo voteCommentPost00 = TestPostInfo.builder()
             .title("voteCommentPost00").content("content").isAllowComment(true)
-            .postType(PostType.POST).postState(PostState.POST)
+            .postType(PostType.POST).postState(PostState.PUBLISH)
             .creator(common00).board(voteBoard).build();
 
     protected static final TestPostInfo voteCommentPost01 = TestPostInfo.builder()
             .title("voteCommentPost01").content("content").isAllowComment(false)
-            .postType(PostType.POST).postState(PostState.POST)
+            .postType(PostType.POST).postState(PostState.PUBLISH)
             .creator(common00).board(voteBoard).build();
 
     private static final TestPostInfo[] testPostInfos = {
@@ -459,7 +459,7 @@ public abstract class IricomTestSuite {
             Post post = this.createPost(testPostInfo);
             postMap.put(testPostInfo, post);
 
-            if (testPostInfo.getPostState() == PostState.POST) {
+            if (testPostInfo.getPostState() == PostState.PUBLISH) {
                 this.publishPost(testPostInfo);
             }
         }
@@ -563,7 +563,7 @@ public abstract class IricomTestSuite {
                 .build();
         this.postService.updatePostInfo(account, board, post, postInfoUpdate);
 
-        if (testPostInfo.getPostState() == PostState.POST) {
+        if (testPostInfo.getPostState() == PostState.PUBLISH) {
             this.publishPost(testPostInfo);
         }
     }

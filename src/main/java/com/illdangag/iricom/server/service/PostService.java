@@ -22,9 +22,9 @@ public interface PostService {
 
     PostInfo updatePostInfo(Account account, Board board, Post post, @Valid PostInfoUpdate postInfoUpdate);
 
-    PostInfo getPostInfo(String boardId, String postId, PostState postState);
+    PostInfo getPostInfo(Account account, String boardId, String postId, PostState postState);
 
-    PostInfo getPostInfo(Board board, Post post, PostState postState);
+    PostInfo getPostInfo(Account account, Board board, Post post, PostState postState);
 
     PostInfoList getPublishPostInfoList(Board board, @Valid PostInfoSearch postInfoSearch);
 

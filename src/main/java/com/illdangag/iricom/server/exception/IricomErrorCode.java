@@ -49,6 +49,7 @@ public enum IricomErrorCode {
     DISABLED_BOARD_TO_VOTE("04000005", 400, "Board is disabled."),
     ALREADY_VOTE_POST("04000006", 400, "Already vote post."),
     INVALID_VOTE_POST("04000007", 400, "Invalid vote type."),
+    INVALID_AUTHORIZATION_TO_GET_TEMPORARY_CONTENT("04000008", 401, "Invalid authorization."),
 
     // comment: 05XXXXXX
     NOT_EXIST_COMMENT("05000000", 404, "Not exist comment."),

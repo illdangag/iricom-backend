@@ -105,7 +105,8 @@ public class PostController {
     @RequestMapping(method = RequestMethod.GET, value = "/posts/{post_id}")
     public ResponseEntity<PostInfo> getPost(@PathVariable(value = "board_id") String boardId,
                                             @PathVariable(value = "post_id") String postId,
-                                            @RequestParam(name = "state", defaultValue = "post", required = false) String stateVariable) {
+                                            @RequestParam(name = "state", defaultValue = "publish", required = false) String stateVariable,
+                                            @RequestContext Account account) {
         PostState postState;
         try {
             postState = PostState.setValue(stateVariable);
@@ -113,7 +114,7 @@ public class PostController {
             throw new IricomException(IricomErrorCode.INVALID_POST_STATE);
         }
 
-        PostInfo postInfo = this.postService.getPostInfo(boardId, postId, postState);
+        PostInfo postInfo = this.postService.getPostInfo(account, boardId, postId, postState);
         return ResponseEntity.status(HttpStatus.OK).body(postInfo);
     }
 

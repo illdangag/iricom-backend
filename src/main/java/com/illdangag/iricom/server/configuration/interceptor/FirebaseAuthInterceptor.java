@@ -53,44 +53,46 @@ public class FirebaseAuthInterceptor implements HandlerInterceptor {
             return HandlerInterceptor.super.preHandle(request, response, handler);
         }
 
+        // firebase 토큰이 존재 하면 해당 토큰에 대한 계정 정보를 조회
+        Optional<FirebaseToken> firebaseTokenOptional = this.getFirebaseToken(request);
+        Account account = null;
+        if (firebaseTokenOptional.isPresent()) {
+            FirebaseToken firebaseToken = firebaseTokenOptional.get();
+            FirebaseAuthentication firebaseAuthentication = this.getFirebaseAuthentication(firebaseToken);
+            account = firebaseAuthentication.getAccount();
+            request.setAttribute("account", account);
+        }
+
         HandlerMethod handlerMethod = (HandlerMethod) handler;
         Auth auth = handlerMethod.getMethodAnnotation(Auth.class);
         if (auth == null) { // @Auth 어노테이션이 설정되지 않은 메서드를 호출 한 경우
             // 인증 및 인가를 확인하지 않음
             return HandlerInterceptor.super.preHandle(request, response, handler);
+        } else if (firebaseTokenOptional.isEmpty()) {
+            throw new IricomException(IricomErrorCode.NOT_EXIST_FIREBASE_ID_TOKEN);
+        } else {
+            AuthRole role = auth.role();
+
+            if (role == AuthRole.SYSTEM_ADMIN) {
+                // 시스템 관리자
+                this.checkAccount(account);
+                this.checkAccountDetail(account);
+                this.checkSystemAdmin(account);
+            } else if (role == AuthRole.BOARD_ADMIN) {
+                // 게시판 관리자
+                this.checkAccount(account);
+                this.checkAccountDetail(account);
+                List<Board> boardList = this.checkBoardAdmin(account);
+                request.setAttribute("boards", boardList.toArray(new Board[0]));
+            } else if (role == AuthRole.ACCOUNT) {
+                // 등록된 계정
+                this.checkAccount(account);
+                this.checkAccountDetail(account);
+            } else if (role == AuthRole.UNREGISTERED_ACCOUNT) {
+                // 등롣괴지 않은 계정
+                this.checkAccount(account);
+            }
         }
-
-        AuthRole role = auth.role();
-        if (role == AuthRole.NONE) {
-            return HandlerInterceptor.super.preHandle(request, response, handler);
-        }
-
-        FirebaseToken firebaseToken = this.getFirebaseToken(request);
-        FirebaseAuthentication firebaseAuthentication = this.getFirebaseAuthentication(firebaseToken);
-        Account account = firebaseAuthentication.getAccount();
-//        this.accountRepository.saveAccount(account); // lastActivityDate 갱신을 위해서 저장
-
-        if (role == AuthRole.SYSTEM_ADMIN) {
-            // 시스템 관리자
-            this.checkAccount(account);
-            this.checkAccountDetail(account);
-            this.checkSystemAdmin(account);
-        } else if (role == AuthRole.BOARD_ADMIN) {
-            // 게시판 관리자
-            this.checkAccount(account);
-            this.checkAccountDetail(account);
-            List<Board> boardList = this.checkBoardAdmin(account);
-            request.setAttribute("boards", boardList.toArray(new Board[0]));
-        } else if (role == AuthRole.ACCOUNT) {
-            // 등록된 계정
-            this.checkAccount(account);
-            this.checkAccountDetail(account);
-        } else if (role == AuthRole.UNREGISTERED_ACCOUNT) {
-            // 등롣괴지 않은 계정
-            this.checkAccount(account);
-        }
-
-        request.setAttribute("account", account);
         return HandlerInterceptor.super.preHandle(request, response, handler);
     }
 
@@ -126,12 +128,15 @@ public class FirebaseAuthInterceptor implements HandlerInterceptor {
         }
     }
 
-    private FirebaseToken getFirebaseToken(HttpServletRequest request) throws IricomException {
+
+
+    private Optional<FirebaseToken> getFirebaseToken(HttpServletRequest request) throws IricomException {
         String authorization = request.getHeader("Authorization");
 
         if (authorization == null || !authorization.startsWith("Bearer ")) {
-            log.debug("Invalid header. Authorization: {}", authorization);
-            throw new IricomException(IricomErrorCode.NOT_EXIST_FIREBASE_ID_TOKEN);
+//            log.debug("Invalid header. Authorization: {}", authorization);
+//            throw new IricomException(IricomErrorCode.NOT_EXIST_FIREBASE_ID_TOKEN);
+            return Optional.empty();
         }
 
         String token = authorization.substring(7);
@@ -150,7 +155,7 @@ public class FirebaseAuthInterceptor implements HandlerInterceptor {
             throw new IricomException(IricomErrorCode.INVALID_FIREBASE_ID_TOKEN);
         }
 
-        return firebaseToken;
+        return Optional.of(firebaseToken);
     }
 
     private FirebaseAuthentication getFirebaseAuthentication(FirebaseToken firebaseToken) {

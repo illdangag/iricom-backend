@@ -354,7 +354,7 @@ public class PostControllerTest extends IricomTestSuite {
 
                 mockMvc.perform(requestBuilder)
                         .andExpect(status().is(200))
-                        .andExpect(jsonPath("$.status").value("post"))
+                        .andExpect(jsonPath("$.status").value("publish"))
                         .andDo(print());
             }
 
@@ -367,7 +367,7 @@ public class PostControllerTest extends IricomTestSuite {
 
                 MockHttpServletRequestBuilder requestBuilder = get("/v1/boards/" + board.getId() + "/posts/" + post.getId())
                         .param("state", "temporary");
-                setAuthToken(requestBuilder, common00);
+                setAuthToken(requestBuilder, allBoardAdmin);
 
                 mockMvc.perform(requestBuilder)
                         .andExpect(status().is(200))
@@ -384,7 +384,7 @@ public class PostControllerTest extends IricomTestSuite {
 
                 MockHttpServletRequestBuilder requestBuilder = get("/v1/boards/" + board.getId() + "/posts/" + post.getId())
                         .param("state", "temporary");
-                setAuthToken(requestBuilder, common00);
+                setAuthToken(requestBuilder, allBoardAdmin);
 
                 mockMvc.perform(requestBuilder)
                         .andExpect(status().is(404))
@@ -400,7 +400,7 @@ public class PostControllerTest extends IricomTestSuite {
                 Post post = getPost(enableBoardPost03);
 
                 MockHttpServletRequestBuilder requestBuilder = get("/v1/boards/" + board.getId() + "/posts/" + post.getId())
-                        .param("state", "post");
+                        .param("state", "publish");
                 setAuthToken(requestBuilder, common00);
 
                 mockMvc.perform(requestBuilder)
@@ -608,7 +608,7 @@ public class PostControllerTest extends IricomTestSuite {
 
             mockMvc.perform(requestBuilder)
                     .andExpect(status().is(200))
-                    .andExpect(jsonPath("$.status").value("post"))
+                    .andExpect(jsonPath("$.status").value("publish"))
                     .andDo(print());
         }
 
@@ -624,7 +624,7 @@ public class PostControllerTest extends IricomTestSuite {
 
             mockMvc.perform(requestBuilder)
                     .andExpect(status().is(200))
-                    .andExpect(jsonPath("$.status").value("post"))
+                    .andExpect(jsonPath("$.status").value("publish"))
                     .andDo(print());
         }
 
@@ -656,7 +656,7 @@ public class PostControllerTest extends IricomTestSuite {
 
             mockMvc.perform(requestBuilder)
                     .andExpect(status().is(200))
-                    .andExpect(jsonPath("$.status").value("post"))
+                    .andExpect(jsonPath("$.status").value("publish"))
                     .andDo(print());
         }
 

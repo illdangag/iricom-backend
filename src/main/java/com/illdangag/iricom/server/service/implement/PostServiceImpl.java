@@ -172,20 +172,24 @@ public class PostServiceImpl implements PostService {
     }
 
     @Override
-    public PostInfo getPostInfo(String boardId, String postId, PostState postState) {
+    public PostInfo getPostInfo(Account account, String boardId, String postId, PostState postState) {
         Board board = this.boardService.getBoard(boardId);
         Post post = this.getPost(postId);
-        return this.getPostInfo(board, post, postState);
+        return this.getPostInfo(account, board, post, postState);
     }
 
     @Override
-    public PostInfo getPostInfo(Board board, Post post, PostState postState) {
+    public PostInfo getPostInfo(Account account, Board board, Post post, PostState postState) {
         if (!board.getEnabled()) {
             throw new IricomException(IricomErrorCode.DISABLED_BOARD_TO_POST);
         }
 
         PostContent postContent;
         if (postState == PostState.TEMPORARY) {
+            if (!post.getAccount().equals(account)) {
+                // 임시 저장한 내용을 조회하는 경우에는 본인이 작성한 게시물만 가능
+                throw new IricomException(IricomErrorCode.INVALID_AUTHORIZATION_TO_GET_TEMPORARY_CONTENT);
+            }
             if (post.getTemporaryContent() == null) {
                 throw new IricomException(IricomErrorCode.NOT_EXIST_TEMPORARY_CONTENT);
             }
@@ -243,7 +247,7 @@ public class PostServiceImpl implements PostService {
         // 발행: 임시 저장 내용을 본문으로 옮기고 임시 저장 내용을 삭제
         PostContent temporaryPostContent = post.getTemporaryContent();
         if (temporaryPostContent != null) {
-            temporaryPostContent.setState(PostState.POST);
+            temporaryPostContent.setState(PostState.PUBLISH);
             post.setContent(temporaryPostContent);
             post.setTemporaryContent(null);
         }

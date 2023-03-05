@@ -166,7 +166,8 @@ public class PostControllerTest extends IricomTestSuite {
         Board board = getBoard(enableBoard);
         Post post = getPost(enableBoardPost00);
 
-        MockHttpServletRequestBuilder requestBuilder = get("/v1/boards/{boardId}/posts/{postId}", board.getId(), post.getId());
+        MockHttpServletRequestBuilder requestBuilder = get("/v1/boards/{boardId}/posts/{postId}", board.getId(), post.getId())
+                .param("state", "publish");
         setAuthToken(requestBuilder, common00);
 
         mockMvc.perform(requestBuilder)
@@ -186,6 +187,9 @@ public class PostControllerTest extends IricomTestSuite {
                         ),
                         requestHeaders(
 //                                        headerWithName("Authorization").description("firebase 토큰")
+                        ),
+                        requestParameters(
+                                parameterWithName("state").description("게시물의 상태 (post: 게시물, notification: 공지사항)")
                         ),
                         responseFields(
                                 fieldWithPath("id").description("아이디"),

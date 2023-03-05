@@ -10,7 +10,7 @@ import java.util.Arrays;
 @Getter
 public enum PostState {
     TEMPORARY("temporary"),
-    POST("post");
+    PUBLISH("publish");
 
     private String text;
 
@@ -23,6 +23,6 @@ public enum PostState {
         return Arrays.stream(PostState.values())
                 .filter(value -> value.getText().equalsIgnoreCase(key))
                 .findAny()
-                .orElseThrow(() -> new IricomException(IricomErrorCode.INVALID_REQUEST, "Type is invalid. (POST, NOTIFICATION)"));
+                .orElseThrow(() -> new IricomException(IricomErrorCode.INVALID_REQUEST, "State is invalid. (publish, temporary)"));
     }
 }
