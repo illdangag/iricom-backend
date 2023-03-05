@@ -341,7 +341,14 @@ public class PostServiceImpl implements PostService {
         long upvote = this.postVoteRepository.getPostVoteCount(post, VoteType.UPVOTE);
         long downvote = this.postVoteRepository.getPostVoteCount(post, VoteType.DOWNVOTE);
 
-        return new PostInfo(post, true, PostState.PUBLISH, commentCount, upvote, downvote);
+        PostState responsePostState;
+        if (post.isPublish()) {
+            responsePostState = PostState.PUBLISH;
+        } else {
+            responsePostState = PostState.TEMPORARY;
+        }
+
+        return new PostInfo(post, true, responsePostState, commentCount, upvote, downvote);
     }
 
     public PostInfo votePost(Account account, String boardId, String postId, VoteType voteType) {
@@ -394,7 +401,13 @@ public class PostServiceImpl implements PostService {
             long commentCount = this.commentRepository.getCommentCount(post);
             long upvote = this.postVoteRepository.getPostVoteCount(post, VoteType.UPVOTE);
             long downvote = this.postVoteRepository.getPostVoteCount(post, VoteType.DOWNVOTE);
-            return new PostInfo(post, accountInfo, false, PostState.PUBLISH, commentCount, upvote, downvote);
+            PostState responsePostState;
+            if (post.isPublish()) {
+                responsePostState = PostState.PUBLISH;
+            } else {
+                responsePostState = PostState.TEMPORARY;
+            }
+            return new PostInfo(post, accountInfo, false, responsePostState, commentCount, upvote, downvote);
         }).collect(Collectors.toList());
 
         return PostInfoList.builder()

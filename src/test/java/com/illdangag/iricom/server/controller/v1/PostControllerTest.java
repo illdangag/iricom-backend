@@ -404,8 +404,8 @@ public class PostControllerTest extends IricomTestSuite {
                 setAuthToken(requestBuilder, common00);
 
                 mockMvc.perform(requestBuilder)
-                        .andExpect(status().is(200))
-                        .andExpect(jsonPath("$.isPublish").value(false))
+                        .andExpect(status().is(404))
+                        .andExpect(jsonPath("$.code").value("04000005"))
                         .andDo(print());
             }
 

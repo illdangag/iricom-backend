@@ -5,6 +5,8 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.illdangag.iricom.server.data.entity.Post;
 import com.illdangag.iricom.server.data.entity.PostContent;
 import com.illdangag.iricom.server.data.entity.PostState;
+import com.illdangag.iricom.server.exception.IricomErrorCode;
+import com.illdangag.iricom.server.exception.IricomException;
 import com.illdangag.iricom.server.util.DateTimeUtils;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -63,12 +65,10 @@ public class PostInfo {
 
         PostContent content;
         if (postState == PostState.PUBLISH) {
-            // 발행된 내용을 우선
-            if (post.getContent() != null) {
-                content = post.getContent();
-            } else {
-                content = post.getTemporaryContent();
+            if (post.getContent() == null) {
+                throw new IricomException(IricomErrorCode.NOT_EXIST_PUBLISH_CONTENT);
             }
+            content = post.getContent();
         } else {
             // 임시 저장 내용을 우선
             if (post.getTemporaryContent() != null) {
