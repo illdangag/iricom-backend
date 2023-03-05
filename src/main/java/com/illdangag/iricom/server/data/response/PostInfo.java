@@ -53,6 +53,8 @@ public class PostInfo {
 
     private Boolean hasTemporary;
 
+    private String boardId;
+
     public PostInfo(Post post, PostContent postContent, ResponseType responseType, long commentCount, long upvote, long downvote) {
         this.id = "" + post.getId();
         this.type = postContent.getType().getText();
@@ -67,6 +69,7 @@ public class PostInfo {
         this.commentCount = commentCount;
         this.isPublish = post.getContent() != null;
         this.hasTemporary = post.getTemporaryContent() != null;
+        this.boardId = "" + post.getBoard().getId();
 
         if (responseType == ResponseType.INCLUDE_CONTENT) {
             this.content = postContent.getContent();
