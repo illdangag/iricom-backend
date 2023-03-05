@@ -68,12 +68,11 @@ public class FirebaseAuthInterceptor implements HandlerInterceptor {
         if (auth == null) { // @Auth 어노테이션이 설정되지 않은 메서드를 호출 한 경우
             // 인증 및 인가를 확인하지 않음
             return HandlerInterceptor.super.preHandle(request, response, handler);
-        } else if (firebaseTokenOptional.isEmpty()) {
-            throw new IricomException(IricomErrorCode.NOT_EXIST_FIREBASE_ID_TOKEN);
         } else {
             AuthRole role = auth.role();
-
-            if (role == AuthRole.SYSTEM_ADMIN) {
+            if (role != AuthRole.NONE && firebaseTokenOptional.isEmpty()) {
+                throw new IricomException(IricomErrorCode.NOT_EXIST_FIREBASE_ID_TOKEN);
+            } else if (role == AuthRole.SYSTEM_ADMIN) {
                 // 시스템 관리자
                 this.checkAccount(account);
                 this.checkAccountDetail(account);
@@ -89,7 +88,7 @@ public class FirebaseAuthInterceptor implements HandlerInterceptor {
                 this.checkAccount(account);
                 this.checkAccountDetail(account);
             } else if (role == AuthRole.UNREGISTERED_ACCOUNT) {
-                // 등롣괴지 않은 계정
+                // 등록되지 않은 계정
                 this.checkAccount(account);
             }
         }
