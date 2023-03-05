@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.illdangag.iricom.server.data.entity.Post;
 import com.illdangag.iricom.server.data.entity.PostContent;
+import com.illdangag.iricom.server.data.entity.PostState;
 import com.illdangag.iricom.server.util.DateTimeUtils;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -14,14 +15,6 @@ import lombok.Getter;
 @AllArgsConstructor
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class PostInfo {
-    /**
-     * 내용 포함 여부
-     */
-    public enum ResponseType {
-        NOT_INCLUDE_CONTENT,
-        INCLUDE_CONTENT,
-    }
-
     private String id;
 
     private Long createDate;
@@ -55,14 +48,11 @@ public class PostInfo {
 
     private String boardId;
 
-    public PostInfo(Post post, PostContent postContent, ResponseType responseType, long commentCount, long upvote, long downvote) {
+    public PostInfo(Post post, boolean includeContent, PostState postState, long commentCount, long upvote, long downvote) {
         this.id = "" + post.getId();
-        this.type = postContent.getType().getText();
         this.createDate = DateTimeUtils.getLong(post.getCreateDate());
         this.updateDate = DateTimeUtils.getLong(post.getUpdateDate());
-        this.status = postContent.getState().getText();
-        this.title = postContent.getTitle();
-        this.isAllowComment = postContent.getAllowComment();
+
         this.viewCount = post.getViewCount();
         this.upvote = upvote;
         this.downvote = downvote;
@@ -71,13 +61,34 @@ public class PostInfo {
         this.hasTemporary = post.getTemporaryContent() != null;
         this.boardId = "" + post.getBoard().getId();
 
-        if (responseType == ResponseType.INCLUDE_CONTENT) {
-            this.content = postContent.getContent();
+        PostContent content;
+        if (postState == PostState.PUBLISH) {
+            // 발행된 내용을 우선
+            if (post.getContent() != null) {
+                content = post.getContent();
+            } else {
+                content = post.getTemporaryContent();
+            }
+        } else {
+            // 임시 저장 내용을 우선
+            if (post.getTemporaryContent() != null) {
+                content = post.getTemporaryContent();
+            } else {
+                content = post.getContent();
+            }
+        }
+        this.type = content.getType().getText();
+        this.status = content.getState().getText();
+        this.title = content.getTitle();
+        this.isAllowComment = content.getAllowComment();
+
+        if (includeContent) {
+            this.content = content.getContent();
         }
     }
 
-    public PostInfo(Post post, PostContent postContent, AccountInfo accountInfo, ResponseType responseType, long commentCount, long upvote, long downvote) {
-        this(post, postContent, responseType, commentCount, upvote, downvote);
+    public PostInfo(Post post, AccountInfo accountInfo, boolean includeContent, PostState postState, long commentCount, long upvote, long downvote) {
+        this(post, includeContent, postState, commentCount, upvote, downvote);
         this.accountInfo = accountInfo;
     }
 }

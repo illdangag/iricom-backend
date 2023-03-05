@@ -101,8 +101,7 @@ public class PostServiceImpl implements PostService {
         post.setTemporaryContent(postContent);
 
         this.postRepository.save(post, postContent);
-        long commentCount = this.commentRepository.getCommentCount(post);
-        return new PostInfo(post, postContent, PostInfo.ResponseType.INCLUDE_CONTENT, commentCount, 0, 0);
+        return new PostInfo(post, true, PostState.TEMPORARY, 0, 0, 0);
     }
 
     @Override
@@ -168,7 +167,7 @@ public class PostServiceImpl implements PostService {
         long upvote = this.postVoteRepository.getPostVoteCount(post, VoteType.UPVOTE);
         long downvote = this.postVoteRepository.getPostVoteCount(post, VoteType.DOWNVOTE);
 
-        return new PostInfo(post, temporaryPostContent, PostInfo.ResponseType.INCLUDE_CONTENT, commentCount, upvote, downvote);
+        return new PostInfo(post, true, PostState.TEMPORARY, commentCount, upvote, downvote);
     }
 
     @Override
@@ -184,21 +183,12 @@ public class PostServiceImpl implements PostService {
             throw new IricomException(IricomErrorCode.DISABLED_BOARD_TO_POST);
         }
 
-        PostContent postContent;
         if (postState == PostState.TEMPORARY) {
             if (!post.getAccount().equals(account)) {
                 // 임시 저장한 내용을 조회하는 경우에는 본인이 작성한 게시물만 가능
                 throw new IricomException(IricomErrorCode.INVALID_AUTHORIZATION_TO_GET_TEMPORARY_CONTENT);
             }
-            if (post.getTemporaryContent() == null) {
-                throw new IricomException(IricomErrorCode.NOT_EXIST_TEMPORARY_CONTENT);
-            }
-            postContent = post.getTemporaryContent();
         } else {
-            if (post.getContent() == null) {
-                throw new IricomException(IricomErrorCode.NOT_EXIST_PUBLISH_CONTENT);
-            }
-            postContent = post.getContent();
             post.setViewCount(post.getViewCount() + 1);
         }
 
@@ -210,7 +200,7 @@ public class PostServiceImpl implements PostService {
         long upvote = this.postVoteRepository.getPostVoteCount(post, VoteType.UPVOTE);
         long downvote = this.postVoteRepository.getPostVoteCount(post, VoteType.DOWNVOTE);
 
-        return new PostInfo(post, postContent, creatorInfo, PostInfo.ResponseType.INCLUDE_CONTENT, commentCount, upvote, downvote);
+        return new PostInfo(post, creatorInfo, true, postState, commentCount, upvote, downvote);
     }
 
     @Override
@@ -257,7 +247,7 @@ public class PostServiceImpl implements PostService {
         long upvote = this.postVoteRepository.getPostVoteCount(post, VoteType.UPVOTE);
         long downvote = this.postVoteRepository.getPostVoteCount(post, VoteType.DOWNVOTE);
 
-        return new PostInfo(post, post.getContent(), PostInfo.ResponseType.INCLUDE_CONTENT, commentCount, upvote, downvote);
+        return new PostInfo(post, true, PostState.PUBLISH, commentCount, upvote, downvote);
     }
 
     @Override
@@ -286,6 +276,7 @@ public class PostServiceImpl implements PostService {
             }
         }
 
+
         List<Account> accountList = postList.stream()
                 .map(Post::getAccount)
                 .distinct()
@@ -298,7 +289,7 @@ public class PostServiceImpl implements PostService {
             long upvote = this.postVoteRepository.getPostVoteCount(post, VoteType.UPVOTE);
             long downvote = this.postVoteRepository.getPostVoteCount(post, VoteType.DOWNVOTE);
 
-            return new PostInfo(post, post.getContent(), accountInfo, PostInfo.ResponseType.NOT_INCLUDE_CONTENT, commentCount, upvote, downvote);
+            return new PostInfo(post, accountInfo, false, PostState.PUBLISH, commentCount, upvote, downvote);
         }).collect(Collectors.toList());
 
         return PostInfoList.builder()
@@ -323,6 +314,11 @@ public class PostServiceImpl implements PostService {
             throw new IricomException(IricomErrorCode.DISABLED_BOARD_TO_POST);
         }
 
+        // 본인이 작성한 게시물만 삭제 가능
+        if (!post.getAccount().equals(account)) {
+            throw new IricomException(IricomErrorCode.INVALID_AUTHORIZATION_TO_UPDATE_POST_OR_NOTIFICATION);
+        }
+
         // 공지 사항인 경우 시스템 관리자 또는 해당 게시판 관리자만 삭제
         PostContent content;
         if (post.getContent() != null) {
@@ -337,11 +333,6 @@ public class PostServiceImpl implements PostService {
             }
         }
 
-        // 본인이 작성한 게시물만 삭제 가능
-        if (!post.getAccount().equals(account)) {
-            throw new IricomException(IricomErrorCode.INVALID_AUTHORIZATION_TO_UPDATE_POST_OR_NOTIFICATION);
-        }
-
         if (!post.getDeleted()) {
             post.setDeleted(true);
             this.postRepository.save(post);
@@ -350,7 +341,7 @@ public class PostServiceImpl implements PostService {
         long upvote = this.postVoteRepository.getPostVoteCount(post, VoteType.UPVOTE);
         long downvote = this.postVoteRepository.getPostVoteCount(post, VoteType.DOWNVOTE);
 
-        return new PostInfo(post, content, PostInfo.ResponseType.INCLUDE_CONTENT, commentCount, upvote, downvote);
+        return new PostInfo(post, true, PostState.PUBLISH, commentCount, upvote, downvote);
     }
 
     public PostInfo votePost(Account account, String boardId, String postId, VoteType voteType) {
@@ -390,7 +381,7 @@ public class PostServiceImpl implements PostService {
         long upvote = this.postVoteRepository.getPostVoteCount(post, VoteType.UPVOTE);
         long downvote = this.postVoteRepository.getPostVoteCount(post, VoteType.DOWNVOTE);
 
-        return new PostInfo(post, post.getContent(), PostInfo.ResponseType.INCLUDE_CONTENT, commentCount, upvote, downvote);
+        return new PostInfo(post, true, PostState.PUBLISH, commentCount, upvote, downvote);
     }
 
     @Override
@@ -403,14 +394,7 @@ public class PostServiceImpl implements PostService {
             long commentCount = this.commentRepository.getCommentCount(post);
             long upvote = this.postVoteRepository.getPostVoteCount(post, VoteType.UPVOTE);
             long downvote = this.postVoteRepository.getPostVoteCount(post, VoteType.DOWNVOTE);
-
-            PostContent postContent;
-            if (post.getTemporaryContent() != null) {
-                postContent = post.getTemporaryContent();
-            } else {
-                postContent = post.getContent();
-            }
-            return new PostInfo(post, postContent, accountInfo, PostInfo.ResponseType.NOT_INCLUDE_CONTENT, commentCount, upvote, downvote);
+            return new PostInfo(post, accountInfo, false, PostState.PUBLISH, commentCount, upvote, downvote);
         }).collect(Collectors.toList());
 
         return PostInfoList.builder()
