@@ -26,7 +26,8 @@ public class PostRepositoryImpl implements PostRepository {
 
     @Override
     public Optional<Post> getPost(long id) {
-        String jpql = "SELECT p FROM Post p WHERE p.id = :id";
+        this.entityManager.clear();
+        final String jpql = "SELECT p FROM Post p WHERE p.id = :id";
         TypedQuery<Post> query = this.entityManager.createQuery(jpql, Post.class)
                 .setParameter("id", id);
         List<Post> postList = query.getResultList();
@@ -39,6 +40,7 @@ public class PostRepositoryImpl implements PostRepository {
 
     @Override
     public List<Post> getPublishPostList(Board board, PostType postType, int offset, int limit) {
+        this.entityManager.clear();
         final String jpql = "SELECT p FROM Post p " +
                 "WHERE p.board = :board " +
                 "AND p.content IS NOT NULL " +
@@ -54,6 +56,7 @@ public class PostRepositoryImpl implements PostRepository {
 
     @Override
     public List<Post> getPublishPostList(Board board, int offset, int limit) {
+        this.entityManager.clear();
         final String jpql = "SELECT p FROM Post p " +
                 "WHERE p.board = :board " +
                 "AND p.content IS NOT NULL " +
@@ -67,6 +70,7 @@ public class PostRepositoryImpl implements PostRepository {
 
     @Override
     public List<Post> getPostList(Account account, int offset, int limit) {
+        this.entityManager.clear();
         final String jpql = "SELECT p FROM Post p " +
                 "WHERE p.account = :account " +
                 "ORDER BY p.createDate DESC";
@@ -79,6 +83,7 @@ public class PostRepositoryImpl implements PostRepository {
 
     @Override
     public long getPostCount(Account account) {
+        this.entityManager.clear();
         final String jpql = "SELECT COUNT(*) FROM Post p WHERE p.account = :account";
         TypedQuery<Long> query = this.entityManager.createQuery(jpql, Long.class)
                 .setParameter("account", account);
@@ -87,6 +92,7 @@ public class PostRepositoryImpl implements PostRepository {
 
     @Override
     public long getPublishPostCount(Board board, PostType postType) {
+        this.entityManager.clear();
         final String jpql = "SELECT COUNT(*) FROM Post p " +
                 "WHERE p.board = :board " +
                 "AND p.content IS NOT NULL AND " +
@@ -99,6 +105,7 @@ public class PostRepositoryImpl implements PostRepository {
 
     @Override
     public long getPublishPostCount(Board board) {
+        this.entityManager.clear();
         final String jpql = "SELECT COUNT(*) FROM Post p " +
                 "WHERE p.board = :board " +
                 "AND p.content IS NOT NULL AND " +
@@ -110,6 +117,7 @@ public class PostRepositoryImpl implements PostRepository {
 
     @Override
     public List<Post> getPublishPostList(Board board, PostType postType, String containTitle, int offset, int limit) {
+        this.entityManager.clear();
         final String jpql = "SELECT p FROM Post p " +
                 "WHERE p.board = :board " +
                 "AND p.content IS NOT NULL " +
@@ -127,6 +135,7 @@ public class PostRepositoryImpl implements PostRepository {
 
     @Override
     public List<Post> getPublishPostList(Board board, String containTitle, int offset, int limit) {
+        this.entityManager.clear();
         final String jpql = "SELECT p FROM Post p " +
                 "WHERE p.board = :board " +
                 "AND p.content IS NOT NULL " +
@@ -142,7 +151,8 @@ public class PostRepositoryImpl implements PostRepository {
 
     @Override
     public long getPublishPostCount(Board board, PostType postType, String containTitle) {
-        String jpql = "SELECT COUNT(*) FROM Post p " +
+        this.entityManager.clear();
+        final String jpql = "SELECT COUNT(*) FROM Post p " +
                 "WHERE p.board = :board " +
                 "AND p.content IS NOT NULL " +
                 "AND p.content.type = :type " +
@@ -156,6 +166,7 @@ public class PostRepositoryImpl implements PostRepository {
 
     @Override
     public long getPublishPostCount(Board board, String containTitle) {
+        this.entityManager.clear();
         final String jpql = "SELECT COUNT(*) FROM Post p " +
                 "WHERE p.board = :board " +
                 "AND p.content IS NOT NULL " +

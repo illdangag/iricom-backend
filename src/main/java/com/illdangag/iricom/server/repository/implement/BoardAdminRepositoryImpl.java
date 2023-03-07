@@ -25,6 +25,7 @@ public class BoardAdminRepositoryImpl implements BoardAdminRepository {
 
     @Override
     public List<BoardAdmin> getBoardAdminList(List<Board> boardList) {
+        this.entityManager.clear();
         final String jpql = "SELECT ba FROM BoardAdmin ba " +
                 "WHERE ba.board IN (:boards) " +
                 "ORDER BY ba.board.title ASC, ba.account.email ASC, ba.createDate DESC";
@@ -35,6 +36,7 @@ public class BoardAdminRepositoryImpl implements BoardAdminRepository {
 
     @Override
     public List<BoardAdmin> getBoardAdminList(Account account, boolean deleted) {
+        this.entityManager.clear();
         final String jpql = "SELECT ba FROM BoardAdmin ba " +
                 "WHERE ba.account = :account " +
                 "AND ba.deleted = :deleted " +
@@ -47,6 +49,7 @@ public class BoardAdminRepositoryImpl implements BoardAdminRepository {
 
     @Override
     public List<BoardAdmin> getBoardAdminList(Board board, Account account) {
+        this.entityManager.clear();
         final String jpql = "SELECT ba FROM BoardAdmin ba " +
                 "WHERE ba.board = :board " +
                 "AND ba.account = :account " +

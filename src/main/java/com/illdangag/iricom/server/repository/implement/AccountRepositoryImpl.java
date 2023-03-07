@@ -27,7 +27,8 @@ public class AccountRepositoryImpl implements AccountRepository {
 
     @Override
     public Optional<Account> getAccount(long id) {
-        String jpql = "SELECT a FROM Account a WHERE a.id = :id";
+        this.entityManager.clear();
+        final String jpql = "SELECT a FROM Account a WHERE a.id = :id";
         TypedQuery<Account> query = this.entityManager.createQuery(jpql, Account.class);
         query.setParameter("id", id);
         List<Account> accountList = query.getResultList();
@@ -40,7 +41,8 @@ public class AccountRepositoryImpl implements AccountRepository {
 
     @Override
     public List<Account> getAccountList(String email) {
-        String jpql = "SELECT a FROM Account a WHERE a.email = :email";
+        this.entityManager.clear();
+        final String jpql = "SELECT a FROM Account a WHERE a.email = :email";
         TypedQuery<Account> query = this.entityManager.createQuery(jpql, Account.class);
         query.setParameter("email", email);
         return query.getResultList();
@@ -48,7 +50,8 @@ public class AccountRepositoryImpl implements AccountRepository {
 
     @Override
     public List<Account> getAccountList(int offset, int limit) {
-        String jpql = "SELECT a FROM Account a ORDER BY a.email";
+        this.entityManager.clear();
+        final String jpql = "SELECT a FROM Account a ORDER BY a.email";
         TypedQuery<Account> query = this.entityManager.createQuery(jpql, Account.class);
         query.setFirstResult(offset)
                 .setMaxResults(limit);
@@ -57,14 +60,16 @@ public class AccountRepositoryImpl implements AccountRepository {
 
     @Override
     public long getAccountCount() {
-        String jpql = "SELECT COUNT(*) FROM Account a";
+        this.entityManager.clear();
+        final String jpql = "SELECT COUNT(*) FROM Account a";
         TypedQuery<Long> query = this.entityManager.createQuery(jpql, Long.class);
         return query.getSingleResult();
     }
 
     @Override
     public List<Account> getAccountList(String containEmail, int offset, int limit) {
-        String jpql = "SELECT a FROM Account a WHERE a.email LIKE :email ORDER BY a.email";
+        this.entityManager.clear();
+        final String jpql = "SELECT a FROM Account a WHERE a.email LIKE :email ORDER BY a.email";
         TypedQuery<Account> query = this.entityManager.createQuery(jpql, Account.class);
         query.setParameter("email", "%" + StringUtils.escape(containEmail) + "%")
                 .setFirstResult(offset)
@@ -74,7 +79,8 @@ public class AccountRepositoryImpl implements AccountRepository {
 
     @Override
     public long getAccountCount(String containEmail) {
-        String jpql = "SELECT COUNT(*) FROM Account a WHERE a.email LIKE :email";
+        this.entityManager.clear();
+        final String jpql = "SELECT COUNT(*) FROM Account a WHERE a.email LIKE :email";
         TypedQuery<Long> query = this.entityManager.createQuery(jpql, Long.class);
         query.setParameter("email", "%" + StringUtils.escape(containEmail) + "%");
         return query.getSingleResult();
@@ -82,7 +88,8 @@ public class AccountRepositoryImpl implements AccountRepository {
 
     @Override
     public Optional<AccountDetail> getAccountDetail(Account account) {
-        String jpql = "SELECT ad FROM AccountDetail ad WHERE ad.account = :account ORDER BY ad.createDate DESC";
+        this.entityManager.clear();
+        final String jpql = "SELECT ad FROM AccountDetail ad WHERE ad.account = :account ORDER BY ad.createDate DESC";
         TypedQuery<AccountDetail> query = this.entityManager.createQuery(jpql, AccountDetail.class);
         query.setParameter("account", account);
         List<AccountDetail> accountDetailList = query.getResultList();
@@ -95,7 +102,8 @@ public class AccountRepositoryImpl implements AccountRepository {
 
     @Override
     public Map<Account, AccountDetail> getAccountDetailList(List<Account> accountList) {
-        String jpql = "SELECT ad FROM AccountDetail ad WHERE ad.account IN :accounts ORDER BY ad.createDate DESC";
+        this.entityManager.clear();
+        final String jpql = "SELECT ad FROM AccountDetail ad WHERE ad.account IN :accounts ORDER BY ad.createDate DESC";
         TypedQuery<AccountDetail> query = this.entityManager.createQuery(jpql, AccountDetail.class);
         query.setParameter("accounts", accountList);
         List<AccountDetail> accountDetailList = query.getResultList();
@@ -114,6 +122,7 @@ public class AccountRepositoryImpl implements AccountRepository {
 
     @Override
     public Optional<Account> getAccount(String nickname) {
+        this.entityManager.clear();
         final String jpql = "SELECT a FROM Account a " +
                 "WHERE a.accountDetail IS NOT NULL " +
                 "AND a.accountDetail.nickname = :nickname";

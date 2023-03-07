@@ -28,7 +28,8 @@ public class CommentVoteRepositoryImpl implements CommentVoteRepository {
 
     @Override
     public Optional<CommentVote> getCommentVote(Account account, Comment comment, VoteType type) {
-        String jpql = "SELECT cv FROM CommentVote cv " +
+        this.entityManager.clear();
+        final String jpql = "SELECT cv FROM CommentVote cv " +
                 "WHERE cv.account = :account " +
                 "AND cv.comment = :comment " +
                 "AND cv.type = :type";
@@ -48,7 +49,8 @@ public class CommentVoteRepositoryImpl implements CommentVoteRepository {
 
     @Override
     public long getCommentVoteCount(Comment comment, VoteType type) {
-        String jpql = "SELECT COUNT(*) FROM CommentVote cv " +
+        this.entityManager.clear();
+        final String jpql = "SELECT COUNT(*) FROM CommentVote cv " +
                 "WHERE cv.comment = :comment " +
                 "AND cv.type = :type";
 

@@ -28,7 +28,8 @@ public class PostVoteRepositoryImpl implements PostVoteRepository {
 
     @Override
     public Optional<PostVote> getPostVote(Account account, Post post, VoteType voteType) {
-        String jpql = "SELECT pv from PostVote pv " +
+        this.entityManager.clear();
+        final String jpql = "SELECT pv from PostVote pv " +
                 "WHERE pv.account = :account " +
                 "AND pv.post = :post " +
                 "AND pv.type = :type";
@@ -48,7 +49,8 @@ public class PostVoteRepositoryImpl implements PostVoteRepository {
 
     @Override
     public long getPostVoteCount(Post post, VoteType voteType) {
-        String jpql = "SELECT COUNT(*) FROM PostVote pv " +
+        this.entityManager.clear();
+        final String jpql = "SELECT COUNT(*) FROM PostVote pv " +
                 "WHERE pv.post = :post " +
                 "AND pv.type = :type";
 
