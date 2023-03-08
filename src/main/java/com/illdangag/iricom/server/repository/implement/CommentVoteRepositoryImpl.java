@@ -19,26 +19,27 @@ import java.util.Optional;
 @Slf4j
 @Repository
 public class CommentVoteRepositoryImpl implements CommentVoteRepository {
-    private final EntityManager entityManager;
+    private final EntityManagerFactory entityManagerFactory;
 
     @Autowired
     public CommentVoteRepositoryImpl(EntityManagerFactory entityManagerFactory) {
-        this.entityManager = entityManagerFactory.createEntityManager();
+        this.entityManagerFactory = entityManagerFactory;
     }
 
     @Override
     public Optional<CommentVote> getCommentVote(Account account, Comment comment, VoteType type) {
-        this.entityManager.clear();
+        EntityManager entityManager = this.entityManagerFactory.createEntityManager();
         final String jpql = "SELECT cv FROM CommentVote cv " +
                 "WHERE cv.account = :account " +
                 "AND cv.comment = :comment " +
                 "AND cv.type = :type";
 
-        TypedQuery<CommentVote> query = this.entityManager.createQuery(jpql, CommentVote.class)
+        TypedQuery<CommentVote> query = entityManager.createQuery(jpql, CommentVote.class)
                 .setParameter("account", account)
                 .setParameter("comment", comment)
                 .setParameter("type", type);
         List<CommentVote> resultList = query.getResultList();
+        entityManager.close();
 
         if (resultList.isEmpty()) {
             return Optional.empty();
@@ -49,27 +50,31 @@ public class CommentVoteRepositoryImpl implements CommentVoteRepository {
 
     @Override
     public long getCommentVoteCount(Comment comment, VoteType type) {
-        this.entityManager.clear();
+        EntityManager entityManager = this.entityManagerFactory.createEntityManager();
         final String jpql = "SELECT COUNT(*) FROM CommentVote cv " +
                 "WHERE cv.comment = :comment " +
                 "AND cv.type = :type";
 
-        TypedQuery<Long> query = this.entityManager.createQuery(jpql, Long.class)
+        TypedQuery<Long> query = entityManager.createQuery(jpql, Long.class)
                 .setParameter("comment", comment)
                 .setParameter("type", type);
 
-        return query.getSingleResult();
+        long result = query.getSingleResult();
+        entityManager.close();
+        return result;
     }
 
     @Override
     public void save(CommentVote commentVote) {
-        EntityTransaction transaction = this.entityManager.getTransaction();
+        EntityManager entityManager = this.entityManagerFactory.createEntityManager();
+        EntityTransaction transaction = entityManager.getTransaction();
         transaction.begin();
         if (commentVote.getId() == null) {
-            this.entityManager.persist(commentVote);
+            entityManager.persist(commentVote);
         } else {
-            this.entityManager.merge(commentVote);
+            entityManager.merge(commentVote);
         }
         transaction.commit();
+        entityManager.close();
     }
 }

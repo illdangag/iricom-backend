@@ -16,48 +16,54 @@ import java.util.Optional;
 
 @Repository
 public class BoardAdminRepositoryImpl implements BoardAdminRepository {
-    private final EntityManager entityManager;
+    private final EntityManagerFactory entityManagerFactory;
 
     @Autowired
     public BoardAdminRepositoryImpl(EntityManagerFactory entityManagerFactory) {
-        this.entityManager = entityManagerFactory.createEntityManager();
+        this.entityManagerFactory = entityManagerFactory;
     }
 
     @Override
     public List<BoardAdmin> getBoardAdminList(List<Board> boardList) {
-        this.entityManager.clear();
+        EntityManager entityManager = this.entityManagerFactory.createEntityManager();
         final String jpql = "SELECT ba FROM BoardAdmin ba " +
                 "WHERE ba.board IN (:boards) " +
                 "ORDER BY ba.board.title ASC, ba.account.email ASC, ba.createDate DESC";
-        TypedQuery<BoardAdmin> query = this.entityManager.createQuery(jpql, BoardAdmin.class);
+        TypedQuery<BoardAdmin> query = entityManager.createQuery(jpql, BoardAdmin.class);
         query.setParameter("boards", boardList);
-        return query.getResultList();
+        List<BoardAdmin> resultList = query.getResultList();
+        entityManager.close();
+        return resultList;
     }
 
     @Override
     public List<BoardAdmin> getBoardAdminList(Account account, boolean deleted) {
-        this.entityManager.clear();
+        EntityManager entityManager = this.entityManagerFactory.createEntityManager();
         final String jpql = "SELECT ba FROM BoardAdmin ba " +
                 "WHERE ba.account = :account " +
                 "AND ba.deleted = :deleted " +
                 "ORDER BY ba.createDate DESC";
-        TypedQuery<BoardAdmin> query = this.entityManager.createQuery(jpql, BoardAdmin.class)
+        TypedQuery<BoardAdmin> query = entityManager.createQuery(jpql, BoardAdmin.class)
                 .setParameter("account", account)
                 .setParameter("deleted", deleted);
-        return query.getResultList();
+        List<BoardAdmin> resultList = query.getResultList();
+        entityManager.close();
+        return resultList;
     }
 
     @Override
     public List<BoardAdmin> getBoardAdminList(Board board, Account account) {
-        this.entityManager.clear();
+        EntityManager entityManager = this.entityManagerFactory.createEntityManager();
         final String jpql = "SELECT ba FROM BoardAdmin ba " +
                 "WHERE ba.board = :board " +
                 "AND ba.account = :account " +
                 "ORDER BY ba.createDate DESC";
-        TypedQuery<BoardAdmin> query = this.entityManager.createQuery(jpql, BoardAdmin.class);
+        TypedQuery<BoardAdmin> query = entityManager.createQuery(jpql, BoardAdmin.class);
         query.setParameter("board", board)
                 .setParameter("account", account);
-        return query.getResultList();
+        List<BoardAdmin> resultList = query.getResultList();
+        entityManager.close();
+        return resultList;
     }
 
     @Override
@@ -81,13 +87,15 @@ public class BoardAdminRepositoryImpl implements BoardAdminRepository {
 
     @Override
     public void save(BoardAdmin boardAdmin) {
-        EntityTransaction transaction = this.entityManager.getTransaction();
+        EntityManager entityManager = this.entityManagerFactory.createEntityManager();
+        EntityTransaction transaction = entityManager.getTransaction();
         transaction.begin();
         if (boardAdmin.getId() == null) {
-            this.entityManager.persist(boardAdmin);
+            entityManager.persist(boardAdmin);
         } else {
-            this.entityManager.merge(boardAdmin);
+            entityManager.merge(boardAdmin);
         }
         transaction.commit();
+        entityManager.close();
     }
 }

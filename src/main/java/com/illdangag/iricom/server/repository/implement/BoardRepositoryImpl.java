@@ -18,70 +18,82 @@ import java.util.Optional;
 @Slf4j
 @Repository
 public class BoardRepositoryImpl implements BoardRepository {
-    private final EntityManager entityManager;
+    private final EntityManagerFactory entityManagerFactory;
 
     @Autowired
     public BoardRepositoryImpl(EntityManagerFactory entityManagerFactory) {
-        this.entityManager = entityManagerFactory.createEntityManager();
+        this.entityManagerFactory = entityManagerFactory;
     }
 
     @Override
     public long getBoardCount() {
-        this.entityManager.clear();
+        EntityManager entityManager = this.entityManagerFactory.createEntityManager();
         final String jpql = "SELECT COUNT(*) FROM Board b";
-        TypedQuery<Long> query = this.entityManager.createQuery(jpql, Long.class);
-        return query.getSingleResult();
+        TypedQuery<Long> query = entityManager.createQuery(jpql, Long.class);
+        long result = query.getSingleResult();
+        entityManager.close();
+        return result;
     }
 
     @Override
     public List<Board> getBoardList(long id) {
-        this.entityManager.clear();
+        EntityManager entityManager = this.entityManagerFactory.createEntityManager();
         final String jpql = "SELECT b FROM Board b WHERE b.id = :id";
-        TypedQuery<Board> query = this.entityManager.createQuery(jpql, Board.class);
+        TypedQuery<Board> query = entityManager.createQuery(jpql, Board.class);
         query.setParameter("id", id);
-        return query.getResultList();
+        List<Board> resultList = query.getResultList();
+        entityManager.close();
+        return resultList;
     }
 
     @Override
     public List<Board> getBoardList(String containTitle, int offset, int limit) {
-        this.entityManager.clear();
+        EntityManager entityManager = this.entityManagerFactory.createEntityManager();
         final String jpql = "SELECT b FROM Board b WHERE b.title LIKE :title ORDER BY title";
-        TypedQuery<Board> query = this.entityManager.createQuery(jpql, Board.class);
+        TypedQuery<Board> query = entityManager.createQuery(jpql, Board.class);
         query.setParameter("title", "%" + StringUtils.escape(containTitle) + "%")
                 .setFirstResult(offset)
                 .setMaxResults(limit);
-        return query.getResultList();
+        List<Board> resultList = query.getResultList();
+        entityManager.close();
+        return resultList;
     }
 
     @Override
     public long getBoardCount(String containTitle) {
-        this.entityManager.clear();
+        EntityManager entityManager = this.entityManagerFactory.createEntityManager();
         final String jpql = "SELECT COUNT(*)FROM Board b WHERE b.title LIKE :title";
-        TypedQuery<Long> query = this.entityManager.createQuery(jpql, Long.class);
+        TypedQuery<Long> query = entityManager.createQuery(jpql, Long.class);
         query.setParameter("title", "%" + StringUtils.escape(containTitle) + "%");
-        return query.getSingleResult();
+        long result = query.getSingleResult();
+        entityManager.close();
+        return result;
     }
 
     @Override
     public List<Board> getBoardList(String containTitle, boolean enabled, int offset, int limit) {
-        this.entityManager.clear();
+        EntityManager entityManager = this.entityManagerFactory.createEntityManager();
         final String jpql = "SELECT b FROM Board b WHERE b.title LIKE :title AND b.enabled = :enabled";
-        TypedQuery<Board> query = this.entityManager.createQuery(jpql, Board.class);
+        TypedQuery<Board> query = entityManager.createQuery(jpql, Board.class);
         query.setParameter("title", "%" + StringUtils.escape(containTitle) + "%")
                 .setParameter("enabled", enabled)
                 .setFirstResult(offset)
                 .setMaxResults(limit);
-        return query.getResultList();
+        List<Board> resultList = query.getResultList();
+        entityManager.close();
+        return resultList;
     }
 
     @Override
     public long getBoardCount(String containTitle, boolean enabled) {
-        this.entityManager.clear();
+        EntityManager entityManager = this.entityManagerFactory.createEntityManager();
         final String jpql = "SELECT COUNT(*) FROM Board b WHERE b.title LIKE :title AND b.enabled = :enabled";
-        TypedQuery<Long> query = this.entityManager.createQuery(jpql, Long.class);
+        TypedQuery<Long> query = entityManager.createQuery(jpql, Long.class);
         query.setParameter("title", "%" + StringUtils.escape(containTitle) + "%")
                 .setParameter("enabled", enabled);
-        return query.getSingleResult();
+        long result = query.getSingleResult();
+        entityManager.close();
+        return result;
     }
 
     @Override
@@ -96,27 +108,31 @@ public class BoardRepositoryImpl implements BoardRepository {
 
     @Override
     public void save(Board board) {
-        EntityTransaction entityTransaction = this.entityManager.getTransaction();
+        EntityManager entityManager = this.entityManagerFactory.createEntityManager();
+        EntityTransaction entityTransaction = entityManager.getTransaction();
         entityTransaction.begin();
         if (board.getId() == null) {
-            this.entityManager.persist(board);
+            entityManager.persist(board);
         } else {
-            this.entityManager.merge(board);
+            entityManager.merge(board);
         }
         entityTransaction.commit();
+        entityManager.close();
     }
 
     @Override
     public void saveAll(Collection<Board> boards) {
-        EntityTransaction entityTransaction = this.entityManager.getTransaction();
+        EntityManager entityManager = this.entityManagerFactory.createEntityManager();
+        EntityTransaction entityTransaction = entityManager.getTransaction();
         entityTransaction.begin();
         for (Board board : boards) {
             if (board.getId() == null) {
-                this.entityManager.persist(board);
+                entityManager.persist(board);
             } else {
-                this.entityManager.merge(board);
+                entityManager.merge(board);
             }
         }
         entityTransaction.commit();
+        entityManager.close();
     }
 }

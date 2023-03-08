@@ -17,20 +17,21 @@ import java.util.Optional;
 @Slf4j
 @Repository
 public class PostRepositoryImpl implements PostRepository {
-    private final EntityManager entityManager;
+    private final EntityManagerFactory entityManagerFactory;
 
     @Autowired
     public PostRepositoryImpl(EntityManagerFactory entityManagerFactory) {
-        this.entityManager = entityManagerFactory.createEntityManager();
+        this.entityManagerFactory = entityManagerFactory;
     }
 
     @Override
     public Optional<Post> getPost(long id) {
-        this.entityManager.clear();
+        EntityManager entityManager = this.entityManagerFactory.createEntityManager();
         final String jpql = "SELECT p FROM Post p WHERE p.id = :id";
-        TypedQuery<Post> query = this.entityManager.createQuery(jpql, Post.class)
+        TypedQuery<Post> query = entityManager.createQuery(jpql, Post.class)
                 .setParameter("id", id);
         List<Post> postList = query.getResultList();
+        entityManager.close();
         if (postList.isEmpty()) {
             return Optional.empty();
         } else {
@@ -40,181 +41,207 @@ public class PostRepositoryImpl implements PostRepository {
 
     @Override
     public List<Post> getPublishPostList(Board board, PostType postType, int offset, int limit) {
-        this.entityManager.clear();
+        EntityManager entityManager = this.entityManagerFactory.createEntityManager();
         final String jpql = "SELECT p FROM Post p " +
                 "WHERE p.board = :board " +
                 "AND p.content IS NOT NULL " +
                 "AND p.content.type = :type " +
                 "ORDER BY p.createDate DESC";
-        TypedQuery<Post> query = this.entityManager.createQuery(jpql, Post.class)
+        TypedQuery<Post> query = entityManager.createQuery(jpql, Post.class)
                 .setParameter("board", board)
                 .setParameter("type", postType)
                 .setFirstResult(offset)
                 .setMaxResults(limit);
-        return query.getResultList();
+        List<Post> resultList = query.getResultList();
+        entityManager.close();
+        return resultList;
     }
 
     @Override
     public List<Post> getPublishPostList(Board board, int offset, int limit) {
-        this.entityManager.clear();
+        EntityManager entityManager = this.entityManagerFactory.createEntityManager();
         final String jpql = "SELECT p FROM Post p " +
                 "WHERE p.board = :board " +
                 "AND p.content IS NOT NULL " +
                 "ORDER BY p.createDate DESC";
-        TypedQuery<Post> query = this.entityManager.createQuery(jpql, Post.class)
+        TypedQuery<Post> query = entityManager.createQuery(jpql, Post.class)
                 .setParameter("board", board)
                 .setFirstResult(offset)
                 .setMaxResults(limit);
-        return query.getResultList();
+        List<Post> resultList = query.getResultList();
+        entityManager.close();
+        return resultList;
     }
 
     @Override
     public List<Post> getPostList(Account account, int offset, int limit) {
-        this.entityManager.clear();
+        EntityManager entityManager = this.entityManagerFactory.createEntityManager();
         final String jpql = "SELECT p FROM Post p " +
                 "WHERE p.account = :account " +
                 "ORDER BY p.createDate DESC";
-        TypedQuery<Post> query = this.entityManager.createQuery(jpql, Post.class)
+        TypedQuery<Post> query = entityManager.createQuery(jpql, Post.class)
                 .setParameter("account", account)
                 .setFirstResult(offset)
                 .setMaxResults(limit);
-        return query.getResultList();
+        List<Post> resultList = query.getResultList();
+        entityManager.close();
+        return resultList;
     }
 
     @Override
     public long getPostCount(Account account) {
-        this.entityManager.clear();
+        EntityManager entityManager = this.entityManagerFactory.createEntityManager();
         final String jpql = "SELECT COUNT(*) FROM Post p WHERE p.account = :account";
-        TypedQuery<Long> query = this.entityManager.createQuery(jpql, Long.class)
+        TypedQuery<Long> query = entityManager.createQuery(jpql, Long.class)
                 .setParameter("account", account);
-        return query.getSingleResult();
+        long result = query.getSingleResult();
+        entityManager.close();
+        return result;
     }
 
     @Override
     public long getPublishPostCount(Board board, PostType postType) {
-        this.entityManager.clear();
+        EntityManager entityManager = this.entityManagerFactory.createEntityManager();
         final String jpql = "SELECT COUNT(*) FROM Post p " +
                 "WHERE p.board = :board " +
                 "AND p.content IS NOT NULL AND " +
                 "p.content.type = :type";
-        TypedQuery<Long> query = this.entityManager.createQuery(jpql, Long.class)
+        TypedQuery<Long> query = entityManager.createQuery(jpql, Long.class)
                 .setParameter("board", board)
                 .setParameter("type", postType);
-        return query.getSingleResult();
+        long result = query.getSingleResult();
+        entityManager.close();
+        return result;
     }
 
     @Override
     public long getPublishPostCount(Board board) {
-        this.entityManager.clear();
+        EntityManager entityManager = this.entityManagerFactory.createEntityManager();
         final String jpql = "SELECT COUNT(*) FROM Post p " +
                 "WHERE p.board = :board " +
                 "AND p.content IS NOT NULL AND " +
                 "p.content.type = :type";
-        TypedQuery<Long> query = this.entityManager.createQuery(jpql, Long.class)
+        TypedQuery<Long> query = entityManager.createQuery(jpql, Long.class)
                 .setParameter("board", board);
-        return query.getSingleResult();
+        long result = query.getSingleResult();
+        entityManager.close();
+        return result;
     }
 
     @Override
     public List<Post> getPublishPostList(Board board, PostType postType, String containTitle, int offset, int limit) {
-        this.entityManager.clear();
+        EntityManager entityManager = this.entityManagerFactory.createEntityManager();
         final String jpql = "SELECT p FROM Post p " +
                 "WHERE p.board = :board " +
                 "AND p.content IS NOT NULL " +
                 "AND p.content.type = :type " +
                 "AND p.content.title LIKE :title " +
                 "ORDER BY p.createDate DESC";
-        TypedQuery<Post> query = this.entityManager.createQuery(jpql, Post.class)
+        TypedQuery<Post> query = entityManager.createQuery(jpql, Post.class)
                 .setParameter("board", board)
                 .setParameter("type", postType)
                 .setParameter("title", "%" + StringUtils.escape(containTitle) + "%")
                 .setFirstResult(offset)
                 .setMaxResults(limit);
-        return query.getResultList();
+        List<Post> resultList = query.getResultList();
+        entityManager.close();
+        return resultList;
     }
 
     @Override
     public List<Post> getPublishPostList(Board board, String containTitle, int offset, int limit) {
-        this.entityManager.clear();
+        EntityManager entityManager = this.entityManagerFactory.createEntityManager();
         final String jpql = "SELECT p FROM Post p " +
                 "WHERE p.board = :board " +
                 "AND p.content IS NOT NULL " +
                 "AND p.content.title LIKE :title " +
                 "ORDER BY p.createDate DESC";
-        TypedQuery<Post> query = this.entityManager.createQuery(jpql, Post.class)
+        TypedQuery<Post> query = entityManager.createQuery(jpql, Post.class)
                 .setParameter("board", board)
                 .setParameter("title", "%" + StringUtils.escape(containTitle) + "%")
                 .setFirstResult(offset)
                 .setMaxResults(limit);
-        return query.getResultList();
+        List<Post> resultList = query.getResultList();
+        entityManager.close();
+        return resultList;
     }
 
     @Override
     public long getPublishPostCount(Board board, PostType postType, String containTitle) {
-        this.entityManager.clear();
+        EntityManager entityManager = this.entityManagerFactory.createEntityManager();
         final String jpql = "SELECT COUNT(*) FROM Post p " +
                 "WHERE p.board = :board " +
                 "AND p.content IS NOT NULL " +
                 "AND p.content.type = :type " +
                 "AND p.content.title LIKE :title";
-        TypedQuery<Long> query = this.entityManager.createQuery(jpql, Long.class)
+        TypedQuery<Long> query = entityManager.createQuery(jpql, Long.class)
                 .setParameter("board", board)
                 .setParameter("type", postType)
                 .setParameter("title", "%" + StringUtils.escape(containTitle) + "%");
-        return query.getSingleResult();
+        long result = query.getSingleResult();
+        entityManager.close();
+        return result;
     }
 
     @Override
     public long getPublishPostCount(Board board, String containTitle) {
-        this.entityManager.clear();
+        EntityManager entityManager = this.entityManagerFactory.createEntityManager();
         final String jpql = "SELECT COUNT(*) FROM Post p " +
                 "WHERE p.board = :board " +
                 "AND p.content IS NOT NULL " +
                 "AND p.content.title LIKE :title";
-        TypedQuery<Long> query = this.entityManager.createQuery(jpql, Long.class)
+        TypedQuery<Long> query = entityManager.createQuery(jpql, Long.class)
                 .setParameter("board", board)
                 .setParameter("title", "%" + StringUtils.escape(containTitle) + "%");
-        return query.getSingleResult();
+        long result = query.getSingleResult();
+        entityManager.close();
+        return result;
     }
 
     @Override
     public void save(Post post) {
-        EntityTransaction entityTransaction = this.entityManager.getTransaction();
+        EntityManager entityManager = this.entityManagerFactory.createEntityManager();
+        EntityTransaction entityTransaction = entityManager.getTransaction();
         entityTransaction.begin();
         if (post.getId() == null) {
-            this.entityManager.persist(post);
+            entityManager.persist(post);
         } else {
-            this.entityManager.merge(post);
+            entityManager.merge(post);
         }
         entityTransaction.commit();
+        entityManager.close();
     }
 
     @Override
     public void save(PostContent postContent) {
-        EntityTransaction entityTransaction = this.entityManager.getTransaction();
+        EntityManager entityManager = this.entityManagerFactory.createEntityManager();
+        EntityTransaction entityTransaction = entityManager.getTransaction();
         entityTransaction.begin();
         if (postContent.getId() == null) {
-            this.entityManager.persist(postContent);
+            entityManager.persist(postContent);
         } else {
-            this.entityManager.merge(postContent);
+            entityManager.merge(postContent);
         }
         entityTransaction.commit();
+        entityManager.close();
     }
 
     @Override
     public void save(Post post, PostContent postContent) {
-        EntityTransaction entityTransaction = this.entityManager.getTransaction();
+        EntityManager entityManager = this.entityManagerFactory.createEntityManager();
+        EntityTransaction entityTransaction = entityManager.getTransaction();
         entityTransaction.begin();
         if (post.getId() == null) {
-            this.entityManager.persist(post);
+            entityManager.persist(post);
         } else {
-            this.entityManager.merge(post);
+            entityManager.merge(post);
         }
         if (postContent.getId() == null) {
-            this.entityManager.persist(postContent);
+            entityManager.persist(postContent);
         } else {
-            this.entityManager.merge(postContent);
+            entityManager.merge(postContent);
         }
         entityTransaction.commit();
+        entityManager.close();
     }
 }

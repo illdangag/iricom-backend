@@ -18,20 +18,21 @@ import java.util.stream.Collectors;
 @Slf4j
 @Repository
 public class AccountRepositoryImpl implements AccountRepository {
-    private final EntityManager entityManager;
+    private final EntityManagerFactory entityManagerFactory;
 
     @Autowired
     public AccountRepositoryImpl(EntityManagerFactory entityManagerFactory) {
-        this.entityManager = entityManagerFactory.createEntityManager();
+        this.entityManagerFactory = entityManagerFactory;
     }
 
     @Override
     public Optional<Account> getAccount(long id) {
-        this.entityManager.clear();
+        EntityManager entityManager = this.entityManagerFactory.createEntityManager();
         final String jpql = "SELECT a FROM Account a WHERE a.id = :id";
-        TypedQuery<Account> query = this.entityManager.createQuery(jpql, Account.class);
+        TypedQuery<Account> query = entityManager.createQuery(jpql, Account.class);
         query.setParameter("id", id);
         List<Account> accountList = query.getResultList();
+        entityManager.close();
         if (accountList.isEmpty()) {
             return Optional.empty();
         } else {
@@ -41,58 +42,69 @@ public class AccountRepositoryImpl implements AccountRepository {
 
     @Override
     public List<Account> getAccountList(String email) {
-        this.entityManager.clear();
+        EntityManager entityManager = this.entityManagerFactory.createEntityManager();
         final String jpql = "SELECT a FROM Account a WHERE a.email = :email";
-        TypedQuery<Account> query = this.entityManager.createQuery(jpql, Account.class);
+        TypedQuery<Account> query = entityManager.createQuery(jpql, Account.class);
         query.setParameter("email", email);
-        return query.getResultList();
+        List<Account> resultList = query.getResultList();
+        entityManager.close();
+        return resultList;
     }
 
     @Override
     public List<Account> getAccountList(int offset, int limit) {
-        this.entityManager.clear();
+        EntityManager entityManager = this.entityManagerFactory.createEntityManager();
         final String jpql = "SELECT a FROM Account a ORDER BY a.email";
-        TypedQuery<Account> query = this.entityManager.createQuery(jpql, Account.class);
+        TypedQuery<Account> query = entityManager.createQuery(jpql, Account.class);
         query.setFirstResult(offset)
                 .setMaxResults(limit);
-        return query.getResultList();
+        List<Account> resultList = query.getResultList();
+        entityManager.close();
+        return resultList;
     }
 
     @Override
     public long getAccountCount() {
-        this.entityManager.clear();
+        EntityManager entityManager = this.entityManagerFactory.createEntityManager();
         final String jpql = "SELECT COUNT(*) FROM Account a";
-        TypedQuery<Long> query = this.entityManager.createQuery(jpql, Long.class);
-        return query.getSingleResult();
+        TypedQuery<Long> query = entityManager.createQuery(jpql, Long.class);
+        long result = query.getSingleResult();
+        entityManager.close();
+        return result;
     }
 
     @Override
     public List<Account> getAccountList(String containEmail, int offset, int limit) {
-        this.entityManager.clear();
+        EntityManager entityManager = this.entityManagerFactory.createEntityManager();
         final String jpql = "SELECT a FROM Account a WHERE a.email LIKE :email ORDER BY a.email";
-        TypedQuery<Account> query = this.entityManager.createQuery(jpql, Account.class);
+        TypedQuery<Account> query = entityManager.createQuery(jpql, Account.class);
         query.setParameter("email", "%" + StringUtils.escape(containEmail) + "%")
                 .setFirstResult(offset)
                 .setMaxResults(limit);
-        return query.getResultList();
+        List<Account> resultList = query.getResultList();
+        entityManager.close();
+        return resultList;
     }
 
     @Override
     public long getAccountCount(String containEmail) {
-        this.entityManager.clear();
+        EntityManager entityManager = this.entityManagerFactory.createEntityManager();
         final String jpql = "SELECT COUNT(*) FROM Account a WHERE a.email LIKE :email";
-        TypedQuery<Long> query = this.entityManager.createQuery(jpql, Long.class);
+        TypedQuery<Long> query = entityManager.createQuery(jpql, Long.class);
         query.setParameter("email", "%" + StringUtils.escape(containEmail) + "%");
-        return query.getSingleResult();
+        long result = query.getSingleResult();
+        entityManager.close();
+        return result;
     }
 
     @Override
     public Optional<AccountDetail> getAccountDetail(Account account) {
-        this.entityManager.clear();
+        EntityManager entityManager = this.entityManagerFactory.createEntityManager();
         final String jpql = "SELECT ad FROM AccountDetail ad WHERE ad.account = :account ORDER BY ad.createDate DESC";
-        TypedQuery<AccountDetail> query = this.entityManager.createQuery(jpql, AccountDetail.class);
+        TypedQuery<AccountDetail> query = entityManager.createQuery(jpql, AccountDetail.class);
         query.setParameter("account", account);
         List<AccountDetail> accountDetailList = query.getResultList();
+        entityManager.close();
         if (accountDetailList.isEmpty()) {
             return Optional.empty();
         } else {
@@ -102,13 +114,14 @@ public class AccountRepositoryImpl implements AccountRepository {
 
     @Override
     public Map<Account, AccountDetail> getAccountDetailList(List<Account> accountList) {
-        this.entityManager.clear();
+        EntityManager entityManager = this.entityManagerFactory.createEntityManager();
         final String jpql = "SELECT ad FROM AccountDetail ad WHERE ad.account IN :accounts ORDER BY ad.createDate DESC";
-        TypedQuery<AccountDetail> query = this.entityManager.createQuery(jpql, AccountDetail.class);
+        TypedQuery<AccountDetail> query = entityManager.createQuery(jpql, AccountDetail.class);
         query.setParameter("accounts", accountList);
         List<AccountDetail> accountDetailList = query.getResultList();
-        Map<Account, List<AccountDetail>> accountAccountDetailMap = accountDetailList.stream().collect(Collectors.groupingBy(AccountDetail::getAccount));
+        entityManager.close();
 
+        Map<Account, List<AccountDetail>> accountAccountDetailMap = accountDetailList.stream().collect(Collectors.groupingBy(AccountDetail::getAccount));
         Map<Account, AccountDetail> resultMap = new HashMap<>();
         Set<Account> keySet = accountAccountDetailMap.keySet();
         for (Account account : keySet) {
@@ -122,13 +135,14 @@ public class AccountRepositoryImpl implements AccountRepository {
 
     @Override
     public Optional<Account> getAccount(String nickname) {
-        this.entityManager.clear();
+        EntityManager entityManager = this.entityManagerFactory.createEntityManager();
         final String jpql = "SELECT a FROM Account a " +
                 "WHERE a.accountDetail IS NOT NULL " +
                 "AND a.accountDetail.nickname = :nickname";
-        TypedQuery<Account> query = this.entityManager.createQuery(jpql, Account.class)
+        TypedQuery<Account> query = entityManager.createQuery(jpql, Account.class)
                 .setParameter("nickname", nickname);
         List<Account> list = query.getResultList();
+        entityManager.close();
         if (list.isEmpty()) {
             return Optional.empty();
         } else {
@@ -138,25 +152,29 @@ public class AccountRepositoryImpl implements AccountRepository {
 
     @Override
     public void saveAccount(Account account) {
-        EntityTransaction transaction = this.entityManager.getTransaction();
+        EntityManager entityManager = this.entityManagerFactory.createEntityManager();
+        EntityTransaction transaction = entityManager.getTransaction();
         transaction.begin();
         if (account.getId() == null) {
-            this.entityManager.persist(account);
+            entityManager.persist(account);
         } else {
-            this.entityManager.merge(account);
+            entityManager.merge(account);
         }
         transaction.commit();
+        entityManager.close();
     }
 
     @Override
     public void saveAccountDetail(AccountDetail accountDetail) {
-        EntityTransaction transaction = this.entityManager.getTransaction();
+        EntityManager entityManager = this.entityManagerFactory.createEntityManager();
+        EntityTransaction transaction = entityManager.getTransaction();
         transaction.begin();
         if (accountDetail.getId() == null) {
-            this.entityManager.persist(accountDetail);
+            entityManager.persist(accountDetail);
         } else {
-            this.entityManager.merge(accountDetail);
+            entityManager.merge(accountDetail);
         }
         transaction.commit();
+        entityManager.close();
     }
 }

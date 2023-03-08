@@ -15,90 +15,103 @@ import java.util.Optional;
 
 @Repository
 public class CommentRepositoryImpl implements CommentRepository {
-    private final EntityManager entityManager;
+    private final EntityManagerFactory entityManagerFactory;
 
     @Autowired
     public CommentRepositoryImpl(EntityManagerFactory entityManagerFactory) {
-        this.entityManager = entityManagerFactory.createEntityManager();
+        this.entityManagerFactory = entityManagerFactory;
     }
 
     @Override
     public Optional<Comment> getComment(long id) {
-        this.entityManager.clear();
+        EntityManager entityManager = this.entityManagerFactory.createEntityManager();
         final String jpql = "SELECT c FROM Comment c WHERE c.id = :id";
-        TypedQuery<Comment> query = this.entityManager.createQuery(jpql, Comment.class);
+        TypedQuery<Comment> query = entityManager.createQuery(jpql, Comment.class);
         query.setParameter("id", id);
         Comment comment = query.getSingleResult();
+        entityManager.close();
         return Optional.ofNullable(comment);
     }
 
     public List<Comment> getCommentList(Post post, int offset, int limit) {
-        this.entityManager.clear();
+        EntityManager entityManager = this.entityManagerFactory.createEntityManager();
         final String jpql = "SELECT c FROM Comment c " +
                 "WHERE c.post = :post AND c.referenceComment IS NULL " +
                 "ORDER BY c.createDate ASC";
-        TypedQuery<Comment> query = this.entityManager.createQuery(jpql, Comment.class)
+        TypedQuery<Comment> query = entityManager.createQuery(jpql, Comment.class)
                 .setParameter("post", post)
                 .setFirstResult(offset)
                 .setMaxResults(limit);
-        return query.getResultList();
+        List<Comment> resultList = query.getResultList();
+        entityManager.close();
+        return resultList;
     }
 
     public long getCommentCount(Post post) {
-        this.entityManager.clear();
+        EntityManager entityManager = this.entityManagerFactory.createEntityManager();
         final String jpql = "SELECT COUNT(*) FROM Comment c " +
                 "WHERE c.post = :post " +
                 "AND c.referenceComment IS NULL";
-        TypedQuery<Long> query = this.entityManager.createQuery(jpql, Long.class)
+        TypedQuery<Long> query = entityManager.createQuery(jpql, Long.class)
                 .setParameter("post", post);
-        return query.getSingleResult();
+        long result = query.getSingleResult();
+        entityManager.close();
+        return result;
     }
 
     @Override
     public List<Comment> getCommentList(Post post, Comment referenceComment, int offset, int limit) {
-        this.entityManager.clear();
+        EntityManager entityManager = this.entityManagerFactory.createEntityManager();
         final String jpql = "SELECT c FROM Comment c " +
                 "WHERE c.post = :post " +
                 "AND c.referenceComment = :referenceComment " +
                 "ORDER BY c.createDate ASC";
-        TypedQuery<Comment> query = this.entityManager.createQuery(jpql, Comment.class)
+        TypedQuery<Comment> query = entityManager.createQuery(jpql, Comment.class)
                 .setParameter("post", post)
                 .setParameter("referenceComment", referenceComment)
                 .setFirstResult(offset)
                 .setMaxResults(limit);
-        return query.getResultList();
+        List<Comment> resultList = query.getResultList();
+        entityManager.close();
+        return resultList;
     }
 
     @Override
     public long getCommentListSize(Post post, Comment referenceComment) {
-        this.entityManager.clear();
+        EntityManager entityManager = this.entityManagerFactory.createEntityManager();
         final String jpql = "SELECT COUNT(*) FROM Comment c " +
                 "WHERE c.post = :post " +
                 "AND c.referenceComment = :referenceComment";
-        TypedQuery<Long> query = this.entityManager.createQuery(jpql, Long.class)
+        TypedQuery<Long> query = entityManager.createQuery(jpql, Long.class)
                 .setParameter("post", post)
                 .setParameter("referenceComment", referenceComment);
-        return query.getSingleResult();
+        long result = query.getSingleResult();
+        entityManager.close();
+        return result;
     }
 
     @Override
     public long getCommentListSize(Post post) {
-        this.entityManager.clear();
+        EntityManager entityManager = this.entityManagerFactory.createEntityManager();
         final String jpql = "SELECT COUNT(*) FROM Comment c WHERE c.post = :post";
-        TypedQuery<Long> query = this.entityManager.createQuery(jpql, Long.class)
+        TypedQuery<Long> query = entityManager.createQuery(jpql, Long.class)
                 .setParameter("post", post);
-        return query.getSingleResult();
+        long result = query.getSingleResult();
+        entityManager.close();
+        return result;
     }
 
     @Override
     public void save(Comment comment) {
-        EntityTransaction transaction = this.entityManager.getTransaction();
+        EntityManager entityManager = this.entityManagerFactory.createEntityManager();
+        EntityTransaction transaction = entityManager.getTransaction();
         transaction.begin();
         if (comment.getId() == null) {
-            this.entityManager.persist(comment);
+            entityManager.persist(comment);
         } else {
-            this.entityManager.merge(comment);
+            entityManager.merge(comment);
         }
         transaction.commit();
+        entityManager.close();
     }
 }

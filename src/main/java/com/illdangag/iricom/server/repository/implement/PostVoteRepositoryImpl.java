@@ -19,27 +19,29 @@ import java.util.Optional;
 @Slf4j
 @Repository
 public class PostVoteRepositoryImpl implements PostVoteRepository {
-    private final EntityManager entityManager;
+    private final EntityManagerFactory entityManagerFactory;
 
     @Autowired
     public PostVoteRepositoryImpl(EntityManagerFactory entityManagerFactory) {
-        this.entityManager = entityManagerFactory.createEntityManager();
+        this.entityManagerFactory = entityManagerFactory;
     }
 
     @Override
     public Optional<PostVote> getPostVote(Account account, Post post, VoteType voteType) {
-        this.entityManager.clear();
+        EntityManager entityManager = this.entityManagerFactory.createEntityManager();
         final String jpql = "SELECT pv from PostVote pv " +
                 "WHERE pv.account = :account " +
                 "AND pv.post = :post " +
                 "AND pv.type = :type";
 
-        TypedQuery<PostVote> query = this.entityManager.createQuery(jpql, PostVote.class)
+        TypedQuery<PostVote> query = entityManager.createQuery(jpql, PostVote.class)
                 .setParameter("account", account)
                 .setParameter("post", post)
                 .setParameter("type", voteType);
 
         List<PostVote> resultList = query.getResultList();
+        entityManager.close();
+
         if (resultList.isEmpty()) {
             return Optional.empty();
         } else {
@@ -49,27 +51,30 @@ public class PostVoteRepositoryImpl implements PostVoteRepository {
 
     @Override
     public long getPostVoteCount(Post post, VoteType voteType) {
-        this.entityManager.clear();
+        EntityManager entityManager = this.entityManagerFactory.createEntityManager();
         final String jpql = "SELECT COUNT(*) FROM PostVote pv " +
                 "WHERE pv.post = :post " +
                 "AND pv.type = :type";
 
-        TypedQuery<Long> query = this.entityManager.createQuery(jpql, Long.class)
+        TypedQuery<Long> query = entityManager.createQuery(jpql, Long.class)
                 .setParameter("post", post)
                 .setParameter("type", voteType);
-
-        return query.getSingleResult();
+        long result = query.getSingleResult();
+        entityManager.close();
+        return result;
     }
 
     @Override
     public void save(PostVote postVote) {
-        EntityTransaction transaction = this.entityManager.getTransaction();
+        EntityManager entityManager = this.entityManagerFactory.createEntityManager();
+        EntityTransaction transaction = entityManager.getTransaction();
         transaction.begin();
         if (postVote.getId() == null) {
-            this.entityManager.persist(postVote);
+            entityManager.persist(postVote);
         } else {
-            this.entityManager.merge(postVote);
+            entityManager.merge(postVote);
         }
         transaction.commit();
+        entityManager.close();
     }
 }

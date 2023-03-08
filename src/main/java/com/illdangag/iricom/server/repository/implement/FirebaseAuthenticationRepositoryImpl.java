@@ -14,20 +14,21 @@ import java.util.Optional;
 
 @Repository
 public class FirebaseAuthenticationRepositoryImpl implements FirebaseAuthenticationRepository {
-    private final EntityManager entityManager;
+    private final EntityManagerFactory entityManagerFactory;
 
     @Autowired
     public FirebaseAuthenticationRepositoryImpl(EntityManagerFactory entityManagerFactory) {
-        this.entityManager = entityManagerFactory.createEntityManager();
+        this.entityManagerFactory = entityManagerFactory;
     }
 
     @Override
     public Optional<FirebaseAuthentication> getFirebaseAuthentication(String id) {
-        this.entityManager.clear();
+        EntityManager entityManager = this.entityManagerFactory.createEntityManager();
         final String jpql = "SELECT fa FROM FirebaseAuthentication fa WHERE fa.id = :id";
-        TypedQuery<FirebaseAuthentication> query = this.entityManager.createQuery(jpql, FirebaseAuthentication.class);
+        TypedQuery<FirebaseAuthentication> query = entityManager.createQuery(jpql, FirebaseAuthentication.class);
         query.setParameter("id", id);
         List<FirebaseAuthentication> firebaseAuthenticationList = query.getResultList();
+        entityManager.close();
 
         if (firebaseAuthenticationList.isEmpty()) {
             return Optional.empty();
@@ -38,13 +39,15 @@ public class FirebaseAuthenticationRepositoryImpl implements FirebaseAuthenticat
 
     @Override
     public void save(FirebaseAuthentication firebaseAuthentication) {
-        EntityTransaction transaction = this.entityManager.getTransaction();
+        EntityManager entityManager = this.entityManagerFactory.createEntityManager();
+        EntityTransaction transaction = entityManager.getTransaction();
         transaction.begin();
         if (firebaseAuthentication.getId() == null) {
-            this.entityManager.persist(firebaseAuthentication);
+            entityManager.persist(firebaseAuthentication);
         } else {
-            this.entityManager.merge(firebaseAuthentication);
+            entityManager.merge(firebaseAuthentication);
         }
         transaction.commit();
+        entityManager.close();
     }
 }
