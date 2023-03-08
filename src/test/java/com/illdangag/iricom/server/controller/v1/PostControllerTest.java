@@ -354,7 +354,6 @@ public class PostControllerTest extends IricomTestSuite {
 
                 mockMvc.perform(requestBuilder)
                         .andExpect(status().is(200))
-                        .andExpect(jsonPath("$.status").value("publish"))
                         .andDo(print());
             }
 

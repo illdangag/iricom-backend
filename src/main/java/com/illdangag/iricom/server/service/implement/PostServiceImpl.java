@@ -74,7 +74,6 @@ public class PostServiceImpl implements PostService {
     }
 
     @Override
-    @Transactional
     public PostInfo createPostInfo(Account account, Board board, @Valid PostInfoCreate postInfoCreate) {
         // 활성화된 게시판에만 게시물 작성 가능
         if (!board.getEnabled()) {
@@ -112,7 +111,6 @@ public class PostServiceImpl implements PostService {
     }
 
     @Override
-    @Transactional
     public PostInfo updatePostInfo(Account account, Board board, Post post, @Valid PostInfoUpdate postInfoUpdate) {
         // 활성화된 게시판에만 게시물 수정 가능
         if (!board.getEnabled()) {

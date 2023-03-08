@@ -231,15 +231,16 @@ public class PostRepositoryImpl implements PostRepository {
         EntityManager entityManager = this.entityManagerFactory.createEntityManager();
         EntityTransaction entityTransaction = entityManager.getTransaction();
         entityTransaction.begin();
-        if (post.getId() == null) {
-            entityManager.persist(post);
-        } else {
-            entityManager.merge(post);
-        }
         if (postContent.getId() == null) {
             entityManager.persist(postContent);
         } else {
             entityManager.merge(postContent);
+        }
+
+        if (post.getId() == null) {
+            entityManager.persist(post);
+        } else {
+            entityManager.merge(post);
         }
         entityTransaction.commit();
         entityManager.close();
