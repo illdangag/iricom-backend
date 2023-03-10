@@ -92,7 +92,6 @@ public class PostControllerTest extends IricomTestSuite {
                                         fieldWithPath("boardId").description("게시판 아이디")
                                 )
                         )
-
                 );
     }
 

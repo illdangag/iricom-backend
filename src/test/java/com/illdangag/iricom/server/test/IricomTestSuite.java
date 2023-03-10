@@ -398,6 +398,11 @@ public abstract class IricomTestSuite {
             .content("voteComment04")
             .creator(common00).post(disableBoardPost00)
             .build();
+    protected static final TestCommentInfo voteComment05 = TestCommentInfo.builder()
+            .content("voteComment05")
+            .creator(common00).post(voteCommentPost00)
+            .build();
+
 
     private static final TestCommentInfo[] testCommentInfos = {
             enableBoardComment00,
@@ -408,7 +413,7 @@ public abstract class IricomTestSuite {
             commentUpdateComment00,
             commentDeleteComment00, commentDeleteComment01, commentDeleteComment02, commentDeleteComment03,
 
-            voteComment00, voteComment01, voteComment02, voteComment03, voteComment04,
+            voteComment00, voteComment01, voteComment02, voteComment03, voteComment04, voteComment05,
     };
 
     private static final Map<TestAccountInfo, Account> accountMap = new HashMap<>();

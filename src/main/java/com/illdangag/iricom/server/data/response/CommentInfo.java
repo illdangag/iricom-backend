@@ -19,8 +19,6 @@ public class CommentInfo {
 
     private String referenceCommentId;
 
-    private AccountInfo account;
-
     private Long createDate;
 
     private Long updateDate;
@@ -33,6 +31,8 @@ public class CommentInfo {
 
     private Boolean deleted;
 
+    private AccountInfo account;
+
     @JsonProperty("nestedComments")
     private List<CommentInfo> nestedCommentList = null;
 
@@ -41,7 +41,6 @@ public class CommentInfo {
         if (comment.getReferenceComment() != null) {
             this.referenceCommentId = comment.getReferenceComment().getId().toString();
         }
-        this.account = accountInfo;
         this.createDate = DateTimeUtils.getLong(comment.getCreateDate());
         this.updateDate = comment.getUpdateDate() == null ? null : DateTimeUtils.getLong(comment.getUpdateDate());
         this.upvote = comment.getUpvote();
@@ -50,8 +49,10 @@ public class CommentInfo {
         this.deleted = comment.getDeleted();
         if (!this.deleted) {
             this.comment = comment.getContent();
+            this.account = accountInfo;
         } else {
             this.comment = null;
+            this.account = null;
         }
     }
 }
