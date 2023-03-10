@@ -55,7 +55,7 @@ public class CommentControllerTest extends IricomTestSuite {
             mockMvc.perform(requestBuilder)
                     .andExpect(status().is(200))
                     .andExpect(jsonPath("$.id").exists())
-                    .andExpect(jsonPath("$.comment").exists())
+                    .andExpect(jsonPath("$.content").exists())
                     .andExpect(jsonPath("$.referenceCommentId").doesNotExist())
                     .andDo(print());
         }
@@ -80,7 +80,7 @@ public class CommentControllerTest extends IricomTestSuite {
             mockMvc.perform(requestBuilder)
                     .andExpect(status().is(200))
                     .andExpect(jsonPath("$.id").exists())
-                    .andExpect(jsonPath("$.comment").exists())
+                    .andExpect(jsonPath("$.content").exists())
                     .andExpect(jsonPath("$.referenceCommentId").exists())
                     .andDo(print());
         }
@@ -192,7 +192,7 @@ public class CommentControllerTest extends IricomTestSuite {
 
             mockMvc.perform(requestBuilder)
                     .andExpect(status().is(200))
-                    .andExpect(jsonPath("$.comment").value("update_comment"))
+                    .andExpect(jsonPath("$.content").value("update_comment"))
                     .andDo(print());
         }
 

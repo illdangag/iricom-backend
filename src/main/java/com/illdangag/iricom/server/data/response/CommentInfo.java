@@ -15,7 +15,7 @@ import java.util.List;
 public class CommentInfo {
     private String id;
 
-    private String comment;
+    private String content;
 
     private String referenceCommentId;
 
@@ -48,10 +48,10 @@ public class CommentInfo {
         this.hasNestedComment = comment.getHasNestedComment();
         this.deleted = comment.getDeleted();
         if (!this.deleted) {
-            this.comment = comment.getContent();
+            this.content = comment.getContent();
             this.account = accountInfo;
         } else {
-            this.comment = null;
+            this.content = null;
             this.account = null;
         }
     }
