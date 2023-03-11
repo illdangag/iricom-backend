@@ -59,10 +59,12 @@ public class CommentController {
                                                           @RequestParam(name = "skip", defaultValue = "0", required = false) String skipVariable,
                                                           @RequestParam(name = "limit", defaultValue = "20", required = false) String limitVariable,
                                                           @RequestParam(name = "includeComment", defaultValue = "false", required = false) String includeCommentVariable,
-                                                          @RequestParam(name = "referenceCommentId", defaultValue = "", required = false) String referenceCommentId) {
+                                                          @RequestParam(name = "referenceCommentId", defaultValue = "", required = false) String referenceCommentId,
+                                                          @RequestParam(name = "includeCommentLimit", defaultValue = "5", required = false) String includeCommentLimitVariable) {
         int skip;
         int limit;
         boolean includeComment;
+        int includeCommentLimit;
 
         try {
             skip = Integer.parseInt(skipVariable);
@@ -82,11 +84,18 @@ public class CommentController {
             throw new IricomException(IricomErrorCode.INVALID_REQUEST, "IncludeComment value is invalid");
         }
 
+        try {
+            includeCommentLimit = Integer.parseInt(includeCommentLimitVariable);
+        } catch (Exception exception) {
+            throw new IricomException(IricomErrorCode.INVALID_REQUEST, "IncludeCommentLimit value is invalid");
+        }
+
         CommentInfoSearch commentInfoSearch = CommentInfoSearch.builder()
                 .skip(skip)
                 .limit(limit)
                 .includeComment(includeComment)
                 .referenceCommentId(referenceCommentId)
+                .includeCommentLimit(includeCommentLimit)
                 .build();
         CommentInfoList commentInfoList = this.commentService.getComment(boardId, postId, commentInfoSearch);
         return ResponseEntity.status(HttpStatus.OK).body(commentInfoList);

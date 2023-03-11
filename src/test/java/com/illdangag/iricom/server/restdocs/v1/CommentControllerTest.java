@@ -113,7 +113,8 @@ public class CommentControllerTest extends IricomTestSuite {
                 .param("limit", "1")
                 .param("keyword", "")
                 .param("includeComment", "true")
-                .param("referenceCommentId", "" + comment.getId());
+                .param("referenceCommentId", "" + comment.getId())
+                .param("includeCommentLimit", "5");
 
         setAuthToken(requestBuilder, common00);
 
@@ -140,7 +141,8 @@ public class CommentControllerTest extends IricomTestSuite {
                                 parameterWithName("limit").description("최대 조회 수"),
                                 parameterWithName("keyword").description("검색어"),
                                 parameterWithName("includeComment").description("대댓글 포함 여부"),
-                                parameterWithName("referenceCommentId").description("댓글 기준 대댓글 조회")
+                                parameterWithName("referenceCommentId").description("댓글 기준 대댓글 조회"),
+                                parameterWithName("includeCommentLimit").description("대댓글의 최대 조회 수")
                         ),
                         responseFields(
                                 fieldWithPath("total").description("모든 결과의 수"),
