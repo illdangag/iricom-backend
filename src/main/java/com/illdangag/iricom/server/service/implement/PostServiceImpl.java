@@ -1,16 +1,15 @@
 package com.illdangag.iricom.server.service.implement;
 
 import com.illdangag.iricom.server.data.entity.*;
-import com.illdangag.iricom.server.repository.CommentRepository;
-import com.illdangag.iricom.server.repository.PostRepository;
 import com.illdangag.iricom.server.data.request.PostInfoCreate;
 import com.illdangag.iricom.server.data.request.PostInfoSearch;
 import com.illdangag.iricom.server.data.request.PostInfoUpdate;
-import com.illdangag.iricom.server.data.response.AccountInfo;
 import com.illdangag.iricom.server.data.response.PostInfo;
 import com.illdangag.iricom.server.data.response.PostInfoList;
 import com.illdangag.iricom.server.exception.IricomErrorCode;
 import com.illdangag.iricom.server.exception.IricomException;
+import com.illdangag.iricom.server.repository.CommentRepository;
+import com.illdangag.iricom.server.repository.PostRepository;
 import com.illdangag.iricom.server.repository.PostVoteRepository;
 import com.illdangag.iricom.server.service.AccountService;
 import com.illdangag.iricom.server.service.BoardAuthorizationService;
@@ -21,10 +20,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.validation.annotation.Validated;
 
-import javax.transaction.Transactional;
 import javax.validation.Valid;
 import java.util.List;
-import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -38,18 +35,16 @@ public class PostServiceImpl implements PostService {
 
     private final BoardService boardService;
     private final BoardAuthorizationService boardAuthorizationService;
-    private final AccountService accountService;
 
     @Autowired
     public PostServiceImpl(PostRepository postRepository, PostVoteRepository postVoteRepository, CommentRepository commentRepository,
-                           BoardAuthorizationService boardAuthorizationService, BoardService boardService, AccountService accountService) {
+                           BoardAuthorizationService boardAuthorizationService, BoardService boardService) {
         this.postRepository = postRepository;
         this.postVoteRepository = postVoteRepository;
         this.commentRepository = commentRepository;
 
         this.boardService = boardService;
         this.boardAuthorizationService = boardAuthorizationService;
-        this.accountService = accountService;
     }
 
     @Override
@@ -192,13 +187,11 @@ public class PostServiceImpl implements PostService {
 
         this.postRepository.save(post);
 
-        Account creator = post.getAccount();
-        AccountInfo creatorInfo = this.accountService.getAccountInfo(creator);
         long commentCount = this.commentRepository.getCommentListSize(post);
         long upvote = this.postVoteRepository.getPostVoteCount(post, VoteType.UPVOTE);
         long downvote = this.postVoteRepository.getPostVoteCount(post, VoteType.DOWNVOTE);
 
-        return new PostInfo(post, creatorInfo, true, postState, commentCount, upvote, downvote);
+        return new PostInfo(post, true, postState, commentCount, upvote, downvote);
     }
 
     @Override
@@ -280,14 +273,12 @@ public class PostServiceImpl implements PostService {
                 .distinct()
                 .collect(Collectors.toList());
 
-        Map<Account, AccountInfo> accountAccountInfoMap = this.accountService.getAccountInfoMap(accountList);
         List<PostInfo> postInfoList = postList.stream().map(post -> {
-            AccountInfo accountInfo = accountAccountInfoMap.get(post.getAccount());
             long commentCount = this.commentRepository.getCommentCount(post);
             long upvote = this.postVoteRepository.getPostVoteCount(post, VoteType.UPVOTE);
             long downvote = this.postVoteRepository.getPostVoteCount(post, VoteType.DOWNVOTE);
 
-            return new PostInfo(post, accountInfo, false, PostState.PUBLISH, commentCount, upvote, downvote);
+            return new PostInfo(post, false, PostState.PUBLISH, commentCount, upvote, downvote);
         }).collect(Collectors.toList());
 
         return PostInfoList.builder()
@@ -394,7 +385,6 @@ public class PostServiceImpl implements PostService {
         List<Post> postList = this.postRepository.getPostList(account, postInfoSearch.getSkip(), postInfoSearch.getLimit());
         long totalPostCount = this.postRepository.getPostCount(account);
 
-        AccountInfo accountInfo = this.accountService.getAccountInfo(account);
         List<PostInfo> postInfoList = postList.stream().map(post -> {
             long commentCount = this.commentRepository.getCommentCount(post);
             long upvote = this.postVoteRepository.getPostVoteCount(post, VoteType.UPVOTE);
@@ -405,7 +395,7 @@ public class PostServiceImpl implements PostService {
             } else {
                 responsePostState = PostState.TEMPORARY;
             }
-            return new PostInfo(post, accountInfo, false, responsePostState, commentCount, upvote, downvote);
+            return new PostInfo(post, false, responsePostState, commentCount, upvote, downvote);
         }).collect(Collectors.toList());
 
         return PostInfoList.builder()

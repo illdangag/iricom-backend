@@ -54,7 +54,7 @@ public class PostInfo {
         this.id = "" + post.getId();
         this.createDate = DateTimeUtils.getLong(post.getCreateDate());
         this.updateDate = DateTimeUtils.getLong(post.getUpdateDate());
-
+        this.accountInfo = new AccountInfo(post.getAccount());
         this.viewCount = post.getViewCount();
         this.upvote = upvote;
         this.downvote = downvote;
@@ -85,10 +85,5 @@ public class PostInfo {
         if (includeContent) {
             this.content = content.getContent();
         }
-    }
-
-    public PostInfo(Post post, AccountInfo accountInfo, boolean includeContent, PostState postState, long commentCount, long upvote, long downvote) {
-        this(post, includeContent, postState, commentCount, upvote, downvote);
-        this.accountInfo = accountInfo;
     }
 }

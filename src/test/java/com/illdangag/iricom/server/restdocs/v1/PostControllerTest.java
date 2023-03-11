@@ -89,7 +89,15 @@ public class PostControllerTest extends IricomTestSuite {
                                         fieldWithPath("isAllowComment").description("댓글 허용 여부"),
                                         fieldWithPath("isPublish").description("발행 여부"),
                                         fieldWithPath("hasTemporary").description("임시 저장 여부"),
-                                        fieldWithPath("boardId").description("게시판 아이디")
+                                        fieldWithPath("boardId").description("게시판 아이디"),
+                                        fieldWithPath("account").description("작성자"),
+                                        fieldWithPath("account.id").description("아이디"),
+                                        fieldWithPath("account.email").description("이메일"),
+                                        fieldWithPath("account.createDate").description("생성일"),
+                                        fieldWithPath("account.lastActivityDate").description("최근 활동일"),
+                                        fieldWithPath("account.nickname").description("닉네임"),
+                                        fieldWithPath("account.description").description("설명"),
+                                        fieldWithPath("account.auth").description("권한")
                                 )
                         )
                 );
@@ -277,7 +285,15 @@ public class PostControllerTest extends IricomTestSuite {
                                 fieldWithPath("isAllowComment").description("댓글 허용 여부"),
                                 fieldWithPath("isPublish").description("발행 여부"),
                                 fieldWithPath("hasTemporary").description("임시 저장 여부"),
-                                fieldWithPath("boardId").description("게시판 아이디")
+                                fieldWithPath("boardId").description("게시판 아이디"),
+                                fieldWithPath("account").description("작성자"),
+                                fieldWithPath("account.id").description("아이디"),
+                                fieldWithPath("account.email").description("이메일"),
+                                fieldWithPath("account.createDate").description("생성일"),
+                                fieldWithPath("account.lastActivityDate").description("최근 활동일"),
+                                fieldWithPath("account.nickname").description("닉네임"),
+                                fieldWithPath("account.description").description("설명"),
+                                fieldWithPath("account.auth").description("권한")
                         )
                 ));
     }
@@ -325,7 +341,15 @@ public class PostControllerTest extends IricomTestSuite {
                                 fieldWithPath("isAllowComment").description("댓글 허용 여부"),
                                 fieldWithPath("isPublish").description("발행 여부"),
                                 fieldWithPath("hasTemporary").description("임시 저장 여부"),
-                                fieldWithPath("boardId").description("게시판 아이디")
+                                fieldWithPath("boardId").description("게시판 아이디"),
+                                fieldWithPath("account").description("작성자"),
+                                fieldWithPath("account.id").description("아이디"),
+                                fieldWithPath("account.email").description("이메일"),
+                                fieldWithPath("account.createDate").description("생성일"),
+                                fieldWithPath("account.lastActivityDate").description("최근 활동일"),
+                                fieldWithPath("account.nickname").description("닉네임"),
+                                fieldWithPath("account.description").description("설명"),
+                                fieldWithPath("account.auth").description("권한")
                         )
                 ));
     }
@@ -373,7 +397,15 @@ public class PostControllerTest extends IricomTestSuite {
                                 fieldWithPath("isAllowComment").description("댓글 허용 여부"),
                                 fieldWithPath("isPublish").description("발행 여부"),
                                 fieldWithPath("hasTemporary").description("임시 저장 여부"),
-                                fieldWithPath("boardId").description("게시판 아이디")
+                                fieldWithPath("boardId").description("게시판 아이디"),
+                                fieldWithPath("account").description("작성자"),
+                                fieldWithPath("account.id").description("아이디"),
+                                fieldWithPath("account.email").description("이메일"),
+                                fieldWithPath("account.createDate").description("생성일"),
+                                fieldWithPath("account.lastActivityDate").description("최근 활동일"),
+                                fieldWithPath("account.nickname").description("닉네임"),
+                                fieldWithPath("account.description").description("설명"),
+                                fieldWithPath("account.auth").description("권한")
                         )
                 ));
     }
@@ -429,7 +461,15 @@ public class PostControllerTest extends IricomTestSuite {
                                 fieldWithPath("isAllowComment").description("댓글 허용 여부"),
                                 fieldWithPath("isPublish").description("발행 여부"),
                                 fieldWithPath("hasTemporary").description("임시 저장 여부"),
-                                fieldWithPath("boardId").description("게시판 아이디")
+                                fieldWithPath("boardId").description("게시판 아이디"),
+                                fieldWithPath("account").description("작성자"),
+                                fieldWithPath("account.id").description("아이디"),
+                                fieldWithPath("account.email").description("이메일"),
+                                fieldWithPath("account.createDate").description("생성일"),
+                                fieldWithPath("account.lastActivityDate").description("최근 활동일"),
+                                fieldWithPath("account.nickname").description("닉네임"),
+                                fieldWithPath("account.description").description("설명"),
+                                fieldWithPath("account.auth").description("권한")
                         )
                 ));
     }
