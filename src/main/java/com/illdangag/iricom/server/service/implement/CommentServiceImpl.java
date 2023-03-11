@@ -95,7 +95,7 @@ public class CommentServiceImpl implements CommentService {
         if (referenceComment != null) {
             this.commentRepository.save(referenceComment);
         }
-        return new CommentInfo(comment, accountInfo);
+        return new CommentInfo(comment, accountInfo, 0, 0);
     }
 
     @Override
@@ -119,7 +119,9 @@ public class CommentServiceImpl implements CommentService {
         comment.setUpdateDate(LocalDateTime.now());
         this.commentRepository.save(comment);
         AccountInfo accountInfo = this.accountService.getAccountInfo(comment.getAccount());
-        return new CommentInfo(comment, accountInfo);
+        long upvote = this.commentVoteRepository.getCommentVoteCount(comment, VoteType.UPVOTE);
+        long downvote = this.commentVoteRepository.getCommentVoteCount(comment, VoteType.DOWNVOTE);
+        return new CommentInfo(comment, accountInfo, upvote, downvote);
     }
 
     @Override
@@ -147,7 +149,9 @@ public class CommentServiceImpl implements CommentService {
         List<CommentInfo> commentInfoList = commentList.stream()
                 .map(comment -> {
                     AccountInfo accountInfo = this.accountService.getAccountInfo(comment.getAccount());
-                    return new CommentInfo(comment, accountInfo);
+                    long upvote = this.commentVoteRepository.getCommentVoteCount(comment, VoteType.UPVOTE);
+                    long downvote = this.commentVoteRepository.getCommentVoteCount(comment, VoteType.DOWNVOTE);
+                    return new CommentInfo(comment, accountInfo, upvote, downvote);
                 }).collect(Collectors.toList());
 
         if (commentInfoSearch.isIncludeComment()) {
@@ -191,7 +195,9 @@ public class CommentServiceImpl implements CommentService {
         comment.setDeleted(true);
         this.commentRepository.save(comment);
         AccountInfo accountInfo = this.accountService.getAccountInfo(comment.getAccount());
-        return new CommentInfo(comment, accountInfo);
+        long upvote = this.commentVoteRepository.getCommentVoteCount(comment, VoteType.UPVOTE);
+        long downvote = this.commentVoteRepository.getCommentVoteCount(comment, VoteType.DOWNVOTE);
+        return new CommentInfo(comment, accountInfo, upvote, downvote);
     }
 
     @Override
@@ -229,24 +235,19 @@ public class CommentServiceImpl implements CommentService {
             throw new IricomException(IricomErrorCode.ALREADY_VOTE_COMMENT);
         }
 
-        long count = this.commentVoteRepository.getCommentVoteCount(comment, voteType);
         CommentVote commentVote = CommentVote.builder()
                 .comment(comment)
                 .account(account)
                 .type(voteType)
                 .build();
 
-        if (voteType == VoteType.UPVOTE) {
-            comment.setUpvote(count + 1);
-        } else {
-            comment.setDownvote(count + 1);
-        }
-
         this.commentRepository.save(comment);
         this.commentVoteRepository.save(commentVote);
 
         AccountInfo accountInfo = this.accountService.getAccountInfo(account);
-        return new CommentInfo(comment, accountInfo);
+        long upvote = this.commentVoteRepository.getCommentVoteCount(comment, VoteType.UPVOTE);
+        long downvote = this.commentVoteRepository.getCommentVoteCount(comment, VoteType.DOWNVOTE);
+        return new CommentInfo(comment, accountInfo, upvote, downvote);
     }
 
     private void validate(Board board, Post post) {

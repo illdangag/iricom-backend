@@ -11,7 +11,6 @@ import com.illdangag.iricom.server.exception.IricomException;
 import com.illdangag.iricom.server.repository.CommentRepository;
 import com.illdangag.iricom.server.repository.PostRepository;
 import com.illdangag.iricom.server.repository.PostVoteRepository;
-import com.illdangag.iricom.server.service.AccountService;
 import com.illdangag.iricom.server.service.BoardAuthorizationService;
 import com.illdangag.iricom.server.service.BoardService;
 import com.illdangag.iricom.server.service.PostService;

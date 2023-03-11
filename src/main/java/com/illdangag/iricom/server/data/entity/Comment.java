@@ -45,12 +45,6 @@ public class Comment {
     private String content = "";
 
     @Builder.Default
-    private Long upvote = 0L;
-
-    @Builder.Default
-    private Long downvote = 0L;
-
-    @Builder.Default
     @Column(name = "is_deleted")
     private Boolean deleted = false;
 
