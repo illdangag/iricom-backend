@@ -77,7 +77,7 @@ public class PostRepositoryImpl implements PostRepository {
     public List<Post> getPostList(Account account, int offset, int limit) {
         EntityManager entityManager = this.entityManagerFactory.createEntityManager();
         final String jpql = "SELECT p FROM Post p " +
-                "WHERE p.account = :account " +
+                "WHERE p.account = :account AND p.deleted = false " +
                 "ORDER BY p.createDate DESC";
         TypedQuery<Post> query = entityManager.createQuery(jpql, Post.class)
                 .setParameter("account", account)
@@ -91,7 +91,8 @@ public class PostRepositoryImpl implements PostRepository {
     @Override
     public long getPostCount(Account account) {
         EntityManager entityManager = this.entityManagerFactory.createEntityManager();
-        final String jpql = "SELECT COUNT(*) FROM Post p WHERE p.account = :account";
+        final String jpql = "SELECT COUNT(*) FROM Post p " +
+                "WHERE p.account = :account AND p.deleted = false";
         TypedQuery<Long> query = entityManager.createQuery(jpql, Long.class)
                 .setParameter("account", account);
         long result = query.getSingleResult();
