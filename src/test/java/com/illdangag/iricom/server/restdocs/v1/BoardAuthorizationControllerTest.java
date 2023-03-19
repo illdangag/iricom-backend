@@ -22,8 +22,7 @@ import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuild
 import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.delete;
 import static org.springframework.restdocs.operation.preprocess.Preprocessors.*;
 import static org.springframework.restdocs.payload.PayloadDocumentation.*;
-import static org.springframework.restdocs.request.RequestDocumentation.parameterWithName;
-import static org.springframework.restdocs.request.RequestDocumentation.requestParameters;
+import static org.springframework.restdocs.request.RequestDocumentation.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -83,7 +82,6 @@ public class BoardAuthorizationControllerTest extends IricomTestSuite {
                 .param("limit", "20")
                 .param("keyword", "createBoard")
                 .param("enabled", "true");
-
         setAuthToken(requestBuilder, systemAdmin);
 
         mockMvc.perform(requestBuilder)
@@ -128,9 +126,51 @@ public class BoardAuthorizationControllerTest extends IricomTestSuite {
     }
 
     @Test
-    @DisplayName("게시판 관리자 삭제")
-    @Order(1)
+    @DisplayName("게시판 관리자 조회")
+    @Order(2)
     public void testCase02() throws Exception {
+        Board board = getBoard(enableBoard);
+        MockHttpServletRequestBuilder requestBuilder = get("/v1/auth/board/{id}", board.getId());
+        setAuthToken(requestBuilder, systemAdmin);
+
+        mockMvc.perform(requestBuilder)
+                .andExpect(status().is(200))
+                .andDo(print())
+                .andDo(document("AT_003",
+                        preprocessRequest(
+                                removeHeaders("Authorization"),
+                                prettyPrint()
+                        ),
+                        preprocessResponse(
+                                prettyPrint()
+                        ),
+                        requestHeaders(
+//                                        headerWithName("Authorization").description("firebase 토큰")
+                        ),
+                        pathParameters(
+                                parameterWithName("id").description("아이디")
+                        ),
+                        responseFields(
+                                fieldWithPath("id").description("게시판 아이디"),
+                                fieldWithPath("title").description("게시판 제목"),
+                                fieldWithPath("description").description("게시판 설명"),
+                                fieldWithPath("enabled").description("게시판 활셩화 여부"),
+                                fieldWithPath("accounts").description("게시판 관리자 목록"),
+                                fieldWithPath("accounts.[].id").description("게시판 관리자 아이디"),
+                                fieldWithPath("accounts.[].email").description("게시판 관리자 이메일"),
+                                fieldWithPath("accounts.[].createDate").description("게시판 관리자 생성일"),
+                                fieldWithPath("accounts.[].lastActivityDate").description("게시판 관리자 최근 활동일"),
+                                fieldWithPath("accounts.[].nickname").description("게시판 관리자 닉네임"),
+                                fieldWithPath("accounts.[].description").description("게시판 관리자 설명"),
+                                fieldWithPath("accounts.[].auth").description("게시판 관리자 권한")
+                        )
+                ));
+    }
+
+    @Test
+    @DisplayName("게시판 관리자 삭제")
+    @Order(3)
+    public void testCase03() throws Exception {
         Account account = getAccount(toDisableBoardAdmin);
         Board board = getBoard(enableBoard);
 
@@ -146,7 +186,7 @@ public class BoardAuthorizationControllerTest extends IricomTestSuite {
         mockMvc.perform(requestBuilder)
                 .andExpect(status().is(200))
                 .andDo(print())
-                .andDo(document("AT_003",
+                .andDo(document("AT_004",
                         preprocessRequest(
                                 removeHeaders("Authorization"),
                                 prettyPrint()

@@ -155,7 +155,13 @@ operation::AT_001[snippets='curl-request,request-fields,http-response']
 
 operation::AT_002[snippets='curl-request,request-parameters,http-response,response-fields']
 
-=== 게시판 관리자 삭제
+=== 게시판 관리자 조회
 ==== AT_003
 
-operation::AT_003[snippets='curl-request,request-fields,http-response']
+operation::AT_003[snippets='curl-request,path-parameters,http-response,response-fields']
+
+
+=== 게시판 관리자 삭제
+==== AT_004
+
+operation::AT_004[snippets='curl-request,request-fields,http-response']

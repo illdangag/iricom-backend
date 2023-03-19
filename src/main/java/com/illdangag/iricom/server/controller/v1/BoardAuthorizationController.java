@@ -6,6 +6,7 @@ import com.illdangag.iricom.server.configuration.annotation.AuthRole;
 import com.illdangag.iricom.server.data.request.BoardAdminInfoCreate;
 import com.illdangag.iricom.server.data.request.BoardAdminInfoDelete;
 import com.illdangag.iricom.server.data.request.BoardAdminInfoSearch;
+import com.illdangag.iricom.server.data.response.BoardAdminInfo;
 import com.illdangag.iricom.server.data.response.BoardAdminInfoList;
 import com.illdangag.iricom.server.exception.IricomErrorCode;
 import com.illdangag.iricom.server.exception.IricomException;
@@ -92,9 +93,20 @@ public class BoardAuthorizationController {
     }
 
     /**
-     * 게시판 관리자 삭제
+     * 게시판 관리자 조회
      */
     @ApiCallLog(apiCode = "AT_003")
+    @Auth(role = AuthRole.SYSTEM_ADMIN)
+    @RequestMapping(method = RequestMethod.GET, value = "/board/{board_id}")
+    public ResponseEntity<BoardAdminInfo> getBoardAdmin(@PathVariable(name = "board_id") String boardId) {
+        BoardAdminInfo boardAdminInfo = this.boardAuthorizationService.getBoardAdminInfo(boardId);
+        return ResponseEntity.status(HttpStatus.OK).body(boardAdminInfo);
+    }
+
+    /**
+     * 게시판 관리자 삭제
+     */
+    @ApiCallLog(apiCode = "AT_004")
     @Auth(role = AuthRole.SYSTEM_ADMIN)
     @RequestMapping(method = RequestMethod.DELETE, value = "/board")
     public ResponseEntity<Void> deleteBoardAdminAuth(@RequestBody @Validated BoardAdminInfoDelete boardAdminInfoDelete) {

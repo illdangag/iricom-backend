@@ -146,6 +146,26 @@ public class BoardAuthorizationServiceImpl implements BoardAuthorizationService 
     }
 
     @Override
+    public BoardAdminInfo getBoardAdminInfo(String boardId) {
+        Board board = this.boardService.getBoard(boardId);
+        List<BoardAdmin> boardAdminList = this.boardAdminRepository.getBoardAdminList(Collections.singletonList(board));
+
+        BoardAdminInfo boardAdminInfo = new BoardAdminInfo(board);
+        if (!boardAdminList.isEmpty()) {
+            List<AccountInfo> accountInfoList = boardAdminList.stream()
+                    .filter(boardAdmin -> !boardAdmin.getDeleted())
+                    .map(BoardAdmin::getAccount)
+                    .map(this.accountService::getAccountInfo)
+                    .collect(Collectors.toList());
+            boardAdminInfo.setAccountInfoList(accountInfoList);
+        } else {
+            boardAdminInfo.setAccountInfoList(Collections.emptyList());
+        }
+
+        return boardAdminInfo;
+    }
+
+    @Override
     public BoardAdmin getBoardAdmin(Account account, Board board) {
         Optional<BoardAdmin> boardAdminOptional = this.boardAdminRepository.getEnableBoardAdmin(board, account);
         return boardAdminOptional.orElseThrow(() -> new IricomException(IricomErrorCode.NOT_EXIST_BOARD_ADMIN));

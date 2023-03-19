@@ -6,6 +6,7 @@ import com.illdangag.iricom.server.data.entity.BoardAdmin;
 import com.illdangag.iricom.server.data.request.BoardAdminInfoCreate;
 import com.illdangag.iricom.server.data.request.BoardAdminInfoDelete;
 import com.illdangag.iricom.server.data.request.BoardAdminInfoSearch;
+import com.illdangag.iricom.server.data.response.BoardAdminInfo;
 import com.illdangag.iricom.server.data.response.BoardAdminInfoList;
 
 import javax.validation.Valid;
@@ -16,6 +17,8 @@ public interface BoardAuthorizationService {
     void deleteBoardAdminAuth(BoardAdminInfoDelete boardAdminInfoDelete);
 
     BoardAdminInfoList getBoardAdminInfoList(@Valid BoardAdminInfoSearch boardAdminInfoSearch);
+
+    BoardAdminInfo getBoardAdminInfo(String boardId);
 
     BoardAdmin getBoardAdmin(Account account, Board board);
 }

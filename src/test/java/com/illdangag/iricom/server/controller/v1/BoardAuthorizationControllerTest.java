@@ -227,7 +227,7 @@ public class BoardAuthorizationControllerTest extends IricomTestSuite {
 
         @Nested
         @DisplayName("목록 조회")
-        class BoardAdminGetTest {
+        class BoardAdminListGetTest {
 
             @Test
             @Order(0)
@@ -285,6 +285,29 @@ public class BoardAuthorizationControllerTest extends IricomTestSuite {
                 mockMvc.perform(requestBuilder)
                         .andExpect(status().is(401))
                         .andExpect(jsonPath("$.code").value("01000004"))
+                        .andDo(print());
+            }
+        }
+
+        @Nested
+        @DisplayName("정보 조회")
+        class BoardAdminGetTest {
+
+            @Test
+            @Order(0)
+            @DisplayName("조회")
+            public void testCase00() throws Exception {
+                Board board = getBoard(enableBoard);
+                MockHttpServletRequestBuilder requestBuilder = get("/v1/auth/board/" + board.getId());
+                setAuthToken(requestBuilder, systemAdmin);
+
+                mockMvc.perform(requestBuilder)
+                        .andExpect(status().is(200))
+                        .andExpect(jsonPath("$.id").exists())
+                        .andExpect(jsonPath("$.title").exists())
+                        .andExpect(jsonPath("$.description").exists())
+                        .andExpect(jsonPath("$.enabled").exists())
+                        .andExpect(jsonPath("$.accounts").isArray())
                         .andDo(print());
             }
         }
