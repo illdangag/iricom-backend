@@ -112,7 +112,8 @@ public class PostControllerTest extends IricomTestSuite {
         MockHttpServletRequestBuilder requestBuilder = get("/v1/boards/{boardId}/posts", board.getId())
                 .param("skip", "0")
                 .param("limit", "20")
-                .param("keyword", "");
+                .param("keyword", "")
+                .param("type", "post");
         setAuthToken(requestBuilder, common00);
 
         mockMvc.perform(requestBuilder)
@@ -135,7 +136,8 @@ public class PostControllerTest extends IricomTestSuite {
                         requestParameters(
                                 parameterWithName("skip").description("건너 뛸 수"),
                                 parameterWithName("limit").description("최대 조회 수"),
-                                parameterWithName("keyword").description("검색어")
+                                parameterWithName("keyword").description("검색어"),
+                                parameterWithName("type").description("게시물의 종류 (post: 게시물, notification: 공지사항)")
                         ),
                         responseFields(
                                 fieldWithPath("total").description("모든 결과의 수"),
