@@ -152,7 +152,13 @@ public class BoardAuthorizationServiceImpl implements BoardAuthorizationService 
 
         BoardAdminInfo boardAdminInfo = new BoardAdminInfo(board);
         if (!boardAdminList.isEmpty()) {
-            List<AccountInfo> accountInfoList = boardAdminList.stream()
+            Set<BoardAdmin> boardAdminSet = new HashSet<>();
+            List<BoardAdmin> sortedBoardAdminList = boardAdminList.stream()
+                    .sorted((item1, item2) -> {
+                        return item1.getCreateDate().compareTo(item2.getCreateDate()) * -1;
+                    }).collect(Collectors.toList());
+            boardAdminSet.addAll(sortedBoardAdminList);
+            List<AccountInfo> accountInfoList = boardAdminSet.stream()
                     .filter(boardAdmin -> !boardAdmin.getDeleted())
                     .map(BoardAdmin::getAccount)
                     .map(this.accountService::getAccountInfo)
