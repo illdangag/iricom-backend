@@ -14,9 +14,9 @@ public interface AccountRepository {
 
     long getAccountCount();
 
-    List<Account> getAccountList(String likeEmail, int offset, int limit);
+    List<Account> getAccountList(String keyword, int offset, int limit);
 
-    long getAccountCount(String containEmail);
+    long getAccountCount(String keyword);
 
     Optional<Account> getAccount(long id);
 
