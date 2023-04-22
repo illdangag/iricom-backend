@@ -5,6 +5,7 @@ import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
 import javax.persistence.*;
+import javax.validation.constraints.Size;
 import java.time.LocalDateTime;
 import java.util.Objects;
 
@@ -38,6 +39,7 @@ public class PostContent {
     private String title = "";
 
     @Builder.Default
+    @Size(max = 10000)
     private String content = "";
 
     @Enumerated(EnumType.STRING)
