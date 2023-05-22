@@ -22,3 +22,9 @@ firebase의 비공개 키를 `resources/firebase-adminsdk.json`에 위치
 
 ./gradlew bootJar
 ```
+
+## REST API Document
+
+Spring REST Docs
+
+{Iricom host}/docs/index.html
