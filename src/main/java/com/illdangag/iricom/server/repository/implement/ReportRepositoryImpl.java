@@ -12,6 +12,7 @@ import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.EntityTransaction;
 import javax.persistence.TypedQuery;
+import java.util.List;
 import java.util.Optional;
 
 @Slf4j
@@ -25,7 +26,7 @@ public class ReportRepositoryImpl implements ReportRepository {
     }
 
     @Override
-    public Optional<PostReport> getPostReport(Account account, Post post) {
+    public List<PostReport> getPostReport(Account account, Post post) {
         EntityManager entityManager = this.entityManagerFactory.createEntityManager();
         final String jpql = "SELECT pr from PostReport pr " +
                 "WHERE pr.account = :account " +
@@ -34,14 +35,10 @@ public class ReportRepositoryImpl implements ReportRepository {
         TypedQuery<PostReport> query = entityManager.createQuery(jpql, PostReport.class)
                 .setParameter("account", account)
                 .setParameter("post", post);
-        PostReport postReport = query.getSingleResult();
+        List<PostReport> reportList = query.getResultList();
         entityManager.close();
 
-        if (postReport == null) {
-            return Optional.empty();
-        } else {
-            return Optional.of(postReport);
-        }
+        return reportList;
     }
 
     @Override

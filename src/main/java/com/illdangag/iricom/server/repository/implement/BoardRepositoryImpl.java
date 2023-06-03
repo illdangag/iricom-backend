@@ -12,6 +12,7 @@ import javax.persistence.EntityManagerFactory;
 import javax.persistence.EntityTransaction;
 import javax.persistence.TypedQuery;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
@@ -33,6 +34,18 @@ public class BoardRepositoryImpl implements BoardRepository {
         long result = query.getSingleResult();
         entityManager.close();
         return result;
+    }
+
+    @Override
+    public List<Board> getBoardList(String id) {
+        long boardId = -1;
+        try {
+            boardId = Long.parseLong(id);
+        } catch (Exception exception) {
+            return Collections.EMPTY_LIST;
+        }
+
+        return this.getBoardList(boardId);
     }
 
     @Override
@@ -95,6 +108,19 @@ public class BoardRepositoryImpl implements BoardRepository {
         entityManager.close();
         return result;
     }
+
+    @Override
+    public Optional<Board> getBoard(String id) {
+        long boardId = -1;
+        try {
+            boardId = Long.parseLong(id);
+        } catch (Exception exception) {
+            return Optional.empty();
+        }
+
+        return this.getBoard(boardId);
+    }
+
 
     @Override
     public Optional<Board> getBoard(long id) {

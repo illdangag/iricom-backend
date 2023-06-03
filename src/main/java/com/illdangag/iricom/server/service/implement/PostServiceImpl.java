@@ -266,7 +266,6 @@ public class PostServiceImpl implements PostService {
             }
         }
 
-
         List<Account> accountList = postList.stream()
                 .map(Post::getAccount)
                 .distinct()

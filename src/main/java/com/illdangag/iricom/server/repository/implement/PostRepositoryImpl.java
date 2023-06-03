@@ -25,6 +25,18 @@ public class PostRepositoryImpl implements PostRepository {
     }
 
     @Override
+    public Optional<Post> getPost(String id) {
+        long postId = -1;
+        try {
+            postId = Long.parseLong(id);
+        } catch (Exception exception) {
+            return Optional.empty();
+        }
+
+        return this.getPost(postId);
+    }
+
+    @Override
     public Optional<Post> getPost(long id) {
         EntityManager entityManager = this.entityManagerFactory.createEntityManager();
         final String jpql = "SELECT p FROM Post p WHERE p.id = :id";

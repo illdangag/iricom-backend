@@ -165,3 +165,9 @@ operation::AT_003[snippets='curl-request,path-parameters,http-response,response-
 ==== AT_004
 
 operation::AT_004[snippets='curl-request,request-fields,http-response']
+
+== 신고
+=== 게시물 신고
+==== RP_001
+
+operation::RP_001[snippets='curl-request,request-fields,http-response']

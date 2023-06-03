@@ -59,7 +59,15 @@ public enum IricomErrorCode {
     INVALID_AUTHORIZATION_TO_UPDATE_COMMENT("05000004", 401, "Invalid authorization."),
     INVALID_AUTHORIZATION_TO_DELETE_COMMENT("05000005", 401, "Invalid authorization."),
     ALREADY_VOTE_COMMENT("05000006", 400, "Already vote comment."),
-    INVALID_VOTE_COMMENT("05000007", 400, "Invalid vote type.");
+    INVALID_VOTE_COMMENT("05000007", 400, "Invalid vote type."),
+
+    // report: 06XXXXXX
+    // report post: 0600XXXX
+    ALREADY_REPORT_POST("06000001", 400, "Already report post.");
+
+    // report comment: 0601XXXX
+
+    // report account: 0602XXXX
 
 
     private final String code;

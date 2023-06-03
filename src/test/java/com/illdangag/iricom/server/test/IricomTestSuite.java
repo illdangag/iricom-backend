@@ -108,6 +108,9 @@ public abstract class IricomTestSuite {
     protected static final TestBoardInfo voteBoard = TestBoardInfo.builder()
             .title("voteBoard").isEnabled(true).adminList(Collections.singletonList(allBoardAdmin)).build();
 
+    protected static final TestBoardInfo reportBoard = TestBoardInfo.builder()
+            .title("reportBoard").isEnabled(true).adminList(Collections.singletonList(allBoardAdmin)).build();
+
     private static final TestBoardInfo[] testBoardInfos = {
             enableBoard, // 활성화 게시판
             disableBoard, // 비활성화 게시판
@@ -116,6 +119,7 @@ public abstract class IricomTestSuite {
             commentBoard, // 댓글 테스트용 게시판
             voteBoard, // 투표 테스트용 게시판
             restDocBoard, // restDoc 게시판
+            reportBoard, // 신고 테스트용 게시판
     };
 
     // 게시물 설정
@@ -292,7 +296,17 @@ public abstract class IricomTestSuite {
     protected static final TestPostInfo reportPost00 = TestPostInfo.builder()
             .title("reportPost00").content("report contents").isAllowComment(false)
             .postType(PostType.POST).postState(PostState.PUBLISH)
-            .creator(common00).board(enableBoard).build();
+            .creator(common00).board(reportBoard).build();
+
+    protected static final TestPostInfo reportPost01 = TestPostInfo.builder()
+            .title("reportPost01").content("report contents").isAllowComment(false)
+            .postType(PostType.POST).postState(PostState.PUBLISH)
+            .creator(common00).board(reportBoard).build();
+
+    protected static final TestPostInfo reportPost02 = TestPostInfo.builder()
+            .title("reportPost02").content("report contents").isAllowComment(false)
+            .postType(PostType.POST).postState(PostState.PUBLISH)
+            .creator(common00).board(reportBoard).build();
 
     private static final TestPostInfo[] testPostInfos = {
             enableBoardPost00, enableBoardPost01, enableBoardPost02, enableBoardPost03,
@@ -319,6 +333,8 @@ public abstract class IricomTestSuite {
 
             // 게시물 신고
             reportPost00,
+            reportPost01, // 중복 게시물 신고용
+            reportPost02,
     };
 
     // 댓글 설정
