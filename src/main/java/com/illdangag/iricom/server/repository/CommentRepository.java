@@ -7,6 +7,8 @@ import java.util.List;
 import java.util.Optional;
 
 public interface CommentRepository {
+    Optional<Comment> getComment(String id);
+
     Optional<Comment> getComment(long id);
 
     List<Comment> getCommentList(Post post, int offset, int limit);
