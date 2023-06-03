@@ -45,7 +45,7 @@ public class ReportServiceImpl implements ReportService {
         Post post = postOptional.orElseThrow(() -> new IricomException(IricomErrorCode.NOT_EXIST_POST));
 
         if (!post.getBoard().equals(board)) {
-            throw new IricomException(IricomErrorCode.INVALID_REQUEST); // TODO 에러 메시지를 구체적으로 변경
+            throw new IricomException(IricomErrorCode.NOT_EXIST_POST);
         }
 
         List<PostReport> postReportList = this.reportRepository.getPostReport(account, post);
