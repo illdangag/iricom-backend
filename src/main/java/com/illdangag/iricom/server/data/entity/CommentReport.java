@@ -16,9 +16,9 @@ import java.time.LocalDateTime;
 @ToString
 @Entity
 @Table(indexes = {
-        @Index(name = "account_id_and_post_id", columnList = "report_account_id,post_id"),
+        @Index(name = "account_id_and_comment_id", columnList = "report_account_id,comment_id"),
 })
-public class PostReport {
+public class CommentReport {
     @Id
     @GeneratedValue
     private Long id;
@@ -33,11 +33,11 @@ public class PostReport {
 
     @ManyToOne
     @JoinColumn(name = "report_account_id")
-    private Account account; // 신고자 계정
+    private Account account;
 
     @ManyToOne
-    @JoinColumn(name = "post_id")
-    private Post post; // 신고 대상 게시물
+    @JoinColumn(name = "comment_id")
+    private Comment comment;
 
     @Builder.Default
     private ReportType type = ReportType.ETC;

@@ -4,6 +4,7 @@ import com.illdangag.iricom.server.data.entity.Account;
 import com.illdangag.iricom.server.data.entity.Board;
 import com.illdangag.iricom.server.data.entity.Post;
 import com.illdangag.iricom.server.data.entity.PostReport;
+import com.illdangag.iricom.server.data.request.CommentReportCreate;
 import com.illdangag.iricom.server.data.request.PostReportCreate;
 import com.illdangag.iricom.server.exception.IricomErrorCode;
 import com.illdangag.iricom.server.exception.IricomException;
@@ -62,5 +63,12 @@ public class ReportServiceImpl implements ReportService {
                 .build();
 
         this.reportRepository.savePostReport(postReport);
+    }
+
+    @Override
+    public void reportComment(Account account, CommentReportCreate commentReportCreate) {
+        String boardId = commentReportCreate.getBoardId();
+        String postId = commentReportCreate.getPostId();
+        String commentId = commentReportCreate.getCommentId();
     }
 }

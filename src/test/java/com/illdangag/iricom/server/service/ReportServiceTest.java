@@ -83,5 +83,76 @@ public class ReportServiceTest extends IricomTestSuite {
                 reportService.reportPost(account, postReportCreate);
             });
         }
+
+        @Test
+        @DisplayName("게시물 ID 누락")
+        public void testCase03() throws Exception {
+            Account account = getAccount(common00);
+            Post post = getPost(reportPost01);
+            Board board = post.getBoard();
+
+            PostReportCreate postReportCreate = PostReportCreate.builder()
+                    .boardId(String.valueOf(board.getId()))
+                    .type(ReportType.ETC)
+                    .reason("report test")
+                    .build();
+
+            Assertions.assertThrows(IricomException.class, () -> {
+                reportService.reportPost(account, postReportCreate);
+            });
+        }
+
+        @Test
+        @DisplayName("게시판 ID 누락")
+        public void testCase04() throws Exception {
+            Account account = getAccount(common00);
+            Post post = getPost(reportPost01);
+
+            PostReportCreate postReportCreate = PostReportCreate.builder()
+                    .postId(String.valueOf(post.getId()))
+                    .type(ReportType.ETC)
+                    .reason("report test")
+                    .build();
+
+            Assertions.assertThrows(IricomException.class, () -> {
+                reportService.reportPost(account, postReportCreate);
+            });
+        }
+
+        @Test
+        @DisplayName("존재하지 않는 게시물")
+        public void testCase05() throws Exception {
+            Account account = getAccount(common00);
+            Board board = getBoard(enableBoard);
+
+            PostReportCreate postReportCreate = PostReportCreate.builder()
+                    .boardId(String.valueOf(board.getId()))
+                    .postId("NOT_EXIST_POST")
+                    .type(ReportType.ETC)
+                    .reason("report test")
+                    .build();
+
+            Assertions.assertThrows(IricomException.class, () -> {
+                reportService.reportPost(account, postReportCreate);
+            });
+        }
+
+        @Test
+        @DisplayName("존재하지 않는 게시판")
+        public void testCase06() throws Exception {
+            Account account = getAccount(common00);
+            Post post = getPost(reportPost01);
+
+            PostReportCreate postReportCreate = PostReportCreate.builder()
+                    .boardId("NOT_EXIST_BOARD")
+                    .postId(String.valueOf(post.getId()))
+                    .type(ReportType.ETC)
+                    .reason("report test")
+                    .build();
+
+            Assertions.assertThrows(IricomException.class, () -> {
+                reportService.reportPost(account, postReportCreate);
+            });
+        }
     }
 }

@@ -10,7 +10,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 
 import java.util.List;
-import java.util.Optional;
 
 @Slf4j
 @DisplayName("ReportRepository")
@@ -39,5 +38,24 @@ public class ReportRepositoryTest extends IricomTestSuite {
 
         List<PostReport> postReportList = this.reportRepository.getPostReport(account, post);
         Assertions.assertFalse(postReportList.isEmpty());
+    }
+
+    @Test
+    @DisplayName("댓글 신고 내역 저장 및 조회")
+    public void testCase01() throws Exception {
+        Account account = getAccount(common00);
+        Comment comment = getComment(reportComment00);
+
+        CommentReport commentReport = CommentReport.builder()
+                .account(account)
+                .comment(comment)
+                .type(ReportType.ETC)
+                .reason("repository save test")
+                .build();
+
+        this.reportRepository.saveCommentReport(commentReport);
+
+        List<CommentReport> commentReportList = this.reportRepository.getCommentReportList(account, comment);
+        Assertions.assertFalse(commentReportList.isEmpty());
     }
 }

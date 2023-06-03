@@ -1,6 +1,5 @@
 package com.illdangag.iricom.server.controller.v1;
 
-import com.illdangag.iricom.server.data.entity.Account;
 import com.illdangag.iricom.server.data.entity.Board;
 import com.illdangag.iricom.server.data.entity.Post;
 import com.illdangag.iricom.server.test.IricomTestSuite;
@@ -104,7 +103,7 @@ public class ReportControllerTest extends IricomTestSuite {
 
             @Test
             @Order(2)
-            @DisplayName("")
+            @DisplayName("게시물이 포함되지 않은 게시판")
             public void testCase02() throws Exception {
                 Post post = getPost(enableBoardPost00);
                 Board board = getBoard(disableBoard);
@@ -124,6 +123,100 @@ public class ReportControllerTest extends IricomTestSuite {
                         .andExpect(status().is(404))
                         .andExpect(jsonPath("$.code").value("04000002"))
                         .andExpect(jsonPath("$.message").value("Not exist post."))
+                        .andDo(print());
+            }
+
+            @Test
+            @Order(3)
+            @DisplayName("게시물 ID 누락")
+            public void testCase03() throws Exception {
+                Board board = getBoard(disableBoard);
+
+                Map<String, Object> requestBody = new HashMap<>();
+                requestBody.put("boardId", board.getId());
+                requestBody.put("type", "hate");
+                requestBody.put("reason", "This is a hateful post.");
+
+                MockHttpServletRequestBuilder requestBuilder = post("/v1/report/post")
+                        .content(getJsonString(requestBody))
+                        .contentType(MediaType.APPLICATION_JSON);
+                setAuthToken(requestBuilder, common00);
+
+                mockMvc.perform(requestBuilder)
+                        .andExpect(status().is(400))
+                        .andExpect(jsonPath("$.code").value("01020000"))
+                        .andExpect(jsonPath("$.message").value("Post id is required."))
+                        .andDo(print());
+            }
+
+            @Test
+            @Order(4)
+            @DisplayName("게시판 ID 누락")
+            public void testCase04() throws Exception {
+                Post post = getPost(reportPost00);
+
+                Map<String, Object> requestBody = new HashMap<>();
+                requestBody.put("postId", post.getId());
+                requestBody.put("type", "hate");
+                requestBody.put("reason", "This is a hateful post.");
+
+                MockHttpServletRequestBuilder requestBuilder = post("/v1/report/post")
+                        .content(getJsonString(requestBody))
+                        .contentType(MediaType.APPLICATION_JSON);
+                setAuthToken(requestBuilder, common00);
+
+                mockMvc.perform(requestBuilder)
+                        .andExpect(status().is(400))
+                        .andExpect(jsonPath("$.code").value("01020000"))
+                        .andExpect(jsonPath("$.message").value("Board id is required."))
+                        .andDo(print());
+            }
+
+            @Test
+            @Order(5)
+            @DisplayName("존재하지 않는 게시물")
+            public void testCase05() throws Exception {
+                Board board = getBoard(enableBoard);
+
+                Map<String, Object> requestBody = new HashMap<>();
+                requestBody.put("boardId", board.getId());
+                requestBody.put("postId", "NOT_EXIST_POST");
+                requestBody.put("type", "hate");
+                requestBody.put("reason", "This is a hateful post.");
+
+                MockHttpServletRequestBuilder requestBuilder = post("/v1/report/post")
+                        .content(getJsonString(requestBody))
+                        .contentType(MediaType.APPLICATION_JSON);
+                setAuthToken(requestBuilder, common00);
+
+                mockMvc.perform(requestBuilder)
+                        .andExpect(status().is(404))
+                        .andExpect(jsonPath("$.code").value("04000002"))
+                        .andExpect(jsonPath("$.message").value("Not exist post."))
+                        .andDo(print());
+            }
+
+            @Test
+            @Order(6)
+            @DisplayName("존재하지 않는 게시판")
+            public void testCase06() throws Exception {
+                Post post = getPost(reportPost00);
+
+                Map<String, Object> requestBody = new HashMap<>();
+                requestBody.put("boardId", "NOT_EXIST_BOARD");
+                requestBody.put("postId", post.getId());
+                requestBody.put("type", "hate");
+                requestBody.put("reason", "This is a hateful post.");
+
+                MockHttpServletRequestBuilder requestBuilder = post("/v1/report/post")
+                        .content(getJsonString(requestBody))
+                        .contentType(MediaType.APPLICATION_JSON);
+                setAuthToken(requestBuilder, common00);
+
+                mockMvc.perform(requestBuilder)
+                        .andExpect(status().is(404))
+                        .andExpect(jsonPath("$.code").value("03000000"))
+                        .andExpect(jsonPath("$.message").value("Not exist board."))
                         .andDo(print());
             }
         }
