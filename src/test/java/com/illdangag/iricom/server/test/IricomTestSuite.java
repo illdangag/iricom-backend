@@ -289,6 +289,11 @@ public abstract class IricomTestSuite {
             .postType(PostType.POST).postState(PostState.PUBLISH)
             .creator(common00).board(voteBoard).build();
 
+    protected static final TestPostInfo reportPost00 = TestPostInfo.builder()
+            .title("reportPost00").content("report contents").isAllowComment(false)
+            .postType(PostType.POST).postState(PostState.PUBLISH)
+            .creator(common00).board(enableBoard).build();
+
     private static final TestPostInfo[] testPostInfos = {
             enableBoardPost00, enableBoardPost01, enableBoardPost02, enableBoardPost03,
             enableBoardNotification00,
@@ -311,6 +316,9 @@ public abstract class IricomTestSuite {
 
             // 댓글 투표
             voteCommentPost00, voteCommentPost01,
+
+            // 게시물 신고
+            reportPost00,
     };
 
     // 댓글 설정
