@@ -106,6 +106,11 @@ public class PostServiceImpl implements PostService {
 
     @Override
     public PostInfo updatePostInfo(Account account, Board board, Post post, @Valid PostInfoUpdate postInfoUpdate) {
+        // 게시판에 존재하는 게시물인지 확인
+        if (!board.equals(post.getBoard())) {
+            throw new IricomException(IricomErrorCode.NOT_EXIST_POST);
+        }
+
         // 활성화된 게시판에만 게시물 수정 가능
         if (!board.getEnabled()) {
             throw new IricomException(IricomErrorCode.DISABLED_BOARD_TO_POST);
@@ -175,6 +180,11 @@ public class PostServiceImpl implements PostService {
             throw new IricomException(IricomErrorCode.DISABLED_BOARD_TO_POST);
         }
 
+        // 게시판에 존재하는 게시물인지 확인
+        if (!board.equals(post.getBoard())) {
+            throw new IricomException(IricomErrorCode.NOT_EXIST_POST);
+        }
+
         if (postState == PostState.TEMPORARY) {
             if (!post.getAccount().equals(account)) {
                 // 임시 저장한 내용을 조회하는 경우에는 본인이 작성한 게시물만 가능
@@ -202,6 +212,11 @@ public class PostServiceImpl implements PostService {
 
     @Override
     public PostInfo publishPostInfo(Account account, Board board, Post post) {
+        // 게시판에 포함된 게시물인지 확인
+        if (!board.equals(post.getBoard())) {
+            throw new IricomException(IricomErrorCode.NOT_EXIST_POST);
+        }
+
         // 활성화된 게시판에만 게시물 발행 가능
         if (!board.getEnabled()) {
             throw new IricomException(IricomErrorCode.DISABLED_BOARD_TO_POST);
@@ -296,6 +311,11 @@ public class PostServiceImpl implements PostService {
 
     @Override
     public PostInfo deletePostInfo(Account account, Board board, Post post) {
+        // 게시판에 포함된 게시물인지 확인
+        if (!board.equals(post.getBoard())) {
+            throw new IricomException(IricomErrorCode.NOT_EXIST_POST);
+        }
+
         // 활성화된 게시판에만 게시물 발행 가능
         if (!board.getEnabled()) {
             throw new IricomException(IricomErrorCode.DISABLED_BOARD_TO_POST);
@@ -346,6 +366,11 @@ public class PostServiceImpl implements PostService {
 
     @Override
     public PostInfo votePost(Account account, Board board, Post post, VoteType voteType) {
+        // 게시판에 포함된 게시물인지 확인
+        if (!board.equals(post.getBoard())) {
+            throw new IricomException(IricomErrorCode.NOT_EXIST_POST);
+        }
+
         if (!board.equals(post.getBoard())) {
             throw new IricomException(IricomErrorCode.NOT_EXIST_POST);
         }
