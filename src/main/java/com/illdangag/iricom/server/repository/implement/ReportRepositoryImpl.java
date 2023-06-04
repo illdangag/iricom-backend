@@ -10,7 +10,6 @@ import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.EntityTransaction;
 import javax.persistence.TypedQuery;
-import java.util.Collections;
 import java.util.List;
 
 @Slf4j
