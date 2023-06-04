@@ -171,3 +171,8 @@ operation::AT_004[snippets='curl-request,request-fields,http-response']
 ==== RP_001
 
 operation::RP_001[snippets='curl-request,request-fields,http-response']
+
+=== 댓글 신고
+==== RP_002
+
+operation::RP_002[snippets='curl-request,request-fields,http-response']
