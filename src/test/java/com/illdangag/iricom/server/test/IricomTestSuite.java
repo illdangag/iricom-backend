@@ -294,27 +294,37 @@ public abstract class IricomTestSuite {
             .creator(common00).board(voteBoard).build();
 
     protected static final TestPostInfo reportPost00 = TestPostInfo.builder()
-            .title("reportPost00").content("report contents").isAllowComment(false)
+            .title("reportPost00").content("report contents").isAllowComment(true)
             .postType(PostType.POST).postState(PostState.PUBLISH)
             .creator(common00).board(reportBoard).build();
 
     protected static final TestPostInfo reportPost01 = TestPostInfo.builder()
-            .title("reportPost01").content("report contents").isAllowComment(false)
+            .title("reportPost01").content("report contents").isAllowComment(true)
             .postType(PostType.POST).postState(PostState.PUBLISH)
             .creator(common00).board(reportBoard).build();
 
     protected static final TestPostInfo reportPost02 = TestPostInfo.builder()
-            .title("reportPost02").content("report contents").isAllowComment(false)
+            .title("reportPost02").content("report contents").isAllowComment(true)
             .postType(PostType.POST).postState(PostState.PUBLISH)
             .creator(common00).board(reportBoard).build();
 
     protected static final TestPostInfo reportPost03 = TestPostInfo.builder()
-            .title("reportPost03").content("report contents").isAllowComment(false)
+            .title("reportPost03").content("report contents").isAllowComment(true)
             .postType(PostType.POST).postState(PostState.PUBLISH)
             .creator(common00).board(reportBoard).build();
 
     protected static final TestPostInfo reportPost04 = TestPostInfo.builder()
-            .title("reportPost04").content("report contents").isAllowComment(false)
+            .title("reportPost04").content("report contents").isAllowComment(true)
+            .postType(PostType.POST).postState(PostState.PUBLISH)
+            .creator(common00).board(reportBoard).build();
+
+    protected static final TestPostInfo reportPost05 = TestPostInfo.builder()
+            .title("reportPost05").content("report contents").isAllowComment(true)
+            .postType(PostType.POST).postState(PostState.PUBLISH)
+            .creator(common00).board(disableBoard).build();
+
+    protected static final TestPostInfo reportPost06 = TestPostInfo.builder()
+            .title("reportPost06").content("report contents").isAllowComment(false)
             .postType(PostType.POST).postState(PostState.PUBLISH)
             .creator(common00).board(reportBoard).build();
 
@@ -342,7 +352,7 @@ public abstract class IricomTestSuite {
             voteCommentPost00, voteCommentPost01,
 
             // 게시물 신고
-            reportPost00, reportPost01, reportPost02, reportPost03, reportPost04,
+            reportPost00, reportPost01, reportPost02, reportPost03, reportPost04, reportPost05, reportPost06,
     };
 
     // 댓글 설정
@@ -450,6 +460,26 @@ public abstract class IricomTestSuite {
             .content("reportComment03")
             .creator(common00).post(reportPost00)
             .build();
+    protected static final TestCommentInfo reportComment04 = TestCommentInfo.builder()
+            .content("reportComment04")
+            .creator(common00).post(reportPost00)
+            .build();
+    protected static final TestCommentInfo reportComment05 = TestCommentInfo.builder()
+            .content("reportComment05")
+            .creator(common00).post(reportPost00)
+            .build();
+    protected static final TestCommentInfo reportComment06 = TestCommentInfo.builder()
+            .content("reportComment06")
+            .creator(common00).post(reportPost05)
+            .build();
+    protected static final TestCommentInfo reportComment07 = TestCommentInfo.builder()
+            .content("reportComment07")
+            .creator(common00).post(reportPost06)
+            .build();
+    protected static final TestCommentInfo reportComment08 = TestCommentInfo.builder()
+            .content("reportComment08")
+            .creator(common00).post(reportPost00)
+            .build();
 
     private static final TestCommentInfo[] testCommentInfos = {
             enableBoardComment00,
@@ -462,7 +492,8 @@ public abstract class IricomTestSuite {
 
             voteComment00, voteComment01, voteComment02, voteComment03, voteComment04, voteComment05,
 
-            reportComment00, reportComment01, reportComment02, reportComment03,
+            reportComment00, reportComment01, reportComment02, reportComment03, reportComment04, reportComment05,
+            reportComment06, reportComment07, reportComment08,
     };
 
     private static final Map<TestAccountInfo, Account> accountMap = new HashMap<>();

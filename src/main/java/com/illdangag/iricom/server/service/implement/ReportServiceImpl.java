@@ -84,7 +84,13 @@ public class ReportServiceImpl implements ReportService {
         if (!comment.getPost().equals(post)) {
             throw new IricomException(IricomErrorCode.NOT_EXIST_COMMENT);
         } else if (!post.getBoard().equals(board)) {
-            throw new IricomException(IricomErrorCode.NOT_EXIST_COMMENT);
+            throw new IricomException(IricomErrorCode.NOT_EXIST_POST);
+        } else if (!board.getEnabled()) {
+            throw new IricomException(IricomErrorCode.DISABLED_BOARD);
+        } else if (!post.isPublish()) {
+            throw new IricomException(IricomErrorCode.NOT_EXIST_PUBLISH_CONTENT);
+        } else if (!post.getContent().getAllowComment()) {
+            throw new IricomException(IricomErrorCode.NOT_ALLOW_COMMENT);
         }
 
         List<CommentReport> commentReportList = this.reportRepository.getCommentReportList(account, comment);

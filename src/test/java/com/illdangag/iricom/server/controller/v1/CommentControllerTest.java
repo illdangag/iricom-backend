@@ -102,7 +102,7 @@ public class CommentControllerTest extends IricomTestSuite {
 
             mockMvc.perform(requestBuilder)
                     .andExpect(status().is(404))
-                    .andExpect(jsonPath("$.code").value("04000002"))
+                    .andExpect(jsonPath("$.code").value("04000005"))
                     .andDo(print());
         }
 
@@ -144,7 +144,8 @@ public class CommentControllerTest extends IricomTestSuite {
 
             mockMvc.perform(requestBuilder)
                     .andExpect(status().is(400))
-                    .andExpect(jsonPath("$.code").value("05000003"))
+                    .andExpect(jsonPath("$.code").value("03000001"))
+                    .andExpect(jsonPath("$.message").value("Board is disabled."))
                     .andDo(print());
         }
 
@@ -165,7 +166,8 @@ public class CommentControllerTest extends IricomTestSuite {
 
             mockMvc.perform(requestBuilder)
                     .andExpect(status().is(404))
-                    .andExpect(jsonPath("$.code").value("04000002"))
+                    .andExpect(jsonPath("$.code").value("04000000"))
+                    .andExpect(jsonPath("$.message").value("Not exist post."))
                     .andDo(print());
         }
     }
@@ -235,7 +237,8 @@ public class CommentControllerTest extends IricomTestSuite {
 
             mockMvc.perform(requestBuilder)
                     .andExpect(status().is(400))
-                    .andExpect(jsonPath("$.code").value("05000003"))
+                    .andExpect(jsonPath("$.code").value("03000001"))
+                    .andExpect(jsonPath("$.message").value("Board is disabled."))
                     .andDo(print());
         }
 
@@ -257,7 +260,8 @@ public class CommentControllerTest extends IricomTestSuite {
 
             mockMvc.perform(requestBuilder)
                     .andExpect(status().is(401))
-                    .andExpect(jsonPath("$.code").value("05000004"))
+                    .andExpect(jsonPath("$.code").value("05000003"))
+                    .andExpect(jsonPath("$.message").value("Invalid authorization."))
                     .andDo(print());
         }
 
@@ -279,7 +283,8 @@ public class CommentControllerTest extends IricomTestSuite {
 
             mockMvc.perform(requestBuilder)
                     .andExpect(status().is(404))
-                    .andExpect(jsonPath("$.code").value("04000002"))
+                    .andExpect(jsonPath("$.code").value("04000000"))
+                    .andExpect(jsonPath("$.message").value("Not exist post."))
                     .andDo(print());
         }
     }
@@ -464,7 +469,8 @@ public class CommentControllerTest extends IricomTestSuite {
 
             mockMvc.perform(requestBuilder)
                     .andExpect(status().is(401))
-                    .andExpect(jsonPath("$.code").value("05000005"))
+                    .andExpect(jsonPath("$.code").value("05000004"))
+                    .andExpect(jsonPath("$.message").value("Invalid authorization."))
                     .andDo(print());
         }
     }
@@ -585,7 +591,7 @@ public class CommentControllerTest extends IricomTestSuite {
 
             mockMvc.perform(requestBuilder)
                     .andExpect(status().is(400))
-                    .andExpect(jsonPath("$.code").value("05000006"))
+                    .andExpect(jsonPath("$.code").value("05000005"))
                     .andDo(print());
         }
 
@@ -614,7 +620,7 @@ public class CommentControllerTest extends IricomTestSuite {
 
             mockMvc.perform(requestBuilder)
                     .andExpect(status().is(400))
-                    .andExpect(jsonPath("$.code").value("05000006"))
+                    .andExpect(jsonPath("$.code").value("05000005"))
                     .andDo(print());
         }
 
@@ -680,7 +686,8 @@ public class CommentControllerTest extends IricomTestSuite {
 
             mockMvc.perform(requestBuilder)
                     .andExpect(status().is(400))
-                    .andExpect(jsonPath("$.code").value("04000005"))
+                    .andExpect(jsonPath("$.code").value("03000001"))
+                    .andExpect(jsonPath("$.message").value("Board is disabled."))
                     .andDo(print());
         }
 
@@ -702,7 +709,8 @@ public class CommentControllerTest extends IricomTestSuite {
 
             mockMvc.perform(requestBuilder)
                     .andExpect(status().is(404))
-                    .andExpect(jsonPath("$.code").value("03000000"))
+                    .andExpect(jsonPath("$.code").value("04000000"))
+                    .andExpect(jsonPath("$.message").value("Not exist post."))
                     .andDo(print());
         }
 

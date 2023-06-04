@@ -71,7 +71,7 @@ public class PostServiceImpl implements PostService {
     public PostInfo createPostInfo(Account account, Board board, @Valid PostInfoCreate postInfoCreate) {
         // 활성화된 게시판에만 게시물 작성 가능
         if (!board.getEnabled()) {
-            throw new IricomException(IricomErrorCode.DISABLED_BOARD_TO_POST);
+            throw new IricomException(IricomErrorCode.DISABLED_BOARD);
         }
 
         // 공지 사항인 경우 시스템 관리자 또는 해당 게시판 관리자만 작성 가능
@@ -113,7 +113,7 @@ public class PostServiceImpl implements PostService {
 
         // 활성화된 게시판에만 게시물 수정 가능
         if (!board.getEnabled()) {
-            throw new IricomException(IricomErrorCode.DISABLED_BOARD_TO_POST);
+            throw new IricomException(IricomErrorCode.DISABLED_BOARD);
         }
 
         // 공지 사항인 경우 시스템 관리자 또는 해당 게시판 관리자만 수정 가능
@@ -177,7 +177,7 @@ public class PostServiceImpl implements PostService {
     @Override
     public PostInfo getPostInfo(Account account, Board board, Post post, PostState postState) {
         if (!board.getEnabled()) {
-            throw new IricomException(IricomErrorCode.DISABLED_BOARD_TO_POST);
+            throw new IricomException(IricomErrorCode.DISABLED_BOARD);
         }
 
         // 게시판에 존재하는 게시물인지 확인
@@ -219,7 +219,7 @@ public class PostServiceImpl implements PostService {
 
         // 활성화된 게시판에만 게시물 발행 가능
         if (!board.getEnabled()) {
-            throw new IricomException(IricomErrorCode.DISABLED_BOARD_TO_POST);
+            throw new IricomException(IricomErrorCode.DISABLED_BOARD);
         }
 
         // 본인이 작성한 게시물만 발행 가능
@@ -318,7 +318,7 @@ public class PostServiceImpl implements PostService {
 
         // 활성화된 게시판에만 게시물 발행 가능
         if (!board.getEnabled()) {
-            throw new IricomException(IricomErrorCode.DISABLED_BOARD_TO_POST);
+            throw new IricomException(IricomErrorCode.DISABLED_BOARD);
         }
 
         // 본인이 작성한 게시물만 삭제 가능
@@ -376,7 +376,7 @@ public class PostServiceImpl implements PostService {
         }
 
         if (!board.getEnabled()) {
-            throw new IricomException(IricomErrorCode.DISABLED_BOARD_TO_VOTE);
+            throw new IricomException(IricomErrorCode.DISABLED_BOARD);
         }
 
         if (!post.isPublish()) {

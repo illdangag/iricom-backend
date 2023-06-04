@@ -26,7 +26,7 @@ public enum IricomErrorCode {
     // global error: 0102XXXX
     INVALID_REQUEST("01020000", 400, "Invalid request."),
     // board admin: 0103XXXX
-    NOT_EXIST_BOARD_ADMIN("01030000", 400, "Invalid request."),
+    NOT_EXIST_BOARD_ADMIN("01030000", 404, "Invalid request."),
     NOT_EXIST_ACCOUNT_DETAIL_TO_UPDATE_BOARD_ADMIN("01030001", 400, "Invalid request."),
 
     // account: 02XXXXXX
@@ -37,16 +37,15 @@ public enum IricomErrorCode {
 
     // board: 03XXXXXX
     NOT_EXIST_BOARD("03000000", 404, "Not exist board."),
+    DISABLED_BOARD("03000001", 400, "Board is disabled."),
 
     // post: 04XXXXXX
-    DISABLED_BOARD_TO_POST("04000000", 400, "Board is disabled."), // 게시판이 비활성화 되어 있어서 게시물 작성이 불가능
+    NOT_EXIST_POST("04000000", 404, "Not exist post."), // 존재하지 않는 게시물
     INVALID_AUTHORIZATION_TO_NOTIFICATION("04000001", 401, "Invalid authorization."), // 해당 게시판에 공지 사항 게시물 권한 없음
     INVALID_AUTHORIZATION_TO_UPDATE_POST_OR_NOTIFICATION("04000002", 401, "Invalid authorization."), // 수정 하려는 게시물에 권한 없음
-    NOT_EXIST_POST("04000002", 404, "Not exist post."), // 존재하지 않는 게시물
     INVALID_POST_STATE("04000003", 400, "Invalid state."),
     NOT_EXIST_TEMPORARY_CONTENT("04000004", 404, "Not exist temporary content."),
     NOT_EXIST_PUBLISH_CONTENT("04000005", 404, "Not exist publish content."),
-    DISABLED_BOARD_TO_VOTE("04000005", 400, "Board is disabled."),
     ALREADY_VOTE_POST("04000006", 400, "Already vote post."),
     INVALID_VOTE_POST("04000007", 400, "Invalid vote type."),
     INVALID_AUTHORIZATION_TO_GET_TEMPORARY_CONTENT("04000008", 401, "Invalid authorization."),
@@ -55,11 +54,10 @@ public enum IricomErrorCode {
     NOT_EXIST_COMMENT("05000000", 404, "Not exist comment."),
     NOT_EXIST_REFERENCE_COMMENT("05000001", 404, "Not exist reference comment."),
     NOT_ALLOW_COMMENT("05000002", 400, "This post does not allow comments."),
-    DISABLED_BOARD_TO_COMMENT("05000003", 400, "Board is disabled."),
-    INVALID_AUTHORIZATION_TO_UPDATE_COMMENT("05000004", 401, "Invalid authorization."),
-    INVALID_AUTHORIZATION_TO_DELETE_COMMENT("05000005", 401, "Invalid authorization."),
-    ALREADY_VOTE_COMMENT("05000006", 400, "Already vote comment."),
-    INVALID_VOTE_COMMENT("05000007", 400, "Invalid vote type."),
+    INVALID_AUTHORIZATION_TO_UPDATE_COMMENT("05000003", 401, "Invalid authorization."),
+    INVALID_AUTHORIZATION_TO_DELETE_COMMENT("05000004", 401, "Invalid authorization."),
+    ALREADY_VOTE_COMMENT("05000005", 400, "Already vote comment."),
+    INVALID_VOTE_COMMENT("05000006", 400, "Invalid vote type."),
 
     // report: 06XXXXXX
     // report post: 0600XXXX

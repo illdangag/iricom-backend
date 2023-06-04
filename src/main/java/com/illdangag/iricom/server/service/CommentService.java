@@ -22,6 +22,10 @@ public interface CommentService {
 
     CommentInfoList getComment(Board board, Post post, @Valid CommentInfoSearch commentInfoSearch);
 
+    CommentInfo getComment(String boardId, String postId, String commentId);
+
+    CommentInfo getComment(Board board, Post post, Comment comment);
+
     CommentInfo updateComment(Account account, String boardId, String postId, String commentId, @Valid CommentInfoUpdate commentInfoUpdate);
 
     CommentInfo updateComment(Account account, Board board, Post post, Comment comment, @Valid CommentInfoUpdate commentInfoUpdate);

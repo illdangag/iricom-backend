@@ -155,7 +155,8 @@ public class PostControllerTest extends IricomTestSuite {
 
                 mockMvc.perform(requestBuilder)
                         .andExpect(status().is(400))
-                        .andExpect(jsonPath("$.code").value("04000000"))
+                        .andExpect(jsonPath("$.code").value("03000001"))
+                        .andExpect(jsonPath("$.message").value("Board is disabled."))
                         .andDo(print());
             }
         }
@@ -275,7 +276,8 @@ public class PostControllerTest extends IricomTestSuite {
 
                 mockMvc.perform(requestBuilder)
                         .andExpect(status().is(400))
-                        .andExpect(jsonPath("$.code").value("04000000"))
+                        .andExpect(jsonPath("$.code").value("03000001"))
+                        .andExpect(jsonPath("$.message").value("Board is disabled."))
                         .andDo(print());
             }
 
@@ -436,7 +438,8 @@ public class PostControllerTest extends IricomTestSuite {
 
                 mockMvc.perform(requestBuilder)
                         .andExpect(status().is(404))
-                        .andExpect(jsonPath("$.code").value("04000002"))
+                        .andExpect(jsonPath("$.code").value("04000000"))
+                        .andExpect(jsonPath("$.message").value("Not exist post."))
                         .andDo(print());
             }
 
@@ -671,7 +674,8 @@ public class PostControllerTest extends IricomTestSuite {
 
             mockMvc.perform(requestBuilder)
                     .andExpect(status().is(400))
-                    .andExpect(jsonPath("$.code").value("04000000"))
+                    .andExpect(jsonPath("$.code").value("03000001"))
+                    .andExpect(jsonPath("$.message").value("Board is disabled."))
                     .andDo(print());
         }
 
@@ -686,7 +690,8 @@ public class PostControllerTest extends IricomTestSuite {
 
             mockMvc.perform(requestBuilder)
                     .andExpect(status().is(404))
-                    .andExpect(jsonPath("$.code").value("04000002"))
+                    .andExpect(jsonPath("$.code").value("04000000"))
+                    .andExpect(jsonPath("$.message").value("Not exist post."))
                     .andDo(print());
         }
     }
@@ -935,7 +940,8 @@ public class PostControllerTest extends IricomTestSuite {
 
             mockMvc.perform(requestBuilder)
                     .andExpect(status().is(400))
-                    .andExpect(jsonPath("$.code").value("04000000"))
+                    .andExpect(jsonPath("$.code").value("03000001"))
+                    .andExpect(jsonPath("$.message").value("Board is disabled."))
                     .andDo(print());
         }
 
@@ -950,7 +956,8 @@ public class PostControllerTest extends IricomTestSuite {
 
             mockMvc.perform(requestBuilder)
                     .andExpect(status().is(404))
-                    .andExpect(jsonPath("$.code").value("04000002"))
+                    .andExpect(jsonPath("$.code").value("04000000"))
+                    .andExpect(jsonPath("$.message").value("Not exist post."))
                     .andDo(print());
         }
     }
@@ -1091,7 +1098,8 @@ public class PostControllerTest extends IricomTestSuite {
 
             mockMvc.perform(requestBuilder)
                     .andExpect(status().is(404))
-                    .andExpect(jsonPath("$.code").value("04000002"))
+                    .andExpect(jsonPath("$.code").value("04000000"))
+                    .andExpect(jsonPath("$.message").value("Not exist post."))
                     .andDo(print());
         }
 
@@ -1112,7 +1120,8 @@ public class PostControllerTest extends IricomTestSuite {
 
             mockMvc.perform(requestBuilder)
                     .andExpect(status().is(400))
-                    .andExpect(jsonPath("$.code").value("04000005"))
+                    .andExpect(jsonPath("$.code").value("03000001"))
+                    .andExpect(jsonPath("$.message").value("Board is disabled."))
                     .andDo(print());
         }
 

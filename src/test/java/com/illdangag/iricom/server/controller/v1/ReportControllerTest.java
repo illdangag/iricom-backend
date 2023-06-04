@@ -1,6 +1,7 @@
 package com.illdangag.iricom.server.controller.v1;
 
 import com.illdangag.iricom.server.data.entity.Board;
+import com.illdangag.iricom.server.data.entity.Comment;
 import com.illdangag.iricom.server.data.entity.Post;
 import com.illdangag.iricom.server.test.IricomTestSuite;
 import lombok.extern.slf4j.Slf4j;
@@ -96,7 +97,7 @@ public class ReportControllerTest extends IricomTestSuite {
 
                 mockMvc.perform(requestBuilder)
                         .andExpect(status().is(400))
-                        .andExpect(jsonPath("$.code").value("06000001"))
+                        .andExpect(jsonPath("$.code").value("06000000"))
                         .andExpect(jsonPath("$.message").value("Already report post."))
                         .andDo(print());
             }
@@ -121,7 +122,7 @@ public class ReportControllerTest extends IricomTestSuite {
 
                 mockMvc.perform(requestBuilder)
                         .andExpect(status().is(404))
-                        .andExpect(jsonPath("$.code").value("04000002"))
+                        .andExpect(jsonPath("$.code").value("04000000"))
                         .andExpect(jsonPath("$.message").value("Not exist post."))
                         .andDo(print());
             }
@@ -191,7 +192,7 @@ public class ReportControllerTest extends IricomTestSuite {
 
                 mockMvc.perform(requestBuilder)
                         .andExpect(status().is(404))
-                        .andExpect(jsonPath("$.code").value("04000002"))
+                        .andExpect(jsonPath("$.code").value("04000000"))
                         .andExpect(jsonPath("$.message").value("Not exist post."))
                         .andDo(print());
             }
@@ -217,6 +218,283 @@ public class ReportControllerTest extends IricomTestSuite {
                         .andExpect(status().is(404))
                         .andExpect(jsonPath("$.code").value("03000000"))
                         .andExpect(jsonPath("$.message").value("Not exist board."))
+                        .andDo(print());
+            }
+        }
+
+        @Nested
+        @DisplayName("댓글")
+        class ReportComment {
+            @Test
+            @Order(0)
+            @DisplayName("댓글 신고")
+            public void testCase00() throws Exception {
+                Comment comment = getComment(reportComment04);
+                Post post = comment.getPost();
+                Board board = post.getBoard();
+
+                Map<String, Object> requestBody = new HashMap<>();
+                requestBody.put("boardId", board.getId());
+                requestBody.put("postId", post.getId());
+                requestBody.put("commentId", comment.getId());
+                requestBody.put("type", "hate");
+                requestBody.put("reason", "This is a hateful comment.");
+
+                MockHttpServletRequestBuilder requestBuilder = post("/v1/report/comment")
+                        .content(getJsonString(requestBody))
+                        .contentType(MediaType.APPLICATION_JSON);
+                setAuthToken(requestBuilder, common00);
+
+                mockMvc.perform(requestBuilder)
+                        .andExpect(status().is(200))
+                        .andDo(print());
+            }
+
+            @Test
+            @Order(1)
+            @DisplayName("댓글 중복 신고")
+            public void testCase01() throws Exception {
+                Comment comment = getComment(reportComment05);
+                Post post = comment.getPost();
+                Board board = post.getBoard();
+
+                Map<String, Object> requestBody = new HashMap<>();
+                requestBody.put("boardId", board.getId());
+                requestBody.put("postId", post.getId());
+                requestBody.put("commentId", comment.getId());
+                requestBody.put("type", "hate");
+                requestBody.put("reason", "This is a hateful comment.");
+
+                MockHttpServletRequestBuilder requestBuilder = post("/v1/report/comment")
+                        .content(getJsonString(requestBody))
+                        .contentType(MediaType.APPLICATION_JSON);
+                setAuthToken(requestBuilder, common00);
+
+                mockMvc.perform(requestBuilder)
+                        .andExpect(status().is(200))
+                        .andDo(print());
+
+                mockMvc.perform(requestBuilder)
+                        .andExpect(status().is(400))
+                        .andExpect(jsonPath("$.code").value("06010000"))
+                        .andExpect(jsonPath("$.message").value("Already report comment."))
+                        .andDo(print());
+            }
+
+            @Test
+            @Order(2)
+            @DisplayName("존재하지 않는 게시판")
+            public void testCase02() throws Exception {
+                Comment comment = getComment(reportComment05);
+                Post post = comment.getPost();
+
+                Map<String, Object> requestBody = new HashMap<>();
+                requestBody.put("boardId", "NOT_EXIST_BOARD");
+                requestBody.put("postId", post.getId());
+                requestBody.put("commentId", comment.getId());
+                requestBody.put("type", "hate");
+                requestBody.put("reason", "This is a hateful comment.");
+
+                MockHttpServletRequestBuilder requestBuilder = post("/v1/report/comment")
+                        .content(getJsonString(requestBody))
+                        .contentType(MediaType.APPLICATION_JSON);
+                setAuthToken(requestBuilder, common00);
+
+                mockMvc.perform(requestBuilder)
+                        .andExpect(status().is(404))
+                        .andExpect(jsonPath("$.code").value("03000000"))
+                        .andExpect(jsonPath("$.message").value("Not exist board."))
+                        .andDo(print());
+            }
+
+            @Test
+            @Order(3)
+            @DisplayName("존재하지 않는 게시물")
+            public void testCase03() throws Exception {
+                Comment comment = getComment(reportComment05);
+                Post post = comment.getPost();
+                Board board = post.getBoard();
+
+                Map<String, Object> requestBody = new HashMap<>();
+                requestBody.put("boardId", board.getId());
+                requestBody.put("postId", "NOT_EXIST_POST");
+                requestBody.put("commentId", comment.getId());
+                requestBody.put("type", "hate");
+                requestBody.put("reason", "This is a hateful comment.");
+
+                MockHttpServletRequestBuilder requestBuilder = post("/v1/report/comment")
+                        .content(getJsonString(requestBody))
+                        .contentType(MediaType.APPLICATION_JSON);
+                setAuthToken(requestBuilder, common00);
+
+                mockMvc.perform(requestBuilder)
+                        .andExpect(status().is(404))
+                        .andExpect(jsonPath("$.code").value("04000000"))
+                        .andExpect(jsonPath("$.message").value("Not exist post."))
+                        .andDo(print());
+            }
+
+            @Test
+            @Order(4)
+            @DisplayName("존재하지 않는 댓글")
+            public void testCase04() throws Exception {
+                Comment comment = getComment(reportComment05);
+                Post post = comment.getPost();
+                Board board = post.getBoard();
+
+                Map<String, Object> requestBody = new HashMap<>();
+                requestBody.put("boardId", board.getId());
+                requestBody.put("postId", post.getId());
+                requestBody.put("commentId", "NOT_EXIST_COMMENT");
+                requestBody.put("type", "hate");
+                requestBody.put("reason", "This is a hateful comment.");
+
+                MockHttpServletRequestBuilder requestBuilder = post("/v1/report/comment")
+                        .content(getJsonString(requestBody))
+                        .contentType(MediaType.APPLICATION_JSON);
+                setAuthToken(requestBuilder, common00);
+
+                mockMvc.perform(requestBuilder)
+                        .andExpect(status().is(404))
+                        .andExpect(jsonPath("$.code").value("05000000"))
+                        .andExpect(jsonPath("$.message").value("Not exist comment."))
+                        .andDo(print());
+            }
+
+            @Test
+            @Order(5)
+            @DisplayName("올바르지 않은 게시판")
+            public void testCase05() throws Exception {
+                Comment comment = getComment(reportComment05);
+                Post post = comment.getPost();
+                Board board = getBoard(disableBoard);
+
+                Map<String, Object> requestBody = new HashMap<>();
+                requestBody.put("boardId", board.getId());
+                requestBody.put("postId", post.getId());
+                requestBody.put("commentId", comment.getId());
+                requestBody.put("type", "hate");
+                requestBody.put("reason", "This is a hateful comment.");
+
+                MockHttpServletRequestBuilder requestBuilder = post("/v1/report/comment")
+                        .content(getJsonString(requestBody))
+                        .contentType(MediaType.APPLICATION_JSON);
+                setAuthToken(requestBuilder, common00);
+
+                mockMvc.perform(requestBuilder)
+                        .andExpect(status().is(404))
+                        .andExpect(jsonPath("$.code").value("04000000"))
+                        .andExpect(jsonPath("$.message").value("Not exist post."))
+                        .andDo(print());
+            }
+
+            @Test
+            @Order(6)
+            @DisplayName("올바르지 않은 게시물")
+            public void testCase06() throws Exception {
+                Comment comment = getComment(reportComment08);
+                Post post = comment.getPost();
+                Board board = post.getBoard();
+                Post invalidPost = getPost(enableBoardPost01);
+
+                Map<String, Object> requestBody = new HashMap<>();
+                requestBody.put("boardId", board.getId());
+                requestBody.put("postId", invalidPost.getId());
+                requestBody.put("commentId", comment.getId());
+                requestBody.put("type", "hate");
+                requestBody.put("reason", "This is a hateful comment.");
+
+                MockHttpServletRequestBuilder requestBuilder = post("/v1/report/comment")
+                        .content(getJsonString(requestBody))
+                        .contentType(MediaType.APPLICATION_JSON);
+                setAuthToken(requestBuilder, common00);
+
+                mockMvc.perform(requestBuilder)
+                        .andExpect(status().is(404))
+                        .andExpect(jsonPath("$.code").value("05000000"))
+                        .andExpect(jsonPath("$.message").value("Not exist comment."))
+                        .andDo(print());
+            }
+
+            @Test
+            @Order(7)
+            @DisplayName("올바르지 않은 댓글")
+            public void testCase07() throws Exception {
+                Comment comment = getComment(reportComment05);
+                Post post = comment.getPost();
+                Board board = post.getBoard();
+                Comment invalidComment = getComment(enableBoardComment00);
+
+                Map<String, Object> requestBody = new HashMap<>();
+                requestBody.put("boardId", board.getId());
+                requestBody.put("postId", post.getId());
+                requestBody.put("commentId", invalidComment.getId());
+                requestBody.put("type", "hate");
+                requestBody.put("reason", "This is a hateful comment.");
+
+                MockHttpServletRequestBuilder requestBuilder = post("/v1/report/comment")
+                        .content(getJsonString(requestBody))
+                        .contentType(MediaType.APPLICATION_JSON);
+                setAuthToken(requestBuilder, common00);
+
+                mockMvc.perform(requestBuilder)
+                        .andExpect(status().is(404))
+                        .andExpect(jsonPath("$.code").value("05000000"))
+                        .andExpect(jsonPath("$.message").value("Not exist comment."))
+                        .andDo(print());
+            }
+
+            @Test
+            @Order(8)
+            @DisplayName("비활성화 게시판")
+            public void testCase08() throws Exception {
+                Comment comment = getComment(reportComment06);
+                Post post = comment.getPost();
+                Board board = post.getBoard();
+
+                Map<String, Object> requestBody = new HashMap<>();
+                requestBody.put("boardId", board.getId());
+                requestBody.put("postId", post.getId());
+                requestBody.put("commentId", comment.getId());
+                requestBody.put("type", "hate");
+                requestBody.put("reason", "This is a hateful comment.");
+
+                MockHttpServletRequestBuilder requestBuilder = post("/v1/report/comment")
+                        .content(getJsonString(requestBody))
+                        .contentType(MediaType.APPLICATION_JSON);
+                setAuthToken(requestBuilder, common00);
+
+                mockMvc.perform(requestBuilder)
+                        .andExpect(status().is(400))
+                        .andExpect(jsonPath("$.code").value("03000001"))
+                        .andExpect(jsonPath("$.message").value("Board is disabled."))
+                        .andDo(print());
+            }
+
+            @Test
+            @Order(9)
+            @DisplayName("댓글을 허용하지 않은 게시물")
+            public void testCase09() throws Exception {
+                Comment comment = getComment(reportComment07);
+                Post post = comment.getPost();
+                Board board = post.getBoard();
+
+                Map<String, Object> requestBody = new HashMap<>();
+                requestBody.put("boardId", board.getId());
+                requestBody.put("postId", post.getId());
+                requestBody.put("commentId", comment.getId());
+                requestBody.put("type", "hate");
+                requestBody.put("reason", "This is a hateful comment.");
+
+                MockHttpServletRequestBuilder requestBuilder = post("/v1/report/comment")
+                        .content(getJsonString(requestBody))
+                        .contentType(MediaType.APPLICATION_JSON);
+                setAuthToken(requestBuilder, common00);
+
+                mockMvc.perform(requestBuilder)
+                        .andExpect(status().is(400))
+                        .andExpect(jsonPath("$.code").value("05000002"))
+                        .andExpect(jsonPath("$.message").value("This post does not allow comments."))
                         .andDo(print());
             }
         }

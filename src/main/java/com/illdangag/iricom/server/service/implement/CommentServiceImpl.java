@@ -72,6 +72,18 @@ public class CommentServiceImpl implements CommentService {
     public CommentInfo createCommentInfo(Account account, Board board, Post post, @Valid CommentInfoCreate commentInfoCreate) {
         this.validate(board, post);
 
+        if (!board.getEnabled()) { // 비활성화 게시판인 경우
+            throw new IricomException(IricomErrorCode.DISABLED_BOARD);
+        }
+
+        if (!board.equals(post.getBoard()) || post.getContent() == null) { // 게시판에 게시물이 존재하지 않거나 발행되지 않은 게시물인 경우
+            throw new IricomException(IricomErrorCode.NOT_EXIST_POST);
+        }
+
+        if (!post.getContent().getAllowComment()) { // 댓글을 허용하지 않은 게시물인 경우
+            throw new IricomException(IricomErrorCode.NOT_ALLOW_COMMENT);
+        }
+
         Comment referenceComment = null;
         if (commentInfoCreate.getReferenceCommentId() != null) {
             try {
@@ -110,6 +122,18 @@ public class CommentServiceImpl implements CommentService {
     public CommentInfo updateComment(Account account, Board board, Post post, Comment comment, @Valid CommentInfoUpdate commentInfoUpdate) {
         this.validate(board, post, comment);
 
+        if (!board.getEnabled()) { // 비활성화 게시판인 경우
+            throw new IricomException(IricomErrorCode.DISABLED_BOARD);
+        }
+
+        if (!board.equals(post.getBoard()) || post.getContent() == null) { // 게시판에 게시물이 존재하지 않거나 발행되지 않은 게시물인 경우
+            throw new IricomException(IricomErrorCode.NOT_EXIST_POST);
+        }
+
+        if (!post.getContent().getAllowComment()) { // 댓글을 허용하지 않은 게시물인 경우
+            throw new IricomException(IricomErrorCode.NOT_ALLOW_COMMENT);
+        }
+
         if (!comment.getAccount().equals(account)) {
             // 다른 계정의 댓글을 수정하는 경우
             throw new IricomException(IricomErrorCode.INVALID_AUTHORIZATION_TO_UPDATE_COMMENT);
@@ -147,12 +171,8 @@ public class CommentServiceImpl implements CommentService {
         }
 
         List<CommentInfo> commentInfoList = commentList.stream()
-                .map(comment -> {
-                    AccountInfo accountInfo = this.accountService.getAccountInfo(comment.getAccount());
-                    long upvote = this.commentVoteRepository.getCommentVoteCount(comment, VoteType.UPVOTE);
-                    long downvote = this.commentVoteRepository.getCommentVoteCount(comment, VoteType.DOWNVOTE);
-                    return new CommentInfo(comment, accountInfo, upvote, downvote);
-                }).collect(Collectors.toList());
+                .map(this::getCommentInfo)
+                .collect(Collectors.toList());
 
         if (commentInfoSearch.isIncludeComment()) {
             for (CommentInfo commentInfo : commentInfoList) {
@@ -174,6 +194,28 @@ public class CommentServiceImpl implements CommentService {
                 .commentInfoList(commentInfoList)
                 .build();
     }
+
+    @Override
+    public CommentInfo getComment(String boardId, String postId, String commentId) {
+        Board board = this.boardService.getBoard(boardId);
+        Post post = this.postService.getPost(postId);
+        Comment comment = this.getComment(commentId);
+        return this.getComment(board, post, comment);
+    }
+
+    @Override
+    public CommentInfo getComment(Board board, Post post, Comment comment) {
+        this.validate(board, post, comment);
+        return this.getCommentInfo(comment);
+    }
+
+    private CommentInfo getCommentInfo(Comment comment) {
+        AccountInfo accountInfo = this.accountService.getAccountInfo(comment.getAccount());
+        long upvote = this.commentVoteRepository.getCommentVoteCount(comment, VoteType.UPVOTE);
+        long downvote = this.commentVoteRepository.getCommentVoteCount(comment, VoteType.DOWNVOTE);
+        return new CommentInfo(comment, accountInfo, upvote, downvote);
+    }
+
 
     @Override
     public CommentInfo deleteComment(Account account, String boardId, String postId, String commentId) {
@@ -210,20 +252,10 @@ public class CommentServiceImpl implements CommentService {
 
     @Override
     public CommentInfo voteComment(Account account, Board board, Post post, Comment comment, VoteType voteType) {
+        this.validate(board, post, comment);
+
         if (!board.getEnabled()) {
-            throw new IricomException(IricomErrorCode.DISABLED_BOARD_TO_VOTE);
-        }
-
-        if (!board.equals(post.getBoard())) {
-            throw new IricomException(IricomErrorCode.NOT_EXIST_BOARD);
-        }
-
-        if (!post.isPublish()) {
-            throw new IricomException(IricomErrorCode.NOT_EXIST_PUBLISH_CONTENT);
-        }
-
-        if (!post.equals(comment.getPost())) {
-            throw new IricomException(IricomErrorCode.NOT_EXIST_COMMENT);
+            throw new IricomException(IricomErrorCode.DISABLED_BOARD);
         }
 
         if (!post.getContent().getAllowComment()) {
@@ -251,32 +283,19 @@ public class CommentServiceImpl implements CommentService {
     }
 
     private void validate(Board board, Post post) {
-        if (!board.getEnabled()) {
-            // 비활성화 게시판인 경우
-            throw new IricomException(IricomErrorCode.DISABLED_BOARD_TO_COMMENT);
-        }
-
-        if (!board.equals(post.getBoard()) || post.getContent() == null) {
-            // 게시판에 게시물이 존재하지 않거나 발행되지 않은 게시물인 경우
+        if (!post.getBoard().equals(board)) { // 해당 개시판에서 발행되지 않은 게시물
             throw new IricomException(IricomErrorCode.NOT_EXIST_POST);
         }
 
-        if (!post.getContent().getAllowComment()) {
-            // 댓글을 허용하지 않은 게시물인 경우
-            throw new IricomException(IricomErrorCode.NOT_ALLOW_COMMENT);
-        }
-
-        if (!post.getBoard().equals(board)) {
-            // 해당 개시판에서 발행되지 않은 게시물
-            throw new IricomException(IricomErrorCode.NOT_EXIST_POST);
+        if (!post.isPublish()) { // 발행되지 않은 게시물
+            throw new IricomException(IricomErrorCode.NOT_EXIST_PUBLISH_CONTENT);
         }
     }
 
     private void validate(Board board, Post post, Comment comment) {
         this.validate(board, post);
 
-        if (!comment.getPost().equals(post)) {
-            // 해당 게시물에 작성된 댓글이 아닌 경우
+        if (!comment.getPost().equals(post)) { // 해당 게시물에 작성된 댓글이 아닌 경우
             throw new IricomException(IricomErrorCode.NOT_EXIST_COMMENT);
         }
     }

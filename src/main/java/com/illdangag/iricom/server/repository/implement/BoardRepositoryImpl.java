@@ -42,7 +42,7 @@ public class BoardRepositoryImpl implements BoardRepository {
         try {
             boardId = Long.parseLong(id);
         } catch (Exception exception) {
-            return Collections.EMPTY_LIST;
+            return Collections.emptyList();
         }
 
         return this.getBoardList(boardId);
