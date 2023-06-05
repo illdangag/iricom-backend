@@ -2,16 +2,15 @@ package com.illdangag.iricom.server.repository.implement;
 
 import com.illdangag.iricom.server.data.entity.Account;
 import com.illdangag.iricom.server.data.entity.AccountDetail;
+import com.illdangag.iricom.server.exception.IricomErrorCode;
+import com.illdangag.iricom.server.exception.IricomException;
 import com.illdangag.iricom.server.repository.AccountRepository;
 import com.illdangag.iricom.server.util.StringUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
-import javax.persistence.EntityManager;
-import javax.persistence.EntityManagerFactory;
-import javax.persistence.EntityTransaction;
-import javax.persistence.TypedQuery;
+import javax.persistence.*;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -40,6 +39,17 @@ public class AccountRepositoryImpl implements AccountRepository {
         } else {
             return Optional.of(accountList.get(0));
         }
+    }
+
+    @Override
+    public Optional<Account> getAccount(String id) {
+        long accountId = -1;
+        try {
+            accountId = Long.parseLong(id);
+        } catch (Exception exception) {
+            throw new IricomException(IricomErrorCode.NOT_EXIST_ACCOUNT);
+        }
+        return this.getAccount(accountId);
     }
 
     @Override
@@ -156,7 +166,7 @@ public class AccountRepositoryImpl implements AccountRepository {
     }
 
     @Override
-    public Optional<Account> getAccount(String nickname) {
+    public Optional<Account> getAccountByNickname(String nickname) {
         EntityManager entityManager = this.entityManagerFactory.createEntityManager();
 
         final String jpql = "SELECT a FROM Account a " +

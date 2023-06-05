@@ -9,8 +9,10 @@ import com.illdangag.iricom.server.data.response.CommentInfo;
 import com.illdangag.iricom.server.data.response.CommentInfoList;
 import com.illdangag.iricom.server.exception.IricomErrorCode;
 import com.illdangag.iricom.server.exception.IricomException;
+import com.illdangag.iricom.server.repository.BoardRepository;
 import com.illdangag.iricom.server.repository.CommentRepository;
 import com.illdangag.iricom.server.repository.CommentVoteRepository;
+import com.illdangag.iricom.server.repository.PostRepository;
 import com.illdangag.iricom.server.service.AccountService;
 import com.illdangag.iricom.server.service.BoardService;
 import com.illdangag.iricom.server.service.CommentService;
@@ -32,15 +34,20 @@ import java.util.stream.Collectors;
 public class CommentServiceImpl implements CommentService {
     private final CommentRepository commentRepository;
     private final CommentVoteRepository commentVoteRepository;
+    private final BoardRepository boardRepository;
+    private final PostRepository postRepository;
+
     private final BoardService boardService;
     private final PostService postService;
     private final AccountService accountService;
 
     @Autowired
-    public CommentServiceImpl(CommentRepository commentRepository, CommentVoteRepository commentVoteRepository,
+    public CommentServiceImpl(CommentRepository commentRepository, CommentVoteRepository commentVoteRepository, BoardRepository boardRepository, PostRepository postRepository,
                               BoardService boardService, PostService postService, AccountService accountService) {
         this.commentRepository = commentRepository;
         this.commentVoteRepository = commentVoteRepository;
+        this.boardRepository = boardRepository;
+        this.postRepository = postRepository;
         this.boardService = boardService;
         this.postService = postService;
         this.accountService = accountService;
@@ -63,8 +70,8 @@ public class CommentServiceImpl implements CommentService {
 
     @Override
     public CommentInfo createCommentInfo(Account account, String boardId, String postId, @Valid CommentInfoCreate commentInfoCreate) {
-        Board board = this.boardService.getBoard(boardId);
-        Post post = this.postService.getPost(postId);
+        Board board = this.getBoard(boardId);
+        Post post = this.getPost(postId);
         return this.createCommentInfo(account, board, post, commentInfoCreate);
     }
 
@@ -112,8 +119,8 @@ public class CommentServiceImpl implements CommentService {
 
     @Override
     public CommentInfo updateComment(Account account, String boardId, String postId, String commentId, @Valid CommentInfoUpdate commentInfoUpdate) {
-        Board board = this.boardService.getBoard(boardId);
-        Post post = this.postService.getPost(postId);
+        Board board = this.getBoard(boardId);
+        Post post = this.getPost(postId);
         Comment comment = this.getComment(commentId);
         return this.updateComment(account, board, post, comment, commentInfoUpdate);
     }
@@ -150,8 +157,8 @@ public class CommentServiceImpl implements CommentService {
 
     @Override
     public CommentInfoList getComment(String boardId, String postId, @Valid CommentInfoSearch commentInfoSearch) {
-        Board board = this.boardService.getBoard(boardId);
-        Post post = this.postService.getPost(postId);
+        Board board = this.getBoard(boardId);
+        Post post = this.getPost(postId);
         return this.getComment(board, post, commentInfoSearch);
     }
 
@@ -197,8 +204,8 @@ public class CommentServiceImpl implements CommentService {
 
     @Override
     public CommentInfo getComment(String boardId, String postId, String commentId) {
-        Board board = this.boardService.getBoard(boardId);
-        Post post = this.postService.getPost(postId);
+        Board board = this.getBoard(boardId);
+        Post post = this.getPost(postId);
         Comment comment = this.getComment(commentId);
         return this.getComment(board, post, comment);
     }
@@ -219,8 +226,8 @@ public class CommentServiceImpl implements CommentService {
 
     @Override
     public CommentInfo deleteComment(Account account, String boardId, String postId, String commentId) {
-        Board board = this.boardService.getBoard(boardId);
-        Post post = this.postService.getPost(postId);
+        Board board = this.getBoard(boardId);
+        Post post = this.getPost(postId);
         Comment comment = this.getComment(commentId);
         return this.deleteComment(account, board, post, comment);
     }
@@ -244,8 +251,8 @@ public class CommentServiceImpl implements CommentService {
 
     @Override
     public CommentInfo voteComment(Account account, String boardId, String postId, String commentId, VoteType voteType) {
-        Board board = this.boardService.getBoard(boardId);
-        Post post = this.postService.getPost(postId);
+        Board board = this.getBoard(boardId);
+        Post post = this.getPost(postId);
         Comment comment = this.getComment(commentId);
         return this.voteComment(account, board, post, comment, voteType);
     }
@@ -298,5 +305,15 @@ public class CommentServiceImpl implements CommentService {
         if (!comment.getPost().equals(post)) { // 해당 게시물에 작성된 댓글이 아닌 경우
             throw new IricomException(IricomErrorCode.NOT_EXIST_COMMENT);
         }
+    }
+
+    private Board getBoard(String id) {
+        Optional<Board> boardOptional = this.boardRepository.getBoard(id);
+        return boardOptional.orElseThrow(() -> new IricomException(IricomErrorCode.NOT_EXIST_BOARD));
+    }
+
+    private Post getPost(String id) {
+        Optional<Post> postOptional = this.postRepository.getPost(id);
+        return postOptional.orElseThrow(() -> new IricomException(IricomErrorCode.NOT_EXIST_POST));
     }
 }

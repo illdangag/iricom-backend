@@ -2,7 +2,11 @@ package com.illdangag.iricom.server.test;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.illdangag.iricom.server.data.response.CommentInfo;
+import com.illdangag.iricom.server.exception.IricomErrorCode;
+import com.illdangag.iricom.server.exception.IricomException;
 import com.illdangag.iricom.server.repository.AccountRepository;
+import com.illdangag.iricom.server.repository.BoardRepository;
+import com.illdangag.iricom.server.repository.PostRepository;
 import com.illdangag.iricom.server.service.*;
 import com.illdangag.iricom.server.test.data.*;
 import com.illdangag.iricom.server.data.entity.*;
@@ -19,10 +23,7 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilder;
 import org.springframework.util.StopWatch;
 
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 
 @Slf4j
 @SpringBootTest
@@ -36,6 +37,8 @@ public abstract class IricomTestSuite {
     private final CommentService commentService;
 
     private final AccountRepository accountRepository;
+    private final BoardRepository boardRepository;
+    private final PostRepository postRepository;
 
     // 계정 설정
     private static final String ACCOUNT_PASSWORD = "111111";
@@ -517,6 +520,8 @@ public abstract class IricomTestSuite {
         this.postService = context.getBean(PostService.class);
         this.commentService = context.getBean(CommentService.class);
         this.accountRepository = context.getBean(AccountRepository.class);
+        this.boardRepository = context.getBean(BoardRepository.class);
+        this.postRepository = context.getBean(PostRepository.class);
 
         if (!isInit) {
             this.init();
@@ -590,6 +595,11 @@ public abstract class IricomTestSuite {
         }
     }
 
+    private Account getAccount(String id) {
+        Optional<Account> accountOptional = this.accountRepository.getAccount(id);;
+        return accountOptional.orElseThrow(() -> new IricomException(IricomErrorCode.NOT_EXIST_ACCOUNT));
+    }
+
     private Account createAccount(TestAccountInfo testAccountInfo) {
         AccountInfoCreate accountInfoCreate = AccountInfoCreate.builder()
                 .email(testAccountInfo.getEmail())
@@ -597,12 +607,17 @@ public abstract class IricomTestSuite {
                 .description(testAccountInfo.getDescription())
                 .build();
         AccountInfo accountInfo = this.accountService.createAccountInfo(accountInfoCreate);
-        Account account = this.accountService.getAccount(accountInfo.getId());
+        Account account = this.getAccount(accountInfo.getId());
         if (testAccountInfo.isAdmin()) {
             account.setAuth(AccountAuth.SYSTEM_ADMIN);
             this.accountRepository.saveAccount(account);
         }
         return account;
+    }
+
+    private Board getBoard(String id) {
+        Optional<Board> boardOptional = this.boardRepository.getBoard(id);
+        return boardOptional.orElseThrow(() -> new IricomException(IricomErrorCode.NOT_EXIST_BOARD));
     }
 
     private Board createBoard(TestBoardInfo testBoardInfo) {
@@ -612,7 +627,7 @@ public abstract class IricomTestSuite {
                 .enabled(true)
                 .build();
         BoardInfo boardInfo = this.boardService.createBoardInfo(boardInfoCreate);
-        return this.boardService.getBoard(boardInfo.getId());
+        return this.getBoard(boardInfo.getId());
     }
 
     private void createBoardAdmin(String accountId, String boardId) {
@@ -630,6 +645,11 @@ public abstract class IricomTestSuite {
         this.boardService.updateBoardInfo(board, boardInfoUpdate);
     }
 
+    private Post getPost(String id) {
+        Optional<Post> postOptional = this.postRepository.getPost(id);
+        return postOptional.orElseThrow(() -> new IricomException(IricomErrorCode.NOT_EXIST_POST));
+    }
+
     private Post createPost(TestPostInfo testPostInfo) {
         Account account = accountMap.get(testPostInfo.getCreator());
         Board board = boardMap.get(testPostInfo.getBoard());
@@ -641,7 +661,7 @@ public abstract class IricomTestSuite {
                 .type(testPostInfo.getPostType())
                 .build();
         PostInfo postInfo = this.postService.createPostInfo(account, board, postInfoCreate);
-        return this.postService.getPost(postInfo.getId());
+        return this.getPost(postInfo.getId());
     }
 
     private void updateDisabledAllowComment(TestPostInfo testPostInfo) {

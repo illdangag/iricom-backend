@@ -9,6 +9,7 @@ import com.illdangag.iricom.server.data.request.PostInfoCreate;
 import com.illdangag.iricom.server.data.request.PostInfoSearch;
 import com.illdangag.iricom.server.data.request.PostInfoUpdate;
 import com.illdangag.iricom.server.data.request.PostInfoVote;
+import com.illdangag.iricom.server.data.response.BoardInfo;
 import com.illdangag.iricom.server.data.response.PostInfo;
 import com.illdangag.iricom.server.data.response.PostInfoList;
 import com.illdangag.iricom.server.exception.IricomErrorCode;
@@ -62,8 +63,6 @@ public class PostController {
                                                         @RequestParam(name = "limit", defaultValue = "20", required = false) String limitVariable,
                                                         @RequestParam(name = "type", defaultValue = "post", required = false) String typeVariable,
                                                         @RequestParam(name = "title", defaultValue = "", required = false) String title) {
-        Board board = this.boardService.getBoard(boardId);
-
         PostType type;
         int skip;
         int limit;
@@ -93,7 +92,7 @@ public class PostController {
                 .title(title)
                 .build();
 
-        PostInfoList postInfoList = this.postService.getPublishPostInfoList(board, postInfoSearch);
+        PostInfoList postInfoList = this.postService.getPublishPostInfoList(boardId, postInfoSearch);
         return ResponseEntity.status(HttpStatus.OK).body(postInfoList);
     }
 

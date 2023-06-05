@@ -20,11 +20,13 @@ public interface AccountRepository {
 
     Optional<Account> getAccount(long id);
 
+    Optional<Account> getAccount(String id);
+
+    Optional<Account> getAccountByNickname(String nickname);
+
     Optional<AccountDetail> getAccountDetail(Account account);
 
     Map<Account, AccountDetail> getAccountDetailList(List<Account> accountList);
-
-    Optional<Account> getAccount(String nickname);
 
     void saveAccount(Account account);
 

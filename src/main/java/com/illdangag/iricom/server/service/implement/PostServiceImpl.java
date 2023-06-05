@@ -8,6 +8,7 @@ import com.illdangag.iricom.server.data.response.PostInfo;
 import com.illdangag.iricom.server.data.response.PostInfoList;
 import com.illdangag.iricom.server.exception.IricomErrorCode;
 import com.illdangag.iricom.server.exception.IricomException;
+import com.illdangag.iricom.server.repository.BoardRepository;
 import com.illdangag.iricom.server.repository.CommentRepository;
 import com.illdangag.iricom.server.repository.PostRepository;
 import com.illdangag.iricom.server.repository.PostVoteRepository;
@@ -31,39 +32,25 @@ public class PostServiceImpl implements PostService {
     private final PostRepository postRepository;
     private final PostVoteRepository postVoteRepository;
     private final CommentRepository commentRepository;
+    private final BoardRepository boardRepository;
 
-    private final BoardService boardService;
     private final BoardAuthorizationService boardAuthorizationService;
 
     @Autowired
-    public PostServiceImpl(PostRepository postRepository, PostVoteRepository postVoteRepository, CommentRepository commentRepository,
+    public PostServiceImpl(PostRepository postRepository, PostVoteRepository postVoteRepository, CommentRepository commentRepository, BoardRepository boardRepository,
                            BoardAuthorizationService boardAuthorizationService, BoardService boardService) {
         this.postRepository = postRepository;
         this.postVoteRepository = postVoteRepository;
         this.commentRepository = commentRepository;
+        this.boardRepository = boardRepository;
 
-        this.boardService = boardService;
         this.boardAuthorizationService = boardAuthorizationService;
     }
 
     @Override
-    public Post getPost(String id) {
-        try {
-            return this.getPost(Long.parseLong(id));
-        } catch (Exception exception) {
-            throw new IricomException(IricomErrorCode.NOT_EXIST_POST);
-        }
-    }
-
-    @Override
-    public Post getPost(long id) {
-        Optional<Post> postOptional = this.postRepository.getPost(id);
-        return postOptional.orElseThrow(() -> new IricomException(IricomErrorCode.NOT_EXIST_POST));
-    }
-
-    @Override
     public PostInfo createPostInfo(Account account, String boardId, PostInfoCreate postInfoCreate) {
-        Board board = this.boardService.getBoard(boardId);
+        Optional<Board> boardOptional = this.boardRepository.getBoard(boardId);
+        Board board = boardOptional.orElseThrow(() -> new IricomException(IricomErrorCode.NOT_EXIST_BOARD));
         return this.createPostInfo(account, board, postInfoCreate);
     }
 
@@ -99,7 +86,8 @@ public class PostServiceImpl implements PostService {
 
     @Override
     public PostInfo updatePostInfo(Account account, String boardId, String postId, PostInfoUpdate postInfoUpdate) {
-        Board board = this.boardService.getBoard(boardId);
+        Optional<Board> boardOptional = this.boardRepository.getBoard(boardId);
+        Board board = boardOptional.orElseThrow(() -> new IricomException(IricomErrorCode.NOT_EXIST_BOARD));
         Post post = this.getPost(postId);
         return this.updatePostInfo(account, board, post, postInfoUpdate);
     }
@@ -169,7 +157,7 @@ public class PostServiceImpl implements PostService {
 
     @Override
     public PostInfo getPostInfo(Account account, String boardId, String postId, PostState postState) {
-        Board board = this.boardService.getBoard(boardId);
+        Board board = this.getBoard(boardId);
         Post post = this.getPost(postId);
         return this.getPostInfo(account, board, post, postState);
     }
@@ -205,7 +193,7 @@ public class PostServiceImpl implements PostService {
 
     @Override
     public PostInfo publishPostInfo(Account account, String boardId, String postId) {
-        Board board = this.boardService.getBoard(boardId);
+        Board board = this.getBoard(boardId);
         Post post = this.getPost(postId);
         return this.publishPostInfo(account, board, post);
     }
@@ -256,7 +244,10 @@ public class PostServiceImpl implements PostService {
     }
 
     @Override
-    public PostInfoList getPublishPostInfoList(Board board, @Valid PostInfoSearch postInfoSearch) {
+    public PostInfoList getPublishPostInfoList(String boardId, @Valid PostInfoSearch postInfoSearch) {
+        Optional<Board> boardOptional = this.boardRepository.getBoard(boardId);
+        Board board = boardOptional.orElseThrow(() -> new IricomException(IricomErrorCode.NOT_EXIST_BOARD));
+
         List<Post> postList;
         long totalPostCount;
         if (postInfoSearch.getTitle().isEmpty()) {
@@ -304,7 +295,7 @@ public class PostServiceImpl implements PostService {
 
     @Override
     public PostInfo deletePostInfo(Account account, String boardId, String postId) {
-        Board board = this.boardService.getBoard(boardId);
+        Board board = this.getBoard(boardId);
         Post post = this.getPost(postId);
         return this.deletePostInfo(account, board, post);
     }
@@ -359,7 +350,7 @@ public class PostServiceImpl implements PostService {
     }
 
     public PostInfo votePost(Account account, String boardId, String postId, VoteType voteType) {
-        Board board = this.boardService.getBoard(boardId);
+        Board board = this.getBoard(boardId);
         Post post = this.getPost(postId);
         return this.votePost(account, board, post, voteType);
     }
@@ -443,5 +434,20 @@ public class PostServiceImpl implements PostService {
         } catch (Exception exception) {
             return false;
         }
+    }
+
+    private Board getBoard(String id) {
+        Optional<Board> boardOptional = this.boardRepository.getBoard(id);
+        return boardOptional.orElseThrow(() -> new IricomException(IricomErrorCode.NOT_EXIST_BOARD));
+    }
+
+    private Post getPost(String id) {
+        Optional<Post> postOptional = this.postRepository.getPost(id);
+        return postOptional.orElseThrow(() -> new IricomException(IricomErrorCode.NOT_EXIST_POST));
+    }
+
+    private Post getPost(long id) {
+        Optional<Post> postOptional = this.postRepository.getPost(id);
+        return postOptional.orElseThrow(() -> new IricomException(IricomErrorCode.NOT_EXIST_POST));
     }
 }

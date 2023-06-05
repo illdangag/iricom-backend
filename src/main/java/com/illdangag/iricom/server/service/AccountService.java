@@ -26,9 +26,5 @@ public interface AccountService {
 
     AccountInfo updateAccountDetail(Account account, AccountInfoUpdate accountInfoUpdate);
 
-    Account getAccount(String id);
-
-    Account getAccount(long id);
-
     void saveAccount(Account account);
 }

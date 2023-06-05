@@ -12,11 +12,11 @@ import com.illdangag.iricom.server.data.response.BoardAdminInfo;
 import com.illdangag.iricom.server.data.response.BoardAdminInfoList;
 import com.illdangag.iricom.server.exception.IricomErrorCode;
 import com.illdangag.iricom.server.exception.IricomException;
+import com.illdangag.iricom.server.repository.AccountRepository;
 import com.illdangag.iricom.server.repository.BoardAdminRepository;
 import com.illdangag.iricom.server.repository.BoardRepository;
 import com.illdangag.iricom.server.service.AccountService;
 import com.illdangag.iricom.server.service.BoardAuthorizationService;
-import com.illdangag.iricom.server.service.BoardService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.validation.annotation.Validated;
@@ -29,29 +29,28 @@ import java.util.stream.Collectors;
 @Service
 public class BoardAuthorizationServiceImpl implements BoardAuthorizationService {
     private final AccountService accountService;
-    private final BoardService boardService;
     private final BoardRepository boardRepository;
     private final BoardAdminRepository boardAdminRepository;
+    private final AccountRepository accountRepository;
 
     @Autowired
-    public BoardAuthorizationServiceImpl(AccountService accountService, BoardService boardService, BoardAdminRepository boardAdminRepository,
-                                         BoardRepository boardRepository) {
+    public BoardAuthorizationServiceImpl(AccountService accountService, BoardAdminRepository boardAdminRepository, BoardRepository boardRepository, AccountRepository accountRepository) {
         this.accountService = accountService;
-        this.boardService = boardService;
         this.boardAdminRepository = boardAdminRepository;
         this.boardRepository = boardRepository;
+        this.accountRepository = accountRepository;
     }
 
     /**
      * 게시판 관리자 권한 추가
      */
     public void createBoardAdminAuth(BoardAdminInfoCreate boardAdminInfoCreate) {
-        Account account = this.accountService.getAccount(boardAdminInfoCreate.getAccountId());
+        Account account = this.getAccount(boardAdminInfoCreate.getAccountId());
         if (account.getAccountDetail() == null) {
             throw new IricomException(IricomErrorCode.NOT_EXIST_ACCOUNT_DETAIL_TO_UPDATE_BOARD_ADMIN);
         }
 
-        Board board = this.boardService.getBoard(boardAdminInfoCreate.getBoardId());
+        Board board = this.getBoard(boardAdminInfoCreate.getBoardId());
 
         Optional<BoardAdmin> boardAdminOptional = this.boardAdminRepository.getBoardAdmin(board, account);
         if (boardAdminOptional.isEmpty() || boardAdminOptional.get().getDeleted()) {
@@ -76,8 +75,8 @@ public class BoardAuthorizationServiceImpl implements BoardAuthorizationService 
      */
     @Override
     public void deleteBoardAdminAuth(BoardAdminInfoDelete boardAdminInfoDelete) {
-        Account account = this.accountService.getAccount(boardAdminInfoDelete.getAccountId());
-        Board board = this.boardService.getBoard(boardAdminInfoDelete.getBoardId());
+        Account account = this.getAccount(boardAdminInfoDelete.getAccountId());
+        Board board = this.getBoard(boardAdminInfoDelete.getBoardId());
 
         // 이미 동일 계정과 게시판으로 권한이 있는 경우 권한을 삭제
         Optional<BoardAdmin> boardAdminOptional = this.boardAdminRepository.getBoardAdmin(board, account);
@@ -147,7 +146,7 @@ public class BoardAuthorizationServiceImpl implements BoardAuthorizationService 
 
     @Override
     public BoardAdminInfo getBoardAdminInfo(String boardId) {
-        Board board = this.boardService.getBoard(boardId);
+        Board board = this.getBoard(boardId);
         List<BoardAdmin> boardAdminList = this.boardAdminRepository.getBoardAdminList(Collections.singletonList(board));
 
         BoardAdminInfo boardAdminInfo = new BoardAdminInfo(board);
@@ -175,5 +174,15 @@ public class BoardAuthorizationServiceImpl implements BoardAuthorizationService 
     public BoardAdmin getBoardAdmin(Account account, Board board) {
         Optional<BoardAdmin> boardAdminOptional = this.boardAdminRepository.getEnableBoardAdmin(board, account);
         return boardAdminOptional.orElseThrow(() -> new IricomException(IricomErrorCode.NOT_EXIST_BOARD_ADMIN));
+    }
+
+    private Board getBoard(String id) {
+        Optional<Board> boardOptional = this.boardRepository.getBoard(id);
+        return boardOptional.orElseThrow(() -> new IricomException(IricomErrorCode.NOT_EXIST_BOARD));
+    }
+
+    private Account getAccount(String id) {
+        Optional<Account> accountOptional = this.accountRepository.getAccount(id);
+        return accountOptional.orElseThrow(() -> new IricomException(IricomErrorCode.NOT_EXIST_ACCOUNT));
     }
 }

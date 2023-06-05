@@ -61,21 +61,6 @@ public class AccountServiceImpl implements AccountService {
     }
 
     @Override
-    public Account getAccount(String id) {
-        try {
-            return this.getAccount(Long.parseLong(id));
-        } catch (Exception exception) {
-            throw new IricomException(IricomErrorCode.NOT_EXIST_ACCOUNT);
-        }
-    }
-
-    @Override
-    public Account getAccount(long id) {
-        Optional<Account> accountOptional = this.accountRepository.getAccount(id);
-        return accountOptional.orElseThrow(() -> new IricomException(IricomErrorCode.NOT_EXIST_ACCOUNT));
-    }
-
-    @Override
     public void saveAccount(Account account) {
         this.accountRepository.saveAccount(account);
     }
@@ -138,7 +123,7 @@ public class AccountServiceImpl implements AccountService {
 
         if (accountInfoUpdate.getNickname() != null) {
             String nickname = accountInfoUpdate.getNickname();
-            Optional<Account> accountOptional = this.accountRepository.getAccount(nickname);
+            Optional<Account> accountOptional = this.accountRepository.getAccountByNickname(nickname);
             if (accountOptional.isPresent() && !accountOptional.get().equals(account)) {
                 throw new IricomException(IricomErrorCode.ALREADY_ACCOUNT_NICKNAME);
             }
@@ -169,5 +154,18 @@ public class AccountServiceImpl implements AccountService {
             accountAccountInfoMap.put(account, accountInfo);
         });
         return accountAccountInfoMap;
+    }
+
+    private Account getAccount(String id) {
+        try {
+            return this.getAccount(Long.parseLong(id));
+        } catch (Exception exception) {
+            throw new IricomException(IricomErrorCode.NOT_EXIST_ACCOUNT);
+        }
+    }
+
+    private Account getAccount(long id) {
+        Optional<Account> accountOptional = this.accountRepository.getAccount(id);
+        return accountOptional.orElseThrow(() -> new IricomException(IricomErrorCode.NOT_EXIST_ACCOUNT));
     }
 }

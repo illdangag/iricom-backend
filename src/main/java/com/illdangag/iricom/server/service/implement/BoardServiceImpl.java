@@ -17,6 +17,7 @@ import org.springframework.validation.annotation.Validated;
 
 import javax.validation.Valid;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Slf4j
@@ -28,24 +29,6 @@ public class BoardServiceImpl implements BoardService {
     @Autowired
     public BoardServiceImpl(BoardRepository boardRepository) {
         this.boardRepository = boardRepository;
-    }
-
-    @Override
-    public Board getBoard(String id) {
-        try {
-            return this.getBoard(Long.parseLong(id));
-        } catch (Exception exception) {
-            throw new IricomException(IricomErrorCode.NOT_EXIST_BOARD);
-        }
-    }
-
-    @Override
-    public Board getBoard(long id) {
-        List<Board> boardList = this.boardRepository.getBoardList(id);
-        if (boardList.isEmpty()) {
-            throw new IricomException(IricomErrorCode.NOT_EXIST_BOARD);
-        }
-        return boardList.get(0);
     }
 
     @Override
@@ -110,5 +93,10 @@ public class BoardServiceImpl implements BoardService {
 
         this.boardRepository.save(board);
         return new BoardInfo(board);
+    }
+
+    private Board getBoard(String id) {
+        Optional<Board> boardOptional = this.boardRepository.getBoard(id);
+        return boardOptional.orElseThrow(() -> new IricomException(IricomErrorCode.NOT_EXIST_BOARD));
     }
 }
