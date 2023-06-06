@@ -10,10 +10,6 @@ import com.illdangag.iricom.server.data.response.CommentInfoList;
 import javax.validation.Valid;
 
 public interface CommentService {
-    Comment getComment(String id);
-
-    Comment getComment(long id);
-
     CommentInfo createCommentInfo(Account account, String boardId, String postId, @Valid CommentInfoCreate commentInfoCreate);
 
     CommentInfo createCommentInfo(Account account, Board board, Post post, @Valid CommentInfoCreate commentInfoCreate);

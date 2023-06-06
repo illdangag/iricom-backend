@@ -6,6 +6,7 @@ import com.illdangag.iricom.server.exception.IricomErrorCode;
 import com.illdangag.iricom.server.exception.IricomException;
 import com.illdangag.iricom.server.repository.AccountRepository;
 import com.illdangag.iricom.server.repository.BoardRepository;
+import com.illdangag.iricom.server.repository.CommentRepository;
 import com.illdangag.iricom.server.repository.PostRepository;
 import com.illdangag.iricom.server.service.*;
 import com.illdangag.iricom.server.test.data.*;
@@ -39,6 +40,7 @@ public abstract class IricomTestSuite {
     private final AccountRepository accountRepository;
     private final BoardRepository boardRepository;
     private final PostRepository postRepository;
+    private final CommentRepository commentRepository;
 
     // 계정 설정
     private static final String ACCOUNT_PASSWORD = "111111";
@@ -522,6 +524,7 @@ public abstract class IricomTestSuite {
         this.accountRepository = context.getBean(AccountRepository.class);
         this.boardRepository = context.getBean(BoardRepository.class);
         this.postRepository = context.getBean(PostRepository.class);
+        this.commentRepository = context.getBean(CommentRepository.class);
 
         if (!isInit) {
             this.init();
@@ -687,6 +690,11 @@ public abstract class IricomTestSuite {
         this.postService.publishPostInfo(account, board, post);
     }
 
+    private Comment getComment(String id) {
+        Optional<Comment> commentOptional = this.commentRepository.getComment(id);
+        return commentOptional.orElseThrow(() -> new IricomException(IricomErrorCode.NOT_EXIST_COMMENT));
+    }
+
     private Comment createComment(TestCommentInfo testCommentInfo) {
         TestAccountInfo testAccountInfo = testCommentInfo.getCreator();
         TestPostInfo testPostInfo = testCommentInfo.getPost();
@@ -706,7 +714,7 @@ public abstract class IricomTestSuite {
         CommentInfoCreate commentInfoCreate = builder.build();
 
         CommentInfo commentInfo = this.commentService.createCommentInfo(account, board, post, commentInfoCreate);
-        return this.commentService.getComment(commentInfo.getId());
+        return this.getComment(commentInfo.getId());
     }
 
     private void deleteComment(TestCommentInfo testCommentInfo) {

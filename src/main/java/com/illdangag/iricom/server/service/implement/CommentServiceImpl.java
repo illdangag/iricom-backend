@@ -37,35 +37,17 @@ public class CommentServiceImpl implements CommentService {
     private final BoardRepository boardRepository;
     private final PostRepository postRepository;
 
-    private final BoardService boardService;
-    private final PostService postService;
     private final AccountService accountService;
 
     @Autowired
     public CommentServiceImpl(CommentRepository commentRepository, CommentVoteRepository commentVoteRepository, BoardRepository boardRepository, PostRepository postRepository,
-                              BoardService boardService, PostService postService, AccountService accountService) {
+                              AccountService accountService) {
         this.commentRepository = commentRepository;
         this.commentVoteRepository = commentVoteRepository;
         this.boardRepository = boardRepository;
         this.postRepository = postRepository;
-        this.boardService = boardService;
-        this.postService = postService;
+
         this.accountService = accountService;
-    }
-
-    @Override
-    public Comment getComment(String id) {
-        try {
-            return this.getComment(Long.parseLong(id));
-        } catch (Exception exception) {
-            throw new IricomException(IricomErrorCode.NOT_EXIST_COMMENT);
-        }
-    }
-
-    @Override
-    public Comment getComment(long id) {
-        Optional<Comment> commentOptional = this.commentRepository.getComment(id);
-        return commentOptional.orElseThrow(() -> new IricomException(IricomErrorCode.NOT_EXIST_COMMENT));
     }
 
     @Override
@@ -315,5 +297,10 @@ public class CommentServiceImpl implements CommentService {
     private Post getPost(String id) {
         Optional<Post> postOptional = this.postRepository.getPost(id);
         return postOptional.orElseThrow(() -> new IricomException(IricomErrorCode.NOT_EXIST_POST));
+    }
+
+    private Comment getComment(String id) {
+        Optional<Comment> commentOptional = this.commentRepository.getComment(id);
+        return commentOptional.orElseThrow(() -> new IricomException(IricomErrorCode.NOT_EXIST_COMMENT));
     }
 }

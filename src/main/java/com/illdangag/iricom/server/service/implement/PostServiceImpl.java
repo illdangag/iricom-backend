@@ -8,12 +8,7 @@ import com.illdangag.iricom.server.data.response.PostInfo;
 import com.illdangag.iricom.server.data.response.PostInfoList;
 import com.illdangag.iricom.server.exception.IricomErrorCode;
 import com.illdangag.iricom.server.exception.IricomException;
-import com.illdangag.iricom.server.repository.BoardRepository;
-import com.illdangag.iricom.server.repository.CommentRepository;
-import com.illdangag.iricom.server.repository.PostRepository;
-import com.illdangag.iricom.server.repository.PostVoteRepository;
-import com.illdangag.iricom.server.service.BoardAuthorizationService;
-import com.illdangag.iricom.server.service.BoardService;
+import com.illdangag.iricom.server.repository.*;
 import com.illdangag.iricom.server.service.PostService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -33,18 +28,16 @@ public class PostServiceImpl implements PostService {
     private final PostVoteRepository postVoteRepository;
     private final CommentRepository commentRepository;
     private final BoardRepository boardRepository;
-
-    private final BoardAuthorizationService boardAuthorizationService;
+    private final BoardAdminRepository boardAdminRepository;
 
     @Autowired
-    public PostServiceImpl(PostRepository postRepository, PostVoteRepository postVoteRepository, CommentRepository commentRepository, BoardRepository boardRepository,
-                           BoardAuthorizationService boardAuthorizationService, BoardService boardService) {
+    public PostServiceImpl(PostRepository postRepository, PostVoteRepository postVoteRepository, CommentRepository commentRepository,
+                           BoardRepository boardRepository, BoardAdminRepository boardAdminRepository) {
         this.postRepository = postRepository;
         this.postVoteRepository = postVoteRepository;
         this.commentRepository = commentRepository;
         this.boardRepository = boardRepository;
-
-        this.boardAuthorizationService = boardAuthorizationService;
+        this.boardAdminRepository = boardAdminRepository;
     }
 
     @Override
@@ -428,12 +421,8 @@ public class PostServiceImpl implements PostService {
             return true;
         }
 
-        try {
-            this.boardAuthorizationService.getBoardAdmin(account, board);
-            return true;
-        } catch (Exception exception) {
-            return false;
-        }
+        Optional<BoardAdmin> boardAdminOptional = this.boardAdminRepository.getBoardAdmin(board, account);
+        return boardAdminOptional.isPresent();
     }
 
     private Board getBoard(String id) {

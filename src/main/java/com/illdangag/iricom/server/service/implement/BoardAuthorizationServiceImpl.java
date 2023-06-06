@@ -28,17 +28,20 @@ import java.util.stream.Collectors;
 @Validated
 @Service
 public class BoardAuthorizationServiceImpl implements BoardAuthorizationService {
-    private final AccountService accountService;
     private final BoardRepository boardRepository;
     private final BoardAdminRepository boardAdminRepository;
     private final AccountRepository accountRepository;
 
+    private final AccountService accountService;
+
     @Autowired
-    public BoardAuthorizationServiceImpl(AccountService accountService, BoardAdminRepository boardAdminRepository, BoardRepository boardRepository, AccountRepository accountRepository) {
-        this.accountService = accountService;
+    public BoardAuthorizationServiceImpl(BoardAdminRepository boardAdminRepository, BoardRepository boardRepository, AccountRepository accountRepository,
+                                         AccountService accountService) {
         this.boardAdminRepository = boardAdminRepository;
         this.boardRepository = boardRepository;
         this.accountRepository = accountRepository;
+
+        this.accountService = accountService;
     }
 
     /**
@@ -168,12 +171,6 @@ public class BoardAuthorizationServiceImpl implements BoardAuthorizationService 
         }
 
         return boardAdminInfo;
-    }
-
-    @Override
-    public BoardAdmin getBoardAdmin(Account account, Board board) {
-        Optional<BoardAdmin> boardAdminOptional = this.boardAdminRepository.getEnableBoardAdmin(board, account);
-        return boardAdminOptional.orElseThrow(() -> new IricomException(IricomErrorCode.NOT_EXIST_BOARD_ADMIN));
     }
 
     private Board getBoard(String id) {
