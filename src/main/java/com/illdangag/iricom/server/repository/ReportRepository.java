@@ -14,9 +14,13 @@ public interface ReportRepository {
 
     void savePostReport(PostReport postReport);
 
+    long getPortReportCount(Post post);
+
     List<CommentReport> getCommentReportList(Account account, Comment comment);
 
     void saveCommentReport(CommentReport commentReport);
 
-    long getPortReportCount(Post post);
+    Optional<CommentReport> getCommentReport(String id);
+
+    Optional<CommentReport> getCommentReport(long id);
 }

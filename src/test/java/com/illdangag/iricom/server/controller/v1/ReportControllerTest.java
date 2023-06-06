@@ -280,7 +280,7 @@ public class ReportControllerTest extends IricomTestSuite {
 
                 mockMvc.perform(requestBuilder)
                         .andExpect(status().is(400))
-                        .andExpect(jsonPath("$.code").value("06010000"))
+                        .andExpect(jsonPath("$.code").value("06010001"))
                         .andExpect(jsonPath("$.message").value("Already report comment."))
                         .andDo(print());
             }

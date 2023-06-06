@@ -114,6 +114,37 @@ public class ReportRepositoryImpl implements ReportRepository {
     }
 
     @Override
+    public Optional<CommentReport> getCommentReport(String id) {
+        long commentReportId = -1;
+
+        try {
+            commentReportId = Long.parseLong(id);
+        } catch (Exception exception) {
+            return Optional.empty();
+        }
+
+        return this.getCommentReport(commentReportId);
+    }
+
+    @Override
+    public Optional<CommentReport> getCommentReport(long id) {
+        EntityManager entityManager = this.entityManagerFactory.createEntityManager();
+        final String jpql = "SELECT cr FROM CommentReport cr " +
+                "WHERE cr.id = :id";
+
+        TypedQuery<CommentReport> query = entityManager.createQuery(jpql, CommentReport.class)
+                .setParameter("id", id);
+        List<CommentReport> resultList = query.getResultList();
+        entityManager.close();
+
+        if (resultList.isEmpty()) {
+            return Optional.empty();
+        } else {
+            return Optional.of(resultList.get(0));
+        }
+    }
+
+    @Override
     public long getPortReportCount(Post post) {
         EntityManager entityManager = this.entityManagerFactory.createEntityManager();
         final String jpql = "SELECT COUNT(*) FROM PostReport pr " +

@@ -492,6 +492,10 @@ public abstract class IricomTestSuite {
             .content("reportComment08")
             .creator(common00).post(reportPost00)
             .build();
+    protected static final TestCommentInfo reportComment09 = TestCommentInfo.builder()
+            .content("reportComment09")
+            .creator(common00).post(reportPost00)
+            .build();
 
     private static final TestCommentInfo[] testCommentInfos = {
             enableBoardComment00,
@@ -505,17 +509,25 @@ public abstract class IricomTestSuite {
             voteComment00, voteComment01, voteComment02, voteComment03, voteComment04, voteComment05,
 
             reportComment00, reportComment01, reportComment02, reportComment03, reportComment04, reportComment05,
-            reportComment06, reportComment07, reportComment08,
+            reportComment06, reportComment07, reportComment08, reportComment09,
     };
 
     protected static final TestPostReportInfo postReport00 = TestPostReportInfo.builder()
-            .type(ReportType.ETC)
-            .reason("test post report")
+            .type(ReportType.ETC).reason("test post report")
             .reportAccount(common00).post(reportPost08)
             .build();
 
-    private static final TestPostReportInfo[] testPostReports = {
+    private static final TestPostReportInfo[] testPostReportInfos = {
             postReport00,
+    };
+
+    protected static final TestCommentReportInfo commentReport00 = TestCommentReportInfo.builder()
+            .type(ReportType.ETC).reason("test comment report")
+            .reportAccount(common00).comment(reportComment09)
+            .build();
+
+    private static final TestCommentReportInfo[] testCommentReportInfos = {
+            commentReport00,
     };
 
     private static final Map<TestAccountInfo, Account> accountMap = new HashMap<>();
@@ -524,6 +536,7 @@ public abstract class IricomTestSuite {
     private static final Map<TestAccountInfo, String> tokenMap = new HashMap<>();
     private static final Map<TestCommentInfo, Comment> commentMap = new HashMap<>();
     private static final Map<TestPostReportInfo, PostReport> postReportMap = new HashMap<>();
+    private static final Map<TestCommentReportInfo, CommentReport> commentReportMap = new HashMap<>();
 
     private static boolean isInit = false;
 
@@ -593,6 +606,19 @@ public abstract class IricomTestSuite {
                 commentMap.put(testCommentInfo, comment);
             }
         }
+
+        // 게시물 신고
+        for (TestPostReportInfo testPostReportInfo : testPostReportInfos) {
+            PostReport postReport = this.reportPost(testPostReportInfo);
+            postReportMap.put(testPostReportInfo, postReport);
+        }
+
+        // 댓글 신고
+        for (TestCommentReportInfo testCommentReportInfo : testCommentReportInfos) {
+            CommentReport commentReport = this.reportComment(testCommentReportInfo);
+            commentReportMap.put(testCommentReportInfo, commentReport);
+        }
+
         // 삭제 할 댓글
         Arrays.stream(testCommentInfos)
                 .filter(TestCommentInfo::isDeleted)
@@ -610,12 +636,6 @@ public abstract class IricomTestSuite {
             if (!testBoardInfo.isEnabled()) {
                 this.disableBoard(board);
             }
-        }
-
-        // 게시물 신고
-        for (TestPostReportInfo testPostReportInfo : testPostReports) {
-            PostReport postReport = this.reportPost(testPostReportInfo);
-            postReportMap.put(testPostReportInfo, postReport);
         }
     }
 
@@ -755,6 +775,11 @@ public abstract class IricomTestSuite {
         return postReportOptional.orElseThrow(() -> new IricomException(IricomErrorCode.NOT_EXIST_POST_REPORT));
     }
 
+    private CommentReport getCommentReport(String id) {
+        Optional<CommentReport> commentReportOptional = this.reportRepository.getCommentReport(id);
+        return commentReportOptional.orElseThrow(() -> new IricomException(IricomErrorCode.NOT_EXIST_COMMENT_REPORT));
+    }
+
     private PostReport reportPost(TestPostReportInfo testPostReportInfo) {
         TestAccountInfo reportTestAccountInfo = testPostReportInfo.getReportAccount();
         TestPostInfo testPostInfo = testPostReportInfo.getPost();
@@ -771,6 +796,26 @@ public abstract class IricomTestSuite {
                 .build();
         PostReportInfo postReportInfo = this.reportService.reportPost(reportAccount, postReportCreate);
         return this.getPostReport(postReportInfo.getId());
+    }
+
+    private CommentReport reportComment(TestCommentReportInfo testCommentReportInfo) {
+        TestAccountInfo reportTestAccountInfo = testCommentReportInfo.getReportAccount();
+        TestCommentInfo testCommentInfo = testCommentReportInfo.getComment();
+
+        Account reportAccount = accountMap.get(reportTestAccountInfo);
+        Comment comment = commentMap.get(testCommentInfo);
+        Post post = comment.getPost();
+        Board board = post.getBoard();
+
+        CommentReportCreate commentReportCreate = CommentReportCreate.builder()
+                .boardId(String.valueOf(board.getId()))
+                .postId(String.valueOf(post.getId()))
+                .commentId(String.valueOf(comment.getId()))
+                .type(testCommentReportInfo.getType())
+                .reason(testCommentReportInfo.getReason())
+                .build();
+        CommentReportInfo commentReportInfo = this.reportService.reportComment(reportAccount, commentReportCreate);
+        return this.getCommentReport(commentReportInfo.getId());
     }
 
     protected void setAuthToken(MockHttpServletRequestBuilder builder, TestAccountInfo testAccountInfo) throws Exception {
