@@ -150,20 +150,25 @@ public class ReportControllerTest extends IricomTestSuite {
                                 ),
                                 responseFields(
                                         fieldWithPath("id").description("아이디"),
-                                        fieldWithPath("content").description("내용"),
-                                        fieldWithPath("createDate").description("작성일"),
+                                        fieldWithPath("createDate").description("생성일").optional().type(JsonFieldType.NUMBER),
                                         fieldWithPath("updateDate").description("수정일").optional().type(JsonFieldType.NUMBER),
-                                        fieldWithPath("upvote").description("좋아요"),
-                                        fieldWithPath("downvote").description("싫어요"),
-                                        fieldWithPath("hasNestedComment").description("하위 댓글 여부"),
-                                        fieldWithPath("deleted").description("삭제 여부"),
-                                        fieldWithPath("account.id").description("작성자 아이디,"),
-                                        fieldWithPath("account.email").description("작성자 이메일"),
-                                        fieldWithPath("account.createDate").description("작성자 생성일"),
-                                        fieldWithPath("account.lastActivityDate").description("작성자 최근 활동일"),
-                                        fieldWithPath("account.nickname").description("작성자 닉네임"),
-                                        fieldWithPath("account.description").description("작성자 설명"),
-                                        fieldWithPath("account.auth").description("작성자 권한")
+                                        fieldWithPath("type").description("신고 종류"),
+                                        fieldWithPath("reason").description("사유"),
+                                        fieldWithPath("comment.id").description("아이디"),
+                                        fieldWithPath("comment.content").description("내용"),
+                                        fieldWithPath("comment.createDate").description("작성일").optional().type(JsonFieldType.NUMBER),
+                                        fieldWithPath("comment.updateDate").description("수정일").optional().type(JsonFieldType.NUMBER),
+                                        fieldWithPath("comment.upvote").description("좋아요").optional().type(JsonFieldType.NUMBER),
+                                        fieldWithPath("comment.downvote").description("싫어요").optional().type(JsonFieldType.NUMBER),
+                                        fieldWithPath("comment.hasNestedComment").description("하위 댓글 여부"),
+                                        fieldWithPath("comment.deleted").description("삭제 여부"),
+                                        fieldWithPath("comment.account.id").description("작성자 아이디,"),
+                                        fieldWithPath("comment.account.email").description("작성자 이메일"),
+                                        fieldWithPath("comment.account.createDate").description("작성자 생성일").optional().type(JsonFieldType.NUMBER),
+                                        fieldWithPath("comment.account.lastActivityDate").description("작성자 최근 활동일").optional().type(JsonFieldType.NUMBER),
+                                        fieldWithPath("comment.account.nickname").description("작성자 닉네임"),
+                                        fieldWithPath("comment.account.description").description("작성자 설명"),
+                                        fieldWithPath("comment.account.auth").description("작성자 권한")
                                 )
                         )
                 );

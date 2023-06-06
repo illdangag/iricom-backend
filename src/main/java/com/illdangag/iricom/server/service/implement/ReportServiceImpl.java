@@ -3,6 +3,8 @@ package com.illdangag.iricom.server.service.implement;
 import com.illdangag.iricom.server.data.entity.*;
 import com.illdangag.iricom.server.data.request.CommentReportCreate;
 import com.illdangag.iricom.server.data.request.PostReportCreate;
+import com.illdangag.iricom.server.data.response.CommentInfo;
+import com.illdangag.iricom.server.data.response.CommentReportInfo;
 import com.illdangag.iricom.server.data.response.PostInfo;
 import com.illdangag.iricom.server.data.response.PostReportInfo;
 import com.illdangag.iricom.server.exception.IricomErrorCode;
@@ -11,6 +13,7 @@ import com.illdangag.iricom.server.repository.BoardRepository;
 import com.illdangag.iricom.server.repository.CommentRepository;
 import com.illdangag.iricom.server.repository.PostRepository;
 import com.illdangag.iricom.server.repository.ReportRepository;
+import com.illdangag.iricom.server.service.CommentService;
 import com.illdangag.iricom.server.service.PostService;
 import com.illdangag.iricom.server.service.ReportService;
 import lombok.extern.slf4j.Slf4j;
@@ -29,16 +32,18 @@ public class ReportServiceImpl implements ReportService {
     private final CommentRepository commentRepository;
 
     private final PostService postService;
+    private final CommentService commentService;
 
     @Autowired
     private ReportServiceImpl(ReportRepository reportRepository, PostRepository postRepository, BoardRepository boardRepository, CommentRepository commentRepository,
-                              PostService postService) {
+                              PostService postService, CommentService commentService) {
         this.reportRepository = reportRepository;
         this.postRepository = postRepository;
         this.boardRepository = boardRepository;
         this.commentRepository = commentRepository;
 
         this.postService = postService;
+        this.commentService = commentService;
     }
 
     @Override
@@ -76,7 +81,7 @@ public class ReportServiceImpl implements ReportService {
     }
 
     @Override
-    public void reportComment(Account account, CommentReportCreate commentReportCreate) {
+    public CommentReportInfo reportComment(Account account, CommentReportCreate commentReportCreate) {
         String boardId = commentReportCreate.getBoardId();
         String postId = commentReportCreate.getPostId();
         String commentId = commentReportCreate.getCommentId();
@@ -115,5 +120,7 @@ public class ReportServiceImpl implements ReportService {
                 .build();
 
         this.reportRepository.saveCommentReport(commentReport);
+        CommentInfo commentInfo = this.commentService.getComment(board, post, comment);
+        return new CommentReportInfo(commentReport, commentInfo);
     }
 }
