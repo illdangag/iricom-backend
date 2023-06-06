@@ -62,10 +62,12 @@ public class ReportControllerTest extends IricomTestSuite {
 
                 mockMvc.perform(requestBuilder)
                         .andExpect(status().is(200))
-                        .andExpect(jsonPath("$.title").exists())
-                        .andExpect(jsonPath("$.type").value("post"))
-                        .andExpect(jsonPath("$.content").exists())
-                        .andExpect(jsonPath("$.isAllowComment").exists())
+                        .andExpect(jsonPath("$.id").exists())
+                        .andExpect(jsonPath("$.createDate").exists())
+                        .andExpect(jsonPath("$.updateDate").exists())
+                        .andExpect(jsonPath("$.type").value("hate"))
+                        .andExpect(jsonPath("$.reason").value("This is a hateful post."))
+                        .andExpect(jsonPath("$.post").exists())
                         .andDo(print());
             }
 
@@ -89,15 +91,17 @@ public class ReportControllerTest extends IricomTestSuite {
 
                 mockMvc.perform(requestBuilder)
                         .andExpect(status().is(200))
-                        .andExpect(jsonPath("$.title").exists())
-                        .andExpect(jsonPath("$.type").value("post"))
-                        .andExpect(jsonPath("$.content").exists())
-                        .andExpect(jsonPath("$.isAllowComment").exists())
+                        .andExpect(jsonPath("$.id").exists())
+                        .andExpect(jsonPath("$.createDate").exists())
+                        .andExpect(jsonPath("$.updateDate").exists())
+                        .andExpect(jsonPath("$.type").value("hate"))
+                        .andExpect(jsonPath("$.reason").value("This is a hateful post."))
+                        .andExpect(jsonPath("$.post").exists())
                         .andDo(print());
 
                 mockMvc.perform(requestBuilder)
                         .andExpect(status().is(400))
-                        .andExpect(jsonPath("$.code").value("06000000"))
+                        .andExpect(jsonPath("$.code").value("06000001"))
                         .andExpect(jsonPath("$.message").value("Already report post."))
                         .andDo(print());
             }

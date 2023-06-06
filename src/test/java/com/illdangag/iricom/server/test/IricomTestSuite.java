@@ -1,20 +1,14 @@
 package com.illdangag.iricom.server.test;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.illdangag.iricom.server.data.response.CommentInfo;
+import com.illdangag.iricom.server.data.response.*;
 import com.illdangag.iricom.server.exception.IricomErrorCode;
 import com.illdangag.iricom.server.exception.IricomException;
-import com.illdangag.iricom.server.repository.AccountRepository;
-import com.illdangag.iricom.server.repository.BoardRepository;
-import com.illdangag.iricom.server.repository.CommentRepository;
-import com.illdangag.iricom.server.repository.PostRepository;
+import com.illdangag.iricom.server.repository.*;
 import com.illdangag.iricom.server.service.*;
 import com.illdangag.iricom.server.test.data.*;
 import com.illdangag.iricom.server.data.entity.*;
 import com.illdangag.iricom.server.data.request.*;
-import com.illdangag.iricom.server.data.response.AccountInfo;
-import com.illdangag.iricom.server.data.response.BoardInfo;
-import com.illdangag.iricom.server.data.response.PostInfo;
 import com.illdangag.iricom.server.test.util.FirebaseUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.test.autoconfigure.restdocs.AutoConfigureRestDocs;
@@ -36,11 +30,13 @@ public abstract class IricomTestSuite {
     private final BoardAuthorizationService boardAuthorizationService;
     private final PostService postService;
     private final CommentService commentService;
+    private final ReportService reportService;
 
     private final AccountRepository accountRepository;
     private final BoardRepository boardRepository;
     private final PostRepository postRepository;
     private final CommentRepository commentRepository;
+    private final ReportRepository reportRepository;
 
     // 계정 설정
     private static final String ACCOUNT_PASSWORD = "111111";
@@ -338,6 +334,11 @@ public abstract class IricomTestSuite {
             .postType(PostType.POST).postState(PostState.PUBLISH)
             .creator(common00).board(reportBoard).build();
 
+    protected static final TestPostInfo reportPost08 = TestPostInfo.builder()
+            .title("reportPost07").content("report contents").isAllowComment(true)
+            .postType(PostType.POST).postState(PostState.PUBLISH)
+            .creator(common00).board(reportBoard).build();
+
     private static final TestPostInfo[] testPostInfos = {
             enableBoardPost00, enableBoardPost01, enableBoardPost02, enableBoardPost03,
             enableBoardNotification00,
@@ -363,7 +364,7 @@ public abstract class IricomTestSuite {
 
             // 게시물 신고
             reportPost00, reportPost01, reportPost02, reportPost03, reportPost04, reportPost05,
-            reportPost06, reportPost07,
+            reportPost06, reportPost07, reportPost08,
     };
 
     // 댓글 설정
@@ -507,11 +508,22 @@ public abstract class IricomTestSuite {
             reportComment06, reportComment07, reportComment08,
     };
 
+    protected static final TestPostReportInfo postReport00 = TestPostReportInfo.builder()
+            .type(ReportType.ETC)
+            .reason("test post report")
+            .reportAccount(common00).post(reportPost08)
+            .build();
+
+    private static final TestPostReportInfo[] testPostReports = {
+            postReport00,
+    };
+
     private static final Map<TestAccountInfo, Account> accountMap = new HashMap<>();
     private static final Map<TestBoardInfo, Board> boardMap = new HashMap<>();
     private static final Map<TestPostInfo, Post> postMap = new HashMap<>();
     private static final Map<TestAccountInfo, String> tokenMap = new HashMap<>();
     private static final Map<TestCommentInfo, Comment> commentMap = new HashMap<>();
+    private static final Map<TestPostReportInfo, PostReport> postReportMap = new HashMap<>();
 
     private static boolean isInit = false;
 
@@ -521,10 +533,13 @@ public abstract class IricomTestSuite {
         this.boardAuthorizationService = context.getBean(BoardAuthorizationService.class);
         this.postService = context.getBean(PostService.class);
         this.commentService = context.getBean(CommentService.class);
+        this.reportService = context.getBean(ReportService.class);
+
         this.accountRepository = context.getBean(AccountRepository.class);
         this.boardRepository = context.getBean(BoardRepository.class);
         this.postRepository = context.getBean(PostRepository.class);
         this.commentRepository = context.getBean(CommentRepository.class);
+        this.reportRepository = context.getBean(ReportRepository.class);
 
         if (!isInit) {
             this.init();
@@ -595,6 +610,12 @@ public abstract class IricomTestSuite {
             if (!testBoardInfo.isEnabled()) {
                 this.disableBoard(board);
             }
+        }
+
+        // 게시물 신고
+        for (TestPostReportInfo testPostReportInfo : testPostReports) {
+            PostReport postReport = this.reportPost(testPostReportInfo);
+            postReportMap.put(testPostReportInfo, postReport);
         }
     }
 
@@ -729,6 +750,29 @@ public abstract class IricomTestSuite {
         this.commentService.deleteComment(account, board, post, comment);
     }
 
+    private PostReport getPostReport(String id) {
+        Optional<PostReport> postReportOptional = this.reportRepository.getPostReport(id);
+        return postReportOptional.orElseThrow(() -> new IricomException(IricomErrorCode.NOT_EXIST_POST_REPORT));
+    }
+
+    private PostReport reportPost(TestPostReportInfo testPostReportInfo) {
+        TestAccountInfo reportTestAccountInfo = testPostReportInfo.getReportAccount();
+        TestPostInfo testPostInfo = testPostReportInfo.getPost();
+
+        Account reportAccount = accountMap.get(reportTestAccountInfo);
+        Post post = postMap.get(testPostInfo);
+        Board board = post.getBoard();
+
+        PostReportCreate postReportCreate = PostReportCreate.builder()
+                .boardId(String.valueOf(board.getId()))
+                .postId(String.valueOf(post.getId()))
+                .type(testPostReportInfo.getType())
+                .reason(testPostReportInfo.getReason())
+                .build();
+        PostReportInfo postReportInfo = this.reportService.reportPost(reportAccount, postReportCreate);
+        return this.getPostReport(postReportInfo.getId());
+    }
+
     protected void setAuthToken(MockHttpServletRequestBuilder builder, TestAccountInfo testAccountInfo) throws Exception {
         String token = tokenMap.get(testAccountInfo);
         if (token == null) {
@@ -764,4 +808,5 @@ public abstract class IricomTestSuite {
     protected Comment getComment(TestCommentInfo testCommentInfo) {
         return commentMap.get(testCommentInfo);
     }
+
 }

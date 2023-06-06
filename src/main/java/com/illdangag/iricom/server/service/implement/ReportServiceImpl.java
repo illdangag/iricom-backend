@@ -3,12 +3,15 @@ package com.illdangag.iricom.server.service.implement;
 import com.illdangag.iricom.server.data.entity.*;
 import com.illdangag.iricom.server.data.request.CommentReportCreate;
 import com.illdangag.iricom.server.data.request.PostReportCreate;
+import com.illdangag.iricom.server.data.response.PostInfo;
+import com.illdangag.iricom.server.data.response.PostReportInfo;
 import com.illdangag.iricom.server.exception.IricomErrorCode;
 import com.illdangag.iricom.server.exception.IricomException;
 import com.illdangag.iricom.server.repository.BoardRepository;
 import com.illdangag.iricom.server.repository.CommentRepository;
 import com.illdangag.iricom.server.repository.PostRepository;
 import com.illdangag.iricom.server.repository.ReportRepository;
+import com.illdangag.iricom.server.service.PostService;
 import com.illdangag.iricom.server.service.ReportService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,16 +28,21 @@ public class ReportServiceImpl implements ReportService {
     private final BoardRepository boardRepository;
     private final CommentRepository commentRepository;
 
+    private final PostService postService;
+
     @Autowired
-    private ReportServiceImpl(ReportRepository reportRepository, PostRepository postRepository, BoardRepository boardRepository, CommentRepository commentRepository) {
+    private ReportServiceImpl(ReportRepository reportRepository, PostRepository postRepository, BoardRepository boardRepository, CommentRepository commentRepository,
+                              PostService postService) {
         this.reportRepository = reportRepository;
         this.postRepository = postRepository;
         this.boardRepository = boardRepository;
         this.commentRepository = commentRepository;
+
+        this.postService = postService;
     }
 
     @Override
-    public void reportPost(Account account, PostReportCreate postReportCreate) {
+    public PostReportInfo reportPost(Account account, PostReportCreate postReportCreate) {
         String boardId = postReportCreate.getBoardId();
         String postId = postReportCreate.getPostId();
 
@@ -48,7 +56,7 @@ public class ReportServiceImpl implements ReportService {
             throw new IricomException(IricomErrorCode.NOT_EXIST_POST);
         }
 
-        List<PostReport> postReportList = this.reportRepository.getPostReport(account, post);
+        List<PostReport> postReportList = this.reportRepository.getPostReportList(account, post);
         if (!postReportList.isEmpty()) {
             // 해당 계정으로 같은 게시물에 대한 중복 신고는 허용하지 않음
             throw new IricomException(IricomErrorCode.ALREADY_REPORT_POST);
@@ -62,6 +70,9 @@ public class ReportServiceImpl implements ReportService {
                 .build();
 
         this.reportRepository.savePostReport(postReport);
+
+        PostInfo postInfo = this.postService.getPostInfo(account, board, post, PostState.PUBLISH);
+        return new PostReportInfo(postReport, postInfo);
     }
 
     @Override

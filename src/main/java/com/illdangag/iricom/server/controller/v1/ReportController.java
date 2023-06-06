@@ -10,6 +10,7 @@ import com.illdangag.iricom.server.data.request.CommentReportCreate;
 import com.illdangag.iricom.server.data.request.PostReportCreate;
 import com.illdangag.iricom.server.data.response.CommentInfo;
 import com.illdangag.iricom.server.data.response.PostInfo;
+import com.illdangag.iricom.server.data.response.PostReportInfo;
 import com.illdangag.iricom.server.service.CommentService;
 import com.illdangag.iricom.server.service.PostService;
 import com.illdangag.iricom.server.service.ReportService;
@@ -26,27 +27,21 @@ import javax.validation.Valid;
 @RequestMapping(value = "/v1/report")
 public class ReportController {
     private final ReportService reportService;
-    private final PostService postService;
     private final CommentService commentService;
 
     @Autowired
-    public ReportController(ReportService reportService, PostService postService, CommentService commentService) {
+    public ReportController(ReportService reportService, CommentService commentService) {
         this.reportService = reportService;
-        this.postService = postService;
         this.commentService = commentService;
     }
 
     @ApiCallLog(apiCode = "RP_001")
     @Auth(role = AuthRole.ACCOUNT)
     @RequestMapping(method = RequestMethod.POST, value = "/post")
-    public ResponseEntity<PostInfo> reportPost(@RequestBody @Valid PostReportCreate postReportCreate,
+    public ResponseEntity<PostReportInfo> reportPost(@RequestBody @Valid PostReportCreate postReportCreate,
                                                @RequestContext Account account) {
-        this.reportService.reportPost(account, postReportCreate);
-
-        String boardId = postReportCreate.getBoardId();
-        String postId = postReportCreate.getPostId();
-        PostInfo postInfo = this.postService.getPostInfo(account, boardId, postId, PostState.PUBLISH);
-        return ResponseEntity.status(HttpStatus.OK).body(postInfo);
+        PostReportInfo postReportInfo = this.reportService.reportPost(account, postReportCreate);
+        return ResponseEntity.status(HttpStatus.OK).body(postReportInfo);
     }
 
     @ApiCallLog(apiCode = "RP_002")

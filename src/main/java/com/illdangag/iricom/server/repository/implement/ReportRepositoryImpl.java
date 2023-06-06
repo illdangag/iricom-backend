@@ -11,6 +11,7 @@ import javax.persistence.EntityManagerFactory;
 import javax.persistence.EntityTransaction;
 import javax.persistence.TypedQuery;
 import java.util.List;
+import java.util.Optional;
 
 @Slf4j
 @Repository
@@ -23,9 +24,9 @@ public class ReportRepositoryImpl implements ReportRepository {
     }
 
     @Override
-    public List<PostReport> getPostReport(Account account, Post post) {
+    public List<PostReport> getPostReportList(Account account, Post post) {
         EntityManager entityManager = this.entityManagerFactory.createEntityManager();
-        final String jpql = "SELECT pr from PostReport pr " +
+        final String jpql = "SELECT pr FROM PostReport pr " +
                 "WHERE pr.account = :account " +
                 "AND pr.post = :post";
 
@@ -36,6 +37,36 @@ public class ReportRepositoryImpl implements ReportRepository {
         entityManager.close();
 
         return reportList;
+    }
+
+    @Override
+    public Optional<PostReport> getPostReport(String id) {
+        long postReportId = -1;
+        try {
+            postReportId = Long.parseLong(id);
+        } catch (Exception exception) {
+            return Optional.empty();
+        }
+
+        return this.getPostReport(postReportId);
+    }
+
+    @Override
+    public Optional<PostReport> getPostReport(long id) {
+        EntityManager entityManager = this.entityManagerFactory.createEntityManager();
+        final String jpql = "SELECT pr FROM PostReport pr " +
+                "WHERE pr.id = :id";
+
+        TypedQuery<PostReport> query = entityManager.createQuery(jpql, PostReport.class)
+                .setParameter("id", id);
+        List<PostReport> resultList = query.getResultList();
+        entityManager.close();
+
+        if (resultList.isEmpty()) {
+            return Optional.empty();
+        } else {
+            return Optional.of(resultList.get(0));
+        }
     }
 
     @Override
@@ -80,5 +111,18 @@ public class ReportRepositoryImpl implements ReportRepository {
         }
         transaction.commit();
         entityManager.close();
+    }
+
+    @Override
+    public long getPortReportCount(Post post) {
+        EntityManager entityManager = this.entityManagerFactory.createEntityManager();
+        final String jpql = "SELECT COUNT(*) FROM PostReport pr " +
+                "WHERE pr.post = :post";
+
+        TypedQuery<Long> query = entityManager.createQuery(jpql, Long.class)
+                .setParameter("post", post);
+        long result = query.getSingleResult();
+        entityManager.close();
+        return result;
     }
 }

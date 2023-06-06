@@ -61,7 +61,8 @@ public enum IricomErrorCode {
 
     // report: 06XXXXXX
     // report post: 0600XXXX
-    ALREADY_REPORT_POST("06000000", 400, "Already report post."),
+    NOT_EXIST_POST_REPORT("06000000", 404, "Not exist post report."),
+    ALREADY_REPORT_POST("06000001", 400, "Already report post."),
     // report comment: 0601XXXX
     ALREADY_REPORT_COMMENT("06010000", 400, "Already report comment.");
     // report account: 0602XXXX

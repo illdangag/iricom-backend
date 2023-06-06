@@ -29,15 +29,17 @@ public class PostServiceImpl implements PostService {
     private final CommentRepository commentRepository;
     private final BoardRepository boardRepository;
     private final BoardAdminRepository boardAdminRepository;
+    private final ReportRepository reportRepository;
 
     @Autowired
     public PostServiceImpl(PostRepository postRepository, PostVoteRepository postVoteRepository, CommentRepository commentRepository,
-                           BoardRepository boardRepository, BoardAdminRepository boardAdminRepository) {
+                           BoardRepository boardRepository, BoardAdminRepository boardAdminRepository, ReportRepository reportRepository) {
         this.postRepository = postRepository;
         this.postVoteRepository = postVoteRepository;
         this.commentRepository = commentRepository;
         this.boardRepository = boardRepository;
         this.boardAdminRepository = boardAdminRepository;
+        this.reportRepository = reportRepository;
     }
 
     @Override
@@ -232,6 +234,7 @@ public class PostServiceImpl implements PostService {
         long commentCount = this.commentRepository.getCommentCount(post);
         long upvote = this.postVoteRepository.getPostVoteCount(post, VoteType.UPVOTE);
         long downvote = this.postVoteRepository.getPostVoteCount(post, VoteType.DOWNVOTE);
+        long report = this.reportRepository.getPortReportCount(post);
 
         return new PostInfo(post, true, PostState.PUBLISH, commentCount, upvote, downvote);
     }
@@ -264,11 +267,6 @@ public class PostServiceImpl implements PostService {
                 totalPostCount = this.postRepository.getPublishPostCount(board, postInfoSearch.getTitle());
             }
         }
-
-        List<Account> accountList = postList.stream()
-                .map(Post::getAccount)
-                .distinct()
-                .collect(Collectors.toList());
 
         List<PostInfo> postInfoList = postList.stream().map(post -> {
             long commentCount = this.commentRepository.getCommentCount(post);
@@ -431,11 +429,6 @@ public class PostServiceImpl implements PostService {
     }
 
     private Post getPost(String id) {
-        Optional<Post> postOptional = this.postRepository.getPost(id);
-        return postOptional.orElseThrow(() -> new IricomException(IricomErrorCode.NOT_EXIST_POST));
-    }
-
-    private Post getPost(long id) {
         Optional<Post> postOptional = this.postRepository.getPost(id);
         return postOptional.orElseThrow(() -> new IricomException(IricomErrorCode.NOT_EXIST_POST));
     }

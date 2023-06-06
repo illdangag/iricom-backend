@@ -36,7 +36,7 @@ public class ReportRepositoryTest extends IricomTestSuite {
                 .build();
         this.reportRepository.savePostReport(postReport);
 
-        List<PostReport> postReportList = this.reportRepository.getPostReport(account, post);
+        List<PostReport> postReportList = this.reportRepository.getPostReportList(account, post);
         Assertions.assertFalse(postReportList.isEmpty());
     }
 
