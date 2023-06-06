@@ -94,6 +94,7 @@ public class ReportControllerTest extends IricomTestSuite {
                                         fieldWithPath("post.isPublish").description("발행 여부"),
                                         fieldWithPath("post.hasTemporary").description("임시 저장 여부"),
                                         fieldWithPath("post.boardId").description("게시판 아이디"),
+                                        fieldWithPath("post.isReport").description("신고 여부"),
                                         fieldWithPath("post.account").description("작성자"),
                                         fieldWithPath("post.account.id").description("아이디"),
                                         fieldWithPath("post.account.email").description("이메일"),

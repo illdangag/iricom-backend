@@ -50,7 +50,9 @@ public class PostInfo {
 
     private String boardId;
 
-    public PostInfo(Post post, boolean includeContent, PostState postState, long commentCount, long upvote, long downvote) {
+    private Boolean isReport;
+
+    public PostInfo(Post post, boolean includeContent, PostState postState, long commentCount, long upvote, long downvote, long reportCount) {
         this.id = "" + post.getId();
         this.createDate = DateTimeUtils.getLong(post.getCreateDate());
         this.updateDate = DateTimeUtils.getLong(post.getUpdateDate());
@@ -84,6 +86,12 @@ public class PostInfo {
 
         if (includeContent) {
             this.content = content.getContent();
+        }
+
+        this.isReport = reportCount >= 10;
+
+        if (this.isReport) {
+            this.content = "";
         }
     }
 }

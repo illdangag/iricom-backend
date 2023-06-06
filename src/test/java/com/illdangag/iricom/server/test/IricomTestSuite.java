@@ -64,6 +64,30 @@ public abstract class IricomTestSuite {
     protected static final TestAccountInfo common01 = TestAccountInfo.builder()
             .email("common01@iricom.com").nickname("common01").description("this is common01.").build();
 
+    protected static final TestAccountInfo common02 = TestAccountInfo.builder()
+            .email("common02@iricom.com").nickname("common02").description("this is common02.").build();
+
+    protected static final TestAccountInfo common03 = TestAccountInfo.builder()
+            .email("common03@iricom.com").nickname("common03").description("this is common03.").build();
+
+    protected static final TestAccountInfo common04 = TestAccountInfo.builder()
+            .email("common04@iricom.com").nickname("common04").description("this is common04.").build();
+
+    protected static final TestAccountInfo common05 = TestAccountInfo.builder()
+            .email("common05@iricom.com").nickname("common05").description("this is common05.").build();
+
+    protected static final TestAccountInfo common06 = TestAccountInfo.builder()
+            .email("common06@iricom.com").nickname("common06").description("this is common06.").build();
+
+    protected static final TestAccountInfo common07 = TestAccountInfo.builder()
+            .email("common07@iricom.com").nickname("common07").description("this is common07.").build();
+
+    protected static final TestAccountInfo common08 = TestAccountInfo.builder()
+            .email("common08@iricom.com").nickname("common08").description("this is common08.").build();
+
+    protected static final TestAccountInfo common09 = TestAccountInfo.builder()
+            .email("common09@iricom.com").nickname("common09").description("this is common09.").build();
+
     protected static final TestAccountInfo unknown00 = TestAccountInfo.builder()
             .email("unknown00@iriom.com").isUnregistered(true).nickname("unknown00").description("this is unknown00.").build();
 
@@ -81,7 +105,7 @@ public abstract class IricomTestSuite {
             disableBoardAdmin, // 비활성화 게시판 관리자
             toDisableBoardAdmin, // 게시판 관리자 삭제 테스트용 계정
             common00, // 일반 계정, 게시판 관리자 계정으로 등록 금지
-            common01,
+            common01, common02, common03, common04, common05, common06, common07, common08, common09,
             unknown00, // 등록되지 않은 계정 권한용 테스트 계정, 테스트 케이스에서 계정 정보를 등록 금지
             unknown01, // 등록되지 않은 계정의 정보 수정 테스트용 계정, 테스트 케이스가 수행 되면 등록된 계정으로 전환
             unknown02, // 등록되지 않은 계정의 정보 수정 테스트용 계정, 테스트 케이스가 수행 되면 등록된 계정으로 전환
@@ -334,7 +358,7 @@ public abstract class IricomTestSuite {
             .postType(PostType.POST).postState(PostState.PUBLISH)
             .creator(common00).board(reportBoard).build();
 
-    protected static final TestPostInfo reportPost08 = TestPostInfo.builder()
+    protected static final TestPostInfo reportedPost00 = TestPostInfo.builder()
             .title("reportPost07").content("report contents").isAllowComment(true)
             .postType(PostType.POST).postState(PostState.PUBLISH)
             .creator(common00).board(reportBoard).build();
@@ -364,7 +388,10 @@ public abstract class IricomTestSuite {
 
             // 게시물 신고
             reportPost00, reportPost01, reportPost02, reportPost03, reportPost04, reportPost05,
-            reportPost06, reportPost07, reportPost08,
+            reportPost06, reportPost07,
+
+            // 신고된 게시물
+            reportedPost00,
     };
 
     // 댓글 설정
@@ -514,11 +541,47 @@ public abstract class IricomTestSuite {
 
     protected static final TestPostReportInfo postReport00 = TestPostReportInfo.builder()
             .type(ReportType.ETC).reason("test post report")
-            .reportAccount(common00).post(reportPost08)
+            .reportAccount(common00).post(reportedPost00)
+            .build();
+    protected static final TestPostReportInfo postReport01 = TestPostReportInfo.builder()
+            .type(ReportType.ETC).reason("test post report")
+            .reportAccount(common01).post(reportedPost00)
+            .build();
+    protected static final TestPostReportInfo postReport02 = TestPostReportInfo.builder()
+            .type(ReportType.ETC).reason("test post report")
+            .reportAccount(common02).post(reportedPost00)
+            .build();
+    protected static final TestPostReportInfo postReport03 = TestPostReportInfo.builder()
+            .type(ReportType.ETC).reason("test post report")
+            .reportAccount(common03).post(reportedPost00)
+            .build();
+    protected static final TestPostReportInfo postReport04 = TestPostReportInfo.builder()
+            .type(ReportType.ETC).reason("test post report")
+            .reportAccount(common04).post(reportedPost00)
+            .build();
+    protected static final TestPostReportInfo postReport05 = TestPostReportInfo.builder()
+            .type(ReportType.ETC).reason("test post report")
+            .reportAccount(common05).post(reportedPost00)
+            .build();
+    protected static final TestPostReportInfo postReport06 = TestPostReportInfo.builder()
+            .type(ReportType.ETC).reason("test post report")
+            .reportAccount(common06).post(reportedPost00)
+            .build();
+    protected static final TestPostReportInfo postReport07 = TestPostReportInfo.builder()
+            .type(ReportType.ETC).reason("test post report")
+            .reportAccount(common07).post(reportedPost00)
+            .build();
+    protected static final TestPostReportInfo postReport08 = TestPostReportInfo.builder()
+            .type(ReportType.ETC).reason("test post report")
+            .reportAccount(common08).post(reportedPost00)
+            .build();
+    protected static final TestPostReportInfo postReport09 = TestPostReportInfo.builder()
+            .type(ReportType.ETC).reason("test post report")
+            .reportAccount(common09).post(reportedPost00)
             .build();
 
     private static final TestPostReportInfo[] testPostReportInfos = {
-            postReport00,
+            postReport00, postReport01, postReport02, postReport03, postReport04, postReport05, postReport06, postReport07, postReport08, postReport09,
     };
 
     protected static final TestCommentReportInfo commentReport00 = TestCommentReportInfo.builder()

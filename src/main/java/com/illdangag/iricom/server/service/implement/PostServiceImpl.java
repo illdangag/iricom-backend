@@ -76,7 +76,7 @@ public class PostServiceImpl implements PostService {
         post.setTemporaryContent(postContent);
 
         this.postRepository.save(post, postContent);
-        return new PostInfo(post, true, PostState.TEMPORARY, 0, 0, 0);
+        return new PostInfo(post, true, PostState.TEMPORARY, 0, 0, 0, 0);
     }
 
     @Override
@@ -146,8 +146,9 @@ public class PostServiceImpl implements PostService {
         long commentCount = this.commentRepository.getCommentListSize(post);
         long upvote = this.postVoteRepository.getPostVoteCount(post, VoteType.UPVOTE);
         long downvote = this.postVoteRepository.getPostVoteCount(post, VoteType.DOWNVOTE);
+        long reportCount = this.reportRepository.getPortReportCount(post);
 
-        return new PostInfo(post, true, PostState.TEMPORARY, commentCount, upvote, downvote);
+        return new PostInfo(post, true, PostState.TEMPORARY, commentCount, upvote, downvote, reportCount);
     }
 
     @Override
@@ -182,8 +183,8 @@ public class PostServiceImpl implements PostService {
         long commentCount = this.commentRepository.getCommentListSize(post);
         long upvote = this.postVoteRepository.getPostVoteCount(post, VoteType.UPVOTE);
         long downvote = this.postVoteRepository.getPostVoteCount(post, VoteType.DOWNVOTE);
-
-        return new PostInfo(post, true, postState, commentCount, upvote, downvote);
+        long reportCount = this.reportRepository.getPortReportCount(post);
+        return new PostInfo(post, true, postState, commentCount, upvote, downvote, reportCount);
     }
 
     @Override
@@ -234,9 +235,9 @@ public class PostServiceImpl implements PostService {
         long commentCount = this.commentRepository.getCommentCount(post);
         long upvote = this.postVoteRepository.getPostVoteCount(post, VoteType.UPVOTE);
         long downvote = this.postVoteRepository.getPostVoteCount(post, VoteType.DOWNVOTE);
-        long report = this.reportRepository.getPortReportCount(post);
+        long reportCount = this.reportRepository.getPortReportCount(post);
 
-        return new PostInfo(post, true, PostState.PUBLISH, commentCount, upvote, downvote);
+        return new PostInfo(post, true, PostState.PUBLISH, commentCount, upvote, downvote, reportCount);
     }
 
     @Override
@@ -272,8 +273,9 @@ public class PostServiceImpl implements PostService {
             long commentCount = this.commentRepository.getCommentCount(post);
             long upvote = this.postVoteRepository.getPostVoteCount(post, VoteType.UPVOTE);
             long downvote = this.postVoteRepository.getPostVoteCount(post, VoteType.DOWNVOTE);
+            long reportCount = this.reportRepository.getPortReportCount(post);
 
-            return new PostInfo(post, false, PostState.PUBLISH, commentCount, upvote, downvote);
+            return new PostInfo(post, false, PostState.PUBLISH, commentCount, upvote, downvote, reportCount);
         }).collect(Collectors.toList());
 
         return PostInfoList.builder()
@@ -337,7 +339,9 @@ public class PostServiceImpl implements PostService {
             responsePostState = PostState.TEMPORARY;
         }
 
-        return new PostInfo(post, true, responsePostState, commentCount, upvote, downvote);
+        long reportCount = this.reportRepository.getPortReportCount(post);
+
+        return new PostInfo(post, true, responsePostState, commentCount, upvote, downvote, reportCount);
     }
 
     public PostInfo votePost(Account account, String boardId, String postId, VoteType voteType) {
@@ -381,8 +385,9 @@ public class PostServiceImpl implements PostService {
         long commentCount = this.commentRepository.getCommentListSize(post);
         long upvote = this.postVoteRepository.getPostVoteCount(post, VoteType.UPVOTE);
         long downvote = this.postVoteRepository.getPostVoteCount(post, VoteType.DOWNVOTE);
+        long reportCount = this.reportRepository.getPortReportCount(post);
 
-        return new PostInfo(post, true, PostState.PUBLISH, commentCount, upvote, downvote);
+        return new PostInfo(post, true, PostState.PUBLISH, commentCount, upvote, downvote, reportCount);
     }
 
     @Override
@@ -400,7 +405,9 @@ public class PostServiceImpl implements PostService {
             } else {
                 responsePostState = PostState.TEMPORARY;
             }
-            return new PostInfo(post, false, responsePostState, commentCount, upvote, downvote);
+            long reportCount = this.reportRepository.getPortReportCount(post);
+
+            return new PostInfo(post, false, responsePostState, commentCount, upvote, downvote, reportCount);
         }).collect(Collectors.toList());
 
         return PostInfoList.builder()
