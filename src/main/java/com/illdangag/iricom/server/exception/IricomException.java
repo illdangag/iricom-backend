@@ -44,6 +44,10 @@ public class IricomException extends RuntimeException {
         }
     }
 
+    public String getErrorCode() {
+        return this.code.getCode();
+    }
+
     public MediaType getHttpContentType() {
         return MediaType.APPLICATION_JSON;
     }

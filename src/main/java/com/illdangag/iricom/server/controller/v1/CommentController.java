@@ -142,15 +142,7 @@ public class CommentController {
                                                    @PathVariable(value = "comment_id") String commentId,
                                                    @RequestBody CommentInfoVote commentInfoVote,
                                                    @RequestContext Account account) {
-        VoteType voteType;
-        if ("upvote".equalsIgnoreCase(commentInfoVote.getType())) {
-            voteType = VoteType.UPVOTE;
-        } else if ("downvote".equalsIgnoreCase(commentInfoVote.getType())) {
-            voteType = VoteType.DOWNVOTE;
-        } else {
-            throw new IricomException(IricomErrorCode.INVALID_VOTE_POST);
-        }
-
+        VoteType voteType = commentInfoVote.getType();
         CommentInfo commentInfo = this.commentService.voteComment(account, boardId, postId, commentId, voteType);
         return ResponseEntity.status(HttpStatus.OK).body(commentInfo);
     }

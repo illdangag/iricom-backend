@@ -12,6 +12,7 @@ import lombok.Getter;
 public enum IricomErrorCode {
     // common: 0000XXXX
     NOT_EXIST_REQUEST_BODY("00000001", 400, "Not exist request body."),
+    INVALID_REQUEST_BODY("00000002", 400, "Invalid request body."),
 
     // auth: 0100XXXX
     NOT_REGISTERED_ACCOUNT("01000001", 401, "Invalid authorization."),
@@ -47,8 +48,7 @@ public enum IricomErrorCode {
     NOT_EXIST_TEMPORARY_CONTENT("04000004", 404, "Not exist temporary content."),
     NOT_EXIST_PUBLISH_CONTENT("04000005", 404, "Not exist publish content."),
     ALREADY_VOTE_POST("04000006", 400, "Already vote post."),
-    INVALID_VOTE_POST("04000007", 400, "Invalid vote type."),
-    INVALID_AUTHORIZATION_TO_GET_TEMPORARY_CONTENT("04000008", 401, "Invalid authorization."),
+    INVALID_AUTHORIZATION_TO_GET_TEMPORARY_CONTENT("04000007", 401, "Invalid authorization."),
 
     // comment: 05XXXXXX
     NOT_EXIST_COMMENT("05000000", 404, "Not exist comment."),

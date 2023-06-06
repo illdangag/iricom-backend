@@ -81,10 +81,26 @@ public class ControllerExceptionAdvice {
         String message = exception.getMessage();
         HttpStatus httpStatus;
         ErrorResponse errorResponse;
-        if (message.startsWith("Required request body is missing:")) {
+
+        Throwable rootCauseThrowable = exception.getRootCause();
+        if (rootCauseThrowable instanceof IricomException) {
+            IricomException iricomException = (IricomException) rootCauseThrowable;
+            iricomException.getMessage();
+            errorResponse = ErrorResponse.builder()
+                    .code(iricomException.getErrorCode())
+                    .message(iricomException.getMessage())
+                    .build();
+            httpStatus = HttpStatus.valueOf(iricomException.getStatusCode());
+        } else if (message.startsWith("Required request body is missing:")) {
             errorResponse = ErrorResponse.builder()
                     .code(IricomErrorCode.NOT_EXIST_REQUEST_BODY.getCode())
                     .message(IricomErrorCode.NOT_EXIST_REQUEST_BODY.getMessage())
+                    .build();
+            httpStatus = HttpStatus.BAD_REQUEST;
+        } else if (message.startsWith("JSON parse error:")) {
+            errorResponse = ErrorResponse.builder()
+                    .code(IricomErrorCode.INVALID_REQUEST_BODY.getCode())
+                    .message(IricomErrorCode.INVALID_REQUEST_BODY.getMessage())
                     .build();
             httpStatus = HttpStatus.BAD_REQUEST;
         } else {

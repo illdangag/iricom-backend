@@ -5,7 +5,6 @@ import com.illdangag.iricom.server.data.entity.Board;
 import com.illdangag.iricom.server.data.entity.Post;
 import com.illdangag.iricom.server.test.IricomTestSuite;
 import lombok.extern.slf4j.Slf4j;
-import org.checkerframework.checker.units.qual.N;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Order;
@@ -1143,7 +1142,7 @@ public class PostControllerTest extends IricomTestSuite {
 
             mockMvc.perform(requestBuilder)
                     .andExpect(status().is(400))
-                    .andExpect(jsonPath("$.code").value("04000007"))
+                    .andExpect(jsonPath("$.code").value("01020000"))
                     .andDo(print());
         }
 

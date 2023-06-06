@@ -4,12 +4,14 @@ import com.illdangag.iricom.server.configuration.annotation.ApiCallLog;
 import com.illdangag.iricom.server.configuration.annotation.Auth;
 import com.illdangag.iricom.server.configuration.annotation.AuthRole;
 import com.illdangag.iricom.server.configuration.annotation.RequestContext;
-import com.illdangag.iricom.server.data.entity.*;
+import com.illdangag.iricom.server.data.entity.Account;
+import com.illdangag.iricom.server.data.entity.PostState;
+import com.illdangag.iricom.server.data.entity.PostType;
+import com.illdangag.iricom.server.data.entity.VoteType;
 import com.illdangag.iricom.server.data.request.PostInfoCreate;
 import com.illdangag.iricom.server.data.request.PostInfoSearch;
 import com.illdangag.iricom.server.data.request.PostInfoUpdate;
 import com.illdangag.iricom.server.data.request.PostInfoVote;
-import com.illdangag.iricom.server.data.response.BoardInfo;
 import com.illdangag.iricom.server.data.response.PostInfo;
 import com.illdangag.iricom.server.data.response.PostInfoList;
 import com.illdangag.iricom.server.exception.IricomErrorCode;
@@ -28,12 +30,10 @@ import javax.validation.Valid;
 @RestController
 @RequestMapping(value = "/v1/boards/{board_id}")
 public class PostController {
-    private final BoardService boardService;
     private final PostService postService;
 
     @Autowired
-    public PostController(BoardService boardService, PostService postService) {
-        this.boardService = boardService;
+    public PostController(PostService postService) {
         this.postService = postService;
     }
 
@@ -167,16 +167,7 @@ public class PostController {
                                              @PathVariable(value = "post_id") String postId,
                                              @RequestBody PostInfoVote postInfoVote,
                                              @RequestContext Account account) {
-
-        VoteType voteType;
-        if ("upvote".equalsIgnoreCase(postInfoVote.getType())) {
-            voteType = VoteType.UPVOTE;
-        } else if ("downvote".equalsIgnoreCase(postInfoVote.getType())) {
-            voteType = VoteType.DOWNVOTE;
-        } else {
-            throw new IricomException(IricomErrorCode.INVALID_VOTE_POST);
-        }
-
+        VoteType voteType = postInfoVote.getType();
         PostInfo postInfo = this.postService.votePost(account, boardId, postId, voteType);
         return ResponseEntity.status(HttpStatus.OK).body(postInfo);
     }
