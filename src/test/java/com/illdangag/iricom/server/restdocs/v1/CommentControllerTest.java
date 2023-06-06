@@ -87,6 +87,7 @@ public class CommentControllerTest extends IricomTestSuite {
                                         fieldWithPath("downvote").description("싫어요"),
                                         fieldWithPath("hasNestedComment").description("하위 댓글 여부"),
                                         fieldWithPath("deleted").description("삭제 여부"),
+                                        fieldWithPath("isReport").description("신고 여부"),
                                         fieldWithPath("account.id").description("작성자 아이디,"),
                                         fieldWithPath("account.email").description("작성자 이메일"),
                                         fieldWithPath("account.createDate").description("작성자 생성일"),
@@ -157,6 +158,7 @@ public class CommentControllerTest extends IricomTestSuite {
                                 fieldWithPath("comments.[].downvote").description("싫어요"),
                                 fieldWithPath("comments.[].hasNestedComment").description("하위 댓글 포함 여부"),
                                 fieldWithPath("comments.[].deleted").description("삭제 여부"),
+                                fieldWithPath("comments.[].isReport").description("신고 여부"),
                                 fieldWithPath("comments.[].referenceCommentId").description("상위 댓글 아이디"),
                                 fieldWithPath("comments.[].account").description("댓글 작성자"),
                                 fieldWithPath("comments.[].account.id").description("댓글 작성자 아이디"),
@@ -176,6 +178,7 @@ public class CommentControllerTest extends IricomTestSuite {
                                 fieldWithPath("comments.[].nestedComments.[].downvote").description("하위 댓글의 싫어요"),
                                 fieldWithPath("comments.[].nestedComments.[].hasNestedComment").description("하위 댓글의 대댓글 포함 여부"),
                                 fieldWithPath("comments.[].nestedComments.[].deleted").description("하위 댓글의 삭제 여부"),
+                                fieldWithPath("comments.[].nestedComments.[].isReport").description("신고 여부"),
                                 fieldWithPath("comments.[].nestedComments.[].account").description("하위 댓글 작성자"),
                                 fieldWithPath("comments.[].nestedComments.[].account.id").description("하위 댓글 작성자 아이디"),
                                 fieldWithPath("comments.[].nestedComments.[].account.email").description("하위 댓글 작성자 이메일"),
@@ -235,6 +238,7 @@ public class CommentControllerTest extends IricomTestSuite {
                                 fieldWithPath("downvote").description("싫어요"),
                                 fieldWithPath("hasNestedComment").description("하위 댓글 여부"),
                                 fieldWithPath("deleted").description("삭제 여부"),
+                                fieldWithPath("isReport").description("신고 여부"),
                                 fieldWithPath("account").description("작성자"),
                                 fieldWithPath("account.id").description("작성자 아이디"),
                                 fieldWithPath("account.email").description("작성자 이메일"),
@@ -284,7 +288,8 @@ public class CommentControllerTest extends IricomTestSuite {
                                 fieldWithPath("upvote").description("좋아요"),
                                 fieldWithPath("downvote").description("싫어요"),
                                 fieldWithPath("hasNestedComment").description("하위 댓글 여부"),
-                                fieldWithPath("deleted").description("삭제 여부")
+                                fieldWithPath("deleted").description("삭제 여부"),
+                                fieldWithPath("isReport").description("신고 여부")
                         )
                 ));
     }
@@ -336,6 +341,7 @@ public class CommentControllerTest extends IricomTestSuite {
                                 fieldWithPath("downvote").description("싫어요"),
                                 fieldWithPath("hasNestedComment").description("하위 댓글 여부"),
                                 fieldWithPath("deleted").description("삭제 여부"),
+                                fieldWithPath("isReport").description("신고 여부"),
                                 fieldWithPath("account").description("작성자"),
                                 fieldWithPath("account.id").description("작성자 아이디"),
                                 fieldWithPath("account.email").description("작성자 이메일"),

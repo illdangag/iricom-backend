@@ -5,6 +5,7 @@ import com.illdangag.iricom.server.data.entity.Board;
 import com.illdangag.iricom.server.data.entity.Post;
 import com.illdangag.iricom.server.test.IricomTestSuite;
 import lombok.extern.slf4j.Slf4j;
+import org.checkerframework.checker.units.qual.N;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Order;
@@ -1159,6 +1160,26 @@ public class PostControllerTest extends IricomTestSuite {
             mockMvc.perform(requestBuilder)
                     .andExpect(status().is(400))
                     .andExpect(jsonPath("$.code").value("00000001"))
+                    .andDo(print());
+        }
+    }
+
+    @Nested
+    @DisplayName("신고된 게시물")
+    class ReportTest {
+        @Test
+        @Order(0)
+        @DisplayName("신고된 게시물 조회")
+        public void testCase00() throws Exception {
+            Post post = getPost(reportedPost00);
+            Board board = post.getBoard();
+
+            MockHttpServletRequestBuilder requestBuilder = get("/v1/boards/" + board.getId() + "/posts/" + post.getId());
+            setAuthToken(requestBuilder, common00);
+
+            mockMvc.perform(requestBuilder)
+                    .andExpect(status().is(200))
+                    .andExpect(jsonPath("$.content").doesNotExist())
                     .andDo(print());
         }
     }

@@ -156,4 +156,17 @@ public class ReportRepositoryImpl implements ReportRepository {
         entityManager.close();
         return result;
     }
+
+    @Override
+    public long getCommentReportCount(Comment comment) {
+        EntityManager entityManager = this.entityManagerFactory.createEntityManager();
+        final String jpql = "SELECT COUNT(*) FROM CommentReport cr " +
+                "WHERE cr.comment = :comment";
+
+        TypedQuery<Long> query = entityManager.createQuery(jpql, Long.class)
+                .setParameter("comment", comment);
+        long result = query.getSingleResult();
+        entityManager.close();
+        return result;
+    }
 }

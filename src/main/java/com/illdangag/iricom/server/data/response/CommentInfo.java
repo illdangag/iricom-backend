@@ -36,23 +36,34 @@ public class CommentInfo {
     @JsonProperty("nestedComments")
     private List<CommentInfo> nestedCommentList = null;
 
-    public CommentInfo(Comment comment, AccountInfo accountInfo, long upvote, long downvote) {
+    private Boolean isReport;
+
+    public CommentInfo(Comment comment, AccountInfo accountInfo, long upvote, long downvote, long reportCount) {
         this.id = comment.getId().toString();
+
         if (comment.getReferenceComment() != null) {
             this.referenceCommentId = comment.getReferenceComment().getId().toString();
         }
+
         this.createDate = DateTimeUtils.getLong(comment.getCreateDate());
         this.updateDate = comment.getUpdateDate() == null ? null : DateTimeUtils.getLong(comment.getUpdateDate());
         this.upvote = upvote;
         this.downvote = downvote;
         this.hasNestedComment = comment.getHasNestedComment();
         this.deleted = comment.getDeleted();
+
         if (!this.deleted) {
             this.content = comment.getContent();
             this.account = accountInfo;
         } else {
             this.content = null;
             this.account = null;
+        }
+
+        this.isReport = reportCount >= 10;
+
+        if (this.isReport) {
+            this.content = null;
         }
     }
 }

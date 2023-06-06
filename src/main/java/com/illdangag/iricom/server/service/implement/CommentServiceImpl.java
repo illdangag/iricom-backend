@@ -9,14 +9,9 @@ import com.illdangag.iricom.server.data.response.CommentInfo;
 import com.illdangag.iricom.server.data.response.CommentInfoList;
 import com.illdangag.iricom.server.exception.IricomErrorCode;
 import com.illdangag.iricom.server.exception.IricomException;
-import com.illdangag.iricom.server.repository.BoardRepository;
-import com.illdangag.iricom.server.repository.CommentRepository;
-import com.illdangag.iricom.server.repository.CommentVoteRepository;
-import com.illdangag.iricom.server.repository.PostRepository;
+import com.illdangag.iricom.server.repository.*;
 import com.illdangag.iricom.server.service.AccountService;
-import com.illdangag.iricom.server.service.BoardService;
 import com.illdangag.iricom.server.service.CommentService;
-import com.illdangag.iricom.server.service.PostService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -36,16 +31,18 @@ public class CommentServiceImpl implements CommentService {
     private final CommentVoteRepository commentVoteRepository;
     private final BoardRepository boardRepository;
     private final PostRepository postRepository;
+    private final ReportRepository reportRepository;
 
     private final AccountService accountService;
 
     @Autowired
-    public CommentServiceImpl(CommentRepository commentRepository, CommentVoteRepository commentVoteRepository, BoardRepository boardRepository, PostRepository postRepository,
-                              AccountService accountService) {
+    public CommentServiceImpl(CommentRepository commentRepository, CommentVoteRepository commentVoteRepository, BoardRepository boardRepository,
+                              PostRepository postRepository, ReportRepository reportRepository, AccountService accountService) {
         this.commentRepository = commentRepository;
         this.commentVoteRepository = commentVoteRepository;
         this.boardRepository = boardRepository;
         this.postRepository = postRepository;
+        this.reportRepository = reportRepository;
 
         this.accountService = accountService;
     }
@@ -96,7 +93,8 @@ public class CommentServiceImpl implements CommentService {
         if (referenceComment != null) {
             this.commentRepository.save(referenceComment);
         }
-        return new CommentInfo(comment, accountInfo, 0, 0);
+
+        return new CommentInfo(comment, accountInfo, 0, 0, 0);
     }
 
     @Override
@@ -134,7 +132,9 @@ public class CommentServiceImpl implements CommentService {
         AccountInfo accountInfo = this.accountService.getAccountInfo(comment.getAccount());
         long upvote = this.commentVoteRepository.getCommentVoteCount(comment, VoteType.UPVOTE);
         long downvote = this.commentVoteRepository.getCommentVoteCount(comment, VoteType.DOWNVOTE);
-        return new CommentInfo(comment, accountInfo, upvote, downvote);
+        long reportCount = this.reportRepository.getCommentReportCount(comment);
+
+        return new CommentInfo(comment, accountInfo, upvote, downvote, reportCount);
     }
 
     @Override
@@ -202,7 +202,8 @@ public class CommentServiceImpl implements CommentService {
         AccountInfo accountInfo = this.accountService.getAccountInfo(comment.getAccount());
         long upvote = this.commentVoteRepository.getCommentVoteCount(comment, VoteType.UPVOTE);
         long downvote = this.commentVoteRepository.getCommentVoteCount(comment, VoteType.DOWNVOTE);
-        return new CommentInfo(comment, accountInfo, upvote, downvote);
+        long reportCount = this.reportRepository.getCommentReportCount(comment);
+        return new CommentInfo(comment, accountInfo, upvote, downvote, reportCount);
     }
 
 
@@ -228,7 +229,8 @@ public class CommentServiceImpl implements CommentService {
         AccountInfo accountInfo = this.accountService.getAccountInfo(comment.getAccount());
         long upvote = this.commentVoteRepository.getCommentVoteCount(comment, VoteType.UPVOTE);
         long downvote = this.commentVoteRepository.getCommentVoteCount(comment, VoteType.DOWNVOTE);
-        return new CommentInfo(comment, accountInfo, upvote, downvote);
+        long reportCount = this.reportRepository.getCommentReportCount(comment);
+        return new CommentInfo(comment, accountInfo, upvote, downvote, reportCount);
     }
 
     @Override
@@ -268,7 +270,8 @@ public class CommentServiceImpl implements CommentService {
         AccountInfo accountInfo = this.accountService.getAccountInfo(account);
         long upvote = this.commentVoteRepository.getCommentVoteCount(comment, VoteType.UPVOTE);
         long downvote = this.commentVoteRepository.getCommentVoteCount(comment, VoteType.DOWNVOTE);
-        return new CommentInfo(comment, accountInfo, upvote, downvote);
+        long reportCount = this.reportRepository.getCommentReportCount(comment);
+        return new CommentInfo(comment, accountInfo, upvote, downvote, reportCount);
     }
 
     private void validate(Board board, Post post) {

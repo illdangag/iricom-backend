@@ -163,6 +163,7 @@ public class ReportControllerTest extends IricomTestSuite {
                                         fieldWithPath("comment.downvote").description("싫어요").optional().type(JsonFieldType.NUMBER),
                                         fieldWithPath("comment.hasNestedComment").description("하위 댓글 여부"),
                                         fieldWithPath("comment.deleted").description("삭제 여부"),
+                                        fieldWithPath("comment.isReport").description("신고 여부"),
                                         fieldWithPath("comment.account.id").description("작성자 아이디,"),
                                         fieldWithPath("comment.account.email").description("작성자 이메일"),
                                         fieldWithPath("comment.account.createDate").description("작성자 생성일").optional().type(JsonFieldType.NUMBER),

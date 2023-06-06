@@ -519,9 +519,9 @@ public abstract class IricomTestSuite {
             .content("reportComment08")
             .creator(common00).post(reportPost00)
             .build();
-    protected static final TestCommentInfo reportComment09 = TestCommentInfo.builder()
-            .content("reportComment09")
-            .creator(common00).post(reportPost00)
+    protected static final TestCommentInfo reportedComment00 = TestCommentInfo.builder()
+            .content("reportedComment00")
+            .creator(common00).post(reportedPost00)
             .build();
 
     private static final TestCommentInfo[] testCommentInfos = {
@@ -536,7 +536,9 @@ public abstract class IricomTestSuite {
             voteComment00, voteComment01, voteComment02, voteComment03, voteComment04, voteComment05,
 
             reportComment00, reportComment01, reportComment02, reportComment03, reportComment04, reportComment05,
-            reportComment06, reportComment07, reportComment08, reportComment09,
+            reportComment06, reportComment07, reportComment08,
+
+            reportedComment00,
     };
 
     protected static final TestPostReportInfo postReport00 = TestPostReportInfo.builder()
@@ -586,11 +588,48 @@ public abstract class IricomTestSuite {
 
     protected static final TestCommentReportInfo commentReport00 = TestCommentReportInfo.builder()
             .type(ReportType.ETC).reason("test comment report")
-            .reportAccount(common00).comment(reportComment09)
+            .reportAccount(common00).comment(reportedComment00)
+            .build();
+    protected static final TestCommentReportInfo commentReport01 = TestCommentReportInfo.builder()
+            .type(ReportType.ETC).reason("test comment report")
+            .reportAccount(common01).comment(reportedComment00)
+            .build();
+    protected static final TestCommentReportInfo commentReport02 = TestCommentReportInfo.builder()
+            .type(ReportType.ETC).reason("test comment report")
+            .reportAccount(common02).comment(reportedComment00)
+            .build();
+    protected static final TestCommentReportInfo commentReport03 = TestCommentReportInfo.builder()
+            .type(ReportType.ETC).reason("test comment report")
+            .reportAccount(common03).comment(reportedComment00)
+            .build();
+    protected static final TestCommentReportInfo commentReport04 = TestCommentReportInfo.builder()
+            .type(ReportType.ETC).reason("test comment report")
+            .reportAccount(common04).comment(reportedComment00)
+            .build();
+    protected static final TestCommentReportInfo commentReport05 = TestCommentReportInfo.builder()
+            .type(ReportType.ETC).reason("test comment report")
+            .reportAccount(common05).comment(reportedComment00)
+            .build();
+    protected static final TestCommentReportInfo commentReport06 = TestCommentReportInfo.builder()
+            .type(ReportType.ETC).reason("test comment report")
+            .reportAccount(common06).comment(reportedComment00)
+            .build();
+    protected static final TestCommentReportInfo commentReport07 = TestCommentReportInfo.builder()
+            .type(ReportType.ETC).reason("test comment report")
+            .reportAccount(common07).comment(reportedComment00)
+            .build();
+    protected static final TestCommentReportInfo commentReport08 = TestCommentReportInfo.builder()
+            .type(ReportType.ETC).reason("test comment report")
+            .reportAccount(common08).comment(reportedComment00)
+            .build();
+    protected static final TestCommentReportInfo commentReport09 = TestCommentReportInfo.builder()
+            .type(ReportType.ETC).reason("test comment report")
+            .reportAccount(common09).comment(reportedComment00)
             .build();
 
     private static final TestCommentReportInfo[] testCommentReportInfos = {
-            commentReport00,
+            commentReport00, commentReport01, commentReport02, commentReport03, commentReport04,
+            commentReport05, commentReport06, commentReport07, commentReport08, commentReport09,
     };
 
     private static final Map<TestAccountInfo, Account> accountMap = new HashMap<>();

@@ -736,4 +736,30 @@ public class CommentControllerTest extends IricomTestSuite {
                     .andDo(print());
         }
     }
+
+    @Nested
+    @DisplayName("신고된 댓글")
+    class ReportTest {
+        @Test
+        @Order(0)
+        @DisplayName("신고된 댓글 조회")
+        public void testCase00() throws Exception {
+            Post post = getPost(reportedPost00);
+            Board board = post.getBoard();
+
+            MockHttpServletRequestBuilder requestBuilder = get("/v1/boards/" + board.getId() + "/posts/" + post.getId() + "/comments");
+            setAuthToken(requestBuilder, common00);
+
+            mockMvc.perform(requestBuilder)
+                    .andExpect(status().is(200))
+                    .andExpect(jsonPath("$.total").value(1))
+                    .andExpect(jsonPath("$.skip").value(0))
+                    .andExpect(jsonPath("$.limit").value(20))
+                    .andExpect(jsonPath("$.comments").isArray())
+                    .andExpect(jsonPath("$.comments", hasSize(1)))
+                    .andExpect(jsonPath("$.comments[0].isReport").value(true))
+                    .andExpect(jsonPath("$.comments[0].content").doesNotExist())
+                    .andDo(print());
+        }
+    }
 }

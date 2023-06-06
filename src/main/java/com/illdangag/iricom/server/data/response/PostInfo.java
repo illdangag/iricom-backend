@@ -91,7 +91,7 @@ public class PostInfo {
         this.isReport = reportCount >= 10;
 
         if (this.isReport) {
-            this.content = "";
+            this.content = null;
         }
     }
 }

@@ -23,4 +23,6 @@ public interface ReportRepository {
     Optional<CommentReport> getCommentReport(String id);
 
     Optional<CommentReport> getCommentReport(long id);
+
+    long getCommentReportCount(Comment comment);
 }
