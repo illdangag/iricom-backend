@@ -127,14 +127,10 @@ public class FirebaseAuthInterceptor implements HandlerInterceptor {
         }
     }
 
-
-
     private Optional<FirebaseToken> getFirebaseToken(HttpServletRequest request) throws IricomException {
         String authorization = request.getHeader("Authorization");
 
         if (authorization == null || !authorization.startsWith("Bearer ")) {
-//            log.debug("Invalid header. Authorization: {}", authorization);
-//            throw new IricomException(IricomErrorCode.NOT_EXIST_FIREBASE_ID_TOKEN);
             return Optional.empty();
         }
 
@@ -161,7 +157,7 @@ public class FirebaseAuthInterceptor implements HandlerInterceptor {
         Optional<FirebaseAuthentication> firebaseAuthenticationOptional = this.firebaseAuthenticationRepository.getFirebaseAuthentication(firebaseToken.getUid());
         FirebaseAuthentication firebaseAuthentication;
         if (firebaseAuthenticationOptional.isEmpty()) {
-            // 로그인 후 첫 API 호출인 경우, firebase 정보에 대하여 iricom 게정 생성
+            // 로그인 후 첫 API 호출인 경우, firebase 정보에 대하여 iricom 계정 생성
             Account account = null;
             List<Account> accountList = this.accountRepository.getAccountList(firebaseToken.getEmail());
             if (accountList.isEmpty()) {
@@ -172,8 +168,19 @@ public class FirebaseAuthInterceptor implements HandlerInterceptor {
                 account = accountList.get(0);
             }
             firebaseAuthentication = new FirebaseAuthentication(firebaseToken.getUid(), account);
-
             this.accountRepository.saveAccount(account);
+
+            AccountDetail accountDetail = account.getAccountDetail();
+            if (accountDetail == null) {
+                accountDetail = AccountDetail.builder()
+                        .account(account)
+                        .nickname("")
+                        .description("")
+                        .build();
+                this.accountRepository.saveAccountDetail(accountDetail);
+                account.setAccountDetail(accountDetail);
+                this.accountRepository.saveAccount(account);
+            }
             this.firebaseAuthenticationRepository.save(firebaseAuthentication);
         } else {
             firebaseAuthentication = firebaseAuthenticationOptional.get();

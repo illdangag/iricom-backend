@@ -407,8 +407,26 @@ public class AccountControllerTest extends IricomTestSuite {
                 setAuthToken(requestBuilder, unknown00);
 
                 mockMvc.perform(requestBuilder)
-                        .andExpect(status().is(400))
-                        .andExpect(jsonPath("$.code").value("02000002"))
+                        .andExpect(status().is(200))
+                        .andExpect(jsonPath("$.description").value("update_description"))
+                        .andDo(print());
+            }
+
+            @Test
+            @Order(4)
+            @DisplayName("빈 문자열로 설명 수정")
+            public void updateDescriptionEmptyString() throws Exception {
+                Map<String, Object> requestBody = new HashMap<>();
+                requestBody.put("description", "");
+
+                MockHttpServletRequestBuilder requestBuilder = patch("/v1/accounts/")
+                        .content(getJsonString(requestBody))
+                        .contentType(MediaType.APPLICATION_JSON);
+                setAuthToken(requestBuilder, unknown00);
+
+                mockMvc.perform(requestBuilder)
+                        .andExpect(status().is(200))
+                        .andExpect(jsonPath("$.description").value(""))
                         .andDo(print());
             }
         }

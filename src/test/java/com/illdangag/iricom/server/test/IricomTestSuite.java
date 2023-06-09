@@ -59,43 +59,46 @@ public abstract class IricomTestSuite {
             .email("to-disabled@iricom.com").nickname("toDisabled").description("to disable board admin.").build();
 
     protected static final TestAccountInfo common00 = TestAccountInfo.builder()
-            .email("common00@iricom.com").nickname("common00").description("this is common00.").build();
+            .email("common00@iricom.com").nickname("commonAccount00").description("this is common00.").build();
 
     protected static final TestAccountInfo common01 = TestAccountInfo.builder()
-            .email("common01@iricom.com").nickname("common01").description("this is common01.").build();
+            .email("common01@iricom.com").nickname("commonAccount01").description("this is common01.").build();
 
     protected static final TestAccountInfo common02 = TestAccountInfo.builder()
-            .email("common02@iricom.com").nickname("common02").description("this is common02.").build();
+            .email("common02@iricom.com").nickname("commonAccount02").description("this is common02.").build();
 
     protected static final TestAccountInfo common03 = TestAccountInfo.builder()
-            .email("common03@iricom.com").nickname("common03").description("this is common03.").build();
+            .email("common03@iricom.com").nickname("commonAccount03").description("this is common03.").build();
 
     protected static final TestAccountInfo common04 = TestAccountInfo.builder()
-            .email("common04@iricom.com").nickname("common04").description("this is common04.").build();
+            .email("common04@iricom.com").nickname("commonAccount04").description("this is common04.").build();
 
     protected static final TestAccountInfo common05 = TestAccountInfo.builder()
-            .email("common05@iricom.com").nickname("common05").description("this is common05.").build();
+            .email("common05@iricom.com").nickname("commonAccount05").description("this is common05.").build();
 
     protected static final TestAccountInfo common06 = TestAccountInfo.builder()
-            .email("common06@iricom.com").nickname("common06").description("this is common06.").build();
+            .email("common06@iricom.com").nickname("commonAccount06").description("this is common06.").build();
 
     protected static final TestAccountInfo common07 = TestAccountInfo.builder()
-            .email("common07@iricom.com").nickname("common07").description("this is common07.").build();
+            .email("common07@iricom.com").nickname("commonAccount07").description("this is common07.").build();
 
     protected static final TestAccountInfo common08 = TestAccountInfo.builder()
-            .email("common08@iricom.com").nickname("common08").description("this is common08.").build();
+            .email("common08@iricom.com").nickname("commonAccount08").description("this is common08.").build();
 
     protected static final TestAccountInfo common09 = TestAccountInfo.builder()
-            .email("common09@iricom.com").nickname("common09").description("this is common09.").build();
+            .email("common09@iricom.com").nickname("commonAccount09").description("this is common09.").build();
 
     protected static final TestAccountInfo unknown00 = TestAccountInfo.builder()
-            .email("unknown00@iriom.com").isUnregistered(true).nickname("unknown00").description("this is unknown00.").build();
+            .email("unknown00@iriom.com").nickname("unknownAccount00").description("this is unknown00.")
+            .isUnregistered(true).build();
 
     protected static final TestAccountInfo unknown01 = TestAccountInfo.builder()
-            .email("unknown01@iricom.com").isUnregistered(true).nickname("unknown01").description("this is unknown01.").build();
+            .email("unknown01@iricom.com").nickname("unknownAccount01").description("this is unknown01.")
+            .isUnregistered(true).build();
 
     protected static final TestAccountInfo unknown02 = TestAccountInfo.builder()
-            .email("unknown02@iricom.com").isUnregistered(true).nickname("unknown02").description("this is unknown02.").build();
+            .email("unknown02@iricom.com").nickname("unknownAccount02").description("this is unknown02.")
+            .isUnregistered(true).build();
 
     private static final TestAccountInfo[] testAccountInfos = {
             systemAdmin, // 시스템 관리자
@@ -665,9 +668,11 @@ public abstract class IricomTestSuite {
     protected void init() {
         // 계정 생성
         for (TestAccountInfo testAccountInfo : testAccountInfos) {
+            Account account = this.createAccount(testAccountInfo);
+            accountMap.put(testAccountInfo, account);
+
             if (!testAccountInfo.isUnregistered()) {
-                Account account = this.createAccount(testAccountInfo);
-                accountMap.put(testAccountInfo, account);
+                this.updateAccountDetail(testAccountInfo, account);
             }
         }
 
@@ -759,6 +764,14 @@ public abstract class IricomTestSuite {
             this.accountRepository.saveAccount(account);
         }
         return account;
+    }
+
+    private void updateAccountDetail(TestAccountInfo testAccountInfo, Account account) {
+        AccountInfoUpdate accountInfoUpdate = AccountInfoUpdate.builder()
+                .nickname(testAccountInfo.getNickname())
+                .description(testAccountInfo.getDescription())
+                .build();
+        this.accountService.updateAccountDetail(account, accountInfoUpdate);
     }
 
     private Board getBoard(String id) {
