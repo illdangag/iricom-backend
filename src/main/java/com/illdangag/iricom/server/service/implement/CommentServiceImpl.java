@@ -267,7 +267,7 @@ public class CommentServiceImpl implements CommentService {
         this.commentRepository.save(comment);
         this.commentVoteRepository.save(commentVote);
 
-        AccountInfo accountInfo = this.accountService.getAccountInfo(account);
+        AccountInfo accountInfo = this.accountService.getAccountInfo(comment.getAccount());
         long upvote = this.commentVoteRepository.getCommentVoteCount(comment, VoteType.UPVOTE);
         long downvote = this.commentVoteRepository.getCommentVoteCount(comment, VoteType.DOWNVOTE);
         long reportCount = this.reportRepository.getCommentReportCount(comment);
