@@ -89,15 +89,15 @@ public abstract class IricomTestSuite {
             .email("common09@iricom.com").nickname("commonAccount09").description("this is common09.").build();
 
     protected static final TestAccountInfo unknown00 = TestAccountInfo.builder()
-            .email("unknown00@iriom.com").nickname("unknownAccount00").description("this is unknown00.")
+            .email("unknown00@iriom.com").nickname("").description("")
             .isUnregistered(true).build();
 
     protected static final TestAccountInfo unknown01 = TestAccountInfo.builder()
-            .email("unknown01@iricom.com").nickname("unknownAccount01").description("this is unknown01.")
+            .email("unknown01@iricom.com").nickname("").description("")
             .isUnregistered(true).build();
 
     protected static final TestAccountInfo unknown02 = TestAccountInfo.builder()
-            .email("unknown02@iricom.com").nickname("unknownAccount02").description("this is unknown02.")
+            .email("unknown02@iricom.com").nickname("").description("")
             .isUnregistered(true).build();
 
     private static final TestAccountInfo[] testAccountInfos = {
@@ -752,17 +752,22 @@ public abstract class IricomTestSuite {
     }
 
     private Account createAccount(TestAccountInfo testAccountInfo) {
-        AccountInfoCreate accountInfoCreate = AccountInfoCreate.builder()
-                .email(testAccountInfo.getEmail())
-                .nickname(testAccountInfo.getNickname())
-                .description(testAccountInfo.getDescription())
-                .build();
-        AccountInfo accountInfo = this.accountService.createAccountInfo(accountInfoCreate);
-        Account account = this.getAccount(accountInfo.getId());
+        Account.AccountBuilder accountBuilder = Account.builder().email(testAccountInfo.getEmail());
         if (testAccountInfo.isAdmin()) {
-            account.setAuth(AccountAuth.SYSTEM_ADMIN);
+            accountBuilder.auth(AccountAuth.SYSTEM_ADMIN);
+        }
+        Account account = accountBuilder.build();
+        this.accountRepository.saveAccount(account);
+
+        if (!testAccountInfo.isUnregistered()) {
+            AccountDetail accountDetail = AccountDetail.builder().account(account).nickname(testAccountInfo.getNickname())
+                    .description(testAccountInfo.getDescription())
+                    .build();
+            this.accountRepository.saveAccountDetail(accountDetail);
+            account.setAccountDetail(accountDetail);
             this.accountRepository.saveAccount(account);
         }
+
         return account;
     }
 

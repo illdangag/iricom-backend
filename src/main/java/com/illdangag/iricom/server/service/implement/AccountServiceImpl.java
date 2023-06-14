@@ -117,13 +117,17 @@ public class AccountServiceImpl implements AccountService {
         AccountDetail accountDetail = accountDetailOptional.orElseGet(() -> AccountDetail.builder().build());
         accountDetail.setAccount(account);
 
-        if (accountDetail.getNickname().isEmpty() && accountInfoUpdate.getNickname() == null) {
-            throw new IricomException(IricomErrorCode.MISSING_ACCOUNT_NICKNAME_FILED);
+        String nickname = accountInfoUpdate.getNickname();
+
+        if (accountDetail.getNickname().isEmpty() && (nickname == null || nickname.isEmpty())) {
+            throw new IricomException(IricomErrorCode.MISSING_ACCOUNT_NICKNAME_FILED); // TODO 닉네임은 빈 문자열로 설정 할 수 없다는 메시지로 변경
         }
 
-        if (accountInfoUpdate.getNickname() != null) {
-            String nickname = accountInfoUpdate.getNickname();
-            Optional<Account> accountOptional = this.accountRepository.getAccountByNickname(nickname);
+        if (nickname != null) {
+            if (nickname.isEmpty()) {
+                throw new IricomException(IricomErrorCode.MISSING_ACCOUNT_NICKNAME_FILED); // TODO 닉네임은 빈 문자열로 설정 할 수 없다는 메시지로 변경
+            }
+            Optional<Account> accountOptional = this.accountRepository.getAccountByNickname(nickname); // 닉네임 중복 검사
             if (accountOptional.isPresent() && !accountOptional.get().equals(account)) {
                 throw new IricomException(IricomErrorCode.ALREADY_ACCOUNT_NICKNAME);
             }

@@ -407,8 +407,8 @@ public class AccountControllerTest extends IricomTestSuite {
                 setAuthToken(requestBuilder, unknown00);
 
                 mockMvc.perform(requestBuilder)
-                        .andExpect(status().is(200))
-                        .andExpect(jsonPath("$.description").value("update_description"))
+                        .andExpect(status().is(400))
+                        .andExpect(jsonPath("$.code").value("02000002"))
                         .andDo(print());
             }
 
@@ -425,8 +425,8 @@ public class AccountControllerTest extends IricomTestSuite {
                 setAuthToken(requestBuilder, unknown00);
 
                 mockMvc.perform(requestBuilder)
-                        .andExpect(status().is(200))
-                        .andExpect(jsonPath("$.description").value(""))
+                        .andExpect(status().is(400))
+                        .andExpect(jsonPath("$.code").value("02000002"))
                         .andDo(print());
             }
         }

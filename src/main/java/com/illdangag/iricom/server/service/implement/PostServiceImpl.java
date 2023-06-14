@@ -51,6 +51,12 @@ public class PostServiceImpl implements PostService {
 
     @Override
     public PostInfo createPostInfo(Account account, Board board, @Valid PostInfoCreate postInfoCreate) {
+        // 사용자의 닉네임을 등록하지 않은 경우 게시물을 작성 할 수 없음
+        AccountDetail accountDetail = account.getAccountDetail();
+        if (accountDetail == null || accountDetail.getNickname() == null || accountDetail.getNickname().isEmpty()) {
+            throw new IricomException(IricomErrorCode.NOT_EXIST_ACCOUNT_NICKNAME_TO_POST);
+        }
+
         // 활성화된 게시판에만 게시물 작성 가능
         if (!board.getEnabled()) {
             throw new IricomException(IricomErrorCode.DISABLED_BOARD);
