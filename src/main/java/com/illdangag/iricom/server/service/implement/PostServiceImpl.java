@@ -1,6 +1,7 @@
 package com.illdangag.iricom.server.service.implement;
 
 import com.illdangag.iricom.server.data.entity.*;
+import com.illdangag.iricom.server.data.request.PostBanCreate;
 import com.illdangag.iricom.server.data.request.PostInfoCreate;
 import com.illdangag.iricom.server.data.request.PostInfoSearch;
 import com.illdangag.iricom.server.data.request.PostInfoUpdate;
@@ -30,16 +31,19 @@ public class PostServiceImpl implements PostService {
     private final BoardRepository boardRepository;
     private final BoardAdminRepository boardAdminRepository;
     private final ReportRepository reportRepository;
+    private final BanRepository banRepository;
 
     @Autowired
     public PostServiceImpl(PostRepository postRepository, PostVoteRepository postVoteRepository, CommentRepository commentRepository,
-                           BoardRepository boardRepository, BoardAdminRepository boardAdminRepository, ReportRepository reportRepository) {
+                           BoardRepository boardRepository, BoardAdminRepository boardAdminRepository, ReportRepository reportRepository,
+                           BanRepository banRepository) {
         this.postRepository = postRepository;
         this.postVoteRepository = postVoteRepository;
         this.commentRepository = commentRepository;
         this.boardRepository = boardRepository;
         this.boardAdminRepository = boardAdminRepository;
         this.reportRepository = reportRepository;
+        this.banRepository = banRepository;
     }
 
     @Override
@@ -422,6 +426,53 @@ public class PostServiceImpl implements PostService {
                 .limit(postInfoSearch.getLimit())
                 .postInfoList(postInfoList)
                 .build();
+    }
+
+    @Override
+    public PostInfo banPost(Account account, String boardId, PostBanCreate postBanCreate) {
+        Board board = this.getBoard(boardId);
+        return this.banPost(account, board, postBanCreate);
+    }
+
+    @Override
+    public PostInfo banPost(Account account, Board board, PostBanCreate postBanCreate) {
+        if (!this.hasAuthorization(account, board)) {
+            // TODO 권한 없음
+        }
+
+        Optional<Post> postOptional = this.postRepository.getPost(postBanCreate.getPostId());
+        Post post = postOptional.orElseThrow(() -> {
+            return new IricomException(IricomErrorCode.NOT_EXIST_POST);
+        });
+
+        // TODO 발행된 게시물인지 확인
+        if (!post.isPublish()) {
+            // 발행되지 않은 게시물인 경우, 밴 처리를 하지 않음
+            // TODO 에러 처리
+        }
+
+        // 이미 밴 처리 된 게시물인지 확인
+        List<PostBan> postBanList = this.banRepository.getPostBanList(post);
+        if (!postBanList.isEmpty()) {
+            // TODO 에러 처리
+        }
+
+
+        // TODO 밴 처리
+        PostBan postBan = PostBan.builder()
+                .post(post)
+                .adminAccount(account)
+                .reason(postBanCreate.getReason())
+                .enabled(true)
+                .build();
+        this.banRepository.savePostBan(postBan);
+
+        long commentCount = this.commentRepository.getCommentCount(post);
+        long upvote = this.postVoteRepository.getPostVoteCount(post, VoteType.UPVOTE);
+        long downvote = this.postVoteRepository.getPostVoteCount(post, VoteType.DOWNVOTE);
+        long reportCount = this.reportRepository.getPortReportCount(post);
+
+        return new PostInfo(post, true, PostState.PUBLISH, commentCount, upvote, downvote, reportCount);
     }
 
     /**

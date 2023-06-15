@@ -52,6 +52,8 @@ public class PostInfo {
 
     private Boolean isReport;
 
+    private Boolean isBan;
+
     public PostInfo(Post post, boolean includeContent, PostState postState, long commentCount, long upvote, long downvote, long reportCount) {
         this.id = "" + post.getId();
         this.createDate = DateTimeUtils.getLong(post.getCreateDate());

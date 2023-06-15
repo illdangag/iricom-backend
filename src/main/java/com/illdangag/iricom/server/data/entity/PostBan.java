@@ -13,16 +13,24 @@ import java.time.LocalDateTime;
 @Builder
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
-@ToString
 @Entity
 @Table(indexes = {
-        @Index(name = "account_id_and_post_id", columnList = "report_account_id,post_id"),
+        @Index(name = "post_id", columnList = "post_id"),
         @Index(name = "enabled", columnList = "enabled"),
+        @Index(name = "create_date", columnList = "create_date"),
 })
-public class PostReport {
+public class PostBan {
     @Id
     @GeneratedValue
     private Long id;
+
+    @ManyToOne
+    @JoinColumn(name = "post_id")
+    private Post post;
+
+    @ManyToOne
+    @JoinColumn(name = "admin_account_id")
+    private Account adminAccount;
 
     @Builder.Default
     @CreationTimestamp
@@ -32,19 +40,8 @@ public class PostReport {
     @UpdateTimestamp
     private LocalDateTime updateDate = LocalDateTime.now();
 
-    @ManyToOne
-    @JoinColumn(name = "report_account_id")
-    private Account account; // 신고자 계정
-
-    @ManyToOne
-    @JoinColumn(name = "post_id")
-    private Post post; // 신고 대상 게시물
-
     @Builder.Default
-    private ReportType type = ReportType.ETC;
-
-    @Builder.Default
-    @Size(max = 10000)
+    @Size(max = 1000)
     private String reason = "";
 
     @Builder.Default

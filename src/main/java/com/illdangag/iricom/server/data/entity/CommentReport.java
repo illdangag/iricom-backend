@@ -17,6 +17,7 @@ import java.time.LocalDateTime;
 @Entity
 @Table(indexes = {
         @Index(name = "account_id_and_comment_id", columnList = "report_account_id,comment_id"),
+        @Index(name = "enabled", columnList = "enabled"),
 })
 public class CommentReport {
     @Id
@@ -45,4 +46,7 @@ public class CommentReport {
     @Builder.Default
     @Size(max = 10000)
     private String reason = "";
+
+    @Builder.Default
+    private Boolean enabled = true;
 }

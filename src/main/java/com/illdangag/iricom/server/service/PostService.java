@@ -1,6 +1,7 @@
 package com.illdangag.iricom.server.service;
 
 import com.illdangag.iricom.server.data.entity.*;
+import com.illdangag.iricom.server.data.request.PostBanCreate;
 import com.illdangag.iricom.server.data.request.PostInfoCreate;
 import com.illdangag.iricom.server.data.request.PostInfoSearch;
 import com.illdangag.iricom.server.data.request.PostInfoUpdate;
@@ -37,4 +38,8 @@ public interface PostService {
     PostInfo votePost(Account account, Board board, Post post, VoteType voteType);
 
     PostInfoList getPostInfoList(Account account, @Valid PostInfoSearch postInfoSearch);
+
+    PostInfo banPost(Account account, String boardId, @Valid PostBanCreate postBanCreate);
+
+    PostInfo banPost(Account account, Board board, @Valid PostBanCreate postBanCreate);
 }
