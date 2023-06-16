@@ -15,9 +15,10 @@ import java.time.LocalDateTime;
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 @Entity
 @Table(indexes = {
-        @Index(name = "post_id", columnList = "post_id"),
-        @Index(name = "enabled", columnList = "enabled"),
-        @Index(name = "create_date", columnList = "create_date"),
+        @Index(name = "PostBan_createDate", columnList = "createDate"),
+        @Index(name = "PostBan_post", columnList = "post_id"),
+        @Index(name = "PostBan_adminAccount", columnList = "admin_account_id"),
+        @Index(name = "PostBan_enabled", columnList = "enabled"),
 })
 public class PostBan {
     @Id

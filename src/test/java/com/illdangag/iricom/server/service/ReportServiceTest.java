@@ -32,14 +32,15 @@ public class ReportServiceTest extends IricomTestSuite {
             Post post = getPost(reportPost00);
             Board board = post.getBoard();
 
+            String boardId = String.valueOf(board.getId());
+            String postId = String.valueOf(post.getId());
+
             PostReportCreate postReportCreate = PostReportCreate.builder()
-                    .boardId(String.valueOf(board.getId()))
-                    .postId(String.valueOf(post.getId()))
                     .type(ReportType.ETC)
                     .reason("report test")
                     .build();
 
-            reportService.reportPost(account, postReportCreate);
+            reportService.reportPost(account, boardId, postId, postReportCreate);
         }
 
         @Test
@@ -49,17 +50,18 @@ public class ReportServiceTest extends IricomTestSuite {
             Post post = getPost(reportPost01);
             Board board = post.getBoard();
 
+            String boardId = String.valueOf(board.getId());
+            String postId = String.valueOf(post.getId());
+
             PostReportCreate postReportCreate = PostReportCreate.builder()
-                    .boardId(String.valueOf(board.getId()))
-                    .postId(String.valueOf(post.getId()))
                     .type(ReportType.ETC)
                     .reason("report test")
                     .build();
 
-            reportService.reportPost(account, postReportCreate);
+            reportService.reportPost(account, boardId, postId, postReportCreate);
 
             Assertions.assertThrows(IricomException.class, () -> {
-                reportService.reportPost(account, postReportCreate);
+                reportService.reportPost(account, boardId, postId, postReportCreate);
             });
         }
 
@@ -70,50 +72,16 @@ public class ReportServiceTest extends IricomTestSuite {
             Post post = getPost(reportPost01);
             Board board = getBoard(disableBoard);
 
+            String boardId = String.valueOf(board.getId());
+            String postId = String.valueOf(post.getId());
+
             PostReportCreate postReportCreate = PostReportCreate.builder()
-                    .boardId(String.valueOf(board.getId()))
-                    .postId(String.valueOf(post.getId()))
                     .type(ReportType.ETC)
                     .reason("report test")
                     .build();
 
             Assertions.assertThrows(IricomException.class, () -> {
-                reportService.reportPost(account, postReportCreate);
-            });
-        }
-
-        @Test
-        @DisplayName("게시물 ID 누락")
-        public void testCase03() throws Exception {
-            Account account = getAccount(common00);
-            Post post = getPost(reportPost01);
-            Board board = post.getBoard();
-
-            PostReportCreate postReportCreate = PostReportCreate.builder()
-                    .boardId(String.valueOf(board.getId()))
-                    .type(ReportType.ETC)
-                    .reason("report test")
-                    .build();
-
-            Assertions.assertThrows(IricomException.class, () -> {
-                reportService.reportPost(account, postReportCreate);
-            });
-        }
-
-        @Test
-        @DisplayName("게시판 ID 누락")
-        public void testCase04() throws Exception {
-            Account account = getAccount(common00);
-            Post post = getPost(reportPost01);
-
-            PostReportCreate postReportCreate = PostReportCreate.builder()
-                    .postId(String.valueOf(post.getId()))
-                    .type(ReportType.ETC)
-                    .reason("report test")
-                    .build();
-
-            Assertions.assertThrows(IricomException.class, () -> {
-                reportService.reportPost(account, postReportCreate);
+                reportService.reportPost(account, boardId, postId, postReportCreate);
             });
         }
 
@@ -123,15 +91,15 @@ public class ReportServiceTest extends IricomTestSuite {
             Account account = getAccount(common00);
             Board board = getBoard(enableBoard);
 
+            String boardId = String.valueOf(board.getId());
+
             PostReportCreate postReportCreate = PostReportCreate.builder()
-                    .boardId(String.valueOf(board.getId()))
-                    .postId("NOT_EXIST_POST")
                     .type(ReportType.ETC)
                     .reason("report test")
                     .build();
 
             Assertions.assertThrows(IricomException.class, () -> {
-                reportService.reportPost(account, postReportCreate);
+                reportService.reportPost(account, boardId, "NOT_EXIST_POST", postReportCreate);
             });
         }
 
@@ -141,15 +109,15 @@ public class ReportServiceTest extends IricomTestSuite {
             Account account = getAccount(common00);
             Post post = getPost(reportPost01);
 
+            String postId = String.valueOf(post.getId());
+
             PostReportCreate postReportCreate = PostReportCreate.builder()
-                    .boardId("NOT_EXIST_BOARD")
-                    .postId(String.valueOf(post.getId()))
                     .type(ReportType.ETC)
                     .reason("report test")
                     .build();
 
             Assertions.assertThrows(IricomException.class, () -> {
-                reportService.reportPost(account, postReportCreate);
+                reportService.reportPost(account, "NOT_EXIST_BOARD", postId, postReportCreate);
             });
         }
     }

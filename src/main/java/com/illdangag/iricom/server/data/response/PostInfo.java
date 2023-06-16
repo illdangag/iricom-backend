@@ -54,7 +54,7 @@ public class PostInfo {
 
     private Boolean isBan;
 
-    public PostInfo(Post post, boolean includeContent, PostState postState, long commentCount, long upvote, long downvote, long reportCount) {
+    public PostInfo(Post post, boolean includeContent, PostState postState, long commentCount, long upvote, long downvote, long reportCount, boolean isBan) {
         this.id = "" + post.getId();
         this.createDate = DateTimeUtils.getLong(post.getCreateDate());
         this.updateDate = DateTimeUtils.getLong(post.getUpdateDate());
@@ -91,8 +91,9 @@ public class PostInfo {
         }
 
         this.isReport = reportCount >= 10;
+        this.isBan = isBan;
 
-        if (this.isReport) {
+        if (this.isReport || this.isBan) {
             this.content = null;
         }
     }

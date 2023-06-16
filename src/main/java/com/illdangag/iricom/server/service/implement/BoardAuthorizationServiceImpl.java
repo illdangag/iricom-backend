@@ -173,6 +173,16 @@ public class BoardAuthorizationServiceImpl implements BoardAuthorizationService 
         return boardAdminInfo;
     }
 
+    @Override
+    public boolean hasAuthorization(Account account, Board board) {
+        if (account.getAuth() == AccountAuth.SYSTEM_ADMIN) {
+            return true;
+        }
+
+        Optional<BoardAdmin> boardAdminOptional = this.boardAdminRepository.getBoardAdmin(board, account);
+        return boardAdminOptional.isPresent();
+    }
+
     private Board getBoard(String id) {
         Optional<Board> boardOptional = this.boardRepository.getBoard(id);
         return boardOptional.orElseThrow(() -> new IricomException(IricomErrorCode.NOT_EXIST_BOARD));

@@ -22,6 +22,8 @@ import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.docu
 import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.post;
 import static org.springframework.restdocs.operation.preprocess.Preprocessors.*;
 import static org.springframework.restdocs.payload.PayloadDocumentation.*;
+import static org.springframework.restdocs.request.RequestDocumentation.parameterWithName;
+import static org.springframework.restdocs.request.RequestDocumentation.pathParameters;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -43,12 +45,10 @@ public class ReportControllerTest extends IricomTestSuite {
         Board board = post.getBoard();
 
         Map<String, Object> requestBody = new HashMap<>();
-        requestBody.put("boardId", board.getId());
-        requestBody.put("postId", post.getId());
         requestBody.put("type", "hate");
         requestBody.put("reason", "This is a hateful post.");
 
-        MockHttpServletRequestBuilder requestBuilder = post("/v1/report/post")
+        MockHttpServletRequestBuilder requestBuilder = post("/v1/boards/{boardId}/posts/{postId}/report", board.getId(), post.getId())
                 .content(getJsonString(requestBody))
                 .contentType(MediaType.APPLICATION_JSON);
         setAuthToken(requestBuilder, common00);
@@ -64,12 +64,14 @@ public class ReportControllerTest extends IricomTestSuite {
                                 preprocessResponse(
                                         prettyPrint()
                                 ),
+                                pathParameters(
+                                        parameterWithName("boardId").description("게시판 아이디"),
+                                        parameterWithName("postId").description("게시물 아이디")
+                                ),
                                 requestHeaders(
 //                                        headerWithName("Authorization").description("firebase 토큰")
                                 ),
                                 requestFields(
-                                        fieldWithPath("boardId").description("게시판 ID"),
-                                        fieldWithPath("postId").description("게시물 ID"),
                                         fieldWithPath("type").description("종류"),
                                         fieldWithPath("reason").description("사유")
                                 ),
@@ -95,6 +97,7 @@ public class ReportControllerTest extends IricomTestSuite {
                                         fieldWithPath("post.hasTemporary").description("임시 저장 여부"),
                                         fieldWithPath("post.boardId").description("게시판 아이디"),
                                         fieldWithPath("post.isReport").description("신고 여부"),
+                                        fieldWithPath("post.isBan").description("차단 여부"),
                                         fieldWithPath("post.account").description("작성자"),
                                         fieldWithPath("post.account.id").description("아이디"),
                                         fieldWithPath("post.account.email").description("이메일"),

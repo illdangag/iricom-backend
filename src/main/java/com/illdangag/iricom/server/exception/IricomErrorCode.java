@@ -50,6 +50,8 @@ public enum IricomErrorCode {
     ALREADY_VOTE_POST("04000006", 400, "Already vote post."),
     INVALID_AUTHORIZATION_TO_GET_TEMPORARY_CONTENT("04000007", 401, "Invalid authorization."),
     NOT_EXIST_ACCOUNT_NICKNAME_TO_POST("04000008", 400, "Not exist nickname."),
+    INVALID_AUTHORIZATION_TO_BAN_POST("04000009", 401, "Invalid authorization."),
+    ALREADY_BAN_POST("04000010", 400, "Already ban post."),
 
     // comment: 05XXXXXX
     NOT_EXIST_COMMENT("05000000", 404, "Not exist comment."),

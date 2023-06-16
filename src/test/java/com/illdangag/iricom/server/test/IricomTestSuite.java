@@ -139,6 +139,9 @@ public abstract class IricomTestSuite {
     protected static final TestBoardInfo reportBoard = TestBoardInfo.builder()
             .title("reportBoard").isEnabled(true).adminList(Collections.singletonList(allBoardAdmin)).build();
 
+    protected static final TestBoardInfo banBoard = TestBoardInfo.builder()
+            .title("banBoard").isEnabled(true).adminList(Collections.singletonList(allBoardAdmin)).build();
+
     private static final TestBoardInfo[] testBoardInfos = {
             enableBoard, // 활성화 게시판
             disableBoard, // 비활성화 게시판
@@ -148,6 +151,7 @@ public abstract class IricomTestSuite {
             voteBoard, // 투표 테스트용 게시판
             restDocBoard, // restDoc 게시판
             reportBoard, // 신고 테스트용 게시판
+            banBoard, // 차단 테스트용 게시판
     };
 
     // 게시물 설정
@@ -366,6 +370,11 @@ public abstract class IricomTestSuite {
             .postType(PostType.POST).postState(PostState.PUBLISH)
             .creator(common00).board(reportBoard).build();
 
+    protected static final TestPostInfo banPost00 = TestPostInfo.builder()
+            .title("banPost00").content("ban contents").isAllowComment(true)
+            .postType(PostType.POST).postState(PostState.PUBLISH)
+            .creator(common00).board(banBoard).build();
+
     private static final TestPostInfo[] testPostInfos = {
             enableBoardPost00, enableBoardPost01, enableBoardPost02, enableBoardPost03,
             enableBoardNotification00,
@@ -395,6 +404,9 @@ public abstract class IricomTestSuite {
 
             // 신고된 게시물
             reportedPost00,
+
+            // 게시물 차단
+            banPost00,
     };
 
     // 댓글 설정
@@ -908,13 +920,14 @@ public abstract class IricomTestSuite {
         Post post = postMap.get(testPostInfo);
         Board board = post.getBoard();
 
+        String boardId = String.valueOf(board.getId());
+        String postId = String.valueOf(post.getId());
+
         PostReportCreate postReportCreate = PostReportCreate.builder()
-                .boardId(String.valueOf(board.getId()))
-                .postId(String.valueOf(post.getId()))
                 .type(testPostReportInfo.getType())
                 .reason(testPostReportInfo.getReason())
                 .build();
-        PostReportInfo postReportInfo = this.reportService.reportPost(reportAccount, postReportCreate);
+        PostReportInfo postReportInfo = this.reportService.reportPost(reportAccount, boardId, postId, postReportCreate);
         return this.getPostReport(postReportInfo.getId());
     }
 

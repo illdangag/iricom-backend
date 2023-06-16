@@ -112,6 +112,7 @@ public class InformationControllerTest extends IricomTestSuite {
                                         fieldWithPath("posts.[].hasTemporary").description("임시 저장 여부"),
                                         fieldWithPath("posts.[].boardId").description("게시판 아이디"),
                                         fieldWithPath("posts.[].isReport").description("신고 여부"),
+                                        fieldWithPath("posts.[].isBan").description("차단 여부"),
                                         fieldWithPath("posts.[].account").description("작성자"),
                                         fieldWithPath("posts.[].account.id").description("아이디"),
                                         fieldWithPath("posts.[].account.email").description("이메일"),

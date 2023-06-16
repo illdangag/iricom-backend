@@ -35,6 +35,20 @@ public class BanRepositoryImpl implements BanRepository {
     }
 
     @Override
+    public long getPostBanCount(Post post) {
+        EntityManager entityManager = this.entityManagerFactory.createEntityManager();
+        final String jpql = "SELECT COUNT(*) FROM PostBan pb " +
+                "WHERE pb.post = :post";
+
+        TypedQuery<Long> query = entityManager.createQuery(jpql, Long.class)
+                .setParameter("post", post);
+
+        long result = query.getSingleResult();
+        entityManager.close();
+        return result;
+    }
+
+    @Override
     public void savePostBan(PostBan postBan) {
         EntityManager entityManager = this.entityManagerFactory.createEntityManager();
         EntityTransaction transaction = entityManager.getTransaction();

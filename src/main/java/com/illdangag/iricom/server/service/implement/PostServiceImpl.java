@@ -86,7 +86,7 @@ public class PostServiceImpl implements PostService {
         post.setTemporaryContent(postContent);
 
         this.postRepository.save(post, postContent);
-        return new PostInfo(post, true, PostState.TEMPORARY, 0, 0, 0, 0);
+        return new PostInfo(post, true, PostState.TEMPORARY, 0, 0, 0, 0, false);
     }
 
     @Override
@@ -153,12 +153,19 @@ public class PostServiceImpl implements PostService {
         }
 
         this.postRepository.save(temporaryPostContent);
+
+        return this.getPostInfo(post, PostState.TEMPORARY, true);
+    }
+
+    @Override
+    public PostInfo getPostInfo(Post post, PostState postState, boolean includeContent) {
         long commentCount = this.commentRepository.getCommentListSize(post);
         long upvote = this.postVoteRepository.getPostVoteCount(post, VoteType.UPVOTE);
         long downvote = this.postVoteRepository.getPostVoteCount(post, VoteType.DOWNVOTE);
         long reportCount = this.reportRepository.getPortReportCount(post);
+        boolean isBan = this.isBanPost(post);
 
-        return new PostInfo(post, true, PostState.TEMPORARY, commentCount, upvote, downvote, reportCount);
+        return new PostInfo(post, includeContent, postState, commentCount, upvote, downvote, reportCount, isBan);
     }
 
     @Override
@@ -190,11 +197,7 @@ public class PostServiceImpl implements PostService {
 
         this.postRepository.save(post);
 
-        long commentCount = this.commentRepository.getCommentListSize(post);
-        long upvote = this.postVoteRepository.getPostVoteCount(post, VoteType.UPVOTE);
-        long downvote = this.postVoteRepository.getPostVoteCount(post, VoteType.DOWNVOTE);
-        long reportCount = this.reportRepository.getPortReportCount(post);
-        return new PostInfo(post, true, postState, commentCount, upvote, downvote, reportCount);
+        return this.getPostInfo(post, postState, true);
     }
 
     @Override
@@ -242,12 +245,8 @@ public class PostServiceImpl implements PostService {
         }
 
         this.postRepository.save(post);
-        long commentCount = this.commentRepository.getCommentCount(post);
-        long upvote = this.postVoteRepository.getPostVoteCount(post, VoteType.UPVOTE);
-        long downvote = this.postVoteRepository.getPostVoteCount(post, VoteType.DOWNVOTE);
-        long reportCount = this.reportRepository.getPortReportCount(post);
 
-        return new PostInfo(post, true, PostState.PUBLISH, commentCount, upvote, downvote, reportCount);
+        return this.getPostInfo(post, PostState.PUBLISH, true);
     }
 
     @Override
@@ -280,12 +279,7 @@ public class PostServiceImpl implements PostService {
         }
 
         List<PostInfo> postInfoList = postList.stream().map(post -> {
-            long commentCount = this.commentRepository.getCommentCount(post);
-            long upvote = this.postVoteRepository.getPostVoteCount(post, VoteType.UPVOTE);
-            long downvote = this.postVoteRepository.getPostVoteCount(post, VoteType.DOWNVOTE);
-            long reportCount = this.reportRepository.getPortReportCount(post);
-
-            return new PostInfo(post, false, PostState.PUBLISH, commentCount, upvote, downvote, reportCount);
+            return this.getPostInfo(post, PostState.PUBLISH, false);
         }).collect(Collectors.toList());
 
         return PostInfoList.builder()
@@ -338,9 +332,6 @@ public class PostServiceImpl implements PostService {
             post.setDeleted(true);
             this.postRepository.save(post);
         }
-        long commentCount = this.commentRepository.getCommentCount(post);
-        long upvote = this.postVoteRepository.getPostVoteCount(post, VoteType.UPVOTE);
-        long downvote = this.postVoteRepository.getPostVoteCount(post, VoteType.DOWNVOTE);
 
         PostState responsePostState;
         if (post.isPublish()) {
@@ -348,10 +339,7 @@ public class PostServiceImpl implements PostService {
         } else {
             responsePostState = PostState.TEMPORARY;
         }
-
-        long reportCount = this.reportRepository.getPortReportCount(post);
-
-        return new PostInfo(post, true, responsePostState, commentCount, upvote, downvote, reportCount);
+        return this.getPostInfo(post, responsePostState, true);
     }
 
     public PostInfo votePost(Account account, String boardId, String postId, VoteType voteType) {
@@ -392,12 +380,8 @@ public class PostServiceImpl implements PostService {
 
         this.postRepository.save(post);
         this.postVoteRepository.save(postVote);
-        long commentCount = this.commentRepository.getCommentListSize(post);
-        long upvote = this.postVoteRepository.getPostVoteCount(post, VoteType.UPVOTE);
-        long downvote = this.postVoteRepository.getPostVoteCount(post, VoteType.DOWNVOTE);
-        long reportCount = this.reportRepository.getPortReportCount(post);
 
-        return new PostInfo(post, true, PostState.PUBLISH, commentCount, upvote, downvote, reportCount);
+        return this.getPostInfo(post, PostState.PUBLISH, true);
     }
 
     @Override
@@ -416,8 +400,9 @@ public class PostServiceImpl implements PostService {
                 responsePostState = PostState.TEMPORARY;
             }
             long reportCount = this.reportRepository.getPortReportCount(post);
+            boolean isBan = this.isBanPost(post);
 
-            return new PostInfo(post, false, responsePostState, commentCount, upvote, downvote, reportCount);
+            return new PostInfo(post, false, responsePostState, commentCount, upvote, downvote, reportCount, isBan);
         }).collect(Collectors.toList());
 
         return PostInfoList.builder()
@@ -437,7 +422,7 @@ public class PostServiceImpl implements PostService {
     @Override
     public PostInfo banPost(Account account, Board board, PostBanCreate postBanCreate) {
         if (!this.hasAuthorization(account, board)) {
-            // TODO 권한 없음
+            throw new IricomException(IricomErrorCode.INVALID_AUTHORIZATION_TO_BAN_POST);
         }
 
         Optional<Post> postOptional = this.postRepository.getPost(postBanCreate.getPostId());
@@ -445,20 +430,17 @@ public class PostServiceImpl implements PostService {
             return new IricomException(IricomErrorCode.NOT_EXIST_POST);
         });
 
-        // TODO 발행된 게시물인지 확인
         if (!post.isPublish()) {
             // 발행되지 않은 게시물인 경우, 밴 처리를 하지 않음
-            // TODO 에러 처리
+            throw new IricomException(IricomErrorCode.NOT_EXIST_PUBLISH_CONTENT);
         }
 
         // 이미 밴 처리 된 게시물인지 확인
         List<PostBan> postBanList = this.banRepository.getPostBanList(post);
         if (!postBanList.isEmpty()) {
-            // TODO 에러 처리
+            throw new IricomException(IricomErrorCode.ALREADY_BAN_POST);
         }
 
-
-        // TODO 밴 처리
         PostBan postBan = PostBan.builder()
                 .post(post)
                 .adminAccount(account)
@@ -467,12 +449,7 @@ public class PostServiceImpl implements PostService {
                 .build();
         this.banRepository.savePostBan(postBan);
 
-        long commentCount = this.commentRepository.getCommentCount(post);
-        long upvote = this.postVoteRepository.getPostVoteCount(post, VoteType.UPVOTE);
-        long downvote = this.postVoteRepository.getPostVoteCount(post, VoteType.DOWNVOTE);
-        long reportCount = this.reportRepository.getPortReportCount(post);
-
-        return new PostInfo(post, true, PostState.PUBLISH, commentCount, upvote, downvote, reportCount);
+        return this.getPostInfo(post, PostState.PUBLISH, true);
     }
 
     /**
@@ -495,5 +472,10 @@ public class PostServiceImpl implements PostService {
     private Post getPost(String id) {
         Optional<Post> postOptional = this.postRepository.getPost(id);
         return postOptional.orElseThrow(() -> new IricomException(IricomErrorCode.NOT_EXIST_POST));
+    }
+
+    private boolean isBanPost(Post post) {
+        long postBanCount = this.banRepository.getPostBanCount(post);
+        return postBanCount > 0;
     }
 }

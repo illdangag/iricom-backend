@@ -14,16 +14,13 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 
 @Slf4j
 @RestController
-@RequestMapping(value = "/v1/report")
+@RequestMapping()
 public class ReportController {
     private final ReportService reportService;
 
@@ -34,18 +31,20 @@ public class ReportController {
 
     @ApiCallLog(apiCode = "RP_001")
     @Auth(role = AuthRole.ACCOUNT)
-    @RequestMapping(method = RequestMethod.POST, value = "/post")
-    public ResponseEntity<PostReportInfo> reportPost(@RequestBody @Valid PostReportCreate postReportCreate,
-                                               @RequestContext Account account) {
-        PostReportInfo postReportInfo = this.reportService.reportPost(account, postReportCreate);
+    @RequestMapping(method = RequestMethod.POST, value = "/v1/boards/{board_id}/posts/{post_id}/report")
+    public ResponseEntity<PostReportInfo> reportPost(@PathVariable(value = "board_id") String boardId,
+                                                     @PathVariable(value = "post_id") String postId,
+                                                     @RequestBody @Valid PostReportCreate postReportCreate,
+                                                     @RequestContext Account account) {
+        PostReportInfo postReportInfo = this.reportService.reportPost(account, boardId, postId, postReportCreate);
         return ResponseEntity.status(HttpStatus.OK).body(postReportInfo);
     }
 
     @ApiCallLog(apiCode = "RP_002")
     @Auth(role = AuthRole.ACCOUNT)
-    @RequestMapping(method = RequestMethod.POST, value = "/comment")
+    @RequestMapping(method = RequestMethod.POST, value = "/v1/report/comment")
     public ResponseEntity<CommentReportInfo> reportComment(@RequestBody @Valid CommentReportCreate commentReportCreate,
-                                                     @RequestContext Account account) {
+                                                           @RequestContext Account account) {
         CommentReportInfo commentReportInfo = this.reportService.reportComment(account, commentReportCreate);
         return ResponseEntity.status(HttpStatus.OK).body(commentReportInfo);
     }

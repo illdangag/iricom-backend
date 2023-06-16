@@ -1,5 +1,6 @@
 package com.illdangag.iricom.server.service.implement;
 
+import com.illdangag.iricom.server.data.entity.Account;
 import com.illdangag.iricom.server.data.entity.Board;
 import com.illdangag.iricom.server.repository.BoardRepository;
 import com.illdangag.iricom.server.data.request.BoardInfoCreate;

@@ -12,12 +12,6 @@ import javax.validation.constraints.Size;
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class PostReportCreate {
-    @NotNull(message = "Board id is required.")
-    private String boardId;
-
-    @NotNull(message = "Post id is required.")
-    private String postId;
-
     @NotNull(message = "Type is required.")
     private ReportType type;
 
