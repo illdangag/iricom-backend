@@ -24,9 +24,10 @@ public class BanRepositoryImpl implements BanRepository {
     @Override
     public List<PostBan> getPostBanList(Post post) {
         EntityManager entityManager = this.entityManagerFactory.createEntityManager();
-        final String jpql = "SELECT pb FROM PostBan pb " +
-                "WHERE pb.post = :post " +
-                "ORDER BY pb.createDate ASC";
+        final String jpql = "SELECT pb FROM PostBan pb" +
+                " WHERE pb.post = :post" +
+                " ORDER BY pb.createDate ASC";
+
         TypedQuery<PostBan> query = entityManager.createQuery(jpql, PostBan.class)
                 .setParameter("post", post);
         List<PostBan> resultList = query.getResultList();
@@ -37,12 +38,11 @@ public class BanRepositoryImpl implements BanRepository {
     @Override
     public long getPostBanCount(Post post) {
         EntityManager entityManager = this.entityManagerFactory.createEntityManager();
-        final String jpql = "SELECT COUNT(*) FROM PostBan pb " +
-                "WHERE pb.post = :post";
+        final String jpql = "SELECT COUNT(*) FROM PostBan pb" +
+                " WHERE pb.post = :post";
 
         TypedQuery<Long> query = entityManager.createQuery(jpql, Long.class)
                 .setParameter("post", post);
-
         long result = query.getSingleResult();
         entityManager.close();
         return result;

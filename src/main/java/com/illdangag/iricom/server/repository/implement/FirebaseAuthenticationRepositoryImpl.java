@@ -24,7 +24,9 @@ public class FirebaseAuthenticationRepositoryImpl implements FirebaseAuthenticat
     @Override
     public Optional<FirebaseAuthentication> getFirebaseAuthentication(String id) {
         EntityManager entityManager = this.entityManagerFactory.createEntityManager();
-        final String jpql = "SELECT fa FROM FirebaseAuthentication fa WHERE fa.id = :id";
+        final String jpql = "SELECT fa FROM FirebaseAuthentication fa" +
+                " WHERE fa.id = :id";
+
         TypedQuery<FirebaseAuthentication> query = entityManager.createQuery(jpql, FirebaseAuthentication.class);
         query.setParameter("id", id);
         List<FirebaseAuthentication> firebaseAuthenticationList = query.getResultList();

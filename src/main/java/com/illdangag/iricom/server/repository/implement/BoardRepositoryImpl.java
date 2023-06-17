@@ -51,7 +51,9 @@ public class BoardRepositoryImpl implements BoardRepository {
     @Override
     public List<Board> getBoardList(long id) {
         EntityManager entityManager = this.entityManagerFactory.createEntityManager();
-        final String jpql = "SELECT b FROM Board b WHERE b.id = :id";
+        final String jpql = "SELECT b FROM Board b" +
+                " WHERE b.id = :id";
+
         TypedQuery<Board> query = entityManager.createQuery(jpql, Board.class);
         query.setParameter("id", id);
         List<Board> resultList = query.getResultList();
@@ -62,7 +64,10 @@ public class BoardRepositoryImpl implements BoardRepository {
     @Override
     public List<Board> getBoardList(String containTitle, int offset, int limit) {
         EntityManager entityManager = this.entityManagerFactory.createEntityManager();
-        final String jpql = "SELECT b FROM Board b WHERE b.title LIKE :title ORDER BY title";
+        final String jpql = "SELECT b FROM Board b" +
+                " WHERE UPPER(b.title) LIKE UPPER(:title)" +
+                " ORDER BY title";
+
         TypedQuery<Board> query = entityManager.createQuery(jpql, Board.class);
         query.setParameter("title", "%" + StringUtils.escape(containTitle) + "%")
                 .setFirstResult(offset)
@@ -75,7 +80,9 @@ public class BoardRepositoryImpl implements BoardRepository {
     @Override
     public long getBoardCount(String containTitle) {
         EntityManager entityManager = this.entityManagerFactory.createEntityManager();
-        final String jpql = "SELECT COUNT(*)FROM Board b WHERE b.title LIKE :title";
+        final String jpql = "SELECT COUNT(*) FROM Board b" +
+                " WHERE UPPER(b.title) LIKE UPPER(:title)";
+
         TypedQuery<Long> query = entityManager.createQuery(jpql, Long.class);
         query.setParameter("title", "%" + StringUtils.escape(containTitle) + "%");
         long result = query.getSingleResult();
@@ -86,7 +93,10 @@ public class BoardRepositoryImpl implements BoardRepository {
     @Override
     public List<Board> getBoardList(String containTitle, boolean enabled, int offset, int limit) {
         EntityManager entityManager = this.entityManagerFactory.createEntityManager();
-        final String jpql = "SELECT b FROM Board b WHERE b.title LIKE :title AND b.enabled = :enabled";
+        final String jpql = "SELECT b FROM Board b" +
+                " WHERE UPPER(b.title) LIKE UPPER(:title)" +
+                " AND b.enabled = :enabled";
+
         TypedQuery<Board> query = entityManager.createQuery(jpql, Board.class);
         query.setParameter("title", "%" + StringUtils.escape(containTitle) + "%")
                 .setParameter("enabled", enabled)
@@ -100,7 +110,10 @@ public class BoardRepositoryImpl implements BoardRepository {
     @Override
     public long getBoardCount(String containTitle, boolean enabled) {
         EntityManager entityManager = this.entityManagerFactory.createEntityManager();
-        final String jpql = "SELECT COUNT(*) FROM Board b WHERE b.title LIKE :title AND b.enabled = :enabled";
+        final String jpql = "SELECT COUNT(*) FROM Board b" +
+                " WHERE UPPER(b.title) LIKE UPPER(:title)" +
+                " AND b.enabled = :enabled";
+
         TypedQuery<Long> query = entityManager.createQuery(jpql, Long.class);
         query.setParameter("title", "%" + StringUtils.escape(containTitle) + "%")
                 .setParameter("enabled", enabled);

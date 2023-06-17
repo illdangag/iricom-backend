@@ -39,7 +39,9 @@ public class PostRepositoryImpl implements PostRepository {
     @Override
     public Optional<Post> getPost(long id) {
         EntityManager entityManager = this.entityManagerFactory.createEntityManager();
-        final String jpql = "SELECT p FROM Post p WHERE p.id = :id";
+        final String jpql = "SELECT p FROM Post p" +
+                " WHERE p.id = :id";
+
         TypedQuery<Post> query = entityManager.createQuery(jpql, Post.class)
                 .setParameter("id", id);
         List<Post> postList = query.getResultList();
@@ -55,10 +57,11 @@ public class PostRepositoryImpl implements PostRepository {
     public List<Post> getPublishPostList(Board board, PostType postType, int offset, int limit) {
         EntityManager entityManager = this.entityManagerFactory.createEntityManager();
         final String jpql = "SELECT p FROM Post p " +
-                "WHERE p.board = :board " +
-                "AND p.content IS NOT NULL " +
-                "AND p.content.type = :type " +
-                "ORDER BY p.createDate DESC";
+                " WHERE p.board = :board" +
+                " AND p.content IS NOT NULL" +
+                " AND p.content.type = :type" +
+                " ORDER BY p.createDate DESC";
+
         TypedQuery<Post> query = entityManager.createQuery(jpql, Post.class)
                 .setParameter("board", board)
                 .setParameter("type", postType)
@@ -72,10 +75,11 @@ public class PostRepositoryImpl implements PostRepository {
     @Override
     public List<Post> getPublishPostList(Board board, int offset, int limit) {
         EntityManager entityManager = this.entityManagerFactory.createEntityManager();
-        final String jpql = "SELECT p FROM Post p " +
-                "WHERE p.board = :board " +
-                "AND p.content IS NOT NULL " +
-                "ORDER BY p.createDate DESC";
+        final String jpql = "SELECT p FROM Post p" +
+                " WHERE p.board = :board" +
+                " AND p.content IS NOT NULL" +
+                " ORDER BY p.createDate DESC";
+
         TypedQuery<Post> query = entityManager.createQuery(jpql, Post.class)
                 .setParameter("board", board)
                 .setFirstResult(offset)
@@ -88,9 +92,11 @@ public class PostRepositoryImpl implements PostRepository {
     @Override
     public List<Post> getPostList(Account account, int offset, int limit) {
         EntityManager entityManager = this.entityManagerFactory.createEntityManager();
-        final String jpql = "SELECT p FROM Post p " +
-                "WHERE p.account = :account AND p.deleted = false " +
-                "ORDER BY p.createDate DESC";
+        final String jpql = "SELECT p FROM Post p" +
+                " WHERE p.account = :account" +
+                " AND p.deleted = false" +
+                " ORDER BY p.createDate DESC";
+
         TypedQuery<Post> query = entityManager.createQuery(jpql, Post.class)
                 .setParameter("account", account)
                 .setFirstResult(offset)
@@ -103,8 +109,10 @@ public class PostRepositoryImpl implements PostRepository {
     @Override
     public long getPostCount(Account account) {
         EntityManager entityManager = this.entityManagerFactory.createEntityManager();
-        final String jpql = "SELECT COUNT(*) FROM Post p " +
-                "WHERE p.account = :account AND p.deleted = false";
+        final String jpql = "SELECT COUNT(*) FROM Post p" +
+                " WHERE p.account = :account" +
+                " AND p.deleted = false";
+
         TypedQuery<Long> query = entityManager.createQuery(jpql, Long.class)
                 .setParameter("account", account);
         long result = query.getSingleResult();
@@ -115,10 +123,11 @@ public class PostRepositoryImpl implements PostRepository {
     @Override
     public long getPublishPostCount(Board board, PostType postType) {
         EntityManager entityManager = this.entityManagerFactory.createEntityManager();
-        final String jpql = "SELECT COUNT(*) FROM Post p " +
-                "WHERE p.board = :board " +
-                "AND p.content IS NOT NULL AND " +
-                "p.content.type = :type";
+        final String jpql = "SELECT COUNT(*) FROM Post p" +
+                " WHERE p.board = :board" +
+                " AND p.content IS NOT NULL" +
+                " AND p.content.type = :type";
+
         TypedQuery<Long> query = entityManager.createQuery(jpql, Long.class)
                 .setParameter("board", board)
                 .setParameter("type", postType);
@@ -130,10 +139,11 @@ public class PostRepositoryImpl implements PostRepository {
     @Override
     public long getPublishPostCount(Board board) {
         EntityManager entityManager = this.entityManagerFactory.createEntityManager();
-        final String jpql = "SELECT COUNT(*) FROM Post p " +
-                "WHERE p.board = :board " +
-                "AND p.content IS NOT NULL AND " +
-                "p.content.type = :type";
+        final String jpql = "SELECT COUNT(*) FROM Post p" +
+                " WHERE p.board = :board " +
+                " AND p.content IS NOT NULL" +
+                " AND p.content.type = :type";
+
         TypedQuery<Long> query = entityManager.createQuery(jpql, Long.class)
                 .setParameter("board", board);
         long result = query.getSingleResult();
@@ -144,12 +154,13 @@ public class PostRepositoryImpl implements PostRepository {
     @Override
     public List<Post> getPublishPostList(Board board, PostType postType, String containTitle, int offset, int limit) {
         EntityManager entityManager = this.entityManagerFactory.createEntityManager();
-        final String jpql = "SELECT p FROM Post p " +
-                "WHERE p.board = :board " +
-                "AND p.content IS NOT NULL " +
-                "AND p.content.type = :type " +
-                "AND p.content.title LIKE :title " +
-                "ORDER BY p.createDate DESC";
+        final String jpql = "SELECT p FROM Post p" +
+                " WHERE p.board = :board" +
+                " AND p.content IS NOT NULL" +
+                " AND p.content.type = :type" +
+                " AND UPPER(p.content.title) LIKE UPPER(:title)" +
+                " ORDER BY p.createDate DESC";
+
         TypedQuery<Post> query = entityManager.createQuery(jpql, Post.class)
                 .setParameter("board", board)
                 .setParameter("type", postType)
@@ -164,11 +175,12 @@ public class PostRepositoryImpl implements PostRepository {
     @Override
     public List<Post> getPublishPostList(Board board, String containTitle, int offset, int limit) {
         EntityManager entityManager = this.entityManagerFactory.createEntityManager();
-        final String jpql = "SELECT p FROM Post p " +
-                "WHERE p.board = :board " +
-                "AND p.content IS NOT NULL " +
-                "AND p.content.title LIKE :title " +
-                "ORDER BY p.createDate DESC";
+        final String jpql = "SELECT p FROM Post p" +
+                " WHERE p.board = :board" +
+                " AND p.content IS NOT NULL" +
+                " AND UPPER(p.content.title) LIKE UPPER(:title)" +
+                " ORDER BY p.createDate DESC";
+
         TypedQuery<Post> query = entityManager.createQuery(jpql, Post.class)
                 .setParameter("board", board)
                 .setParameter("title", "%" + StringUtils.escape(containTitle) + "%")
@@ -183,10 +195,11 @@ public class PostRepositoryImpl implements PostRepository {
     public long getPublishPostCount(Board board, PostType postType, String containTitle) {
         EntityManager entityManager = this.entityManagerFactory.createEntityManager();
         final String jpql = "SELECT COUNT(*) FROM Post p " +
-                "WHERE p.board = :board " +
-                "AND p.content IS NOT NULL " +
-                "AND p.content.type = :type " +
-                "AND p.content.title LIKE :title";
+                " WHERE p.board = :board" +
+                " AND p.content IS NOT NULL" +
+                " AND p.content.type = :type" +
+                " AND UPPER(p.content.title) LIKE UPPER(:title)";
+
         TypedQuery<Long> query = entityManager.createQuery(jpql, Long.class)
                 .setParameter("board", board)
                 .setParameter("type", postType)
@@ -199,10 +212,11 @@ public class PostRepositoryImpl implements PostRepository {
     @Override
     public long getPublishPostCount(Board board, String containTitle) {
         EntityManager entityManager = this.entityManagerFactory.createEntityManager();
-        final String jpql = "SELECT COUNT(*) FROM Post p " +
-                "WHERE p.board = :board " +
-                "AND p.content IS NOT NULL " +
-                "AND p.content.title LIKE :title";
+        final String jpql = "SELECT COUNT(*) FROM Post p" +
+                " WHERE p.board = :board" +
+                " AND p.content IS NOT NULL" +
+                " AND UPPER(p.content.title) LIKE UPPER(:title)";
+
         TypedQuery<Long> query = entityManager.createQuery(jpql, Long.class)
                 .setParameter("board", board)
                 .setParameter("title", "%" + StringUtils.escape(containTitle) + "%");

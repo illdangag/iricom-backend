@@ -38,7 +38,9 @@ public class CommentRepositoryImpl implements CommentRepository {
     @Override
     public Optional<Comment> getComment(long id) {
         EntityManager entityManager = this.entityManagerFactory.createEntityManager();
-        final String jpql = "SELECT c FROM Comment c WHERE c.id = :id";
+        final String jpql = "SELECT c FROM Comment c" +
+                " WHERE c.id = :id";
+
         TypedQuery<Comment> query = entityManager.createQuery(jpql, Comment.class);
         query.setParameter("id", id);
         Comment comment = query.getSingleResult();
@@ -48,9 +50,11 @@ public class CommentRepositoryImpl implements CommentRepository {
 
     public List<Comment> getCommentList(Post post, int offset, int limit) {
         EntityManager entityManager = this.entityManagerFactory.createEntityManager();
-        final String jpql = "SELECT c FROM Comment c " +
-                "WHERE c.post = :post AND c.referenceComment IS NULL " +
-                "ORDER BY c.createDate ASC";
+        final String jpql = "SELECT c FROM Comment c" +
+                " WHERE c.post = :post" +
+                " AND c.referenceComment IS NULL" +
+                " ORDER BY c.createDate ASC";
+
         TypedQuery<Comment> query = entityManager.createQuery(jpql, Comment.class)
                 .setParameter("post", post)
                 .setFirstResult(offset)
@@ -62,9 +66,10 @@ public class CommentRepositoryImpl implements CommentRepository {
 
     public long getCommentCount(Post post) {
         EntityManager entityManager = this.entityManagerFactory.createEntityManager();
-        final String jpql = "SELECT COUNT(*) FROM Comment c " +
-                "WHERE c.post = :post " +
-                "AND c.referenceComment IS NULL";
+        final String jpql = "SELECT COUNT(*) FROM Comment c" +
+                " WHERE c.post = :post " +
+                " AND c.referenceComment IS NULL";
+
         TypedQuery<Long> query = entityManager.createQuery(jpql, Long.class)
                 .setParameter("post", post);
         long result = query.getSingleResult();
@@ -75,10 +80,11 @@ public class CommentRepositoryImpl implements CommentRepository {
     @Override
     public List<Comment> getCommentList(Post post, Comment referenceComment, int offset, int limit) {
         EntityManager entityManager = this.entityManagerFactory.createEntityManager();
-        final String jpql = "SELECT c FROM Comment c " +
-                "WHERE c.post = :post " +
-                "AND c.referenceComment = :referenceComment " +
-                "ORDER BY c.createDate ASC";
+        final String jpql = "SELECT c FROM Comment c" +
+                " WHERE c.post = :post" +
+                " AND c.referenceComment = :referenceComment" +
+                " ORDER BY c.createDate ASC";
+
         TypedQuery<Comment> query = entityManager.createQuery(jpql, Comment.class)
                 .setParameter("post", post)
                 .setParameter("referenceComment", referenceComment)
@@ -92,9 +98,10 @@ public class CommentRepositoryImpl implements CommentRepository {
     @Override
     public long getCommentListSize(Post post, Comment referenceComment) {
         EntityManager entityManager = this.entityManagerFactory.createEntityManager();
-        final String jpql = "SELECT COUNT(*) FROM Comment c " +
-                "WHERE c.post = :post " +
-                "AND c.referenceComment = :referenceComment";
+        final String jpql = "SELECT COUNT(*) FROM Comment c" +
+                " WHERE c.post = :post" +
+                " AND c.referenceComment = :referenceComment";
+
         TypedQuery<Long> query = entityManager.createQuery(jpql, Long.class)
                 .setParameter("post", post)
                 .setParameter("referenceComment", referenceComment);
@@ -106,7 +113,9 @@ public class CommentRepositoryImpl implements CommentRepository {
     @Override
     public long getCommentListSize(Post post) {
         EntityManager entityManager = this.entityManagerFactory.createEntityManager();
-        final String jpql = "SELECT COUNT(*) FROM Comment c WHERE c.post = :post";
+        final String jpql = "SELECT COUNT(*) FROM Comment c" +
+                " WHERE c.post = :post";
+
         TypedQuery<Long> query = entityManager.createQuery(jpql, Long.class)
                 .setParameter("post", post);
         long result = query.getSingleResult();

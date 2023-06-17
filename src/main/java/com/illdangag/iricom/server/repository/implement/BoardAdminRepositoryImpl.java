@@ -26,9 +26,10 @@ public class BoardAdminRepositoryImpl implements BoardAdminRepository {
     @Override
     public List<BoardAdmin> getBoardAdminList(List<Board> boardList) {
         EntityManager entityManager = this.entityManagerFactory.createEntityManager();
-        final String jpql = "SELECT ba FROM BoardAdmin ba " +
-                "WHERE ba.board IN (:boards) " +
-                "ORDER BY ba.board.title ASC, ba.account.email ASC, ba.createDate DESC";
+        final String jpql = "SELECT ba FROM BoardAdmin ba" +
+                " WHERE ba.board IN :boards" +
+                " ORDER BY ba.board.title ASC, ba.account.email ASC, ba.createDate DESC";
+
         TypedQuery<BoardAdmin> query = entityManager.createQuery(jpql, BoardAdmin.class);
         query.setParameter("boards", boardList);
         List<BoardAdmin> resultList = query.getResultList();
@@ -39,10 +40,11 @@ public class BoardAdminRepositoryImpl implements BoardAdminRepository {
     @Override
     public List<BoardAdmin> getBoardAdminList(Account account, boolean deleted) {
         EntityManager entityManager = this.entityManagerFactory.createEntityManager();
-        final String jpql = "SELECT ba FROM BoardAdmin ba " +
-                "WHERE ba.account = :account " +
-                "AND ba.deleted = :deleted " +
-                "ORDER BY ba.createDate DESC";
+        final String jpql = "SELECT ba FROM BoardAdmin ba" +
+                " WHERE ba.account = :account" +
+                " AND ba.deleted = :deleted" +
+                " ORDER BY ba.createDate DESC";
+
         TypedQuery<BoardAdmin> query = entityManager.createQuery(jpql, BoardAdmin.class)
                 .setParameter("account", account)
                 .setParameter("deleted", deleted);
@@ -54,10 +56,11 @@ public class BoardAdminRepositoryImpl implements BoardAdminRepository {
     @Override
     public List<BoardAdmin> getBoardAdminList(Board board, Account account) {
         EntityManager entityManager = this.entityManagerFactory.createEntityManager();
-        final String jpql = "SELECT ba FROM BoardAdmin ba " +
-                "WHERE ba.board = :board " +
-                "AND ba.account = :account " +
-                "ORDER BY ba.createDate DESC";
+        final String jpql = "SELECT ba FROM BoardAdmin ba" +
+                " WHERE ba.board = :board" +
+                " AND ba.account = :account" +
+                " ORDER BY ba.createDate DESC";
+
         TypedQuery<BoardAdmin> query = entityManager.createQuery(jpql, BoardAdmin.class);
         query.setParameter("board", board)
                 .setParameter("account", account);

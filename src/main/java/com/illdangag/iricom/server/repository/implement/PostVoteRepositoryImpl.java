@@ -29,10 +29,10 @@ public class PostVoteRepositoryImpl implements PostVoteRepository {
     @Override
     public Optional<PostVote> getPostVote(Account account, Post post, VoteType voteType) {
         EntityManager entityManager = this.entityManagerFactory.createEntityManager();
-        final String jpql = "SELECT pv from PostVote pv " +
-                "WHERE pv.account = :account " +
-                "AND pv.post = :post " +
-                "AND pv.type = :type";
+        final String jpql = "SELECT pv from PostVote pv" +
+                " WHERE pv.account = :account" +
+                " AND pv.post = :post" +
+                " AND pv.type = :type";
 
         TypedQuery<PostVote> query = entityManager.createQuery(jpql, PostVote.class)
                 .setParameter("account", account)
@@ -52,9 +52,9 @@ public class PostVoteRepositoryImpl implements PostVoteRepository {
     @Override
     public long getPostVoteCount(Post post, VoteType voteType) {
         EntityManager entityManager = this.entityManagerFactory.createEntityManager();
-        final String jpql = "SELECT COUNT(*) FROM PostVote pv " +
-                "WHERE pv.post = :post " +
-                "AND pv.type = :type";
+        final String jpql = "SELECT COUNT(*) FROM PostVote pv" +
+                " WHERE pv.post = :post" +
+                " AND pv.type = :type";
 
         TypedQuery<Long> query = entityManager.createQuery(jpql, Long.class)
                 .setParameter("post", post)
