@@ -3,10 +3,8 @@ package com.illdangag.iricom.server.service.implement;
 import com.illdangag.iricom.server.data.entity.*;
 import com.illdangag.iricom.server.data.request.CommentReportCreate;
 import com.illdangag.iricom.server.data.request.PostReportCreate;
-import com.illdangag.iricom.server.data.response.CommentInfo;
-import com.illdangag.iricom.server.data.response.CommentReportInfo;
-import com.illdangag.iricom.server.data.response.PostInfo;
-import com.illdangag.iricom.server.data.response.PostReportInfo;
+import com.illdangag.iricom.server.data.request.PostReportInfoSearch;
+import com.illdangag.iricom.server.data.response.*;
 import com.illdangag.iricom.server.exception.IricomErrorCode;
 import com.illdangag.iricom.server.exception.IricomException;
 import com.illdangag.iricom.server.repository.*;
@@ -20,6 +18,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Slf4j
 @Service
@@ -28,7 +27,6 @@ public class ReportServiceImpl implements ReportService {
     private final PostRepository postRepository;
     private final BoardRepository boardRepository;
     private final CommentRepository commentRepository;
-    private final BanRepository banRepository;
 
     private final PostService postService;
     private final CommentService commentService;
@@ -36,17 +34,53 @@ public class ReportServiceImpl implements ReportService {
 
     @Autowired
     private ReportServiceImpl(ReportRepository reportRepository, PostRepository postRepository, BoardRepository boardRepository,
-                              CommentRepository commentRepository, BanRepository banRepository,
+                              CommentRepository commentRepository,
                               PostService postService, CommentService commentService, BoardAuthorizationService boardAuthorizationService) {
         this.reportRepository = reportRepository;
         this.postRepository = postRepository;
         this.boardRepository = boardRepository;
         this.commentRepository = commentRepository;
-        this.banRepository = banRepository;
 
         this.postService = postService;
         this.commentService = commentService;
         this.boardAuthorizationService = boardAuthorizationService;
+    }
+
+    @Override
+    public PostReportInfoList getPostReportInfoList(Account account, Board board, PostReportInfoSearch postReportInfoSearch) {
+        if (!this.boardAuthorizationService.hasAuthorization(account, board)) {
+            throw new IricomException(IricomErrorCode.INVALID_AUTHORIZATION_TO_GET_POST_REPORT_LIST);
+        }
+
+        ReportType reportType = postReportInfoSearch.getType();
+        String reason = postReportInfoSearch.getReason();
+        String postTitle = postReportInfoSearch.getPostTitle();
+        int skip = postReportInfoSearch.getSkip();
+        int limit = postReportInfoSearch.getLimit();
+
+        List<PostReport> postReportList;
+        long total;
+
+        if (reportType == null) {
+            postReportList = this.reportRepository.getPostReportList(board, reason, postTitle, skip, limit);
+            total = this.reportRepository.getPostReportListTotalCount(board, reason, postTitle);
+        } else {
+            postReportList = this.reportRepository.getPostReportList(board, reportType, reason, postTitle, skip, limit);
+            total = this.reportRepository.getPostReportListTotalCount(board, reportType, reason, postTitle);
+        }
+
+        List<PostReportInfo> postReportInfoList = postReportList.stream()
+                .map(item -> {
+                    PostInfo postInfo = this.postService.getPostInfo(item.getPost(), PostState.PUBLISH, false);
+                    return new PostReportInfo(item, postInfo);
+                })
+                .collect(Collectors.toList());
+        return PostReportInfoList.builder()
+                .total(total)
+                .skip(skip)
+                .limit(limit)
+                .postReportInfoList(postReportInfoList)
+                .build();
     }
 
     @Override

@@ -11,7 +11,7 @@ import javax.validation.constraints.Min;
 @Getter
 @Setter
 @SuperBuilder
-public class SearchRequest {
+public abstract class SearchRequest {
     @Min(value = 0, message = "Skip must be 0 or greater.")
     @Builder.Default
     protected int skip = 0;

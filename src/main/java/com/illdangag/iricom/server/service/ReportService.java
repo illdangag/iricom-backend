@@ -6,12 +6,16 @@ import com.illdangag.iricom.server.data.entity.Comment;
 import com.illdangag.iricom.server.data.entity.Post;
 import com.illdangag.iricom.server.data.request.CommentReportCreate;
 import com.illdangag.iricom.server.data.request.PostReportCreate;
+import com.illdangag.iricom.server.data.request.PostReportInfoSearch;
 import com.illdangag.iricom.server.data.response.CommentReportInfo;
 import com.illdangag.iricom.server.data.response.PostReportInfo;
+import com.illdangag.iricom.server.data.response.PostReportInfoList;
 
 import javax.validation.Valid;
 
 public interface ReportService {
+    PostReportInfoList getPostReportInfoList(Account account, Board board, @Valid PostReportInfoSearch postReportInfoSearch);
+
     PostReportInfo reportPost(Account account, String boardId, String postId, @Valid PostReportCreate postReportCreate);
 
     PostReportInfo reportPost(Account account, Board board, Post post, @Valid PostReportCreate postReportCreate);

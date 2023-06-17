@@ -6,6 +6,14 @@ import java.util.List;
 import java.util.Optional;
 
 public interface ReportRepository {
+    long getPostReportListTotalCount(Board board, String reason, String postTitle);
+
+    List<PostReport> getPostReportList(Board board, String reason, String postTitle, int offset, int limit);
+
+    long getPostReportListTotalCount(Board board, ReportType type, String reason, String postTitle);
+
+    List<PostReport> getPostReportList(Board board, ReportType type,  String reason, String postTitle, int offset, int limit);
+
     List<PostReport> getPostReportList(Account account, Post post);
 
     Optional<PostReport> getPostReport(String id);

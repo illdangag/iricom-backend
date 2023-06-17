@@ -139,19 +139,23 @@ public abstract class IricomTestSuite {
     protected static final TestBoardInfo reportBoard = TestBoardInfo.builder()
             .title("reportBoard").isEnabled(true).adminList(Collections.singletonList(allBoardAdmin)).build();
 
+    protected static final TestBoardInfo reportSearchBoard = TestBoardInfo.builder()
+            .title("reportSearchBoard").isEnabled(true).adminList(Collections.singletonList(allBoardAdmin)).build();
+
     protected static final TestBoardInfo banBoard = TestBoardInfo.builder()
             .title("banBoard").isEnabled(true).adminList(Collections.singletonList(allBoardAdmin)).build();
 
     private static final TestBoardInfo[] testBoardInfos = {
-            enableBoard, // 활성화 게시판
-            disableBoard, // 비활성화 게시판
-            updateBoard, // 게시판 정보 수정 테스트용 게시판
-            createBoard, // 문서 생성 테스트용 게시판
-            commentBoard, // 댓글 테스트용 게시판
-            voteBoard, // 투표 테스트용 게시판
-            restDocBoard, // restDoc 게시판
-            reportBoard, // 신고 테스트용 게시판
-            banBoard, // 차단 테스트용 게시판
+            enableBoard, // 활성화
+            disableBoard, // 비활성화
+            updateBoard, // 게시판 정보 수정
+            createBoard, // 문서 생성
+            commentBoard, // 댓글
+            voteBoard, // 투표
+            restDocBoard, // restDoc
+            reportBoard, // 신고
+            reportSearchBoard, // 신고 내역 검색
+            banBoard, // 차단
     };
 
     // 게시물 설정
@@ -370,6 +374,16 @@ public abstract class IricomTestSuite {
             .postType(PostType.POST).postState(PostState.PUBLISH)
             .creator(common00).board(reportBoard).build();
 
+    protected static final TestPostInfo reportedSearchPost00 = TestPostInfo.builder()
+            .title("reportedSearchPost00").content("report contents").isAllowComment(true)
+            .postType(PostType.POST).postState(PostState.PUBLISH)
+            .creator(allBoardAdmin).board(reportSearchBoard).build();
+
+    protected static final TestPostInfo reportedSearchPost01 = TestPostInfo.builder()
+            .title("reportedSearchPost01").content("report contents").isAllowComment(true)
+            .postType(PostType.POST).postState(PostState.PUBLISH)
+            .creator(allBoardAdmin).board(reportSearchBoard).build();
+
     protected static final TestPostInfo banPost00 = TestPostInfo.builder()
             .title("banPost00").content("ban contents").isAllowComment(true)
             .postType(PostType.POST).postState(PostState.PUBLISH)
@@ -401,6 +415,7 @@ public abstract class IricomTestSuite {
             // 게시물 신고
             reportPost00, reportPost01, reportPost02, reportPost03, reportPost04, reportPost05,
             reportPost06, reportPost07,
+            reportedSearchPost00, reportedSearchPost01,
 
             // 신고된 게시물
             reportedPost00,
@@ -557,15 +572,15 @@ public abstract class IricomTestSuite {
     };
 
     protected static final TestPostReportInfo postReport00 = TestPostReportInfo.builder()
-            .type(ReportType.ETC).reason("test post report")
+            .type(ReportType.HATE).reason("test post report")
             .reportAccount(common00).post(reportedPost00)
             .build();
     protected static final TestPostReportInfo postReport01 = TestPostReportInfo.builder()
-            .type(ReportType.ETC).reason("test post report")
+            .type(ReportType.POLITICAL).reason("test post report")
             .reportAccount(common01).post(reportedPost00)
             .build();
     protected static final TestPostReportInfo postReport02 = TestPostReportInfo.builder()
-            .type(ReportType.ETC).reason("test post report")
+            .type(ReportType.PORNOGRAPHY).reason("test post report")
             .reportAccount(common02).post(reportedPost00)
             .build();
     protected static final TestPostReportInfo postReport03 = TestPostReportInfo.builder()
@@ -596,9 +611,43 @@ public abstract class IricomTestSuite {
             .type(ReportType.ETC).reason("test post report")
             .reportAccount(common09).post(reportedPost00)
             .build();
+    protected static final TestPostReportInfo postReportSearch00 = TestPostReportInfo.builder()
+            .type(ReportType.HATE).reason("report hate")
+            .reportAccount(common01).post(reportedSearchPost00)
+            .build();
+    protected static final TestPostReportInfo postReportSearch01 = TestPostReportInfo.builder()
+            .type(ReportType.POLITICAL).reason("report political")
+            .reportAccount(common02).post(reportedSearchPost00)
+            .build();
+    protected static final TestPostReportInfo postReportSearch02 = TestPostReportInfo.builder()
+            .type(ReportType.PORNOGRAPHY).reason("report pornography")
+            .reportAccount(common03).post(reportedSearchPost00)
+            .build();
+    protected static final TestPostReportInfo postReportSearch03 = TestPostReportInfo.builder()
+            .type(ReportType.ETC).reason("report etc")
+            .reportAccount(common04).post(reportedSearchPost00)
+            .build();
+    protected static final TestPostReportInfo postReportSearch04 = TestPostReportInfo.builder()
+            .type(ReportType.HATE).reason("report hate")
+            .reportAccount(common01).post(reportedSearchPost01)
+            .build();
+    protected static final TestPostReportInfo postReportSearch05 = TestPostReportInfo.builder()
+            .type(ReportType.POLITICAL).reason("report political")
+            .reportAccount(common02).post(reportedSearchPost01)
+            .build();
+    protected static final TestPostReportInfo postReportSearch06 = TestPostReportInfo.builder()
+            .type(ReportType.PORNOGRAPHY).reason("report pornography")
+            .reportAccount(common03).post(reportedSearchPost01)
+            .build();
+    protected static final TestPostReportInfo postReportSearch07 = TestPostReportInfo.builder()
+            .type(ReportType.ETC).reason("report etc")
+            .reportAccount(common04).post(reportedSearchPost01)
+            .build();
 
     private static final TestPostReportInfo[] testPostReportInfos = {
             postReport00, postReport01, postReport02, postReport03, postReport04, postReport05, postReport06, postReport07, postReport08, postReport09,
+            postReportSearch00, postReportSearch01, postReportSearch02, postReportSearch03,
+            postReportSearch04, postReportSearch05, postReportSearch06, postReportSearch07,
     };
 
     protected static final TestCommentReportInfo commentReport00 = TestCommentReportInfo.builder()

@@ -66,6 +66,7 @@ public enum IricomErrorCode {
     // report post: 0600XXXX
     NOT_EXIST_POST_REPORT("06000000", 404, "Not exist post report."),
     ALREADY_REPORT_POST("06000001", 400, "Already report post."),
+    INVALID_AUTHORIZATION_TO_GET_POST_REPORT_LIST("06000002", 401, "Invalid authorization."),
     // report comment: 0601XXXX
     NOT_EXIST_COMMENT_REPORT("06010000", 404, "Not exist comment report."),
     ALREADY_REPORT_COMMENT("06010001", 400, "Already report comment.");

@@ -9,11 +9,11 @@ import lombok.experimental.SuperBuilder;
 import java.util.LinkedList;
 import java.util.List;
 
-@SuperBuilder
 @Getter
+@SuperBuilder
 @JsonInclude(JsonInclude.Include.NON_NULL)
-public class BoardInfoList extends SearchList {
+public class PostReportInfoList extends SearchList {
     @Builder.Default
-    @JsonProperty("boards")
-    private List<BoardInfo> boardInfoList = new LinkedList<>();
+    @JsonProperty("reports")
+    private List<PostReportInfo> postReportInfoList = new LinkedList<>();
 }

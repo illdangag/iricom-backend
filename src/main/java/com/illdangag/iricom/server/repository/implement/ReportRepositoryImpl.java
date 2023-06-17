@@ -2,6 +2,7 @@ package com.illdangag.iricom.server.repository.implement;
 
 import com.illdangag.iricom.server.data.entity.*;
 import com.illdangag.iricom.server.repository.ReportRepository;
+import com.illdangag.iricom.server.util.StringUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
@@ -10,6 +11,7 @@ import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.EntityTransaction;
 import javax.persistence.TypedQuery;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
@@ -21,6 +23,84 @@ public class ReportRepositoryImpl implements ReportRepository {
     @Autowired
     public ReportRepositoryImpl(EntityManagerFactory entityManagerFactory) {
         this.entityManagerFactory = entityManagerFactory;
+    }
+
+    @Override
+    public long getPostReportListTotalCount(Board board, ReportType type, String reason, String postTitle) {
+        EntityManager entityManager = this.entityManagerFactory.createEntityManager();
+        final String jpql = "SELECT COUNT(*) FROM PostReport pr" +
+                " WHERE pr.type = :type" +
+                " AND pr.post.board = :board" +
+                " AND UPPER(pr.reason) LIKE UPPER(:reason)" +
+                " AND UPPER(pr.post.content.title) LIKE UPPER(:postTitle)";
+
+        TypedQuery<Long> query = entityManager.createQuery(jpql, Long.class)
+                .setParameter("type", type)
+                .setParameter("board", board)
+                .setParameter("reason", "%" + StringUtils.escape(reason) + "%")
+                .setParameter("postTitle", "%" + StringUtils.escape(postTitle) + "%");
+        long result = query.getSingleResult();
+        entityManager.close();
+        return result;
+    }
+
+    @Override
+    public List<PostReport> getPostReportList(Board board, ReportType type, String reason, String postTitle, int offset, int limit) {
+        EntityManager entityManager = this.entityManagerFactory.createEntityManager();
+        final String jpql = "SELECT pr FROM PostReport pr" +
+                " WHERE pr.type = :type" +
+                " AND pr.post.board = :board" +
+                " AND UPPER(pr.reason) LIKE UPPER(:reason)" +
+                " AND UPPER(pr.post.content.title) LIKE UPPER(:postTitle)" +
+                " ORDER BY pr.createDate DESC";
+
+        TypedQuery<PostReport> query = entityManager.createQuery(jpql, PostReport.class)
+                .setParameter("type", type)
+                .setParameter("board", board)
+                .setParameter("reason", "%" + StringUtils.escape(reason) + "%")
+                .setParameter("postTitle", "%" + StringUtils.escape(postTitle) + "%")
+                .setFirstResult(offset)
+                .setMaxResults(limit);
+        List<PostReport> resultList = query.getResultList();
+        entityManager.close();
+        return resultList;
+    }
+
+    @Override
+    public long getPostReportListTotalCount(Board board, String reason, String postTitle) {
+        EntityManager entityManager = this.entityManagerFactory.createEntityManager();
+        final String jpql = "SELECT COUNT(*) FROM PostReport pr" +
+                " WHERE pr.post.board = :board" +
+                " AND UPPER(pr.reason) LIKE UPPER(:reason)" +
+                " AND UPPER(pr.post.content.title) LIKE UPPER(:postTitle)";
+
+        TypedQuery<Long> query = entityManager.createQuery(jpql, Long.class)
+                .setParameter("board", board)
+                .setParameter("reason", "%" + StringUtils.escape(reason) + "%")
+                .setParameter("postTitle", "%" + StringUtils.escape(postTitle) + "%");
+        long result = query.getSingleResult();
+        entityManager.close();
+        return result;
+    }
+
+    @Override
+    public List<PostReport> getPostReportList(Board board, String reason, String postTitle, int offset, int limit) {
+        EntityManager entityManager = this.entityManagerFactory.createEntityManager();
+        final String jpql = "SELECT pr FROM PostReport pr" +
+                " WHERE pr.post.board = :board" +
+                " AND UPPER(pr.reason) LIKE UPPER(:reason)" +
+                " AND UPPER(pr.post.content.title) LIKE UPPER(:postTitle)" +
+                " ORDER BY pr.createDate DESC";
+
+        TypedQuery<PostReport> query = entityManager.createQuery(jpql, PostReport.class)
+                .setParameter("board", board)
+                .setParameter("reason", "%" + StringUtils.escape(reason) + "%")
+                .setParameter("postTitle", "%" + StringUtils.escape(postTitle) + "%")
+                .setFirstResult(offset)
+                .setMaxResults(limit);
+        List<PostReport> resultList = query.getResultList();
+        entityManager.close();
+        return resultList;
     }
 
     @Override
