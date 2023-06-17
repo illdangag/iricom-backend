@@ -980,6 +980,7 @@ public abstract class IricomTestSuite {
         return this.getPostReport(postReportInfo.getId());
     }
 
+
     private CommentReport reportComment(TestCommentReportInfo testCommentReportInfo) {
         TestAccountInfo reportTestAccountInfo = testCommentReportInfo.getReportAccount();
         TestCommentInfo testCommentInfo = testCommentReportInfo.getComment();
@@ -1037,4 +1038,7 @@ public abstract class IricomTestSuite {
         return commentMap.get(testCommentInfo);
     }
 
+    protected PostReport getPostReport(TestPostReportInfo testPostReportInfo) {
+        return postReportMap.get(testPostReportInfo);
+    }
 }

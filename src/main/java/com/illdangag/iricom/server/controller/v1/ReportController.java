@@ -35,13 +35,12 @@ public class ReportController {
 
     @ApiCallLog(apiCode = "RP_001")
     @Auth(role = AuthRole.BOARD_ADMIN)
-    @RequestMapping(method = RequestMethod.GET, value = "/v1/boards/{board_id}/posts/{post_id}/report")
+    @RequestMapping(method = RequestMethod.GET, value = "/v1/boards/{board_id}/report")
     public ResponseEntity<PostReportInfoList> getPostReportInfoList(@PathVariable(value = "board_id") String boardId,
-                                                                    @PathVariable(value = "post_id") String postId,
                                                                     @RequestBody @Valid PostReportInfoSearch postReportInfoSearch,
                                                                     @RequestContext Account account) {
-        // TODO
-        return null;
+        PostReportInfoList postReportInfoList = this.reportService.getPostReportInfoList(account, boardId, postReportInfoSearch);
+        return ResponseEntity.status(HttpStatus.OK).body(postReportInfoList);
     }
 
     @ApiCallLog(apiCode = "RP_002")
@@ -51,8 +50,8 @@ public class ReportController {
                                                             @PathVariable(value = "post_id") String postId,
                                                             @PathVariable(value = "report_id") String reportId,
                                                             @RequestContext Account account) {
-        // TODO
-        return null;
+        PostReportInfo postReportInfo = this.reportService.getPostReportInfo(account, boardId, postId, reportId);
+        return ResponseEntity.status(HttpStatus.OK).body(postReportInfo);
     }
 
     @ApiCallLog(apiCode = "RP_003")

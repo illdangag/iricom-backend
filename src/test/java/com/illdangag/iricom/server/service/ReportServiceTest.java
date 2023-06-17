@@ -4,6 +4,7 @@ import com.illdangag.iricom.server.data.entity.*;
 import com.illdangag.iricom.server.data.request.CommentReportCreate;
 import com.illdangag.iricom.server.data.request.PostReportInfoCreate;
 import com.illdangag.iricom.server.data.request.PostReportInfoSearch;
+import com.illdangag.iricom.server.data.response.PostReportInfo;
 import com.illdangag.iricom.server.data.response.PostReportInfoList;
 import com.illdangag.iricom.server.exception.IricomException;
 import com.illdangag.iricom.server.test.IricomTestSuite;
@@ -29,9 +30,11 @@ public class ReportServiceTest extends IricomTestSuite {
     @Nested
     @DisplayName("게시물")
     class PostTest {
+
         @Nested
         @DisplayName("신고")
         class ReportTest {
+
             @Test
             @DisplayName("게시물 신고")
             public void testCase00() throws Exception {
@@ -130,139 +133,419 @@ public class ReportServiceTest extends IricomTestSuite {
         }
 
         @Nested
-        @DisplayName("조회")
+        @DisplayName("목록 조회")
         class SearchTest {
+            @Nested
+            @DisplayName("게시판")
+            class BoardSearch {
+                @Test
+                @DisplayName("기본 조회")
+                public void searchPostReportInfoList() throws Exception {
+                    Account systemAdminAccount = getAccount(systemAdmin);
+                    Board board = getBoard(reportSearchBoard);
+                    PostReportInfoSearch postReportInfoSearch = PostReportInfoSearch.builder()
+                            .postTitle("")
+                            .reason("")
+                            .build();
+
+                    PostReportInfoList postReportInfoList = reportService.getPostReportInfoList(systemAdminAccount, board, postReportInfoSearch);
+                    Assertions.assertEquals(0, postReportInfoList.getSkip());
+                    Assertions.assertEquals(20, postReportInfoList.getLimit());
+                    Assertions.assertEquals(8, postReportInfoList.getTotal());
+                }
+
+                @Test
+                @DisplayName("종류")
+                public void searchPostReportInfoListByType() throws Exception {
+                    Account systemAdminAccount = getAccount(systemAdmin);
+                    Board board = getBoard(reportSearchBoard);
+                    PostReportInfoSearch postReportInfoSearch = PostReportInfoSearch.builder()
+                            .type(ReportType.HATE)
+                            .postTitle("")
+                            .reason("")
+                            .build();
+
+                    PostReportInfoList postReportInfoList = reportService.getPostReportInfoList(systemAdminAccount, board, postReportInfoSearch);
+                    Assertions.assertEquals(0, postReportInfoList.getSkip());
+                    Assertions.assertEquals(20, postReportInfoList.getLimit());
+                    Assertions.assertEquals(2, postReportInfoList.getTotal());
+                }
+
+                @Test
+                @DisplayName("skip")
+                public void searchPostReportInfoListSkip() throws Exception {
+                    Account systemAdminAccount = getAccount(systemAdmin);
+                    Board board = getBoard(reportSearchBoard);
+                    PostReportInfoSearch postReportInfoSearch = PostReportInfoSearch.builder()
+                            .skip(5)
+                            .build();
+
+                    PostReportInfoList postReportInfoList = reportService.getPostReportInfoList(systemAdminAccount, board, postReportInfoSearch);
+                    Assertions.assertEquals(5, postReportInfoList.getSkip());
+                    Assertions.assertEquals(20, postReportInfoList.getLimit());
+                    Assertions.assertEquals(8, postReportInfoList.getTotal());
+                    Assertions.assertEquals(3, postReportInfoList.getPostReportInfoList().size());
+                }
+
+                @Test
+                @DisplayName("limit")
+                public void searchPostReportInfoListLimit() throws Exception {
+                    Account systemAdminAccount = getAccount(systemAdmin);
+                    Board board = getBoard(reportSearchBoard);
+                    PostReportInfoSearch postReportInfoSearch = PostReportInfoSearch.builder()
+                            .limit(5)
+                            .build();
+
+                    PostReportInfoList postReportInfoList = reportService.getPostReportInfoList(systemAdminAccount, board, postReportInfoSearch);
+                    Assertions.assertEquals(0, postReportInfoList.getSkip());
+                    Assertions.assertEquals(5, postReportInfoList.getLimit());
+                    Assertions.assertEquals(8, postReportInfoList.getTotal());
+                    Assertions.assertEquals(5, postReportInfoList.getPostReportInfoList().size());
+                }
+
+                @Test
+                @DisplayName("skip, limit")
+                public void searchPostReportInfoListSkipLimit() throws Exception {
+                    Account systemAdminAccount = getAccount(systemAdmin);
+                    Board board = getBoard(reportSearchBoard);
+                    PostReportInfoSearch postReportInfoSearch = PostReportInfoSearch.builder()
+                            .skip(5)
+                            .limit(5)
+                            .build();
+
+                    PostReportInfoList postReportInfoList = reportService.getPostReportInfoList(systemAdminAccount, board, postReportInfoSearch);
+                    Assertions.assertEquals(5, postReportInfoList.getSkip());
+                    Assertions.assertEquals(5, postReportInfoList.getLimit());
+                    Assertions.assertEquals(8, postReportInfoList.getTotal());
+                    Assertions.assertEquals(3, postReportInfoList.getPostReportInfoList().size());
+                }
+
+                @Test
+                @DisplayName("reason")
+                public void searchPostReportInfoListByReason() throws Exception {
+                    Account systemAdminAccount = getAccount(systemAdmin);
+                    Board board = getBoard(reportSearchBoard);
+                    PostReportInfoSearch postReportInfoSearch = PostReportInfoSearch.builder()
+                            .reason("political")
+                            .build();
+
+                    PostReportInfoList postReportInfoList = reportService.getPostReportInfoList(systemAdminAccount, board, postReportInfoSearch);
+                    Assertions.assertEquals(0, postReportInfoList.getSkip());
+                    Assertions.assertEquals(20, postReportInfoList.getLimit());
+                    Assertions.assertEquals(2, postReportInfoList.getTotal());
+                    Assertions.assertEquals(2, postReportInfoList.getPostReportInfoList().size());
+                }
+
+                @Test
+                @DisplayName("post title")
+                public void searchPostReportInfoListByPostTitle() throws Exception {
+                    Account systemAdminAccount = getAccount(systemAdmin);
+                    Board board = getBoard(reportSearchBoard);
+                    PostReportInfoSearch postReportInfoSearch = PostReportInfoSearch.builder()
+                            .postTitle("Post01")
+                            .build();
+
+                    PostReportInfoList postReportInfoList = reportService.getPostReportInfoList(systemAdminAccount, board, postReportInfoSearch);
+                    Assertions.assertEquals(0, postReportInfoList.getSkip());
+                    Assertions.assertEquals(20, postReportInfoList.getLimit());
+                    Assertions.assertEquals(4, postReportInfoList.getTotal());
+                    Assertions.assertEquals(4, postReportInfoList.getPostReportInfoList().size());
+                }
+
+                @Test
+                @DisplayName("complex")
+                public void searchPostReportInfoListByComplex() throws Exception {
+                    Account systemAdminAccount = getAccount(systemAdmin);
+                    Board board = getBoard(reportSearchBoard);
+                    PostReportInfoSearch postReportInfoSearch = PostReportInfoSearch.builder()
+                            .type(ReportType.HATE)
+                            .postTitle("post01")
+                            .skip(1)
+                            .limit(1)
+                            .build();
+
+                    PostReportInfoList postReportInfoList = reportService.getPostReportInfoList(systemAdminAccount, board, postReportInfoSearch);
+                    Assertions.assertEquals(1, postReportInfoList.getSkip());
+                    Assertions.assertEquals(1, postReportInfoList.getLimit());
+                    Assertions.assertEquals(1, postReportInfoList.getTotal());
+                    Assertions.assertEquals(0, postReportInfoList.getPostReportInfoList().size());
+                }
+            }
+
+            @Nested
+            @DisplayName("게시판 게시물")
+            class BoardPost {
+                @Test
+                @DisplayName("기본 조회")
+                public void searchPostReportInfoList() throws Exception {
+                    Account systemAdminAccount = getAccount(systemAdmin);
+                    Board board = getBoard(reportSearchBoard);
+                    Post post = getPost(reportedSearchPost00);
+
+                    PostReportInfoSearch postReportInfoSearch = PostReportInfoSearch.builder()
+                            .postTitle("")
+                            .reason("")
+                            .build();
+
+                    PostReportInfoList postReportInfoList = reportService.getPostReportInfoList(systemAdminAccount, board, post, postReportInfoSearch);
+                    Assertions.assertEquals(0, postReportInfoList.getSkip());
+                    Assertions.assertEquals(20, postReportInfoList.getLimit());
+                    Assertions.assertEquals(4, postReportInfoList.getTotal());
+                }
+
+                @Test
+                @DisplayName("종류")
+                public void searchPostReportInfoListByType() throws Exception {
+                    Account systemAdminAccount = getAccount(systemAdmin);
+                    Board board = getBoard(reportSearchBoard);
+                    Post post = getPost(reportedSearchPost00);
+
+                    PostReportInfoSearch postReportInfoSearch = PostReportInfoSearch.builder()
+                            .type(ReportType.HATE)
+                            .postTitle("")
+                            .reason("")
+                            .build();
+
+                    PostReportInfoList postReportInfoList = reportService.getPostReportInfoList(systemAdminAccount, board, post, postReportInfoSearch);
+                    Assertions.assertEquals(0, postReportInfoList.getSkip());
+                    Assertions.assertEquals(20, postReportInfoList.getLimit());
+                    Assertions.assertEquals(1, postReportInfoList.getTotal());
+                }
+
+                @Test
+                @DisplayName("skip")
+                public void searchPostReportInfoListSkip() throws Exception {
+                    Account systemAdminAccount = getAccount(systemAdmin);
+                    Board board = getBoard(reportSearchBoard);
+                    Post post = getPost(reportedSearchPost00);
+
+                    PostReportInfoSearch postReportInfoSearch = PostReportInfoSearch.builder()
+                            .skip(3)
+                            .build();
+
+                    PostReportInfoList postReportInfoList = reportService.getPostReportInfoList(systemAdminAccount, board, post, postReportInfoSearch);
+                    Assertions.assertEquals(3, postReportInfoList.getSkip());
+                    Assertions.assertEquals(20, postReportInfoList.getLimit());
+                    Assertions.assertEquals(4, postReportInfoList.getTotal());
+                    Assertions.assertEquals(1, postReportInfoList.getPostReportInfoList().size());
+                }
+
+                @Test
+                @DisplayName("limit")
+                public void searchPostReportInfoListLimit() throws Exception {
+                    Account systemAdminAccount = getAccount(systemAdmin);
+                    Board board = getBoard(reportSearchBoard);
+                    Post post = getPost(reportedSearchPost00);
+
+                    PostReportInfoSearch postReportInfoSearch = PostReportInfoSearch.builder()
+                            .limit(2)
+                            .build();
+
+                    PostReportInfoList postReportInfoList = reportService.getPostReportInfoList(systemAdminAccount, board, post, postReportInfoSearch);
+                    Assertions.assertEquals(0, postReportInfoList.getSkip());
+                    Assertions.assertEquals(2, postReportInfoList.getLimit());
+                    Assertions.assertEquals(4, postReportInfoList.getTotal());
+                    Assertions.assertEquals(2, postReportInfoList.getPostReportInfoList().size());
+                }
+
+                @Test
+                @DisplayName("skip, limit")
+                public void searchPostReportInfoListSkipLimit() throws Exception {
+                    Account systemAdminAccount = getAccount(systemAdmin);
+                    Board board = getBoard(reportSearchBoard);
+                    Post post = getPost(reportedSearchPost00);
+
+                    PostReportInfoSearch postReportInfoSearch = PostReportInfoSearch.builder()
+                            .skip(3)
+                            .limit(3)
+                            .build();
+
+                    PostReportInfoList postReportInfoList = reportService.getPostReportInfoList(systemAdminAccount, board, post, postReportInfoSearch);
+                    Assertions.assertEquals(3, postReportInfoList.getSkip());
+                    Assertions.assertEquals(3, postReportInfoList.getLimit());
+                    Assertions.assertEquals(4, postReportInfoList.getTotal());
+                    Assertions.assertEquals(1, postReportInfoList.getPostReportInfoList().size());
+                }
+
+                @Test
+                @DisplayName("reason")
+                public void searchPostReportInfoListByReason() throws Exception {
+                    Account systemAdminAccount = getAccount(systemAdmin);
+                    Board board = getBoard(reportSearchBoard);
+                    Post post = getPost(reportedSearchPost00);
+
+                    PostReportInfoSearch postReportInfoSearch = PostReportInfoSearch.builder()
+                            .reason("political")
+                            .build();
+
+                    PostReportInfoList postReportInfoList = reportService.getPostReportInfoList(systemAdminAccount, board, post, postReportInfoSearch);
+                    Assertions.assertEquals(0, postReportInfoList.getSkip());
+                    Assertions.assertEquals(20, postReportInfoList.getLimit());
+                    Assertions.assertEquals(1, postReportInfoList.getTotal());
+                    Assertions.assertEquals(1, postReportInfoList.getPostReportInfoList().size());
+                }
+
+                @Test
+                @DisplayName("post title")
+                public void searchPostReportInfoListByPostTitle() throws Exception {
+                    Account systemAdminAccount = getAccount(systemAdmin);
+                    Board board = getBoard(reportSearchBoard);
+                    Post post = getPost(reportedSearchPost00);
+
+                    PostReportInfoSearch postReportInfoSearch = PostReportInfoSearch.builder()
+                            .postTitle("post00")
+                            .build();
+
+                    PostReportInfoList postReportInfoList = reportService.getPostReportInfoList(systemAdminAccount, board, post, postReportInfoSearch);
+                    Assertions.assertEquals(0, postReportInfoList.getSkip());
+                    Assertions.assertEquals(20, postReportInfoList.getLimit());
+                    Assertions.assertEquals(4, postReportInfoList.getTotal());
+                    Assertions.assertEquals(4, postReportInfoList.getPostReportInfoList().size());
+                }
+
+                @Test
+                @DisplayName("complex")
+                public void searchPostReportInfoListByComplex() throws Exception {
+                    Account systemAdminAccount = getAccount(systemAdmin);
+                    Board board = getBoard(reportSearchBoard);
+                    Post post = getPost(reportedSearchPost00);
+
+                    PostReportInfoSearch postReportInfoSearch = PostReportInfoSearch.builder()
+                            .type(ReportType.HATE)
+                            .postTitle("post00")
+                            .skip(1)
+                            .limit(1)
+                            .build();
+
+                    PostReportInfoList postReportInfoList = reportService.getPostReportInfoList(systemAdminAccount, board, postReportInfoSearch);
+                    Assertions.assertEquals(1, postReportInfoList.getSkip());
+                    Assertions.assertEquals(1, postReportInfoList.getLimit());
+                    Assertions.assertEquals(1, postReportInfoList.getTotal());
+                    Assertions.assertEquals(0, postReportInfoList.getPostReportInfoList().size());
+                }
+            }
+        }
+
+        @Nested
+        @DisplayName("조회")
+        class getTest {
+
             @Test
             @DisplayName("기본 조회")
-            public void searchPostReportInfoList() throws Exception {
+            public void getPostReportInfo() throws Exception {
                 Account systemAdminAccount = getAccount(systemAdmin);
-                Board board = getBoard(reportSearchBoard);
-                PostReportInfoSearch postReportInfoSearch = PostReportInfoSearch.builder()
-                        .postTitle("")
-                        .reason("")
-                        .build();
+                PostReport postReport = getPostReport(postReportSearch00);
+                Post post = postReport.getPost();
+                Board board = post.getBoard();
 
-                PostReportInfoList postReportInfoList = reportService.getPostReportInfoList(systemAdminAccount, board, postReportInfoSearch);
-                Assertions.assertEquals(0, postReportInfoList.getSkip());
-                Assertions.assertEquals(20, postReportInfoList.getLimit());
-                Assertions.assertEquals(8, postReportInfoList.getTotal());
+                String boardId = String.valueOf(board.getId());
+                String postId = String.valueOf(post.getId());
+                String reportId = String.valueOf(postReport.getId());
+
+                PostReportInfo postReportInfo = reportService.getPostReportInfo(systemAdminAccount, boardId, postId, reportId);
+                Assertions.assertEquals(reportId, postReportInfo.getId());
             }
 
             @Test
-            @DisplayName("종류")
-            public void searchPostReportInfoListByType() throws Exception {
+            @DisplayName("올바르지 않은 게시판")
+            public void invalidBoard() throws Exception {
                 Account systemAdminAccount = getAccount(systemAdmin);
-                Board board = getBoard(reportSearchBoard);
-                PostReportInfoSearch postReportInfoSearch = PostReportInfoSearch.builder()
-                        .type(ReportType.HATE)
-                        .postTitle("")
-                        .reason("")
-                        .build();
+                PostReport postReport = getPostReport(postReportSearch00);
+                Post post = postReport.getPost();
+                Board board = getBoard(disableBoard);
 
-                PostReportInfoList postReportInfoList = reportService.getPostReportInfoList(systemAdminAccount, board, postReportInfoSearch);
-                Assertions.assertEquals(0, postReportInfoList.getSkip());
-                Assertions.assertEquals(20, postReportInfoList.getLimit());
-                Assertions.assertEquals(2, postReportInfoList.getTotal());
+                String boardId = String.valueOf(board.getId());
+                String postId = String.valueOf(post.getId());
+                String reportId = String.valueOf(postReport.getId());
+
+                Assertions.assertThrows(IricomException.class, () -> {
+                    reportService.getPostReportInfo(systemAdminAccount, boardId, postId, reportId);
+                });
             }
 
             @Test
-            @DisplayName("skip")
-            public void searchPostReportInfoListSkip() throws Exception {
+            @DisplayName("존재하지 않는 게시판")
+            public void notExistBoard() throws Exception {
                 Account systemAdminAccount = getAccount(systemAdmin);
-                Board board = getBoard(reportSearchBoard);
-                PostReportInfoSearch postReportInfoSearch = PostReportInfoSearch.builder()
-                        .skip(5)
-                        .build();
+                PostReport postReport = getPostReport(postReportSearch00);
+                Post post = postReport.getPost();
 
-                PostReportInfoList postReportInfoList = reportService.getPostReportInfoList(systemAdminAccount, board, postReportInfoSearch);
-                Assertions.assertEquals(5, postReportInfoList.getSkip());
-                Assertions.assertEquals(20, postReportInfoList.getLimit());
-                Assertions.assertEquals(8, postReportInfoList.getTotal());
-                Assertions.assertEquals(3, postReportInfoList.getPostReportInfoList().size());
+                String boardId = "NOT_EXIST";
+                String postId = String.valueOf(post.getId());
+                String reportId = String.valueOf(postReport.getId());
+
+                Assertions.assertThrows(IricomException.class, () -> {
+                    reportService.getPostReportInfo(systemAdminAccount, boardId, postId, reportId);
+                });
             }
 
             @Test
-            @DisplayName("limit")
-            public void searchPostReportInfoListLimit() throws Exception {
+            @DisplayName("올바르지 않은 게시물")
+            public void invalidPost() throws Exception {
                 Account systemAdminAccount = getAccount(systemAdmin);
-                Board board = getBoard(reportSearchBoard);
-                PostReportInfoSearch postReportInfoSearch = PostReportInfoSearch.builder()
-                        .limit(5)
-                        .build();
+                PostReport postReport = getPostReport(postReportSearch00);
+                Post post = postReport.getPost();
+                Board board = post.getBoard();
+                Post invaildPost = getPost(disableBoardPost00);
 
-                PostReportInfoList postReportInfoList = reportService.getPostReportInfoList(systemAdminAccount, board, postReportInfoSearch);
-                Assertions.assertEquals(0, postReportInfoList.getSkip());
-                Assertions.assertEquals(5, postReportInfoList.getLimit());
-                Assertions.assertEquals(8, postReportInfoList.getTotal());
-                Assertions.assertEquals(5, postReportInfoList.getPostReportInfoList().size());
+                String boardId = String.valueOf(board.getId());
+                String postId = String.valueOf(invaildPost.getId());
+                String reportId = String.valueOf(postReport.getId());
+
+                Assertions.assertThrows(IricomException.class, () -> {
+                    reportService.getPostReportInfo(systemAdminAccount, boardId, postId, reportId);
+                });
             }
 
             @Test
-            @DisplayName("skip, limit")
-            public void searchPostReportInfoListSkipLimit() throws Exception {
+            @DisplayName("존재하지 않은 게시물")
+            public void notExistPost() throws Exception {
                 Account systemAdminAccount = getAccount(systemAdmin);
-                Board board = getBoard(reportSearchBoard);
-                PostReportInfoSearch postReportInfoSearch = PostReportInfoSearch.builder()
-                        .skip(5)
-                        .limit(5)
-                        .build();
+                PostReport postReport = getPostReport(postReportSearch00);
+                Post post = postReport.getPost();
+                Board board = post.getBoard();
 
-                PostReportInfoList postReportInfoList = reportService.getPostReportInfoList(systemAdminAccount, board, postReportInfoSearch);
-                Assertions.assertEquals(5, postReportInfoList.getSkip());
-                Assertions.assertEquals(5, postReportInfoList.getLimit());
-                Assertions.assertEquals(8, postReportInfoList.getTotal());
-                Assertions.assertEquals(3, postReportInfoList.getPostReportInfoList().size());
+                String boardId = String.valueOf(board.getId());
+                String postId = "NOT_EXIST";
+                String reportId = String.valueOf(postReport.getId());
+
+                Assertions.assertThrows(IricomException.class, () -> {
+                    reportService.getPostReportInfo(systemAdminAccount, boardId, postId, reportId);
+                });
             }
 
             @Test
-            @DisplayName("reason")
-            public void searchPostReportInfoListByReason() throws Exception {
+            @DisplayName("올바르지 않은 신고")
+            public void invalidReport() throws Exception {
                 Account systemAdminAccount = getAccount(systemAdmin);
-                Board board = getBoard(reportSearchBoard);
-                PostReportInfoSearch postReportInfoSearch = PostReportInfoSearch.builder()
-                        .reason("political")
-                        .build();
+                PostReport postReport = getPostReport(postReportSearch00);
+                Post post = postReport.getPost();
+                Board board = post.getBoard();
 
-                PostReportInfoList postReportInfoList = reportService.getPostReportInfoList(systemAdminAccount, board, postReportInfoSearch);
-                Assertions.assertEquals(0, postReportInfoList.getSkip());
-                Assertions.assertEquals(20, postReportInfoList.getLimit());
-                Assertions.assertEquals(2, postReportInfoList.getTotal());
-                Assertions.assertEquals(2, postReportInfoList.getPostReportInfoList().size());
+                String boardId = String.valueOf(board.getId());
+                String postId = String.valueOf(post.getId());
+                String reportId = String.valueOf(postReportSearch00);
+
+                Assertions.assertThrows(IricomException.class, () -> {
+                    reportService.getPostReportInfo(systemAdminAccount, boardId, postId, reportId);
+                });
             }
 
             @Test
-            @DisplayName("post title")
-            public void searchPostReportInfoListByPostTitle() throws Exception {
+            @DisplayName("존재하지 않은 신고")
+            public void notExistReport() throws Exception {
                 Account systemAdminAccount = getAccount(systemAdmin);
-                Board board = getBoard(reportSearchBoard);
-                PostReportInfoSearch postReportInfoSearch = PostReportInfoSearch.builder()
-                        .postTitle("Post01")
-                        .build();
+                PostReport postReport = getPostReport(postReportSearch00);
+                Post post = postReport.getPost();
+                Board board = post.getBoard();
 
-                PostReportInfoList postReportInfoList = reportService.getPostReportInfoList(systemAdminAccount, board, postReportInfoSearch);
-                Assertions.assertEquals(0, postReportInfoList.getSkip());
-                Assertions.assertEquals(20, postReportInfoList.getLimit());
-                Assertions.assertEquals(4, postReportInfoList.getTotal());
-                Assertions.assertEquals(4, postReportInfoList.getPostReportInfoList().size());
-            }
+                String boardId = String.valueOf(board.getId());
+                String postId = String.valueOf(post.getId());
+                String reportId = "NOT_EXIST";
 
-            @Test
-            @DisplayName("complex")
-            public void searchPostReportInfoListByComplex() throws Exception {
-                Account systemAdminAccount = getAccount(systemAdmin);
-                Board board = getBoard(reportSearchBoard);
-                PostReportInfoSearch postReportInfoSearch = PostReportInfoSearch.builder()
-                        .type(ReportType.HATE)
-                        .postTitle("post01")
-                        .skip(1)
-                        .limit(1)
-                        .build();
-
-                PostReportInfoList postReportInfoList = reportService.getPostReportInfoList(systemAdminAccount, board, postReportInfoSearch);
-                Assertions.assertEquals(1, postReportInfoList.getSkip());
-                Assertions.assertEquals(1, postReportInfoList.getLimit());
-                Assertions.assertEquals(1, postReportInfoList.getTotal());
-                Assertions.assertEquals(0, postReportInfoList.getPostReportInfoList().size());
+                Assertions.assertThrows(IricomException.class, () -> {
+                    reportService.getPostReportInfo(systemAdminAccount, boardId, postId, reportId);
+                });
             }
         }
     }

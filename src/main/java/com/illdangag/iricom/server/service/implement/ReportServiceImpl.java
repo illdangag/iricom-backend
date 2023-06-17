@@ -47,6 +47,38 @@ public class ReportServiceImpl implements ReportService {
     }
 
     @Override
+    public PostReportInfo getPostReportInfo(Account account, String boardId, String postId, String reportId) {
+        Board board = this.getBoard(boardId);
+        Post post = this.getPost(postId);
+        return this.getPostReportInfo(account, board, post, reportId);
+    }
+
+    @Override
+    public PostReportInfo getPostReportInfo(Account account, Board board, Post post, String reportId) {
+        Optional<PostReport> postReportOptional = this.reportRepository.getPostReport(reportId);
+        PostReport postReport = postReportOptional.orElseThrow(() -> new IricomException(IricomErrorCode.NOT_EXIST_POST_REPORT));
+
+        Post reportPost = postReport.getPost();
+        if (!reportPost.equals(post)) {
+            throw new IricomException(IricomErrorCode.NOT_EXIST_POST_REPORT);
+        }
+
+        Board reportBoard = reportPost.getBoard();
+        if (!reportBoard.equals(board)) {
+            throw new IricomException(IricomErrorCode.NOT_EXIST_POST_REPORT);
+        }
+
+        PostInfo postInfo = this.postService.getPostInfo(post, PostState.PUBLISH, false);
+        return new PostReportInfo(postReport, postInfo);
+    }
+
+    @Override
+    public PostReportInfoList getPostReportInfoList(Account account, String boardId, PostReportInfoSearch postReportInfoSearch) {
+        Board board = this.getBoard(boardId);
+        return this.getPostReportInfoList(account, board, postReportInfoSearch);
+    }
+
+    @Override
     public PostReportInfoList getPostReportInfoList(Account account, Board board, PostReportInfoSearch postReportInfoSearch) {
         if (!this.boardAuthorizationService.hasAuthorization(account, board)) {
             throw new IricomException(IricomErrorCode.INVALID_AUTHORIZATION_TO_GET_POST_REPORT_LIST);
@@ -84,12 +116,54 @@ public class ReportServiceImpl implements ReportService {
     }
 
     @Override
-    public PostReportInfo reportPost(Account account, String boardId, String postId, PostReportInfoCreate postReportInfoCreate) {
-        Optional<Board> boardOptional = this.boardRepository.getBoard(boardId);
-        Optional<Post> postOptional = this.postRepository.getPost(postId);
+    public PostReportInfoList getPostReportInfoList(Account account, String boardId, String postId, PostReportInfoSearch postReportInfoSearch) {
+        Board board = this.getBoard(boardId);
+        Post post = this.getPost(postId);
+        return this.getPostReportInfoList(account, board, post, postReportInfoSearch);
+    }
 
-        Board board = boardOptional.orElseThrow(() -> new IricomException(IricomErrorCode.NOT_EXIST_BOARD));
-        Post post = postOptional.orElseThrow(() -> new IricomException(IricomErrorCode.NOT_EXIST_POST));
+    @Override
+    public PostReportInfoList getPostReportInfoList(Account account, Board board, Post post, PostReportInfoSearch postReportInfoSearch) {
+        if (!this.boardAuthorizationService.hasAuthorization(account, board)) {
+            throw new IricomException(IricomErrorCode.INVALID_AUTHORIZATION_TO_GET_POST_REPORT_LIST);
+        }
+
+        ReportType reportType = postReportInfoSearch.getType();
+        String reason = postReportInfoSearch.getReason();
+        String postTitle = postReportInfoSearch.getPostTitle();
+        int skip = postReportInfoSearch.getSkip();
+        int limit = postReportInfoSearch.getLimit();
+
+
+        List<PostReport> postReportList;
+        long total;
+
+        if (reportType == null) {
+            postReportList = this.reportRepository.getPostReportList(board, post, reason, postTitle, skip, limit);
+            total = this.reportRepository.getPostReportListTotalCount(board, post, reason, postTitle);
+        } else {
+            postReportList = this.reportRepository.getPostReportList(board, post, reportType, reason, postTitle, skip, limit);
+            total = this.reportRepository.getPostReportListTotalCount(board, post, reportType, reason, postTitle);
+        }
+
+        List<PostReportInfo> postReportInfoList = postReportList.stream()
+                .map(item -> {
+                    PostInfo postInfo = this.postService.getPostInfo(item.getPost(), PostState.PUBLISH, false);
+                    return new PostReportInfo(item, postInfo);
+                })
+                .collect(Collectors.toList());
+        return PostReportInfoList.builder()
+                .total(total)
+                .skip(skip)
+                .limit(limit)
+                .postReportInfoList(postReportInfoList)
+                .build();
+    }
+
+    @Override
+    public PostReportInfo reportPost(Account account, String boardId, String postId, PostReportInfoCreate postReportInfoCreate) {
+        Board board = this.getBoard(boardId);
+        Post post = this.getPost(postId);
 
         return this.reportPost(account, board, post, postReportInfoCreate);
     }
@@ -121,13 +195,9 @@ public class ReportServiceImpl implements ReportService {
 
     @Override
     public CommentReportInfo reportComment(Account account, String boardId, String postId, String commentId, CommentReportCreate commentReportCreate) {
-        Optional<Board> boardOptional = this.boardRepository.getBoard(boardId);
-        Optional<Post> postOptional = this.postRepository.getPost(postId);
-        Optional<Comment> commentOptional = this.commentRepository.getComment(commentId);
-
-        Board board = boardOptional.orElseThrow(() -> new IricomException(IricomErrorCode.NOT_EXIST_BOARD));
-        Post post = postOptional.orElseThrow(() -> new IricomException(IricomErrorCode.NOT_EXIST_POST));
-        Comment comment = commentOptional.orElseThrow(() -> new IricomException(IricomErrorCode.NOT_EXIST_COMMENT));
+        Board board = this.getBoard(boardId);
+        Post post = this.getPost(postId);
+        Comment comment = this.getComment(commentId);
 
         return this.reportComment(account, board, post, comment, commentReportCreate);
     }
@@ -162,5 +232,20 @@ public class ReportServiceImpl implements ReportService {
         this.reportRepository.saveCommentReport(commentReport);
         CommentInfo commentInfo = this.commentService.getComment(board, post, comment);
         return new CommentReportInfo(commentReport, commentInfo);
+    }
+
+    private Board getBoard(String id) {
+        Optional<Board> boardOptional = this.boardRepository.getBoard(id);
+        return boardOptional.orElseThrow(() -> new IricomException(IricomErrorCode.NOT_EXIST_BOARD));
+    }
+
+    private Post getPost(String id) {
+        Optional<Post> postOptional = this.postRepository.getPost(id);
+        return postOptional.orElseThrow(() -> new IricomException(IricomErrorCode.NOT_EXIST_POST));
+    }
+
+    private Comment getComment(String id) {
+        Optional<Comment> commentOptional = this.commentRepository.getComment(id);
+        return commentOptional.orElseThrow(() -> new IricomException(IricomErrorCode.NOT_EXIST_COMMENT));
     }
 }
