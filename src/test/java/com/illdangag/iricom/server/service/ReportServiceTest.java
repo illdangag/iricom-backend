@@ -7,7 +7,6 @@ import com.illdangag.iricom.server.data.request.PostReportInfoSearch;
 import com.illdangag.iricom.server.data.response.PostReportInfoList;
 import com.illdangag.iricom.server.exception.IricomException;
 import com.illdangag.iricom.server.test.IricomTestSuite;
-import jdk.jfr.Description;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
