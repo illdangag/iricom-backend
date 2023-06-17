@@ -6,9 +6,11 @@ import com.illdangag.iricom.server.configuration.annotation.AuthRole;
 import com.illdangag.iricom.server.configuration.annotation.RequestContext;
 import com.illdangag.iricom.server.data.entity.Account;
 import com.illdangag.iricom.server.data.request.CommentReportCreate;
-import com.illdangag.iricom.server.data.request.PostReportCreate;
+import com.illdangag.iricom.server.data.request.PostReportInfoCreate;
+import com.illdangag.iricom.server.data.request.PostReportInfoSearch;
 import com.illdangag.iricom.server.data.response.CommentReportInfo;
 import com.illdangag.iricom.server.data.response.PostReportInfo;
+import com.illdangag.iricom.server.data.response.PostReportInfoList;
 import com.illdangag.iricom.server.service.ReportService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,18 +31,28 @@ public class ReportController {
         this.reportService = reportService;
     }
 
-    @ApiCallLog(apiCode = "RP_002")
+    @ApiCallLog(apiCode = "RP_001")
+    @Auth(role = AuthRole.BOARD_ADMIN)
+    @RequestMapping(method = RequestMethod.GET, value = "/v1/boards/{board_id}/posts/{post_id}/report")
+    public ResponseEntity<PostReportInfoList> getPostReportInfoList(@PathVariable(value = "board_id") String boardId,
+                                                                    @PathVariable(value = "post_id") String postId,
+                                                                    @RequestBody @Valid PostReportInfoSearch postReportInfoSearch,
+                                                                    @RequestContext Account account) {
+        return null;
+    }
+
+    @ApiCallLog(apiCode = "RP_003")
     @Auth(role = AuthRole.ACCOUNT)
     @RequestMapping(method = RequestMethod.POST, value = "/v1/boards/{board_id}/posts/{post_id}/report")
     public ResponseEntity<PostReportInfo> reportPost(@PathVariable(value = "board_id") String boardId,
                                                      @PathVariable(value = "post_id") String postId,
-                                                     @RequestBody @Valid PostReportCreate postReportCreate,
+                                                     @RequestBody @Valid PostReportInfoCreate postReportInfoCreate,
                                                      @RequestContext Account account) {
-        PostReportInfo postReportInfo = this.reportService.reportPost(account, boardId, postId, postReportCreate);
+        PostReportInfo postReportInfo = this.reportService.reportPost(account, boardId, postId, postReportInfoCreate);
         return ResponseEntity.status(HttpStatus.OK).body(postReportInfo);
     }
 
-    @ApiCallLog(apiCode = "RC_002")
+    @ApiCallLog(apiCode = "RC_003")
     @Auth(role = AuthRole.ACCOUNT)
     @RequestMapping(method = RequestMethod.POST, value = "/v1/boards/{board_id}/posts/{post_id}/comments/{comment_id}/report")
     public ResponseEntity<CommentReportInfo> reportComment(@PathVariable(value = "board_id") String boardId,

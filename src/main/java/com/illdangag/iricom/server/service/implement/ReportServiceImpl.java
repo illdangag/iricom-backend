@@ -2,7 +2,7 @@ package com.illdangag.iricom.server.service.implement;
 
 import com.illdangag.iricom.server.data.entity.*;
 import com.illdangag.iricom.server.data.request.CommentReportCreate;
-import com.illdangag.iricom.server.data.request.PostReportCreate;
+import com.illdangag.iricom.server.data.request.PostReportInfoCreate;
 import com.illdangag.iricom.server.data.request.PostReportInfoSearch;
 import com.illdangag.iricom.server.data.response.*;
 import com.illdangag.iricom.server.exception.IricomErrorCode;
@@ -84,18 +84,18 @@ public class ReportServiceImpl implements ReportService {
     }
 
     @Override
-    public PostReportInfo reportPost(Account account, String boardId, String postId, PostReportCreate postReportCreate) {
+    public PostReportInfo reportPost(Account account, String boardId, String postId, PostReportInfoCreate postReportInfoCreate) {
         Optional<Board> boardOptional = this.boardRepository.getBoard(boardId);
         Optional<Post> postOptional = this.postRepository.getPost(postId);
 
         Board board = boardOptional.orElseThrow(() -> new IricomException(IricomErrorCode.NOT_EXIST_BOARD));
         Post post = postOptional.orElseThrow(() -> new IricomException(IricomErrorCode.NOT_EXIST_POST));
 
-        return this.reportPost(account, board, post, postReportCreate);
+        return this.reportPost(account, board, post, postReportInfoCreate);
     }
 
     @Override
-    public PostReportInfo reportPost(Account account, Board board, Post post, PostReportCreate postReportCreate) {
+    public PostReportInfo reportPost(Account account, Board board, Post post, PostReportInfoCreate postReportInfoCreate) {
         if (!post.getBoard().equals(board)) {
             throw new IricomException(IricomErrorCode.NOT_EXIST_POST);
         }
@@ -109,8 +109,8 @@ public class ReportServiceImpl implements ReportService {
         PostReport postReport = PostReport.builder()
                 .account(account)
                 .post(post)
-                .type(postReportCreate.getType())
-                .reason(postReportCreate.getReason())
+                .type(postReportInfoCreate.getType())
+                .reason(postReportInfoCreate.getReason())
                 .build();
 
         this.reportRepository.savePostReport(postReport);

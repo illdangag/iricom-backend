@@ -972,11 +972,11 @@ public abstract class IricomTestSuite {
         String boardId = String.valueOf(board.getId());
         String postId = String.valueOf(post.getId());
 
-        PostReportCreate postReportCreate = PostReportCreate.builder()
+        PostReportInfoCreate postReportInfoCreate = PostReportInfoCreate.builder()
                 .type(testPostReportInfo.getType())
                 .reason(testPostReportInfo.getReason())
                 .build();
-        PostReportInfo postReportInfo = this.reportService.reportPost(reportAccount, boardId, postId, postReportCreate);
+        PostReportInfo postReportInfo = this.reportService.reportPost(reportAccount, boardId, postId, postReportInfoCreate);
         return this.getPostReport(postReportInfo.getId());
     }
 
