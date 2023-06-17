@@ -168,7 +168,7 @@ operation::AT_004[snippets='curl-request,request-fields,http-response,response-f
 
 == 신고
 === 게시물 신고
-==== RP_001
+==== RP_002
 
 operation::RP_001[snippets='curl-request,request-fields,http-response,response-fields']
 

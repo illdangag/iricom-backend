@@ -176,19 +176,16 @@ public class ReportControllerTest extends IricomTestSuite {
             @Test
             @Order(0)
             @DisplayName("댓글 신고")
-            public void testCase00() throws Exception {
+            public void reportComment() throws Exception {
                 Comment comment = getComment(reportComment04);
                 Post post = comment.getPost();
                 Board board = post.getBoard();
 
                 Map<String, Object> requestBody = new HashMap<>();
-                requestBody.put("boardId", board.getId());
-                requestBody.put("postId", post.getId());
-                requestBody.put("commentId", comment.getId());
                 requestBody.put("type", "hate");
                 requestBody.put("reason", "This is a hateful comment.");
 
-                MockHttpServletRequestBuilder requestBuilder = post("/v1/report/comment")
+                MockHttpServletRequestBuilder requestBuilder = post("/v1/boards/{boardId}/posts/{postId}/comments/{commentId}/report", board.getId(), post.getId(), comment.getId())
                         .content(getJsonString(requestBody))
                         .contentType(MediaType.APPLICATION_JSON);
                 setAuthToken(requestBuilder, common00);
@@ -207,13 +204,10 @@ public class ReportControllerTest extends IricomTestSuite {
                 Board board = post.getBoard();
 
                 Map<String, Object> requestBody = new HashMap<>();
-                requestBody.put("boardId", board.getId());
-                requestBody.put("postId", post.getId());
-                requestBody.put("commentId", comment.getId());
                 requestBody.put("type", "hate");
                 requestBody.put("reason", "This is a hateful comment.");
 
-                MockHttpServletRequestBuilder requestBuilder = post("/v1/report/comment")
+                MockHttpServletRequestBuilder requestBuilder = post("/v1/boards/{boardId}/posts/{postId}/comments/{commentId}/report", board.getId(), post.getId(), comment.getId())
                         .content(getJsonString(requestBody))
                         .contentType(MediaType.APPLICATION_JSON);
                 setAuthToken(requestBuilder, common00);
@@ -237,13 +231,10 @@ public class ReportControllerTest extends IricomTestSuite {
                 Post post = comment.getPost();
 
                 Map<String, Object> requestBody = new HashMap<>();
-                requestBody.put("boardId", "NOT_EXIST_BOARD");
-                requestBody.put("postId", post.getId());
-                requestBody.put("commentId", comment.getId());
                 requestBody.put("type", "hate");
                 requestBody.put("reason", "This is a hateful comment.");
 
-                MockHttpServletRequestBuilder requestBuilder = post("/v1/report/comment")
+                MockHttpServletRequestBuilder requestBuilder = post("/v1/boards/{boardId}/posts/{postId}/comments/{commentId}/report", "NOT_EXIST_BOARD", post.getId(), comment.getId())
                         .content(getJsonString(requestBody))
                         .contentType(MediaType.APPLICATION_JSON);
                 setAuthToken(requestBuilder, common00);
@@ -264,13 +255,10 @@ public class ReportControllerTest extends IricomTestSuite {
                 Board board = post.getBoard();
 
                 Map<String, Object> requestBody = new HashMap<>();
-                requestBody.put("boardId", board.getId());
-                requestBody.put("postId", "NOT_EXIST_POST");
-                requestBody.put("commentId", comment.getId());
                 requestBody.put("type", "hate");
                 requestBody.put("reason", "This is a hateful comment.");
 
-                MockHttpServletRequestBuilder requestBuilder = post("/v1/report/comment")
+                MockHttpServletRequestBuilder requestBuilder = post("/v1/boards/{boardId}/posts/{postId}/comments/{commentId}/report", board.getId(), "NOT_EXIST_POST", comment.getId())
                         .content(getJsonString(requestBody))
                         .contentType(MediaType.APPLICATION_JSON);
                 setAuthToken(requestBuilder, common00);
@@ -291,13 +279,10 @@ public class ReportControllerTest extends IricomTestSuite {
                 Board board = post.getBoard();
 
                 Map<String, Object> requestBody = new HashMap<>();
-                requestBody.put("boardId", board.getId());
-                requestBody.put("postId", post.getId());
-                requestBody.put("commentId", "NOT_EXIST_COMMENT");
                 requestBody.put("type", "hate");
                 requestBody.put("reason", "This is a hateful comment.");
 
-                MockHttpServletRequestBuilder requestBuilder = post("/v1/report/comment")
+                MockHttpServletRequestBuilder requestBuilder = post("/v1/boards/{boardId}/posts/{postId}/comments/{commentId}/report", board.getId(), post.getId(), "NOT_EXIST_COMMENT")
                         .content(getJsonString(requestBody))
                         .contentType(MediaType.APPLICATION_JSON);
                 setAuthToken(requestBuilder, common00);
@@ -318,13 +303,10 @@ public class ReportControllerTest extends IricomTestSuite {
                 Board board = getBoard(disableBoard);
 
                 Map<String, Object> requestBody = new HashMap<>();
-                requestBody.put("boardId", board.getId());
-                requestBody.put("postId", post.getId());
-                requestBody.put("commentId", comment.getId());
                 requestBody.put("type", "hate");
                 requestBody.put("reason", "This is a hateful comment.");
 
-                MockHttpServletRequestBuilder requestBuilder = post("/v1/report/comment")
+                MockHttpServletRequestBuilder requestBuilder = post("/v1/boards/{boardId}/posts/{postId}/comments/{commentId}/report", board.getId(), post.getId(), comment.getId())
                         .content(getJsonString(requestBody))
                         .contentType(MediaType.APPLICATION_JSON);
                 setAuthToken(requestBuilder, common00);
@@ -346,13 +328,10 @@ public class ReportControllerTest extends IricomTestSuite {
                 Post invalidPost = getPost(enableBoardPost01);
 
                 Map<String, Object> requestBody = new HashMap<>();
-                requestBody.put("boardId", board.getId());
-                requestBody.put("postId", invalidPost.getId());
-                requestBody.put("commentId", comment.getId());
                 requestBody.put("type", "hate");
                 requestBody.put("reason", "This is a hateful comment.");
 
-                MockHttpServletRequestBuilder requestBuilder = post("/v1/report/comment")
+                MockHttpServletRequestBuilder requestBuilder = post("/v1/boards/{boardId}/posts/{postId}/comments/{commentId}/report", board.getId(), invalidPost.getId(), comment.getId())
                         .content(getJsonString(requestBody))
                         .contentType(MediaType.APPLICATION_JSON);
                 setAuthToken(requestBuilder, common00);
@@ -374,13 +353,10 @@ public class ReportControllerTest extends IricomTestSuite {
                 Comment invalidComment = getComment(enableBoardComment00);
 
                 Map<String, Object> requestBody = new HashMap<>();
-                requestBody.put("boardId", board.getId());
-                requestBody.put("postId", post.getId());
-                requestBody.put("commentId", invalidComment.getId());
                 requestBody.put("type", "hate");
                 requestBody.put("reason", "This is a hateful comment.");
 
-                MockHttpServletRequestBuilder requestBuilder = post("/v1/report/comment")
+                MockHttpServletRequestBuilder requestBuilder = post("/v1/boards/{boardId}/posts/{postId}/comments/{commentId}/report", board.getId(), post.getId(), invalidComment.getId())
                         .content(getJsonString(requestBody))
                         .contentType(MediaType.APPLICATION_JSON);
                 setAuthToken(requestBuilder, common00);
@@ -401,13 +377,10 @@ public class ReportControllerTest extends IricomTestSuite {
                 Board board = post.getBoard();
 
                 Map<String, Object> requestBody = new HashMap<>();
-                requestBody.put("boardId", board.getId());
-                requestBody.put("postId", post.getId());
-                requestBody.put("commentId", comment.getId());
                 requestBody.put("type", "hate");
                 requestBody.put("reason", "This is a hateful comment.");
 
-                MockHttpServletRequestBuilder requestBuilder = post("/v1/report/comment")
+                MockHttpServletRequestBuilder requestBuilder = post("/v1/boards/{boardId}/posts/{postId}/comments/{commentId}/report", board.getId(), post.getId(), comment.getId())
                         .content(getJsonString(requestBody))
                         .contentType(MediaType.APPLICATION_JSON);
                 setAuthToken(requestBuilder, common00);
@@ -428,13 +401,10 @@ public class ReportControllerTest extends IricomTestSuite {
                 Board board = post.getBoard();
 
                 Map<String, Object> requestBody = new HashMap<>();
-                requestBody.put("boardId", board.getId());
-                requestBody.put("postId", post.getId());
-                requestBody.put("commentId", comment.getId());
                 requestBody.put("type", "hate");
                 requestBody.put("reason", "This is a hateful comment.");
 
-                MockHttpServletRequestBuilder requestBuilder = post("/v1/report/comment")
+                MockHttpServletRequestBuilder requestBuilder = post("/v1/boards/{boardId}/posts/{postId}/comments/{commentId}/report", board.getId(), post.getId(), comment.getId())
                         .content(getJsonString(requestBody))
                         .contentType(MediaType.APPLICATION_JSON);
                 setAuthToken(requestBuilder, common00);

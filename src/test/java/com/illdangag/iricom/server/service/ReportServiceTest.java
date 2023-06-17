@@ -132,15 +132,16 @@ public class ReportServiceTest extends IricomTestSuite {
             Post post = comment.getPost();
             Board board = post.getBoard();
 
+            String boardId = String.valueOf(board.getId());
+            String postId = String.valueOf(post.getId());
+            String commentId = String.valueOf(comment.getId());
+
             CommentReportCreate commentReportCreate = CommentReportCreate.builder()
-                    .boardId(String.valueOf(board.getId()))
-                    .postId(String.valueOf(post.getId()))
-                    .commentId(String.valueOf(comment.getId()))
                     .type(ReportType.ETC)
                     .reason("report test")
                     .build();
 
-            reportService.reportComment(account, commentReportCreate);
+            reportService.reportComment(account, boardId, postId, commentId, commentReportCreate);
         }
 
         @Test
@@ -151,18 +152,19 @@ public class ReportServiceTest extends IricomTestSuite {
             Post post = comment.getPost();
             Board board = post.getBoard();
 
+            String boardId = String.valueOf(board.getId());
+            String postId = String.valueOf(post.getId());
+            String commentId = String.valueOf(comment.getId());
+
             CommentReportCreate commentReportCreate = CommentReportCreate.builder()
-                    .boardId(String.valueOf(board.getId()))
-                    .postId(String.valueOf(post.getId()))
-                    .commentId(String.valueOf(comment.getId()))
                     .type(ReportType.ETC)
                     .reason("report test")
                     .build();
 
-            reportService.reportComment(account, commentReportCreate);
+            reportService.reportComment(account, boardId, postId, commentId, commentReportCreate);
 
             Assertions.assertThrows(IricomException.class, () -> {
-                reportService.reportComment(account, commentReportCreate);
+                reportService.reportComment(account, boardId, postId, commentId, commentReportCreate);
             });
         }
 
@@ -175,16 +177,17 @@ public class ReportServiceTest extends IricomTestSuite {
             Board board = post.getBoard();
             Post invalidPost = getPost(disableBoardPost00);
 
+            String boardId = String.valueOf(board.getId());
+            String invalidPostId = String.valueOf(invalidPost.getId());
+            String commentId = String.valueOf(comment.getId());
+
             CommentReportCreate commentReportCreate = CommentReportCreate.builder()
-                    .boardId(String.valueOf(board.getId()))
-                    .postId(String.valueOf(invalidPost.getId()))
-                    .commentId(String.valueOf(comment.getId()))
                     .type(ReportType.ETC)
                     .reason("report test")
                     .build();
 
             Assertions.assertThrows(IricomException.class, () -> {
-                reportService.reportComment(account, commentReportCreate);
+                reportService.reportComment(account, boardId, invalidPostId, commentId, commentReportCreate);
             });
         }
 
@@ -196,75 +199,17 @@ public class ReportServiceTest extends IricomTestSuite {
             Post post = comment.getPost();
             Board invalidBoard = getBoard(disableBoard);
 
+            String invalidBoardId = String.valueOf(invalidBoard.getId());
+            String postId = String.valueOf(post.getId());
+            String commentId = String.valueOf(comment.getId());
+
             CommentReportCreate commentReportCreate = CommentReportCreate.builder()
-                    .boardId(String.valueOf(invalidBoard.getId()))
-                    .postId(String.valueOf(post.getId()))
-                    .commentId(String.valueOf(comment.getId()))
                     .type(ReportType.ETC)
                     .reason("report test")
                     .build();
 
             Assertions.assertThrows(IricomException.class, () -> {
-                reportService.reportComment(account, commentReportCreate);
-            });
-        }
-
-        @Test
-        @DisplayName("게시판 ID 누락")
-        public void testCase04() throws Exception {
-            Account account = getAccount(common00);
-            Comment comment = getComment(reportComment03);
-            Post post = comment.getPost();
-
-            CommentReportCreate commentReportCreate = CommentReportCreate.builder()
-                    .postId(String.valueOf(post.getId()))
-                    .commentId(String.valueOf(comment.getId()))
-                    .type(ReportType.ETC)
-                    .reason("report test")
-                    .build();
-
-            Assertions.assertThrows(IricomException.class, () -> {
-                reportService.reportComment(account, commentReportCreate);
-            });
-        }
-
-        @Test
-        @DisplayName("게시물 ID 누락")
-        public void testCase05() throws Exception {
-            Account account = getAccount(common00);
-            Comment comment = getComment(reportComment03);
-            Post post = comment.getPost();
-            Board board = post.getBoard();
-
-            CommentReportCreate commentReportCreate = CommentReportCreate.builder()
-                    .boardId(String.valueOf(board.getId()))
-                    .commentId(String.valueOf(comment.getId()))
-                    .type(ReportType.ETC)
-                    .reason("report test")
-                    .build();
-
-            Assertions.assertThrows(IricomException.class, () -> {
-                reportService.reportComment(account, commentReportCreate);
-            });
-        }
-
-        @Test
-        @DisplayName("댓글 ID 누락")
-        public void testCase06() throws Exception {
-            Account account = getAccount(common00);
-            Comment comment = getComment(reportComment03);
-            Post post = comment.getPost();
-            Board board = post.getBoard();
-
-            CommentReportCreate commentReportCreate = CommentReportCreate.builder()
-                    .boardId(String.valueOf(board.getId()))
-                    .postId(String.valueOf(post.getId()))
-                    .type(ReportType.ETC)
-                    .reason("report test")
-                    .build();
-
-            Assertions.assertThrows(IricomException.class, () -> {
-                reportService.reportComment(account, commentReportCreate);
+                reportService.reportComment(account, invalidBoardId, postId, commentId, commentReportCreate);
             });
         }
 
@@ -276,16 +221,17 @@ public class ReportServiceTest extends IricomTestSuite {
             Post post = comment.getPost();
             Board board = post.getBoard();
 
+            String boardId = String.valueOf(board.getId());
+            String postId = String.valueOf(post.getId());
+            String commentId = "NOT_EXIST_COMMENT";
+
             CommentReportCreate commentReportCreate = CommentReportCreate.builder()
-                    .boardId(String.valueOf(board.getId()))
-                    .postId(String.valueOf(post.getId()))
-                    .commentId("NOT_EXIST_COMMENT")
                     .type(ReportType.ETC)
                     .reason("report test")
                     .build();
 
             Assertions.assertThrows(IricomException.class, () -> {
-                reportService.reportComment(account, commentReportCreate);
+                reportService.reportComment(account, boardId, postId, commentId, commentReportCreate);
             });
         }
 
@@ -297,16 +243,17 @@ public class ReportServiceTest extends IricomTestSuite {
             Post post = comment.getPost();
             Board board = post.getBoard();
 
+            String boardId = String.valueOf(board.getId());
+            String postId = "NOT_EXIST_POST";
+            String commentId = String.valueOf(comment.getId());
+
             CommentReportCreate commentReportCreate = CommentReportCreate.builder()
-                    .boardId(String.valueOf(board.getId()))
-                    .postId("NOT_EXIST_POST")
-                    .commentId(String.valueOf(comment.getId()))
                     .type(ReportType.ETC)
                     .reason("report test")
                     .build();
 
             Assertions.assertThrows(IricomException.class, () -> {
-                reportService.reportComment(account, commentReportCreate);
+                reportService.reportComment(account, boardId, postId, commentId, commentReportCreate);
             });
         }
 
@@ -317,16 +264,17 @@ public class ReportServiceTest extends IricomTestSuite {
             Comment comment = getComment(reportComment03);
             Post post = comment.getPost();
 
+            String boardId = "NOT_EXIST_BOARD";
+            String postId = String.valueOf(post.getId());
+            String commentId = String.valueOf(comment.getId());
+
             CommentReportCreate commentReportCreate = CommentReportCreate.builder()
-                    .boardId("NOT_EXIST_BOARD")
-                    .postId(String.valueOf(post.getId()))
-                    .commentId(String.valueOf(comment.getId()))
                     .type(ReportType.ETC)
                     .reason("report test")
                     .build();
 
             Assertions.assertThrows(IricomException.class, () -> {
-                reportService.reportComment(account, commentReportCreate);
+                reportService.reportComment(account, boardId, postId, commentId, commentReportCreate);
             });
         }
     }

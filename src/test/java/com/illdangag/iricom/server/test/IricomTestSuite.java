@@ -940,14 +940,15 @@ public abstract class IricomTestSuite {
         Post post = comment.getPost();
         Board board = post.getBoard();
 
+        String boardId = String.valueOf(board.getId());
+        String postId = String.valueOf(post.getId());
+        String commentId = String.valueOf(comment.getId());
+
         CommentReportCreate commentReportCreate = CommentReportCreate.builder()
-                .boardId(String.valueOf(board.getId()))
-                .postId(String.valueOf(post.getId()))
-                .commentId(String.valueOf(comment.getId()))
                 .type(testCommentReportInfo.getType())
                 .reason(testCommentReportInfo.getReason())
                 .build();
-        CommentReportInfo commentReportInfo = this.reportService.reportComment(reportAccount, commentReportCreate);
+        CommentReportInfo commentReportInfo = this.reportService.reportComment(reportAccount, boardId, postId, commentId, commentReportCreate);
         return this.getCommentReport(commentReportInfo.getId());
     }
 

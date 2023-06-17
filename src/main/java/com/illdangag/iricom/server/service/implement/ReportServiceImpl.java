@@ -2,7 +2,6 @@ package com.illdangag.iricom.server.service.implement;
 
 import com.illdangag.iricom.server.data.entity.*;
 import com.illdangag.iricom.server.data.request.CommentReportCreate;
-import com.illdangag.iricom.server.data.request.PostBanCreate;
 import com.illdangag.iricom.server.data.request.PostReportCreate;
 import com.illdangag.iricom.server.data.response.CommentInfo;
 import com.illdangag.iricom.server.data.response.CommentReportInfo;
@@ -16,7 +15,6 @@ import com.illdangag.iricom.server.service.CommentService;
 import com.illdangag.iricom.server.service.PostService;
 import com.illdangag.iricom.server.service.ReportService;
 import lombok.extern.slf4j.Slf4j;
-import org.checkerframework.checker.units.qual.A;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -88,11 +86,7 @@ public class ReportServiceImpl implements ReportService {
     }
 
     @Override
-    public CommentReportInfo reportComment(Account account, CommentReportCreate commentReportCreate) {
-        String boardId = commentReportCreate.getBoardId();
-        String postId = commentReportCreate.getPostId();
-        String commentId = commentReportCreate.getCommentId();
-
+    public CommentReportInfo reportComment(Account account, String boardId, String postId, String commentId, CommentReportCreate commentReportCreate) {
         Optional<Board> boardOptional = this.boardRepository.getBoard(boardId);
         Optional<Post> postOptional = this.postRepository.getPost(postId);
         Optional<Comment> commentOptional = this.commentRepository.getComment(commentId);
@@ -101,6 +95,11 @@ public class ReportServiceImpl implements ReportService {
         Post post = postOptional.orElseThrow(() -> new IricomException(IricomErrorCode.NOT_EXIST_POST));
         Comment comment = commentOptional.orElseThrow(() -> new IricomException(IricomErrorCode.NOT_EXIST_COMMENT));
 
+        return this.reportComment(account, board, post, comment, commentReportCreate);
+    }
+
+    @Override
+    public CommentReportInfo reportComment(Account account, Board board, Post post, Comment comment, CommentReportCreate commentReportCreate) {
         if (!comment.getPost().equals(post)) {
             throw new IricomException(IricomErrorCode.NOT_EXIST_COMMENT);
         } else if (!post.getBoard().equals(board)) {
@@ -129,49 +128,5 @@ public class ReportServiceImpl implements ReportService {
         this.reportRepository.saveCommentReport(commentReport);
         CommentInfo commentInfo = this.commentService.getComment(board, post, comment);
         return new CommentReportInfo(commentReport, commentInfo);
-    }
-
-    @Override
-    public PostInfo banPost(Account account, String boardId, PostBanCreate postBanCreate) {
-        Board board = this.getBoard(boardId);
-        return this.banPost(account, board, postBanCreate);
-    }
-
-    @Override
-    public PostInfo banPost(Account account, Board board, PostBanCreate postBanCreate) {
-        if (!this.boardAuthorizationService.hasAuthorization(account, board)) {
-            throw new IricomException(IricomErrorCode.INVALID_AUTHORIZATION_TO_BAN_POST);
-        }
-
-        Optional<Post> postOptional = this.postRepository.getPost(postBanCreate.getPostId());
-        Post post = postOptional.orElseThrow(() -> {
-            return new IricomException(IricomErrorCode.NOT_EXIST_POST);
-        });
-
-        if (!post.isPublish()) {
-            // 발행되지 않은 게시물인 경우, 밴 처리를 하지 않음
-            throw new IricomException(IricomErrorCode.NOT_EXIST_PUBLISH_CONTENT);
-        }
-
-        // 이미 밴 처리 된 게시물인지 확인
-        List<PostBan> postBanList = this.banRepository.getPostBanList(post);
-        if (!postBanList.isEmpty()) {
-            throw new IricomException(IricomErrorCode.ALREADY_BAN_POST);
-        }
-
-        PostBan postBan = PostBan.builder()
-                .post(post)
-                .adminAccount(account)
-                .reason(postBanCreate.getReason())
-                .enabled(true)
-                .build();
-        this.banRepository.savePostBan(postBan);
-
-        return this.postService.getPostInfo(post, PostState.PUBLISH, true);
-    }
-
-    private Board getBoard(String id) {
-        Optional<Board> boardOptional = this.boardRepository.getBoard(id);
-        return boardOptional.orElseThrow(() -> new IricomException(IricomErrorCode.NOT_EXIST_BOARD));
     }
 }

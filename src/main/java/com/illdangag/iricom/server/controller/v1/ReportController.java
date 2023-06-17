@@ -29,7 +29,7 @@ public class ReportController {
         this.reportService = reportService;
     }
 
-    @ApiCallLog(apiCode = "RP_001")
+    @ApiCallLog(apiCode = "RP_002")
     @Auth(role = AuthRole.ACCOUNT)
     @RequestMapping(method = RequestMethod.POST, value = "/v1/boards/{board_id}/posts/{post_id}/report")
     public ResponseEntity<PostReportInfo> reportPost(@PathVariable(value = "board_id") String boardId,
@@ -40,12 +40,15 @@ public class ReportController {
         return ResponseEntity.status(HttpStatus.OK).body(postReportInfo);
     }
 
-    @ApiCallLog(apiCode = "RP_002")
+    @ApiCallLog(apiCode = "RC_002")
     @Auth(role = AuthRole.ACCOUNT)
-    @RequestMapping(method = RequestMethod.POST, value = "/v1/report/comment")
-    public ResponseEntity<CommentReportInfo> reportComment(@RequestBody @Valid CommentReportCreate commentReportCreate,
+    @RequestMapping(method = RequestMethod.POST, value = "/v1/boards/{board_id}/posts/{post_id}/comments/{comment_id}/report")
+    public ResponseEntity<CommentReportInfo> reportComment(@PathVariable(value = "board_id") String boardId,
+                                                           @PathVariable(value = "post_id") String postId,
+                                                           @PathVariable(value = "comment_id") String commentId,
+                                                           @RequestBody @Valid CommentReportCreate commentReportCreate,
                                                            @RequestContext Account account) {
-        CommentReportInfo commentReportInfo = this.reportService.reportComment(account, commentReportCreate);
+        CommentReportInfo commentReportInfo = this.reportService.reportComment(account, boardId, postId, commentId, commentReportCreate);
         return ResponseEntity.status(HttpStatus.OK).body(commentReportInfo);
     }
 }

@@ -56,7 +56,7 @@ public class ReportControllerTest extends IricomTestSuite {
         mockMvc.perform(requestBuilder)
                 .andExpect(status().is(200))
                 .andDo(print())
-                .andDo(document("RP_001",
+                .andDo(document("RP_002",
                                 preprocessRequest(
                                         removeHeaders("Authorization"),
                                         prettyPrint()
@@ -126,7 +126,7 @@ public class ReportControllerTest extends IricomTestSuite {
         requestBody.put("type", "hate");
         requestBody.put("reason", "This is a hateful comment.");
 
-        MockHttpServletRequestBuilder requestBuilder = post("/v1/report/comment")
+        MockHttpServletRequestBuilder requestBuilder = post("/v1/boards/{boardId}/posts/{postId}/comments/{commentId}/report", board.getId(), post.getId(), comment.getId())
                 .content(getJsonString(requestBody))
                 .contentType(MediaType.APPLICATION_JSON);
         setAuthToken(requestBuilder, common00);
@@ -134,7 +134,7 @@ public class ReportControllerTest extends IricomTestSuite {
         mockMvc.perform(requestBuilder)
                 .andExpect(status().is(200))
                 .andDo(print())
-                .andDo(document("RP_002",
+                .andDo(document("RC_002",
                                 preprocessRequest(
                                         removeHeaders("Authorization"),
                                         prettyPrint()
