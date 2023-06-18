@@ -40,6 +40,7 @@ public abstract class IricomTestSuite {
 
     // 계정 설정
     private static final String ACCOUNT_PASSWORD = "111111";
+
     protected static final TestAccountInfo systemAdmin = TestAccountInfo.builder()
             .email("admin@iricom.com").isAdmin(true).nickname("admin").description("system admin").build();
 
@@ -107,14 +108,16 @@ public abstract class IricomTestSuite {
             toEnableBoardAdmin, // 게시판 관리자 추가 테스트용 계정
             disableBoardAdmin, // 비활성화 게시판 관리자
             toDisableBoardAdmin, // 게시판 관리자 삭제 테스트용 계정
-            common00, // 일반 계정, 게시판 관리자 계정으로 등록 금지
-            common01, common02, common03, common04, common05, common06, common07, common08, common09,
+            common00, common01, common02, common03, common04, common05, common06, common07, common08, common09, // 일반 계정, 게시판 관리자 계정으로 등록 금지
             unknown00, // 등록되지 않은 계정 권한용 테스트 계정, 테스트 케이스에서 계정 정보를 등록 금지
             unknown01, // 등록되지 않은 계정의 정보 수정 테스트용 계정, 테스트 케이스가 수행 되면 등록된 계정으로 전환
             unknown02, // 등록되지 않은 계정의 정보 수정 테스트용 계정, 테스트 케이스가 수행 되면 등록된 계정으로 전환
     };
 
     // 게시판 설정
+    protected static final TestBoardInfo restDocBoard = TestBoardInfo.builder()
+            .title("restDoc").isEnabled(true).adminList(Collections.singletonList(allBoardAdmin)).build();
+
     protected static final TestBoardInfo enableBoard = TestBoardInfo.builder()
             .title("enable").isEnabled(true).adminList(Arrays.asList(allBoardAdmin, enableBoardAdmin, toDisableBoardAdmin)).build();
 
@@ -123,9 +126,6 @@ public abstract class IricomTestSuite {
 
     protected static final TestBoardInfo updateBoard = TestBoardInfo.builder()
             .title("update").isEnabled(true).adminList(Collections.singletonList(allBoardAdmin)).build();
-
-    protected static final TestBoardInfo restDocBoard = TestBoardInfo.builder()
-            .title("restDoc").isEnabled(true).adminList(Collections.singletonList(allBoardAdmin)).build();
 
     protected static final TestBoardInfo createBoard = TestBoardInfo.builder()
             .title("createBoard").isEnabled(true).adminList(Collections.singletonList(allBoardAdmin)).build();
@@ -145,17 +145,22 @@ public abstract class IricomTestSuite {
     protected static final TestBoardInfo banBoard = TestBoardInfo.builder()
             .title("banBoard").isEnabled(true).adminList(Collections.singletonList(allBoardAdmin)).build();
 
+    // service 테스트용
+    protected static final TestBoardInfo serviceTestBoard = TestBoardInfo.builder()
+            .title("serviceTestBoard").isEnabled(true).adminList(Collections.singletonList(allBoardAdmin)).build();
+
     private static final TestBoardInfo[] testBoardInfos = {
+            restDocBoard, // restDoc
             enableBoard, // 활성화
             disableBoard, // 비활성화
             updateBoard, // 게시판 정보 수정
             createBoard, // 문서 생성
             commentBoard, // 댓글
             voteBoard, // 투표
-            restDocBoard, // restDoc
             reportBoard, // 신고
             reportSearchBoard, // 신고 내역 검색
             banBoard, // 차단
+            serviceTestBoard,
     };
 
     // 게시물 설정
@@ -904,11 +909,6 @@ public abstract class IricomTestSuite {
                 this.disableBoard(board);
             }
         }
-    }
-
-    private Account getAccount(String id) {
-        Optional<Account> accountOptional = this.accountRepository.getAccount(id);;
-        return accountOptional.orElseThrow(() -> new IricomException(IricomErrorCode.NOT_EXIST_ACCOUNT));
     }
 
     private Account createAccount(TestAccountInfo testAccountInfo) {

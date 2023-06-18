@@ -24,11 +24,20 @@ public class CommentServiceTest extends IricomTestSuite {
     }
 
     @Nested
-    class ReportCommentTest {
+    @DisplayName("생성")
+    class Create {
+        @Test
+        @DisplayName("댓글 생성")
+        public void createComment() throws Exception {
+            // TODO
+        }
+    }
 
+    @Nested
+    class Report {
         @Test
         @DisplayName("신고된 댓글 조회")
-        public void testCase00() throws Exception {
+        public void getReportedComment() throws Exception {
             Comment comment = getComment(reportedComment00);
             Post post = comment.getPost();
             Board board = post.getBoard();
