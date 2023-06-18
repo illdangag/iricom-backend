@@ -102,6 +102,19 @@ public class CommentController {
     }
 
     /**
+     * 댓글 정보 조회
+     */
+    @ApiCallLog(apiCode = "CM_003")
+    @Auth(role = AuthRole.NONE)
+    @RequestMapping(method = RequestMethod.GET, value = "/comments/{comment_id}")
+    public ResponseEntity<CommentInfo> getCommentInfo(@PathVariable(value = "board_id") String boardId,
+                                                      @PathVariable(value = "post_id") String postId,
+                                                      @PathVariable(value = "comment_id") String commentId) {
+        CommentInfo commentInfo = this.commentService.getComment(boardId, postId, commentId);
+        return ResponseEntity.status(HttpStatus.OK).body(commentInfo);
+    }
+
+    /**
      * 댓글 수정
      */
     @ApiCallLog(apiCode = "CM_004")
@@ -112,7 +125,6 @@ public class CommentController {
                                                      @PathVariable(value = "comment_id") String commentId,
                                                      @RequestBody @Valid CommentInfoUpdate commentInfoUpdate,
                                                      @RequestContext Account account) {
-
         CommentInfo commentInfo = this.commentService.updateComment(account, boardId, postId, commentId, commentInfoUpdate);
         return ResponseEntity.status(HttpStatus.OK).body(commentInfo);
     }

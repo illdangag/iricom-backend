@@ -150,6 +150,11 @@ operation::CM_001[snippets='curl-request,path-parameters,request-fields,http-res
 
 operation::CM_002[snippets='curl-request,path-parameters,request-parameters,http-response,response-fields']
 
+=== 댓글 정보 조회
+==== CM_003
+
+operation::CM_003[snippets='curl-request,path-parameters,http-response,response-fields']
+
 === 댓글 수정
 ==== CM_004
 

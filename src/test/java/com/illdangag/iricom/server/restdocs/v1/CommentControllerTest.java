@@ -142,6 +142,44 @@ public class CommentControllerTest extends IricomTestSuite {
     }
 
     @Test
+    @DisplayName("정보 조회")
+    @Order(1)
+    public void cm003() throws Exception {
+        Board board = getBoard(commentBoard);
+        Post post = getPost(commentGetPost00);
+        Comment comment = getComment(commentGetComment04);
+
+        MockHttpServletRequestBuilder requestBuilder = get("/v1/boards/{boardId}/posts/{postId}/comments/{commentId}", board.getId(), post.getId(), comment.getId());
+        setAuthToken(requestBuilder, common00);
+
+        List<FieldDescriptor> fieldDescriptorList = new LinkedList<>();
+        fieldDescriptorList.addAll(IricomFieldsSnippet.getComment("", true));
+        fieldDescriptorList.addAll(IricomFieldsSnippet.getAccount("account."));
+
+        mockMvc.perform(requestBuilder)
+                .andExpect(status().is(200))
+                .andDo(print())
+                .andDo(document("CM_003",
+                        preprocessRequest(
+                                removeHeaders("Authorization"),
+                                prettyPrint()
+                        ),
+                        preprocessResponse(
+                                prettyPrint()
+                        ),
+                        pathParameters(
+                                parameterWithName("boardId").description("게시판 아이디"),
+                                parameterWithName("postId").description("게시물 아이디"),
+                                parameterWithName("commentId").description("댓글 아이디")
+                        ),
+                        requestHeaders(
+//                                        headerWithName("Authorization").description("firebase 토큰")
+                        ),
+                        responseFields(fieldDescriptorList.toArray(FieldDescriptor[]::new))
+                ));
+    }
+
+    @Test
     @DisplayName("수정")
     @Order(2)
     public void cm004() throws Exception {
