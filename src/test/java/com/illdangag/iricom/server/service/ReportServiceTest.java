@@ -32,7 +32,6 @@ public class ReportServiceTest extends IricomTestSuite {
     @Nested
     @DisplayName("게시물")
     class PostTest {
-
         @Nested
         @DisplayName("신고")
         class ReportTest {
@@ -717,16 +716,48 @@ public class ReportServiceTest extends IricomTestSuite {
         @DisplayName("목록 조회")
         class SearchTest {
             @Test
-            @DisplayName("기본")
-            public void getDefaultSearch() throws Exception {
+            @DisplayName("게시판 기준 기본 조회")
+            public void getBoardSearch() throws Exception {
                 Account account = getAccount(systemAdmin);
-                Board board = getBoard(reportSearchBoard);
+                CommentReport commentReport = getCommentReport(commentReportSearch00);
+                Board board = commentReport.getComment().getPost().getBoard();
 
                 CommentReportInfoSearch commentReportInfoSearch = CommentReportInfoSearch.builder().build();
                 CommentReportInfoList commentReportInfoList = reportService.getCommentReportInfoList(account, board, commentReportInfoSearch);
                 Assertions.assertEquals(0, commentReportInfoList.getSkip());
                 Assertions.assertEquals(20, commentReportInfoList.getLimit());
+                Assertions.assertEquals(16, commentReportInfoList.getTotal());
+            }
+
+            @Test
+            @DisplayName("게시물 기준 기본 조회")
+            public void getPostSearch() throws Exception {
+                Account account = getAccount(allBoardAdmin);
+                CommentReport commentReport = getCommentReport(commentReportSearch00);
+                Post post = commentReport.getComment().getPost();
+                Board board = post.getBoard();
+
+                CommentReportInfoSearch commentReportInfoSearch = CommentReportInfoSearch.builder().build();
+                CommentReportInfoList commentReportInfoList = reportService.getCommentReportInfoList(account, board, post, commentReportInfoSearch);
+                Assertions.assertEquals(0, commentReportInfoList.getSkip());
+                Assertions.assertEquals(20, commentReportInfoList.getLimit());
                 Assertions.assertEquals(8, commentReportInfoList.getTotal());
+            }
+
+            @Test
+            @DisplayName("댓글 기준 기본 조회")
+            public void getCommentSearch() throws Exception {
+                Account account = getAccount(allBoardAdmin);
+                CommentReport commentReport = getCommentReport(commentReportSearch00);
+                Comment comment = commentReport.getComment();
+                Post post = comment.getPost();
+                Board board = post.getBoard();
+
+                CommentReportInfoSearch commentReportInfoSearch = CommentReportInfoSearch.builder().build();
+                CommentReportInfoList commentReportInfoList = reportService.getCommentReportInfoList(account, board, post, comment, commentReportInfoSearch);
+                Assertions.assertEquals(0, commentReportInfoList.getSkip());
+                Assertions.assertEquals(20, commentReportInfoList.getLimit());
+                Assertions.assertEquals(4, commentReportInfoList.getTotal());
             }
         }
     }

@@ -290,8 +290,34 @@ public class ReportServiceImpl implements ReportService {
         if (!this.boardAuthorizationService.hasAuthorization(account, board)) {
             throw new IricomException(IricomErrorCode.INVALID_AUTHORIZATION_TO_GET_POST_REPORT_LIST);
         }
+        int skip = commentReportInfoSearch.getSkip();
+        int limit = commentReportInfoSearch.getLimit();
+        ReportType reportType = commentReportInfoSearch.getType();
+        String reason = commentReportInfoSearch.getReason();
 
-        return null;
+        long total = -1;
+        List<CommentReport> commentReportList;
+
+        if (reportType != null) {
+            total = this.reportRepository.getCommentReportListTotalCount(board, post, reportType, reason);
+            commentReportList = this.reportRepository.getCommentReportList(board, post, reportType, reason, skip, limit);
+        } else {
+            total = this.reportRepository.getCommentReportListTotalCount(board, post, reason);
+            commentReportList = this.reportRepository.getCommentReportList(board, post, reason, skip, limit);
+        }
+
+        List<CommentReportInfo> commentReportInfoList = commentReportList.stream()
+                .map(item -> {
+                    Comment comment = item.getComment();
+                    CommentInfo commentInfo = this.commentService.getComment(board, post, comment);
+                    return new CommentReportInfo(item, commentInfo);
+                }).collect(Collectors.toList());
+        return CommentReportInfoList.builder()
+                .skip(skip)
+                .limit(limit)
+                .total(total)
+                .commentReportInfoList(commentReportInfoList)
+                .build();
     }
 
     @Override
@@ -307,8 +333,33 @@ public class ReportServiceImpl implements ReportService {
         if (!this.boardAuthorizationService.hasAuthorization(account, board)) {
             throw new IricomException(IricomErrorCode.INVALID_AUTHORIZATION_TO_GET_POST_REPORT_LIST);
         }
+        int skip = commentReportInfoSearch.getSkip();
+        int limit = commentReportInfoSearch.getLimit();
+        ReportType reportType = commentReportInfoSearch.getType();
+        String reason = commentReportInfoSearch.getReason();
 
-        return null;
+        long total = -1;
+        List<CommentReport> commentReportList;
+
+        if (reportType != null) {
+            total = this.reportRepository.getCommentReportListTotalCount(board, post, comment, reportType, reason);
+            commentReportList = this.reportRepository.getCommentReportList(board, post, comment, reportType, reason, skip, limit);
+        } else {
+            total = this.reportRepository.getCommentReportListTotalCount(board, post, comment, reason);
+            commentReportList = this.reportRepository.getCommentReportList(board, post, comment, reason, skip, limit);
+        }
+
+        List<CommentReportInfo> commentReportInfoList = commentReportList.stream()
+                .map(item -> {
+                    CommentInfo commentInfo = this.commentService.getComment(board, post, comment);
+                    return new CommentReportInfo(item, commentInfo);
+                }).collect(Collectors.toList());
+        return CommentReportInfoList.builder()
+                .skip(skip)
+                .limit(limit)
+                .total(total)
+                .commentReportInfoList(commentReportInfoList)
+                .build();
     }
 
     private Board getBoard(String id) {

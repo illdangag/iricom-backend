@@ -561,6 +561,14 @@ public abstract class IricomTestSuite {
             .content("reportedSearchComment01")
             .creator(common00).post(reportedSearchPost00)
             .build();
+    protected static final TestCommentInfo reportedSearchComment02 = TestCommentInfo.builder()
+            .content("reportedSearchComment02")
+            .creator(common00).post(reportedSearchPost01)
+            .build();
+    protected static final TestCommentInfo reportedSearchComment03 = TestCommentInfo.builder()
+            .content("reportedSearchComment03")
+            .creator(common00).post(reportedSearchPost01)
+            .build();
 
     private static final TestCommentInfo[] testCommentInfos = {
             enableBoardComment00,
@@ -578,7 +586,7 @@ public abstract class IricomTestSuite {
 
             reportedComment00,
 
-            reportedSearchComment00, reportedSearchComment01,
+            reportedSearchComment00, reportedSearchComment01, reportedSearchComment02, reportedSearchComment03,
     };
 
     protected static final TestPostReportInfo postReport00 = TestPostReportInfo.builder()
@@ -732,12 +740,46 @@ public abstract class IricomTestSuite {
             .type(ReportType.ETC).reason("etc")
             .reportAccount(common04).comment(reportedSearchComment01)
             .build();
+    protected static final TestCommentReportInfo commentReportSearch08 = TestCommentReportInfo.builder()
+            .type(ReportType.HATE).reason("hate")
+            .reportAccount(common01).comment(reportedSearchComment02)
+            .build();
+    protected static final TestCommentReportInfo commentReportSearch09 = TestCommentReportInfo.builder()
+            .type(ReportType.POLITICAL).reason("political")
+            .reportAccount(common02).comment(reportedSearchComment02)
+            .build();
+    protected static final TestCommentReportInfo commentReportSearch10 = TestCommentReportInfo.builder()
+            .type(ReportType.PORNOGRAPHY).reason("pornography")
+            .reportAccount(common03).comment(reportedSearchComment02)
+            .build();
+    protected static final TestCommentReportInfo commentReportSearch11 = TestCommentReportInfo.builder()
+            .type(ReportType.ETC).reason("etc")
+            .reportAccount(common04).comment(reportedSearchComment02)
+            .build();
+    protected static final TestCommentReportInfo commentReportSearch12 = TestCommentReportInfo.builder()
+            .type(ReportType.HATE).reason("hate")
+            .reportAccount(common01).comment(reportedSearchComment03)
+            .build();
+    protected static final TestCommentReportInfo commentReportSearch13 = TestCommentReportInfo.builder()
+            .type(ReportType.POLITICAL).reason("political")
+            .reportAccount(common02).comment(reportedSearchComment03)
+            .build();
+    protected static final TestCommentReportInfo commentReportSearch14 = TestCommentReportInfo.builder()
+            .type(ReportType.PORNOGRAPHY).reason("pornography")
+            .reportAccount(common03).comment(reportedSearchComment03)
+            .build();
+    protected static final TestCommentReportInfo commentReportSearch15 = TestCommentReportInfo.builder()
+            .type(ReportType.ETC).reason("etc")
+            .reportAccount(common04).comment(reportedSearchComment03)
+            .build();
 
     private static final TestCommentReportInfo[] testCommentReportInfos = {
             commentReport00, commentReport01, commentReport02, commentReport03, commentReport04,
             commentReport05, commentReport06, commentReport07, commentReport08, commentReport09,
             commentReportSearch00, commentReportSearch01, commentReportSearch02,  commentReportSearch03,
             commentReportSearch04, commentReportSearch05, commentReportSearch06,  commentReportSearch07,
+            commentReportSearch08, commentReportSearch09, commentReportSearch10,  commentReportSearch11,
+            commentReportSearch12, commentReportSearch13, commentReportSearch14,  commentReportSearch15,
     };
 
     private static final Map<TestAccountInfo, Account> accountMap = new HashMap<>();
