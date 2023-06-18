@@ -360,6 +360,40 @@ public class ReportServiceImpl implements ReportService {
                 .build();
     }
 
+    @Override
+    public CommentReportInfo getCommentReportInfo(Account account, String boardId, String postId, String commentId, String reportId) {
+        Board board = this.getBoard(boardId);
+        Post post = this.getPost(postId);
+        Comment comment = this.getComment(commentId);
+        return this.getCommentReportInfo(account, board, post, comment, reportId);
+    }
+
+    @Override
+    public CommentReportInfo getCommentReportInfo(Account account, Board board, Post post, Comment comment, String reportId) {
+        if (!this.boardAuthorizationService.hasAuthorization(account, board)) {
+            throw new IricomException(IricomErrorCode.INVALID_AUTHORIZATION_TO_GET_POST_REPORT_LIST);
+        }
+
+        Post commentPost = comment.getPost();
+        if (!commentPost.equals(post)) {
+            throw new IricomException(IricomErrorCode.NOT_EXIST_COMMENT_REPORT);
+        }
+
+        Board commentBoard = commentPost.getBoard();
+        if (!commentBoard.equals(board)) {
+            throw new IricomException(IricomErrorCode.NOT_EXIST_COMMENT_REPORT);
+        }
+
+        Optional<CommentReport> commentReportOptional = this.reportRepository.getCommentReport(reportId);
+        CommentReport commentReport = commentReportOptional.orElseThrow(() -> new IricomException(IricomErrorCode.NOT_EXIST_COMMENT_REPORT));
+        if (!commentReport.getComment().equals(comment)) {
+            throw new IricomException(IricomErrorCode.NOT_EXIST_COMMENT_REPORT);
+        }
+
+        CommentInfo commentInfo = this.commentService.getComment(board, post, comment);
+        return new CommentReportInfo(commentReport, commentInfo);
+    }
+
     private Board getBoard(String id) {
         Optional<Board> boardOptional = this.boardRepository.getBoard(id);
         return boardOptional.orElseThrow(() -> new IricomException(IricomErrorCode.NOT_EXIST_BOARD));

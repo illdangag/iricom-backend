@@ -47,4 +47,8 @@ public interface ReportService {
     CommentReportInfoList getCommentReportInfoList(Account account, String boardId, String postId, String commentId, @Valid CommentReportInfoSearch commentReportInfoSearch);
 
     CommentReportInfoList getCommentReportInfoList(Account account, Board board, Post post, Comment comment, @Valid CommentReportInfoSearch commentReportInfoSearch);
+
+    CommentReportInfo getCommentReportInfo(Account account, String boardId, String postId, String commentId, String reportId);
+
+    CommentReportInfo getCommentReportInfo(Account account, Board board, Post post, Comment comment, String reportId);
 }

@@ -439,4 +439,47 @@ public class ReportControllerTest extends IricomTestSuite {
                         )
                 );
     }
+
+    @Test
+    @DisplayName("게시물 신고 정보 조회")
+    public void rc005() throws Exception {
+        CommentReport commentReport = getCommentReport(commentReportSearch00);
+        Comment comment = commentReport.getComment();
+        Post post = comment.getPost();
+        Board board = post.getBoard();
+
+        MockHttpServletRequestBuilder requestBuilder = get("/v1/report/comment/boards/{boardId}/posts/{postId}/comments/{commentId}/reports/{reportId}", board.getId(), post.getId(), comment.getId(), commentReport.getId());
+        setAuthToken(requestBuilder, allBoardAdmin);
+
+        List<FieldDescriptor> fieldDescriptorList = new LinkedList<>();
+        fieldDescriptorList.addAll(IricomFieldsSnippet.getCommentReport(""));
+        fieldDescriptorList.addAll(IricomFieldsSnippet.getComment("comment.", true));
+        fieldDescriptorList.addAll(IricomFieldsSnippet.getAccount("comment.account."));
+
+        mockMvc.perform(requestBuilder)
+                .andExpect(status().is(200))
+                .andDo(print())
+                .andDo(document("RC_005",
+                                preprocessRequest(
+                                        removeHeaders("Authorization"),
+                                        prettyPrint()
+                                ),
+                                preprocessResponse(
+                                        prettyPrint()
+                                ),
+                                pathParameters(
+                                        parameterWithName("boardId").description("게시판 아이디"),
+                                        parameterWithName("postId").description("게시물 아이디"),
+                                        parameterWithName("commentId").description("댓글 아이디"),
+                                        parameterWithName("reportId").description("신고 아이디")
+                                ),
+                                requestHeaders(
+//                                        headerWithName("Authorization").description("firebase 토큰")
+                                ),
+                                responseFields(
+                                        fieldDescriptorList.toArray(FieldDescriptor[]::new)
+                                )
+                        )
+                );
+    }
 }

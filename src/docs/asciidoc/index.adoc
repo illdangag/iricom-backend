@@ -196,17 +196,22 @@ operation::RP_004[snippets='curl-request,path-parameters,http-response,response-
 
 operation::RC_001[snippets='curl-request,path-parameters,request-fields,http-response,response-fields']
 
-=== 댓글 조회 (게시판)
+=== 댓글 신고 목록 조회 (게시판)
 ==== RC_002
 
 operation::RC_002[snippets='curl-request,path-parameters,http-response,response-fields']
 
-=== 댓글 조회 (게시판, 게시물)
+=== 댓글 신고 목록 조회 (게시판, 게시물)
 ==== RC_003
 
 operation::RC_003[snippets='curl-request,path-parameters,http-response,response-fields']
 
-=== 댓글 조회 (게시판, 게시물, 댓글)
+=== 댓글 신고 목록 조회 (게시판, 게시물, 댓글)
 ==== RC_004
 
 operation::RC_004[snippets='curl-request,path-parameters,http-response,response-fields']
+
+=== 댓글 신고 정보 조회
+==== RC_005
+
+operation::RC_005[snippets='curl-request,path-parameters,http-response,response-fields']

@@ -317,4 +317,19 @@ public class ReportController {
         CommentReportInfoList commentReportInfoList = this.reportService.getCommentReportInfoList(account, boardId, postId, commentId, search);
         return ResponseEntity.status(HttpStatus.OK).body(commentReportInfoList);
     }
+
+    /**
+     * 댓글 신고 목록 조회 (게시판, 게시물, 댓글)
+     */
+    @ApiCallLog(apiCode = "RC_005")
+    @Auth(role = AuthRole.BOARD_ADMIN)
+    @RequestMapping(method = RequestMethod.GET, value = "/v1/report/comment/boards/{board_id}/posts/{post_id}/comments/{comment_id}/reports/{report_id}")
+    public ResponseEntity<CommentReportInfo> getCommentReportInfo(@PathVariable(value = "board_id") String boardId,
+                                                                      @PathVariable(value = "post_id") String postId,
+                                                                      @PathVariable(value = "comment_id") String commentId,
+                                                                      @PathVariable(value = "report_id") String reportId,
+                                                                      @RequestContext Account account) {
+        CommentReportInfo commentReportInfo = this.reportService.getCommentReportInfo(account, boardId, postId, commentId, reportId);
+        return ResponseEntity.status(HttpStatus.OK).body(commentReportInfo);
+    }
 }
