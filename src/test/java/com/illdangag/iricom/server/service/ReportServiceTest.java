@@ -145,7 +145,6 @@ public class ReportServiceTest extends IricomTestSuite {
                     Account systemAdminAccount = getAccount(systemAdmin);
                     Board board = getBoard(reportSearchBoard);
                     PostReportInfoSearch postReportInfoSearch = PostReportInfoSearch.builder()
-                            .postTitle("")
                             .reason("")
                             .build();
 
@@ -162,7 +161,6 @@ public class ReportServiceTest extends IricomTestSuite {
                     Board board = getBoard(reportSearchBoard);
                     PostReportInfoSearch postReportInfoSearch = PostReportInfoSearch.builder()
                             .type(ReportType.HATE)
-                            .postTitle("")
                             .reason("")
                             .build();
 
@@ -238,29 +236,12 @@ public class ReportServiceTest extends IricomTestSuite {
                 }
 
                 @Test
-                @DisplayName("post title")
-                public void searchPostReportInfoListByPostTitle() throws Exception {
-                    Account systemAdminAccount = getAccount(systemAdmin);
-                    Board board = getBoard(reportSearchBoard);
-                    PostReportInfoSearch postReportInfoSearch = PostReportInfoSearch.builder()
-                            .postTitle("Post01")
-                            .build();
-
-                    PostReportInfoList postReportInfoList = reportService.getPostReportInfoList(systemAdminAccount, board, postReportInfoSearch);
-                    Assertions.assertEquals(0, postReportInfoList.getSkip());
-                    Assertions.assertEquals(20, postReportInfoList.getLimit());
-                    Assertions.assertEquals(4, postReportInfoList.getTotal());
-                    Assertions.assertEquals(4, postReportInfoList.getPostReportInfoList().size());
-                }
-
-                @Test
                 @DisplayName("complex")
                 public void searchPostReportInfoListByComplex() throws Exception {
                     Account systemAdminAccount = getAccount(systemAdmin);
                     Board board = getBoard(reportSearchBoard);
                     PostReportInfoSearch postReportInfoSearch = PostReportInfoSearch.builder()
                             .type(ReportType.HATE)
-                            .postTitle("post01")
                             .skip(1)
                             .limit(1)
                             .build();
@@ -268,8 +249,8 @@ public class ReportServiceTest extends IricomTestSuite {
                     PostReportInfoList postReportInfoList = reportService.getPostReportInfoList(systemAdminAccount, board, postReportInfoSearch);
                     Assertions.assertEquals(1, postReportInfoList.getSkip());
                     Assertions.assertEquals(1, postReportInfoList.getLimit());
-                    Assertions.assertEquals(1, postReportInfoList.getTotal());
-                    Assertions.assertEquals(0, postReportInfoList.getPostReportInfoList().size());
+                    Assertions.assertEquals(2, postReportInfoList.getTotal());
+                    Assertions.assertEquals(1, postReportInfoList.getPostReportInfoList().size());
                 }
             }
 
@@ -284,7 +265,6 @@ public class ReportServiceTest extends IricomTestSuite {
                     Post post = getPost(reportedSearchPost00);
 
                     PostReportInfoSearch postReportInfoSearch = PostReportInfoSearch.builder()
-                            .postTitle("")
                             .reason("")
                             .build();
 
@@ -303,7 +283,6 @@ public class ReportServiceTest extends IricomTestSuite {
 
                     PostReportInfoSearch postReportInfoSearch = PostReportInfoSearch.builder()
                             .type(ReportType.HATE)
-                            .postTitle("")
                             .reason("")
                             .build();
 
@@ -387,33 +366,13 @@ public class ReportServiceTest extends IricomTestSuite {
                 }
 
                 @Test
-                @DisplayName("post title")
-                public void searchPostReportInfoListByPostTitle() throws Exception {
-                    Account systemAdminAccount = getAccount(systemAdmin);
-                    Board board = getBoard(reportSearchBoard);
-                    Post post = getPost(reportedSearchPost00);
-
-                    PostReportInfoSearch postReportInfoSearch = PostReportInfoSearch.builder()
-                            .postTitle("post00")
-                            .build();
-
-                    PostReportInfoList postReportInfoList = reportService.getPostReportInfoList(systemAdminAccount, board, post, postReportInfoSearch);
-                    Assertions.assertEquals(0, postReportInfoList.getSkip());
-                    Assertions.assertEquals(20, postReportInfoList.getLimit());
-                    Assertions.assertEquals(4, postReportInfoList.getTotal());
-                    Assertions.assertEquals(4, postReportInfoList.getPostReportInfoList().size());
-                }
-
-                @Test
                 @DisplayName("complex")
                 public void searchPostReportInfoListByComplex() throws Exception {
                     Account systemAdminAccount = getAccount(systemAdmin);
                     Board board = getBoard(reportSearchBoard);
-                    Post post = getPost(reportedSearchPost00);
 
                     PostReportInfoSearch postReportInfoSearch = PostReportInfoSearch.builder()
                             .type(ReportType.HATE)
-                            .postTitle("post00")
                             .skip(1)
                             .limit(1)
                             .build();
@@ -421,8 +380,8 @@ public class ReportServiceTest extends IricomTestSuite {
                     PostReportInfoList postReportInfoList = reportService.getPostReportInfoList(systemAdminAccount, board, postReportInfoSearch);
                     Assertions.assertEquals(1, postReportInfoList.getSkip());
                     Assertions.assertEquals(1, postReportInfoList.getLimit());
-                    Assertions.assertEquals(1, postReportInfoList.getTotal());
-                    Assertions.assertEquals(0, postReportInfoList.getPostReportInfoList().size());
+                    Assertions.assertEquals(2, postReportInfoList.getTotal());
+                    Assertions.assertEquals(1, postReportInfoList.getPostReportInfoList().size());
                 }
             }
         }

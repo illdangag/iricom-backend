@@ -16,7 +16,4 @@ public class PostReportInfoSearch extends SearchRequest {
 
     @Builder.Default
     private String reason = "";
-
-    @Builder.Default
-    private String postTitle = "";
 }

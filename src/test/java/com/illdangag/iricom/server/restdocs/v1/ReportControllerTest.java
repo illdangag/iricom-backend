@@ -95,8 +95,7 @@ public class ReportControllerTest extends IricomTestSuite {
                 .param("skip", "0")
                 .param("limit", "20")
                 .param("type", "hate")
-                .param("reason", "report")
-                .param("postTitle", "report");
+                .param("reason", "report");
         setAuthToken(requestBuilder, allBoardAdmin);
 
         List<FieldDescriptor> fieldDescriptorList = new LinkedList<>();
@@ -126,8 +125,7 @@ public class ReportControllerTest extends IricomTestSuite {
                                         parameterWithName("skip").description("건너 뛸 수"),
                                         parameterWithName("limit").description("최대 조회 수"),
                                         parameterWithName("type").description("게시물의 종류 (hate: 증오, pornography: 음란물, political: 정치, etc: 기타)"),
-                                        parameterWithName("reason").description("신고 사유"),
-                                        parameterWithName("postTitle").description("신고 게시물 제목")
+                                        parameterWithName("reason").description("신고 사유")
                                 ),
                                 responseFields(
                                         fieldDescriptorList.toArray(FieldDescriptor[]::new)
@@ -146,8 +144,7 @@ public class ReportControllerTest extends IricomTestSuite {
                 .param("skip", "0")
                 .param("limit", "20")
                 .param("type", "hate")
-                .param("reason", "report")
-                .param("postTitle", "report");
+                .param("reason", "report");
         setAuthToken(requestBuilder, allBoardAdmin);
 
         List<FieldDescriptor> fieldDescriptorList = new LinkedList<>();
@@ -178,8 +175,7 @@ public class ReportControllerTest extends IricomTestSuite {
                                         parameterWithName("skip").description("건너 뛸 수"),
                                         parameterWithName("limit").description("최대 조회 수"),
                                         parameterWithName("type").description("게시물의 종류 (hate: 증오, pornography: 음란물, political: 정치, etc: 기타)"),
-                                        parameterWithName("reason").description("신고 사유"),
-                                        parameterWithName("postTitle").description("신고 게시물 제목")
+                                        parameterWithName("reason").description("신고 사유")
                                 ),
                                 responseFields(
                                         fieldDescriptorList.toArray(FieldDescriptor[]::new)
@@ -199,8 +195,7 @@ public class ReportControllerTest extends IricomTestSuite {
                 .param("skip", "0")
                 .param("limit", "20")
                 .param("type", "hate")
-                .param("reason", "report")
-                .param("postTitle", "report");
+                .param("reason", "report");
         setAuthToken(requestBuilder, allBoardAdmin);
 
         List<FieldDescriptor> fieldDescriptorList = new LinkedList<>();
@@ -231,8 +226,7 @@ public class ReportControllerTest extends IricomTestSuite {
                                         parameterWithName("skip").description("건너 뛸 수"),
                                         parameterWithName("limit").description("최대 조회 수"),
                                         parameterWithName("type").description("게시물의 종류 (hate: 증오, pornography: 음란물, political: 정치, etc: 기타)"),
-                                        parameterWithName("reason").description("신고 사유"),
-                                        parameterWithName("postTitle").description("신고 게시물 제목")
+                                        parameterWithName("reason").description("신고 사유")
                                 ),
                                 responseFields(
                                         fieldDescriptorList.toArray(FieldDescriptor[]::new)

@@ -87,7 +87,6 @@ public class ReportServiceImpl implements ReportService {
 
         ReportType reportType = postReportInfoSearch.getType();
         String reason = postReportInfoSearch.getReason();
-        String postTitle = postReportInfoSearch.getPostTitle();
         int skip = postReportInfoSearch.getSkip();
         int limit = postReportInfoSearch.getLimit();
 
@@ -95,11 +94,11 @@ public class ReportServiceImpl implements ReportService {
         long total;
 
         if (reportType == null) {
-            postReportList = this.reportRepository.getPostReportList(board, reason, postTitle, skip, limit);
-            total = this.reportRepository.getPostReportListTotalCount(board, reason, postTitle);
+            postReportList = this.reportRepository.getPostReportList(board, reason, skip, limit);
+            total = this.reportRepository.getPostReportListTotalCount(board, reason);
         } else {
-            postReportList = this.reportRepository.getPostReportList(board, reportType, reason, postTitle, skip, limit);
-            total = this.reportRepository.getPostReportListTotalCount(board, reportType, reason, postTitle);
+            postReportList = this.reportRepository.getPostReportList(board, reportType, reason, skip, limit);
+            total = this.reportRepository.getPostReportListTotalCount(board, reportType, reason);
         }
 
         List<PostReportInfo> postReportInfoList = postReportList.stream()
@@ -131,7 +130,6 @@ public class ReportServiceImpl implements ReportService {
 
         ReportType reportType = postReportInfoSearch.getType();
         String reason = postReportInfoSearch.getReason();
-        String postTitle = postReportInfoSearch.getPostTitle();
         int skip = postReportInfoSearch.getSkip();
         int limit = postReportInfoSearch.getLimit();
 
@@ -140,11 +138,11 @@ public class ReportServiceImpl implements ReportService {
         long total;
 
         if (reportType == null) {
-            postReportList = this.reportRepository.getPostReportList(board, post, reason, postTitle, skip, limit);
-            total = this.reportRepository.getPostReportListTotalCount(board, post, reason, postTitle);
+            postReportList = this.reportRepository.getPostReportList(board, post, reason, skip, limit);
+            total = this.reportRepository.getPostReportListTotalCount(board, post, reason);
         } else {
-            postReportList = this.reportRepository.getPostReportList(board, post, reportType, reason, postTitle, skip, limit);
-            total = this.reportRepository.getPostReportListTotalCount(board, post, reportType, reason, postTitle);
+            postReportList = this.reportRepository.getPostReportList(board, post, reportType, reason, skip, limit);
+            total = this.reportRepository.getPostReportListTotalCount(board, post, reportType, reason);
         }
 
         List<PostReportInfo> postReportInfoList = postReportList.stream()

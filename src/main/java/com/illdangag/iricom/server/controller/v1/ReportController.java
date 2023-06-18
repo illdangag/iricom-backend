@@ -59,7 +59,6 @@ public class ReportController {
                                                                      @RequestParam(name = "limit", defaultValue = "20", required = false) String limitVariable,
                                                                      @RequestParam(name = "type", defaultValue = "", required = false) String typeVariable,
                                                                      @RequestParam(name = "reason", defaultValue = "", required = false) String reason,
-                                                                     @RequestParam(name = "postTitle", defaultValue = "", required = false) String postTitle,
                                                                      @RequestContext Account account) {
         ReportType type = null;
         int skip;
@@ -88,7 +87,6 @@ public class ReportController {
         PostReportInfoSearch search = PostReportInfoSearch.builder()
                 .type(type)
                 .reason(reason)
-                .postTitle(postTitle)
                 .skip(skip)
                 .limit(limit)
                 .build();
