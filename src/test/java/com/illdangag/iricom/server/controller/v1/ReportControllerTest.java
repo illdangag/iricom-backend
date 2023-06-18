@@ -53,7 +53,7 @@ public class ReportControllerTest extends IricomTestSuite {
                 requestBody.put("type", "hate");
                 requestBody.put("reason", "This is a hateful post.");
 
-                MockHttpServletRequestBuilder requestBuilder = post("/v1/boards/" + board.getId() + "/posts/" + post.getId() + "/report")
+                MockHttpServletRequestBuilder requestBuilder = post("/v1/report/post/boards/" + board.getId() + "/posts/" + post.getId())
                         .content(getJsonString(requestBody))
                         .contentType(MediaType.APPLICATION_JSON);
                 setAuthToken(requestBuilder, common00);
@@ -80,7 +80,7 @@ public class ReportControllerTest extends IricomTestSuite {
                 requestBody.put("type", "hate");
                 requestBody.put("reason", "This is a hateful post.");
 
-                MockHttpServletRequestBuilder requestBuilder = post("/v1/boards/" + board.getId() + "/posts/" + post.getId() + "/report")
+                MockHttpServletRequestBuilder requestBuilder = post("/v1/report/post/boards/" + board.getId() + "/posts/" + post.getId())
                         .content(getJsonString(requestBody))
                         .contentType(MediaType.APPLICATION_JSON);
                 setAuthToken(requestBuilder, common00);
@@ -113,7 +113,7 @@ public class ReportControllerTest extends IricomTestSuite {
                 requestBody.put("type", "hate");
                 requestBody.put("reason", "This is a hateful post.");
 
-                MockHttpServletRequestBuilder requestBuilder = post("/v1/boards/" + board.getId() + "/posts/" + post.getId() + "/report")
+                MockHttpServletRequestBuilder requestBuilder = post("/v1/report/post/boards/" + board.getId() + "/posts/" + post.getId())
                         .content(getJsonString(requestBody))
                         .contentType(MediaType.APPLICATION_JSON);
                 setAuthToken(requestBuilder, common00);
@@ -135,7 +135,7 @@ public class ReportControllerTest extends IricomTestSuite {
                 requestBody.put("type", "hate");
                 requestBody.put("reason", "This is a hateful post.");
 
-                MockHttpServletRequestBuilder requestBuilder = post("/v1/boards/" + board.getId() + "/posts/NOT_EXIST_POST/report")
+                MockHttpServletRequestBuilder requestBuilder = post("/v1/report/post/boards/" + board.getId() + "/posts/NOT_EXIST_POST")
                         .content(getJsonString(requestBody))
                         .contentType(MediaType.APPLICATION_JSON);
                 setAuthToken(requestBuilder, common00);
@@ -157,7 +157,7 @@ public class ReportControllerTest extends IricomTestSuite {
                 requestBody.put("type", "hate");
                 requestBody.put("reason", "This is a hateful post.");
 
-                MockHttpServletRequestBuilder requestBuilder = post("/v1/boards/NOT_EXIST_BOARD/posts/" + post.getId() + "/report")
+                MockHttpServletRequestBuilder requestBuilder = post("/v1/report/post/boards/NOT_EXIST_BOARD/posts/" + post.getId())
                         .content(getJsonString(requestBody))
                         .contentType(MediaType.APPLICATION_JSON);
                 setAuthToken(requestBuilder, common00);
@@ -185,7 +185,7 @@ public class ReportControllerTest extends IricomTestSuite {
                 requestBody.put("type", "hate");
                 requestBody.put("reason", "This is a hateful comment.");
 
-                MockHttpServletRequestBuilder requestBuilder = post("/v1/boards/{boardId}/posts/{postId}/comments/{commentId}/report", board.getId(), post.getId(), comment.getId())
+                MockHttpServletRequestBuilder requestBuilder = post("/v1/report/comment/boards/{boardId}/posts/{postId}/comments/{commentId}", board.getId(), post.getId(), comment.getId())
                         .content(getJsonString(requestBody))
                         .contentType(MediaType.APPLICATION_JSON);
                 setAuthToken(requestBuilder, common00);
@@ -207,7 +207,7 @@ public class ReportControllerTest extends IricomTestSuite {
                 requestBody.put("type", "hate");
                 requestBody.put("reason", "This is a hateful comment.");
 
-                MockHttpServletRequestBuilder requestBuilder = post("/v1/boards/{boardId}/posts/{postId}/comments/{commentId}/report", board.getId(), post.getId(), comment.getId())
+                MockHttpServletRequestBuilder requestBuilder = post("/v1/report/comment/boards/{boardId}/posts/{postId}/comments/{commentId}", board.getId(), post.getId(), comment.getId())
                         .content(getJsonString(requestBody))
                         .contentType(MediaType.APPLICATION_JSON);
                 setAuthToken(requestBuilder, common00);
@@ -234,7 +234,7 @@ public class ReportControllerTest extends IricomTestSuite {
                 requestBody.put("type", "hate");
                 requestBody.put("reason", "This is a hateful comment.");
 
-                MockHttpServletRequestBuilder requestBuilder = post("/v1/boards/{boardId}/posts/{postId}/comments/{commentId}/report", "NOT_EXIST_BOARD", post.getId(), comment.getId())
+                MockHttpServletRequestBuilder requestBuilder = post("/v1/report/comment/boards/{boardId}/posts/{postId}/comments/{commentId}", "NOT_EXIST_BOARD", post.getId(), comment.getId())
                         .content(getJsonString(requestBody))
                         .contentType(MediaType.APPLICATION_JSON);
                 setAuthToken(requestBuilder, common00);
@@ -258,7 +258,7 @@ public class ReportControllerTest extends IricomTestSuite {
                 requestBody.put("type", "hate");
                 requestBody.put("reason", "This is a hateful comment.");
 
-                MockHttpServletRequestBuilder requestBuilder = post("/v1/boards/{boardId}/posts/{postId}/comments/{commentId}/report", board.getId(), "NOT_EXIST_POST", comment.getId())
+                MockHttpServletRequestBuilder requestBuilder = post("/v1/report/comment/boards/{boardId}/posts/{postId}/comments/{commentId}", board.getId(), "NOT_EXIST_POST", comment.getId())
                         .content(getJsonString(requestBody))
                         .contentType(MediaType.APPLICATION_JSON);
                 setAuthToken(requestBuilder, common00);
@@ -282,7 +282,7 @@ public class ReportControllerTest extends IricomTestSuite {
                 requestBody.put("type", "hate");
                 requestBody.put("reason", "This is a hateful comment.");
 
-                MockHttpServletRequestBuilder requestBuilder = post("/v1/boards/{boardId}/posts/{postId}/comments/{commentId}/report", board.getId(), post.getId(), "NOT_EXIST_COMMENT")
+                MockHttpServletRequestBuilder requestBuilder = post("/v1/report/comment/boards/{boardId}/posts/{postId}/comments/{commentId}", board.getId(), post.getId(), "NOT_EXIST_COMMENT")
                         .content(getJsonString(requestBody))
                         .contentType(MediaType.APPLICATION_JSON);
                 setAuthToken(requestBuilder, common00);
@@ -306,7 +306,7 @@ public class ReportControllerTest extends IricomTestSuite {
                 requestBody.put("type", "hate");
                 requestBody.put("reason", "This is a hateful comment.");
 
-                MockHttpServletRequestBuilder requestBuilder = post("/v1/boards/{boardId}/posts/{postId}/comments/{commentId}/report", board.getId(), post.getId(), comment.getId())
+                MockHttpServletRequestBuilder requestBuilder = post("/v1/report/comment/boards/{boardId}/posts/{postId}/comments/{commentId}", board.getId(), post.getId(), comment.getId())
                         .content(getJsonString(requestBody))
                         .contentType(MediaType.APPLICATION_JSON);
                 setAuthToken(requestBuilder, common00);
@@ -331,7 +331,7 @@ public class ReportControllerTest extends IricomTestSuite {
                 requestBody.put("type", "hate");
                 requestBody.put("reason", "This is a hateful comment.");
 
-                MockHttpServletRequestBuilder requestBuilder = post("/v1/boards/{boardId}/posts/{postId}/comments/{commentId}/report", board.getId(), invalidPost.getId(), comment.getId())
+                MockHttpServletRequestBuilder requestBuilder = post("/v1/report/comment/boards/{boardId}/posts/{postId}/comments/{commentId}", board.getId(), invalidPost.getId(), comment.getId())
                         .content(getJsonString(requestBody))
                         .contentType(MediaType.APPLICATION_JSON);
                 setAuthToken(requestBuilder, common00);
@@ -356,7 +356,7 @@ public class ReportControllerTest extends IricomTestSuite {
                 requestBody.put("type", "hate");
                 requestBody.put("reason", "This is a hateful comment.");
 
-                MockHttpServletRequestBuilder requestBuilder = post("/v1/boards/{boardId}/posts/{postId}/comments/{commentId}/report", board.getId(), post.getId(), invalidComment.getId())
+                MockHttpServletRequestBuilder requestBuilder = post("/v1/report/comment/boards/{boardId}/posts/{postId}/comments/{commentId}", board.getId(), post.getId(), invalidComment.getId())
                         .content(getJsonString(requestBody))
                         .contentType(MediaType.APPLICATION_JSON);
                 setAuthToken(requestBuilder, common00);
@@ -380,7 +380,7 @@ public class ReportControllerTest extends IricomTestSuite {
                 requestBody.put("type", "hate");
                 requestBody.put("reason", "This is a hateful comment.");
 
-                MockHttpServletRequestBuilder requestBuilder = post("/v1/boards/{boardId}/posts/{postId}/comments/{commentId}/report", board.getId(), post.getId(), comment.getId())
+                MockHttpServletRequestBuilder requestBuilder = post("/v1/report/comment/boards/{boardId}/posts/{postId}/comments/{commentId}", board.getId(), post.getId(), comment.getId())
                         .content(getJsonString(requestBody))
                         .contentType(MediaType.APPLICATION_JSON);
                 setAuthToken(requestBuilder, common00);
@@ -404,7 +404,7 @@ public class ReportControllerTest extends IricomTestSuite {
                 requestBody.put("type", "hate");
                 requestBody.put("reason", "This is a hateful comment.");
 
-                MockHttpServletRequestBuilder requestBuilder = post("/v1/boards/{boardId}/posts/{postId}/comments/{commentId}/report", board.getId(), post.getId(), comment.getId())
+                MockHttpServletRequestBuilder requestBuilder = post("/v1/report/comment/boards/{boardId}/posts/{postId}/comments/{commentId}", board.getId(), post.getId(), comment.getId())
                         .content(getJsonString(requestBody))
                         .contentType(MediaType.APPLICATION_JSON);
                 setAuthToken(requestBuilder, common00);

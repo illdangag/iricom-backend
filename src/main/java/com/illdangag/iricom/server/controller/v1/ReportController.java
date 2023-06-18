@@ -5,14 +5,15 @@ import com.illdangag.iricom.server.configuration.annotation.Auth;
 import com.illdangag.iricom.server.configuration.annotation.AuthRole;
 import com.illdangag.iricom.server.configuration.annotation.RequestContext;
 import com.illdangag.iricom.server.data.entity.Account;
+import com.illdangag.iricom.server.data.entity.ReportType;
 import com.illdangag.iricom.server.data.request.CommentReportCreate;
-import com.illdangag.iricom.server.data.request.CommentReportInfoSearch;
 import com.illdangag.iricom.server.data.request.PostReportInfoCreate;
 import com.illdangag.iricom.server.data.request.PostReportInfoSearch;
 import com.illdangag.iricom.server.data.response.CommentReportInfo;
-import com.illdangag.iricom.server.data.response.CommentReportInfoList;
 import com.illdangag.iricom.server.data.response.PostReportInfo;
 import com.illdangag.iricom.server.data.response.PostReportInfoList;
+import com.illdangag.iricom.server.exception.IricomErrorCode;
+import com.illdangag.iricom.server.exception.IricomException;
 import com.illdangag.iricom.server.service.ReportService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -35,17 +36,98 @@ public class ReportController {
 
     @ApiCallLog(apiCode = "RP_001")
     @Auth(role = AuthRole.BOARD_ADMIN)
-    @RequestMapping(method = RequestMethod.GET, value = "/v1/boards/{board_id}/report")
-    public ResponseEntity<PostReportInfoList> getPostReportInfoList(@PathVariable(value = "board_id") String boardId,
-                                                                    @RequestBody @Valid PostReportInfoSearch postReportInfoSearch,
-                                                                    @RequestContext Account account) {
-        PostReportInfoList postReportInfoList = this.reportService.getPostReportInfoList(account, boardId, postReportInfoSearch);
+    @RequestMapping(method = RequestMethod.GET, value = "/v1/report/post/boards/{board_id}")
+    public ResponseEntity<PostReportInfoList> getBoardReportInfoList(@PathVariable(value = "board_id") String boardId,
+                                                                     @RequestParam(name = "skip", defaultValue = "0", required = false) String skipVariable,
+                                                                     @RequestParam(name = "limit", defaultValue = "20", required = false) String limitVariable,
+                                                                     @RequestParam(name = "type", defaultValue = "", required = false) String typeVariable,
+                                                                     @RequestParam(name = "reason", defaultValue = "", required = false) String reason,
+                                                                     @RequestParam(name = "postTitle", defaultValue = "", required = false) String postTitle,
+                                                                     @RequestContext Account account) {
+        ReportType type = null;
+        int skip;
+        int limit;
+
+        try {
+            skip = Integer.parseInt(skipVariable);
+        } catch (Exception exception) {
+            throw new IricomException(IricomErrorCode.INVALID_REQUEST, "Skip value is invalid.");
+        }
+
+        try {
+            limit = Integer.parseInt(limitVariable);
+        } catch (Exception exception) {
+            throw new IricomException(IricomErrorCode.INVALID_REQUEST, "Limit value is invalid.");
+        }
+
+        if (!typeVariable.isEmpty()) {
+            try {
+                type = ReportType.setValue(typeVariable);
+            } catch (Exception exception) {
+                throw new IricomException(IricomErrorCode.INVALID_REQUEST, "Type value is invalid.");
+            }
+        }
+
+        PostReportInfoSearch search = PostReportInfoSearch.builder()
+                .type(type)
+                .reason(reason)
+                .postTitle(postTitle)
+                .skip(skip)
+                .limit(limit)
+                .build();
+
+        PostReportInfoList postReportInfoList = this.reportService.getPostReportInfoList(account, boardId, search);
         return ResponseEntity.status(HttpStatus.OK).body(postReportInfoList);
     }
 
     @ApiCallLog(apiCode = "RP_002")
     @Auth(role = AuthRole.BOARD_ADMIN)
-    @RequestMapping(method = RequestMethod.GET, value = "/v1/boards/{board_id}/posts/{post_id}/report/{report_id}")
+    @RequestMapping(method = RequestMethod.GET, value = "/v1/report/post/boards/{board_id}/posts/{post_id}")
+    public ResponseEntity<PostReportInfoList> getBoardPostReportInfoList(@PathVariable(value = "board_id") String boardId,
+                                                                         @PathVariable(value = "post_id") String postId,
+                                                                         @RequestParam(name = "skip", defaultValue = "0", required = false) String skipVariable,
+                                                                         @RequestParam(name = "limit", defaultValue = "20", required = false) String limitVariable,
+                                                                         @RequestParam(name = "type", defaultValue = "", required = false) String typeVariable,
+                                                                         @RequestParam(name = "reason", defaultValue = "", required = false) String reason,
+                                                                         @RequestContext Account account) {
+        ReportType type = null;
+        int skip;
+        int limit;
+
+        try {
+            skip = Integer.parseInt(skipVariable);
+        } catch (Exception exception) {
+            throw new IricomException(IricomErrorCode.INVALID_REQUEST, "Skip value is invalid.");
+        }
+
+        try {
+            limit = Integer.parseInt(limitVariable);
+        } catch (Exception exception) {
+            throw new IricomException(IricomErrorCode.INVALID_REQUEST, "Limit value is invalid.");
+        }
+
+        if (!typeVariable.isEmpty()) {
+            try {
+                type = ReportType.setValue(typeVariable);
+            } catch (Exception exception) {
+                throw new IricomException(IricomErrorCode.INVALID_REQUEST, "Type value is invalid.");
+            }
+        }
+
+        PostReportInfoSearch search = PostReportInfoSearch.builder()
+                .type(type)
+                .reason(reason)
+                .skip(skip)
+                .limit(limit)
+                .build();
+
+        PostReportInfoList postReportInfoList = this.reportService.getPostReportInfoList(account, boardId, postId, search);
+        return ResponseEntity.status(HttpStatus.OK).body(postReportInfoList);
+    }
+
+    @ApiCallLog(apiCode = "RP_003")
+    @Auth(role = AuthRole.BOARD_ADMIN)
+    @RequestMapping(method = RequestMethod.GET, value = "/v1/report/post/boards/{board_id}/posts/{post_id}/reports/{report_id}")
     public ResponseEntity<PostReportInfo> getPostReportInfo(@PathVariable(value = "board_id") String boardId,
                                                             @PathVariable(value = "post_id") String postId,
                                                             @PathVariable(value = "report_id") String reportId,
@@ -54,9 +136,9 @@ public class ReportController {
         return ResponseEntity.status(HttpStatus.OK).body(postReportInfo);
     }
 
-    @ApiCallLog(apiCode = "RP_003")
+    @ApiCallLog(apiCode = "RP_004")
     @Auth(role = AuthRole.ACCOUNT)
-    @RequestMapping(method = RequestMethod.POST, value = "/v1/boards/{board_id}/posts/{post_id}/report")
+    @RequestMapping(method = RequestMethod.POST, value = "/v1/report/post/boards/{board_id}/posts/{post_id}")
     public ResponseEntity<PostReportInfo> reportPost(@PathVariable(value = "board_id") String boardId,
                                                      @PathVariable(value = "post_id") String postId,
                                                      @RequestBody @Valid PostReportInfoCreate postReportInfoCreate,
@@ -65,34 +147,9 @@ public class ReportController {
         return ResponseEntity.status(HttpStatus.OK).body(postReportInfo);
     }
 
-    @ApiCallLog(apiCode = "RC_001")
-    @Auth(role = AuthRole.BOARD_ADMIN)
-    @RequestMapping(method = RequestMethod.GET, value = "/v1/boards/{board_id}/posts/{post_id}/comments/{comment_id}/report")
-    public ResponseEntity<CommentReportInfoList> getCommentReportInfoList(@PathVariable(value = "board_id") String boardId,
-                                                                          @PathVariable(value = "post_id") String postId,
-                                                                          @PathVariable(value = "comment_id") String commentId,
-                                                                          @RequestBody @Valid CommentReportInfoSearch commentReportInfoSearch,
-                                                                          @RequestContext Account account) {
-        // TODO
-        return null;
-    }
-
-    @ApiCallLog(apiCode = "RC_002")
-    @Auth(role = AuthRole.BOARD_ADMIN)
-    @RequestMapping(method = RequestMethod.GET, value = "/v1/boards/{board_id}/posts/{post_id}/comments/{comment_id}/report/{report_id}")
-    public ResponseEntity<CommentReportInfo> getCommentReportInfo(@PathVariable(value = "board_id") String boardId,
-                                                               @PathVariable(value = "post_id") String postId,
-                                                               @PathVariable(value = "comment_id") String commentId,
-                                                               @PathVariable(value = "report_id") String reportId,
-                                                               @RequestBody @Valid PostReportInfoSearch postReportInfoSearch,
-                                                               @RequestContext Account account) {
-        // TODO
-        return null;
-    }
-
-    @ApiCallLog(apiCode = "RC_003")
+    @ApiCallLog(apiCode = "RC_00")
     @Auth(role = AuthRole.ACCOUNT)
-    @RequestMapping(method = RequestMethod.POST, value = "/v1/boards/{board_id}/posts/{post_id}/comments/{comment_id}/report")
+    @RequestMapping(method = RequestMethod.POST, value = "/v1/report/comment/boards/{board_id}/posts/{post_id}/comments/{comment_id}")
     public ResponseEntity<CommentReportInfo> reportComment(@PathVariable(value = "board_id") String boardId,
                                                            @PathVariable(value = "post_id") String postId,
                                                            @PathVariable(value = "comment_id") String commentId,

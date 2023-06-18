@@ -122,56 +122,57 @@ public class PostControllerTest extends IricomTestSuite {
                 .andExpect(status().is(200))
                 .andDo(print())
                 .andDo(document("PS_002",
-                        preprocessRequest(
-                                removeHeaders("Authorization"),
-                                prettyPrint()
-                        ),
-                        preprocessResponse(
-                                prettyPrint()
-                        ),
-                        pathParameters(
-                                parameterWithName("boardId").description("게시판 아이디")
-                        ),
-                        requestHeaders(
+                                preprocessRequest(
+                                        removeHeaders("Authorization"),
+                                        prettyPrint()
+                                ),
+                                preprocessResponse(
+                                        prettyPrint()
+                                ),
+                                pathParameters(
+                                        parameterWithName("boardId").description("게시판 아이디")
+                                ),
+                                requestHeaders(
 //                                        headerWithName("Authorization").description("firebase 토큰")
-                        ),
-                        requestParameters(
-                                parameterWithName("skip").description("건너 뛸 수"),
-                                parameterWithName("limit").description("최대 조회 수"),
-                                parameterWithName("keyword").description("검색어"),
-                                parameterWithName("type").description("게시물의 종류 (post: 게시물, notification: 공지사항)")
-                        ),
-                        responseFields(
-                                fieldWithPath("total").description("모든 결과의 수"),
-                                fieldWithPath("skip").description("건너 뛸 결과 수"),
-                                fieldWithPath("limit").description("조회 할 최대 결과 수"),
-                                fieldWithPath("posts").description("게시물 목록"),
-                                fieldWithPath("posts.[].id").description("아이디"),
-                                fieldWithPath("posts.[].type").description("게시물의 종류"),
-                                fieldWithPath("posts.[].createDate").description("작성일"),
-                                fieldWithPath("posts.[].updateDate").description("수정일"),
-                                fieldWithPath("posts.[].status").description("상태"),
-                                fieldWithPath("posts.[].title").description("제목"),
-                                fieldWithPath("posts.[].viewCount").description("조회수"),
-                                fieldWithPath("posts.[].upvote").description("좋아요"),
-                                fieldWithPath("posts.[].downvote").description("싫어요"),
-                                fieldWithPath("posts.[].commentCount").description("댓글수"),
-                                fieldWithPath("posts.[].isAllowComment").description("댓글 허용 여부"),
-                                fieldWithPath("posts.[].isPublish").description("발행 여부"),
-                                fieldWithPath("posts.[].hasTemporary").description("임시 저장 여부"),
-                                fieldWithPath("posts.[].boardId").description("게시판 아이디"),
-                                fieldWithPath("posts.[].isReport").description("신고 여부"),
-                                fieldWithPath("posts.[].isBan").description("차단 여부"),
-                                fieldWithPath("posts.[].account").description("작성자"),
-                                fieldWithPath("posts.[].account.id").description("아이디"),
-                                fieldWithPath("posts.[].account.email").description("이메일"),
-                                fieldWithPath("posts.[].account.createDate").description("생성일"),
-                                fieldWithPath("posts.[].account.lastActivityDate").description("최근 활동일"),
-                                fieldWithPath("posts.[].account.nickname").description("닉네임"),
-                                fieldWithPath("posts.[].account.description").description("설명"),
-                                fieldWithPath("posts.[].account.auth").description("권한")
+                                ),
+                                requestParameters(
+                                        parameterWithName("skip").description("건너 뛸 수"),
+                                        parameterWithName("limit").description("최대 조회 수"),
+                                        parameterWithName("keyword").description("검색어"),
+                                        parameterWithName("type").description("게시물의 종류 (post: 게시물, notification: 공지사항)")
+                                ),
+                                responseFields(
+                                        fieldWithPath("total").description("모든 결과의 수"),
+                                        fieldWithPath("skip").description("건너 뛸 결과 수"),
+                                        fieldWithPath("limit").description("조회 할 최대 결과 수"),
+                                        fieldWithPath("posts").description("게시물 목록"),
+                                        fieldWithPath("posts.[].id").description("아이디"),
+                                        fieldWithPath("posts.[].type").description("게시물의 종류"),
+                                        fieldWithPath("posts.[].createDate").description("작성일"),
+                                        fieldWithPath("posts.[].updateDate").description("수정일"),
+                                        fieldWithPath("posts.[].status").description("상태"),
+                                        fieldWithPath("posts.[].title").description("제목"),
+                                        fieldWithPath("posts.[].viewCount").description("조회수"),
+                                        fieldWithPath("posts.[].upvote").description("좋아요"),
+                                        fieldWithPath("posts.[].downvote").description("싫어요"),
+                                        fieldWithPath("posts.[].commentCount").description("댓글수"),
+                                        fieldWithPath("posts.[].isAllowComment").description("댓글 허용 여부"),
+                                        fieldWithPath("posts.[].isPublish").description("발행 여부"),
+                                        fieldWithPath("posts.[].hasTemporary").description("임시 저장 여부"),
+                                        fieldWithPath("posts.[].boardId").description("게시판 아이디"),
+                                        fieldWithPath("posts.[].isReport").description("신고 여부"),
+                                        fieldWithPath("posts.[].isBan").description("차단 여부"),
+                                        fieldWithPath("posts.[].account").description("작성자"),
+                                        fieldWithPath("posts.[].account.id").description("아이디"),
+                                        fieldWithPath("posts.[].account.email").description("이메일"),
+                                        fieldWithPath("posts.[].account.createDate").description("생성일"),
+                                        fieldWithPath("posts.[].account.lastActivityDate").description("최근 활동일"),
+                                        fieldWithPath("posts.[].account.nickname").description("닉네임"),
+                                        fieldWithPath("posts.[].account.description").description("설명"),
+                                        fieldWithPath("posts.[].account.auth").description("권한")
+                                )
                         )
-                ));
+                );
     }
 
     @Test
@@ -251,7 +252,8 @@ public class PostControllerTest extends IricomTestSuite {
 
         MockHttpServletRequestBuilder requestBuilder = patch("/v1/boards/{boardId}/posts/{postId}", board.getId(), post.getId())
                 .content(getJsonString(requestBody))
-                .contentType(MediaType.APPLICATION_JSON);;
+                .contentType(MediaType.APPLICATION_JSON);
+        ;
         setAuthToken(requestBuilder, allBoardAdmin);
 
         mockMvc.perform(requestBuilder)

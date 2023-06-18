@@ -428,7 +428,7 @@ public class ReportServiceTest extends IricomTestSuite {
 
         @Nested
         @DisplayName("조회")
-        class getTest {
+        class GetTest {
 
             @Test
             @DisplayName("기본 조회")

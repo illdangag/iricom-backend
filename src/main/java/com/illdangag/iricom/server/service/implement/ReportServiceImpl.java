@@ -189,7 +189,7 @@ public class ReportServiceImpl implements ReportService {
 
         this.reportRepository.savePostReport(postReport);
 
-        PostInfo postInfo = this.postService.getPostInfo(account, board, post, PostState.PUBLISH);
+        PostInfo postInfo = this.postService.getPostInfo(post, PostState.PUBLISH, false);
         return new PostReportInfo(postReport, postInfo);
     }
 
