@@ -29,7 +29,7 @@ public class CommentInfo {
 
     private Boolean hasNestedComment;
 
-    private Boolean deleted;
+    private Boolean isDeleted;
 
     private AccountInfo account;
 
@@ -50,9 +50,9 @@ public class CommentInfo {
         this.upvote = upvote;
         this.downvote = downvote;
         this.hasNestedComment = comment.getHasNestedComment();
-        this.deleted = comment.getDeleted();
+        this.isDeleted = comment.getDeleted();
 
-        if (!this.deleted) {
+        if (!this.isDeleted) {
             this.content = comment.getContent();
             this.account = accountInfo;
         } else {

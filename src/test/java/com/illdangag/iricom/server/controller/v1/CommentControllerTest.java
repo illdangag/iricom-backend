@@ -418,7 +418,7 @@ public class CommentControllerTest extends IricomTestSuite {
 
             mockMvc.perform(requestBuilder)
                     .andExpect(status().is(200))
-                    .andExpect(jsonPath("$.deleted").value(true))
+                    .andExpect(jsonPath("$.isDeleted").value(true))
                     .andDo(print());
         }
 
@@ -435,7 +435,7 @@ public class CommentControllerTest extends IricomTestSuite {
 
             mockMvc.perform(requestBuilder)
                     .andExpect(status().is(200))
-                    .andExpect(jsonPath("$.deleted").value(true))
+                    .andExpect(jsonPath("$.isDeleted").value(true))
                     .andDo(print());
         }
 
@@ -452,7 +452,7 @@ public class CommentControllerTest extends IricomTestSuite {
 
             mockMvc.perform(requestBuilder)
                     .andExpect(status().is(200))
-                    .andExpect(jsonPath("$.deleted").value(true))
+                    .andExpect(jsonPath("$.isDeleted").value(true))
                     .andDo(print());
         }
 

@@ -234,7 +234,7 @@ public class BoardControllerTest extends IricomTestSuite {
                         .andExpect(jsonPath("$.id").exists())
                         .andExpect(jsonPath("$.title").exists())
                         .andExpect(jsonPath("$.description").exists())
-                        .andExpect(jsonPath("$.enabled").value(true))
+                        .andExpect(jsonPath("$.isEnabled").value(true))
                         .andDo(print());
             }
 
@@ -369,7 +369,7 @@ public class BoardControllerTest extends IricomTestSuite {
                     .andExpect(status().is(200))
                     .andExpect(jsonPath("$.title").value("update_title"))
                     .andExpect(jsonPath("$.description").value("update_description"))
-                    .andExpect(jsonPath("$.enabled").value(false))
+                    .andExpect(jsonPath("$.isEnabled").value(false))
                     .andDo(print());
         }
 
@@ -429,7 +429,7 @@ public class BoardControllerTest extends IricomTestSuite {
 
             mockMvc.perform(requestBuilder)
                     .andExpect(status().is(200))
-                    .andExpect(jsonPath("$.enabled").value(true))
+                    .andExpect(jsonPath("$.isEnabled").value(true))
                     .andDo(print());
         }
 

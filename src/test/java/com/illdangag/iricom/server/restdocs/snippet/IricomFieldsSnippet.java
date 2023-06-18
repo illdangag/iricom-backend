@@ -34,6 +34,11 @@ public class IricomFieldsSnippet {
         accountMap.put("description", "설명");
         accountMap.put("auth", "권한");
 
+        boardMap.put("id", "아이디");
+        boardMap.put("title", "제목");
+        boardMap.put("description", "설명");
+        boardMap.put("isEnabled", "활성화 여부");
+
         postMap.put("id", "아이디");
         postMap.put("type", "종류");
         postMap.put("createDate", "생성일");
@@ -53,11 +58,6 @@ public class IricomFieldsSnippet {
         postMap.put("isBan", "차단 여부");
         postMap.put("account", "작성자");
 
-        boardMap.put("id", "아이디");
-        boardMap.put("title", "제목");
-        boardMap.put("description", "설명");
-        boardMap.put("enabled", "활성화 여부");
-
         commentMap.put("id", "아이디");
         commentMap.put("content", "내용");
         commentMap.put("referenceCommentId", "상위 댓글 아이디");
@@ -66,7 +66,7 @@ public class IricomFieldsSnippet {
         commentMap.put("upvote", "좋아요");
         commentMap.put("downvote", "싫어요");
         commentMap.put("hasNestedComment", "하위 댓글 여부");
-        commentMap.put("deleted", "삭제 여부");
+        commentMap.put("isDeleted", "삭제 여부");
         commentMap.put("isReport", "신고 여부");
 
         postReportMap.put("id", "아이디");

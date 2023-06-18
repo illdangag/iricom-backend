@@ -17,13 +17,13 @@ public class BoardInfo {
 
     private String description;
 
-    private Boolean enabled;
+    private Boolean isEnabled;
 
     public BoardInfo(Board board) {
         this.id = "" + board.getId();
         this.title = board.getTitle();
         this.description = board.getDescription();
-        this.enabled = board.getEnabled();
+        this.isEnabled = board.getEnabled();
     }
 }
 
