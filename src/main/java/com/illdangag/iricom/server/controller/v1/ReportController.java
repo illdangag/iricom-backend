@@ -34,7 +34,24 @@ public class ReportController {
         this.reportService = reportService;
     }
 
+    /**
+     * 게시물 신고
+     */
     @ApiCallLog(apiCode = "RP_001")
+    @Auth(role = AuthRole.ACCOUNT)
+    @RequestMapping(method = RequestMethod.POST, value = "/v1/report/post/boards/{board_id}/posts/{post_id}")
+    public ResponseEntity<PostReportInfo> reportPost(@PathVariable(value = "board_id") String boardId,
+                                                     @PathVariable(value = "post_id") String postId,
+                                                     @RequestBody @Valid PostReportInfoCreate postReportInfoCreate,
+                                                     @RequestContext Account account) {
+        PostReportInfo postReportInfo = this.reportService.reportPost(account, boardId, postId, postReportInfoCreate);
+        return ResponseEntity.status(HttpStatus.OK).body(postReportInfo);
+    }
+
+    /**
+     * 게시물 신고 목록 조회 (게시판)
+     */
+    @ApiCallLog(apiCode = "RP_002")
     @Auth(role = AuthRole.BOARD_ADMIN)
     @RequestMapping(method = RequestMethod.GET, value = "/v1/report/post/boards/{board_id}")
     public ResponseEntity<PostReportInfoList> getBoardReportInfoList(@PathVariable(value = "board_id") String boardId,
@@ -80,7 +97,10 @@ public class ReportController {
         return ResponseEntity.status(HttpStatus.OK).body(postReportInfoList);
     }
 
-    @ApiCallLog(apiCode = "RP_002")
+    /**
+     * 게시물 신고 목록 조회 (게시판, 게시물)
+     */
+    @ApiCallLog(apiCode = "RP_003")
     @Auth(role = AuthRole.BOARD_ADMIN)
     @RequestMapping(method = RequestMethod.GET, value = "/v1/report/post/boards/{board_id}/posts/{post_id}")
     public ResponseEntity<PostReportInfoList> getBoardPostReportInfoList(@PathVariable(value = "board_id") String boardId,
@@ -125,7 +145,10 @@ public class ReportController {
         return ResponseEntity.status(HttpStatus.OK).body(postReportInfoList);
     }
 
-    @ApiCallLog(apiCode = "RP_003")
+    /**
+     * 게시물 신고 정보 조회
+     */
+    @ApiCallLog(apiCode = "RP_004")
     @Auth(role = AuthRole.BOARD_ADMIN)
     @RequestMapping(method = RequestMethod.GET, value = "/v1/report/post/boards/{board_id}/posts/{post_id}/reports/{report_id}")
     public ResponseEntity<PostReportInfo> getPostReportInfo(@PathVariable(value = "board_id") String boardId,
@@ -136,18 +159,10 @@ public class ReportController {
         return ResponseEntity.status(HttpStatus.OK).body(postReportInfo);
     }
 
-    @ApiCallLog(apiCode = "RP_004")
-    @Auth(role = AuthRole.ACCOUNT)
-    @RequestMapping(method = RequestMethod.POST, value = "/v1/report/post/boards/{board_id}/posts/{post_id}")
-    public ResponseEntity<PostReportInfo> reportPost(@PathVariable(value = "board_id") String boardId,
-                                                     @PathVariable(value = "post_id") String postId,
-                                                     @RequestBody @Valid PostReportInfoCreate postReportInfoCreate,
-                                                     @RequestContext Account account) {
-        PostReportInfo postReportInfo = this.reportService.reportPost(account, boardId, postId, postReportInfoCreate);
-        return ResponseEntity.status(HttpStatus.OK).body(postReportInfo);
-    }
-
-    @ApiCallLog(apiCode = "RC_00")
+    /**
+     * 댓글 신고
+     */
+    @ApiCallLog(apiCode = "RC_001")
     @Auth(role = AuthRole.ACCOUNT)
     @RequestMapping(method = RequestMethod.POST, value = "/v1/report/comment/boards/{board_id}/posts/{post_id}/comments/{comment_id}")
     public ResponseEntity<CommentReportInfo> reportComment(@PathVariable(value = "board_id") String boardId,

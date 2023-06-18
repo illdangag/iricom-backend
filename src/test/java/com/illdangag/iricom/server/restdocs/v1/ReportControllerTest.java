@@ -40,8 +40,55 @@ public class ReportControllerTest extends IricomTestSuite {
     }
 
     @Test
-    @DisplayName("게시물 신고 목록 조회")
+    @DisplayName("게시물 신고")
     public void rp001() throws Exception {
+        Post post = getPost(reportPost02);
+        Board board = post.getBoard();
+
+        Map<String, Object> requestBody = new HashMap<>();
+        requestBody.put("type", "hate");
+        requestBody.put("reason", "This is a hateful post.");
+
+        MockHttpServletRequestBuilder requestBuilder = post("/v1/report/post/boards/{boardId}/posts/{postId}", board.getId(), post.getId())
+                .content(getJsonString(requestBody))
+                .contentType(MediaType.APPLICATION_JSON);
+        setAuthToken(requestBuilder, common00);
+
+        List<FieldDescriptor> fieldDescriptorList = new LinkedList<>();
+        fieldDescriptorList.addAll(IricomFieldsSnippet.getPostReport(""));
+        fieldDescriptorList.addAll(IricomFieldsSnippet.getPost("post.", false));
+        fieldDescriptorList.addAll(IricomFieldsSnippet.getAccount("post.account."));
+
+        mockMvc.perform(requestBuilder)
+                .andExpect(status().is(200))
+                .andDo(print())
+                .andDo(document("RP_001",
+                                preprocessRequest(
+                                        removeHeaders("Authorization"),
+                                        prettyPrint()
+                                ),
+                                preprocessResponse(
+                                        prettyPrint()
+                                ),
+                                pathParameters(
+                                        parameterWithName("boardId").description("게시판 아이디"),
+                                        parameterWithName("postId").description("게시물 아이디")
+                                ),
+                                requestHeaders(
+//                                        headerWithName("Authorization").description("firebase 토큰")
+                                ),
+                                requestFields(
+                                        fieldWithPath("type").description("종류"),
+                                        fieldWithPath("reason").description("사유")
+                                ),
+                                responseFields(fieldDescriptorList.toArray(FieldDescriptor[]::new))
+                        )
+                );
+    }
+
+    @Test
+    @DisplayName("게시물 신고 목록 조회 (게시판)")
+    public void rp002() throws Exception {
         Board board = getBoard(reportSearchBoard);
 
         MockHttpServletRequestBuilder requestBuilder = get("/v1/report/post/boards/{boardId}", board.getId())
@@ -61,7 +108,7 @@ public class ReportControllerTest extends IricomTestSuite {
         mockMvc.perform(requestBuilder)
                 .andExpect(status().is(200))
                 .andDo(print())
-                .andDo(document("RP_001",
+                .andDo(document("RP_002",
                                 preprocessRequest(
                                         removeHeaders("Authorization"),
                                         prettyPrint()
@@ -90,8 +137,8 @@ public class ReportControllerTest extends IricomTestSuite {
     }
 
     @Test
-    @DisplayName("게시물 신고 목록 조회")
-    public void rp002() throws Exception {
+    @DisplayName("게시물 신고 목록 조회 (게시판, 게시물)")
+    public void rp003() throws Exception {
         Post post = getPost(reportedSearchPost00);
         Board board = post.getBoard();
 
@@ -112,7 +159,7 @@ public class ReportControllerTest extends IricomTestSuite {
         mockMvc.perform(requestBuilder)
                 .andExpect(status().is(200))
                 .andDo(print())
-                .andDo(document("RP_002",
+                .andDo(document("RP_003",
                                 preprocessRequest(
                                         removeHeaders("Authorization"),
                                         prettyPrint()
@@ -143,7 +190,7 @@ public class ReportControllerTest extends IricomTestSuite {
 
     @Test
     @DisplayName("게시물 신고 정보 조회")
-    public void rp003() throws Exception {
+    public void rp004() throws Exception {
         PostReport postReport = getPostReport(postReportSearch00);
         Post post = postReport.getPost();
         Board board = post.getBoard();
@@ -164,7 +211,7 @@ public class ReportControllerTest extends IricomTestSuite {
         mockMvc.perform(requestBuilder)
                 .andExpect(status().is(200))
                 .andDo(print())
-                .andDo(document("RP_003",
+                .andDo(document("RP_004",
                                 preprocessRequest(
                                         removeHeaders("Authorization"),
                                         prettyPrint()
@@ -190,53 +237,6 @@ public class ReportControllerTest extends IricomTestSuite {
                                 responseFields(
                                         fieldDescriptorList.toArray(FieldDescriptor[]::new)
                                 )
-                        )
-                );
-    }
-
-    @Test
-    @DisplayName("게시물 신고")
-    public void rp004() throws Exception {
-        Post post = getPost(reportPost02);
-        Board board = post.getBoard();
-
-        Map<String, Object> requestBody = new HashMap<>();
-        requestBody.put("type", "hate");
-        requestBody.put("reason", "This is a hateful post.");
-
-        MockHttpServletRequestBuilder requestBuilder = post("/v1/report/post/boards/{boardId}/posts/{postId}", board.getId(), post.getId())
-                .content(getJsonString(requestBody))
-                .contentType(MediaType.APPLICATION_JSON);
-        setAuthToken(requestBuilder, common00);
-
-        List<FieldDescriptor> fieldDescriptorList = new LinkedList<>();
-        fieldDescriptorList.addAll(IricomFieldsSnippet.getPostReport(""));
-        fieldDescriptorList.addAll(IricomFieldsSnippet.getPost("post.", false));
-        fieldDescriptorList.addAll(IricomFieldsSnippet.getAccount("post.account."));
-
-        mockMvc.perform(requestBuilder)
-                .andExpect(status().is(200))
-                .andDo(print())
-                .andDo(document("RP_004",
-                                preprocessRequest(
-                                        removeHeaders("Authorization"),
-                                        prettyPrint()
-                                ),
-                                preprocessResponse(
-                                        prettyPrint()
-                                ),
-                                pathParameters(
-                                        parameterWithName("boardId").description("게시판 아이디"),
-                                        parameterWithName("postId").description("게시물 아이디")
-                                ),
-                                requestHeaders(
-//                                        headerWithName("Authorization").description("firebase 토큰")
-                                ),
-                                requestFields(
-                                        fieldWithPath("type").description("종류"),
-                                        fieldWithPath("reason").description("사유")
-                                ),
-                                responseFields(fieldDescriptorList.toArray(FieldDescriptor[]::new))
                         )
                 );
     }

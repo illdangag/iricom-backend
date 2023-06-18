@@ -32,9 +32,20 @@ public class BoardController {
     }
 
     /**
-     * 게시판 목록 조회
+     * 게시판 생성
      */
     @ApiCallLog(apiCode = "BD_001")
+    @Auth(role = AuthRole.SYSTEM_ADMIN)
+    @RequestMapping(method = RequestMethod.POST, value = "")
+    public ResponseEntity<BoardInfo> createBoard(@RequestBody @Valid BoardInfoCreate boardInfoCreate) {
+        BoardInfo boardInfo = this.boardService.createBoardInfo(boardInfoCreate);
+        return ResponseEntity.status(HttpStatus.OK).body(boardInfo);
+    }
+
+    /**
+     * 게시판 목록 조회
+     */
+    @ApiCallLog(apiCode = "BD_002")
     @Auth(role = AuthRole.NONE)
     @RequestMapping(method = RequestMethod.GET, value = "")
     public ResponseEntity<BoardInfoList> getBoardList(@RequestParam(name = "skip", defaultValue = "0", required = false) String skipVariable,
@@ -85,7 +96,7 @@ public class BoardController {
     /**
      * 게시판 정보 조회
      */
-    @ApiCallLog(apiCode = "BD_002")
+    @ApiCallLog(apiCode = "BD_003")
     @Auth(role = AuthRole.NONE)
     @RequestMapping(method = RequestMethod.GET, value = "/{board_id}")
     public ResponseEntity<BoardInfo> getBoard(@PathVariable(value = "board_id") String boardId) {
@@ -93,17 +104,6 @@ public class BoardController {
         return ResponseEntity.status(HttpStatus.OK).contentType(MediaType.APPLICATION_JSON).body(boardInfo);
     }
 
-
-    /**
-     * 게시판 생성
-     */
-    @ApiCallLog(apiCode = "BD_003")
-    @Auth(role = AuthRole.SYSTEM_ADMIN)
-    @RequestMapping(method = RequestMethod.POST, value = "")
-    public ResponseEntity<BoardInfo> createBoard(@RequestBody @Valid BoardInfoCreate boardInfoCreate) {
-        BoardInfo boardInfo = this.boardService.createBoardInfo(boardInfoCreate);
-        return ResponseEntity.status(HttpStatus.OK).body(boardInfo);
-    }
 
     /**
      * 게시판 정보 수정

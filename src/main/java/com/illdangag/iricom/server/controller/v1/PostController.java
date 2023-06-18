@@ -157,7 +157,7 @@ public class PostController {
     }
 
     /**
-     * 게시물 투표
+     * 게시물 좋아요 싫어요
      */
     @ApiCallLog(apiCode = "PS_007")
     @Auth(role = AuthRole.ACCOUNT)

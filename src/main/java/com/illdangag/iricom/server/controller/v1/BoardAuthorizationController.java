@@ -30,11 +30,11 @@ public class BoardAuthorizationController {
     }
 
     /**
-     * 게시판 관리자 추가
+     * 게시판 관리자 생성
      */
     @ApiCallLog(apiCode = "AT_001")
     @Auth(role = AuthRole.SYSTEM_ADMIN)
-    @RequestMapping(method = RequestMethod.POST, value = "/board")
+    @RequestMapping(method = RequestMethod.POST, value = "/boards")
     public ResponseEntity<Void> setBoardAdminAuth(@RequestBody @Validated BoardAdminInfoCreate boardAdminInfoCreate) {
         this.boardAuthorizationService.createBoardAdminAuth(boardAdminInfoCreate);
         return ResponseEntity.status(HttpStatus.OK).build();
@@ -46,7 +46,7 @@ public class BoardAuthorizationController {
      */
     @ApiCallLog(apiCode = "AT_002")
     @Auth(role = AuthRole.SYSTEM_ADMIN)
-    @RequestMapping(method = RequestMethod.GET, value = "/board")
+    @RequestMapping(method = RequestMethod.GET, value = "/boards")
     public ResponseEntity<BoardAdminInfoList> getBoardAdminAuthList(@RequestParam(name = "skip", defaultValue = "0", required = false) String skipVariable,
                                                                     @RequestParam(name = "limit", defaultValue = "20", required = false) String limitVariable,
                                                                     @RequestParam(name = "keyword", defaultValue = "", required = false) String keyword,
@@ -97,7 +97,7 @@ public class BoardAuthorizationController {
      */
     @ApiCallLog(apiCode = "AT_003")
     @Auth(role = AuthRole.SYSTEM_ADMIN)
-    @RequestMapping(method = RequestMethod.GET, value = "/board/{board_id}")
+    @RequestMapping(method = RequestMethod.GET, value = "/boards/{board_id}")
     public ResponseEntity<BoardAdminInfo> getBoardAdmin(@PathVariable(name = "board_id") String boardId) {
         BoardAdminInfo boardAdminInfo = this.boardAuthorizationService.getBoardAdminInfo(boardId);
         return ResponseEntity.status(HttpStatus.OK).body(boardAdminInfo);
@@ -108,7 +108,7 @@ public class BoardAuthorizationController {
      */
     @ApiCallLog(apiCode = "AT_004")
     @Auth(role = AuthRole.SYSTEM_ADMIN)
-    @RequestMapping(method = RequestMethod.DELETE, value = "/board")
+    @RequestMapping(method = RequestMethod.DELETE, value = "/boards")
     public ResponseEntity<Void> deleteBoardAdminAuth(@RequestBody @Validated BoardAdminInfoDelete boardAdminInfoDelete) {
         this.boardAuthorizationService.deleteBoardAdminAuth(boardAdminInfoDelete);
         return ResponseEntity.status(HttpStatus.OK).build();

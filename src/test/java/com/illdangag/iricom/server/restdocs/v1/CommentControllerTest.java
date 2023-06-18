@@ -42,7 +42,7 @@ public class CommentControllerTest extends IricomTestSuite {
     @Test
     @DisplayName("생성")
     @Order(0)
-    public void testCase00() throws Exception {
+    public void cm001() throws Exception {
         Board board = getBoard(commentBoard);
         Post post = getPost(commentUpdatePost00);
         Comment comment = getComment(commentUpdateComment00);
@@ -90,7 +90,7 @@ public class CommentControllerTest extends IricomTestSuite {
     @Test
     @DisplayName("목록 조회")
     @Order(1)
-    public void testCase01() throws Exception {
+    public void cm002() throws Exception {
         Board board = getBoard(commentBoard);
         Post post = getPost(commentGetPost00);
         Comment comment = getComment(commentGetComment00);
@@ -144,7 +144,7 @@ public class CommentControllerTest extends IricomTestSuite {
     @Test
     @DisplayName("수정")
     @Order(2)
-    public void testCase02() throws Exception {
+    public void cm004() throws Exception {
         Board board = getBoard(commentBoard);
         Post post = getPost(commentUpdatePost00);
         Comment comment = getComment(commentUpdateComment00);
@@ -164,7 +164,7 @@ public class CommentControllerTest extends IricomTestSuite {
         mockMvc.perform(requestBuilder)
                 .andExpect(status().is(200))
                 .andDo(print())
-                .andDo(document("CM_003",
+                .andDo(document("CM_004",
                         preprocessRequest(
                                 removeHeaders("Authorization"),
                                 prettyPrint()
@@ -190,7 +190,7 @@ public class CommentControllerTest extends IricomTestSuite {
     @Test
     @DisplayName("삭제")
     @Order(3)
-    public void testCase03() throws Exception {
+    public void cm005() throws Exception {
         Board board = getBoard(commentBoard);
         Post post = getPost(commentUpdatePost00);
         Comment comment = getComment(commentDeleteComment00);
@@ -204,7 +204,7 @@ public class CommentControllerTest extends IricomTestSuite {
         mockMvc.perform(requestBuilder)
                 .andExpect(status().is(200))
                 .andDo(print())
-                .andDo(document("CM_004",
+                .andDo(document("CM_005",
                         preprocessRequest(
                                 removeHeaders("Authorization"),
                                 prettyPrint()
@@ -227,7 +227,7 @@ public class CommentControllerTest extends IricomTestSuite {
     @Test
     @DisplayName("좋아요 싫어요")
     @Order(4)
-    public void testCase04() throws Exception {
+    public void cm006() throws Exception {
         Board board = getBoard(voteBoard);
         Post post = getPost(voteCommentPost00);
         Comment comment = getComment(voteComment05);
@@ -247,7 +247,7 @@ public class CommentControllerTest extends IricomTestSuite {
         mockMvc.perform(requestBuilder)
                 .andExpect(status().is(200))
                 .andDo(print())
-                .andDo(document("CM_005",
+                .andDo(document("CM_006",
                         preprocessRequest(
                                 removeHeaders("Authorization"),
                                 prettyPrint()

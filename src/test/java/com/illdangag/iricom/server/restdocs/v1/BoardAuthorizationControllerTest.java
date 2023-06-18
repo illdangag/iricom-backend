@@ -51,7 +51,7 @@ public class BoardAuthorizationControllerTest extends IricomTestSuite {
         requestBody.put("accountId", account.getId());
         requestBody.put("boardId", board.getId());
 
-        MockHttpServletRequestBuilder requestBuilder = post("/v1/auth/board")
+        MockHttpServletRequestBuilder requestBuilder = post("/v1/auth/boards")
                 .content(getJsonString(requestBody))
                 .contentType(MediaType.APPLICATION_JSON);
         setAuthToken(requestBuilder, systemAdmin);
@@ -81,7 +81,7 @@ public class BoardAuthorizationControllerTest extends IricomTestSuite {
     @DisplayName("게시판 관리자 조회")
     @Order(1)
     public void at002() throws Exception {
-        MockHttpServletRequestBuilder requestBuilder = get("/v1/auth/board")
+        MockHttpServletRequestBuilder requestBuilder = get("/v1/auth/boards")
                 .param("skip", "0")
                 .param("limit", "20")
                 .param("keyword", "createBoard")
@@ -125,7 +125,7 @@ public class BoardAuthorizationControllerTest extends IricomTestSuite {
     @Order(2)
     public void at003() throws Exception {
         Board board = getBoard(enableBoard);
-        MockHttpServletRequestBuilder requestBuilder = get("/v1/auth/board/{id}", board.getId());
+        MockHttpServletRequestBuilder requestBuilder = get("/v1/auth/boards/{id}", board.getId());
         setAuthToken(requestBuilder, systemAdmin);
 
         List<FieldDescriptor> fieldDescriptorList = new LinkedList<>();
@@ -167,7 +167,7 @@ public class BoardAuthorizationControllerTest extends IricomTestSuite {
         requestBody.put("accountId", account.getId());
         requestBody.put("boardId", board.getId());
 
-        MockHttpServletRequestBuilder requestBuilder = delete("/v1/auth/board")
+        MockHttpServletRequestBuilder requestBuilder = delete("/v1/auth/boards")
                 .content(getJsonString(requestBody))
                 .contentType(MediaType.APPLICATION_JSON);
         setAuthToken(requestBuilder, systemAdmin);

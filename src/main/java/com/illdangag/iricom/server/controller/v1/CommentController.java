@@ -104,7 +104,7 @@ public class CommentController {
     /**
      * 댓글 수정
      */
-    @ApiCallLog(apiCode = "CM_003")
+    @ApiCallLog(apiCode = "CM_004")
     @Auth(role = AuthRole.ACCOUNT)
     @RequestMapping(method = RequestMethod.PATCH, value = "/comments/{comment_id}")
     public ResponseEntity<CommentInfo> updateComment(@PathVariable(value = "board_id") String boardId,
@@ -120,7 +120,7 @@ public class CommentController {
     /**
      * 댓글 삭제
      */
-    @ApiCallLog(apiCode = "CM_004")
+    @ApiCallLog(apiCode = "CM_005")
     @Auth(role = AuthRole.ACCOUNT)
     @RequestMapping(method = RequestMethod.DELETE, value = "/comments/{comment_id}")
     public ResponseEntity<CommentInfo> deleteComment(@PathVariable(value = "board_id") String boardId,
@@ -134,7 +134,7 @@ public class CommentController {
     /**
      * 댓글 좋아요, 싫어요
      */
-    @ApiCallLog(apiCode = "CM_005")
+    @ApiCallLog(apiCode = "CM_006")
     @Auth(role = AuthRole.ACCOUNT)
     @RequestMapping(method = RequestMethod.PATCH, value = "/comments/{comment_id}/vote")
     public ResponseEntity<CommentInfo> voteComment(@PathVariable(value = "board_id") String boardId,
