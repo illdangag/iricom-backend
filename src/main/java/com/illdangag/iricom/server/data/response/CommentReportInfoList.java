@@ -12,7 +12,7 @@ import java.util.List;
 @Getter
 @SuperBuilder
 @JsonInclude(JsonInclude.Include.NON_NULL)
-public class CommentReportInfoList {
+public class CommentReportInfoList extends SearchList {
     @Builder.Default
     @JsonProperty("reports")
     private List<CommentReportInfo> commentReportInfoList = new LinkedList<>();

@@ -41,6 +41,7 @@ public class CommentReport {
     private Comment comment;
 
     @Builder.Default
+    @Enumerated(EnumType.STRING)
     private ReportType type = ReportType.ETC;
 
     @Builder.Default

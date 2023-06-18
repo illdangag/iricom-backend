@@ -6,7 +6,7 @@ import com.illdangag.iricom.server.configuration.annotation.AuthRole;
 import com.illdangag.iricom.server.configuration.annotation.RequestContext;
 import com.illdangag.iricom.server.data.entity.Account;
 import com.illdangag.iricom.server.data.entity.ReportType;
-import com.illdangag.iricom.server.data.request.CommentReportCreate;
+import com.illdangag.iricom.server.data.request.CommentReportInfoCreate;
 import com.illdangag.iricom.server.data.request.PostReportInfoCreate;
 import com.illdangag.iricom.server.data.request.PostReportInfoSearch;
 import com.illdangag.iricom.server.data.response.CommentReportInfo;
@@ -168,9 +168,9 @@ public class ReportController {
     public ResponseEntity<CommentReportInfo> reportComment(@PathVariable(value = "board_id") String boardId,
                                                            @PathVariable(value = "post_id") String postId,
                                                            @PathVariable(value = "comment_id") String commentId,
-                                                           @RequestBody @Valid CommentReportCreate commentReportCreate,
+                                                           @RequestBody @Valid CommentReportInfoCreate commentReportInfoCreate,
                                                            @RequestContext Account account) {
-        CommentReportInfo commentReportInfo = this.reportService.reportComment(account, boardId, postId, commentId, commentReportCreate);
+        CommentReportInfo commentReportInfo = this.reportService.reportComment(account, boardId, postId, commentId, commentReportInfoCreate);
         return ResponseEntity.status(HttpStatus.OK).body(commentReportInfo);
     }
 }

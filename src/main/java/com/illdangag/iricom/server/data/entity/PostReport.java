@@ -41,6 +41,7 @@ public class PostReport {
     private Post post; // 신고 대상 게시물
 
     @Builder.Default
+    @Enumerated(EnumType.STRING)
     private ReportType type = ReportType.ETC;
 
     @Builder.Default

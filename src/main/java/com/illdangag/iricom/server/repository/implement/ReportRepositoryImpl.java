@@ -249,6 +249,77 @@ public class ReportRepositoryImpl implements ReportRepository {
     }
 
     @Override
+    public long getCommentReportListTotalCount(Board board, ReportType reportType, String reason) {
+        EntityManager entityManager = this.entityManagerFactory.createEntityManager();
+        final String jpql = "SELECT COUNT(*) FROM CommentReport cr" +
+                " WHERE cr.type = :type" +
+                " AND cr.comment.post.board = :board" +
+                " AND UPPER(cr.reason) LIKE UPPER(:reason)" +
+                " ORDER BY cr.createDate DESC";
+
+        TypedQuery<Long> query = entityManager.createQuery(jpql, Long.class)
+                .setParameter("type", reportType)
+                .setParameter("board", board)
+                .setParameter("reason", "%" + StringUtils.escape(reason) + "%");
+        long result = query.getSingleResult();
+        entityManager.close();
+        return result;
+    }
+
+    @Override
+    public List<CommentReport> getCommentReportList(Board board, ReportType reportType, String reason, int offset, int limit) {
+        EntityManager entityManager = this.entityManagerFactory.createEntityManager();
+        final String jpql = "SELECT cr FROM CommentReport cr" +
+                " WHERE cr.type = :type" +
+                " AND cr.comment.post.board = :board" +
+                " AND UPPER(cr.reason) LIKE UPPER(:reason)" +
+                " ORDER BY cr.createDate DESC";
+
+        TypedQuery<CommentReport> query = entityManager.createQuery(jpql, CommentReport.class)
+                .setParameter("type", reportType)
+                .setParameter("board", board)
+                .setParameter("reason", "%" + StringUtils.escape(reason) + "%")
+                .setFirstResult(offset)
+                .setMaxResults(limit);
+        List<CommentReport> reportList = query.getResultList();
+        entityManager.close();
+        return reportList;
+    }
+
+    @Override
+    public long getCommentReportListTotalCount(Board board, String reason) {
+        EntityManager entityManager = this.entityManagerFactory.createEntityManager();
+        final String jpql = "SELECT COUNT(*) FROM CommentReport cr" +
+                " WHERE cr.comment.post.board = :board" +
+                " AND UPPER(cr.reason) LIKE UPPER(:reason)";
+
+        TypedQuery<Long> query = entityManager.createQuery(jpql, Long.class)
+                .setParameter("board", board)
+                .setParameter("reason", "%" + StringUtils.escape(reason) + "%");
+        long result = query.getSingleResult();
+        entityManager.close();
+        return result;
+    }
+
+    @Override
+    public List<CommentReport> getCommentReportList(Board board, String reason, int offset, int limit) {
+        EntityManager entityManager = this.entityManagerFactory.createEntityManager();
+        final String jpql = "SELECT cr FROM CommentReport cr" +
+                " WHERE cr.comment.post.board = :board" +
+                " AND UPPER(cr.reason) LIKE UPPER(:reason)" +
+                " ORDER BY cr.createDate DESC";
+
+        TypedQuery<CommentReport> query = entityManager.createQuery(jpql, CommentReport.class)
+                .setParameter("board", board)
+                .setParameter("reason", "%" + StringUtils.escape(reason) + "%")
+                .setFirstResult(offset)
+                .setMaxResults(limit);
+        List<CommentReport> reportList = query.getResultList();
+        entityManager.close();
+        return reportList;
+    }
+
+    @Override
     public List<CommentReport> getCommentReportList(Account account, Comment comment) {
         EntityManager entityManager = this.entityManagerFactory.createEntityManager();
         final String jpql = "SELECT cr FROM CommentReport cr " +

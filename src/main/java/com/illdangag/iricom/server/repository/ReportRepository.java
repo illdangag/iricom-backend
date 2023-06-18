@@ -28,17 +28,25 @@ public interface ReportRepository {
 
     Optional<PostReport> getPostReport(long id);
 
-    void savePostReport(PostReport postReport);
-
     long getPortReportCount(Post post);
 
-    List<CommentReport> getCommentReportList(Account account, Comment comment);
+    void savePostReport(PostReport postReport);
 
-    void saveCommentReport(CommentReport commentReport);
+    long getCommentReportListTotalCount(Board board, ReportType reportType, String reason);
+
+    List<CommentReport> getCommentReportList(Board board, ReportType reportType, String reason, int offset, int limit);
+
+    long getCommentReportListTotalCount(Board board, String reason);
+
+    List<CommentReport> getCommentReportList(Board board, String reason, int offset, int limit);
+
+    List<CommentReport> getCommentReportList(Account account, Comment comment);
 
     Optional<CommentReport> getCommentReport(String id);
 
     Optional<CommentReport> getCommentReport(long id);
 
     long getCommentReportCount(Comment comment);
+
+    void saveCommentReport(CommentReport commentReport);
 }

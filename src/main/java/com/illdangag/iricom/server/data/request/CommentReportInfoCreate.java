@@ -11,7 +11,7 @@ import javax.validation.constraints.Size;
 @Builder
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
-public class CommentReportCreate {
+public class CommentReportInfoCreate {
     @NotNull(message = "Type is required.")
     private ReportType type;
 

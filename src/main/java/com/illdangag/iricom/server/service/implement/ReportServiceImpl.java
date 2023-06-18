@@ -1,7 +1,8 @@
 package com.illdangag.iricom.server.service.implement;
 
 import com.illdangag.iricom.server.data.entity.*;
-import com.illdangag.iricom.server.data.request.CommentReportCreate;
+import com.illdangag.iricom.server.data.request.CommentReportInfoCreate;
+import com.illdangag.iricom.server.data.request.CommentReportInfoSearch;
 import com.illdangag.iricom.server.data.request.PostReportInfoCreate;
 import com.illdangag.iricom.server.data.request.PostReportInfoSearch;
 import com.illdangag.iricom.server.data.response.*;
@@ -194,16 +195,16 @@ public class ReportServiceImpl implements ReportService {
     }
 
     @Override
-    public CommentReportInfo reportComment(Account account, String boardId, String postId, String commentId, CommentReportCreate commentReportCreate) {
+    public CommentReportInfo reportComment(Account account, String boardId, String postId, String commentId, CommentReportInfoCreate commentReportInfoCreate) {
         Board board = this.getBoard(boardId);
         Post post = this.getPost(postId);
         Comment comment = this.getComment(commentId);
 
-        return this.reportComment(account, board, post, comment, commentReportCreate);
+        return this.reportComment(account, board, post, comment, commentReportInfoCreate);
     }
 
     @Override
-    public CommentReportInfo reportComment(Account account, Board board, Post post, Comment comment, CommentReportCreate commentReportCreate) {
+    public CommentReportInfo reportComment(Account account, Board board, Post post, Comment comment, CommentReportInfoCreate commentReportInfoCreate) {
         if (!comment.getPost().equals(post)) {
             throw new IricomException(IricomErrorCode.NOT_EXIST_COMMENT);
         } else if (!post.getBoard().equals(board)) {
@@ -225,13 +226,89 @@ public class ReportServiceImpl implements ReportService {
         CommentReport commentReport = CommentReport.builder()
                 .account(account)
                 .comment(comment)
-                .type(commentReportCreate.getType())
-                .reason(commentReportCreate.getReason())
+                .type(commentReportInfoCreate.getType())
+                .reason(commentReportInfoCreate.getReason())
                 .build();
 
         this.reportRepository.saveCommentReport(commentReport);
         CommentInfo commentInfo = this.commentService.getComment(board, post, comment);
         return new CommentReportInfo(commentReport, commentInfo);
+    }
+
+    @Override
+    public CommentReportInfoList getCommentReportInfoList(Account account, String boardId, CommentReportInfoSearch commentReportInfoSearch) {
+        Board board = this.getBoard(boardId);
+        return this.getCommentReportInfoList(account, board, commentReportInfoSearch);
+    }
+
+    @Override
+    public CommentReportInfoList getCommentReportInfoList(Account account, Board board, CommentReportInfoSearch commentReportInfoSearch) {
+        if (!this.boardAuthorizationService.hasAuthorization(account, board)) {
+            throw new IricomException(IricomErrorCode.INVALID_AUTHORIZATION_TO_GET_POST_REPORT_LIST);
+        }
+
+        int skip = commentReportInfoSearch.getSkip();
+        int limit = commentReportInfoSearch.getLimit();
+        ReportType reportType = commentReportInfoSearch.getType();
+        String reason = commentReportInfoSearch.getReason();
+
+        long total = -1;
+        List<CommentReport> commentReportList;
+
+        if (reportType != null) {
+            total = this.reportRepository.getCommentReportListTotalCount(board, reportType, reason);
+            commentReportList = this.reportRepository.getCommentReportList(board, reportType, reason, skip, limit);
+        } else {
+            total = this.reportRepository.getCommentReportListTotalCount(board, reason);
+            commentReportList = this.reportRepository.getCommentReportList(board, reason, skip, limit);
+        }
+
+        List<CommentReportInfo> commentReportInfoList = commentReportList.stream()
+                .map(item -> {
+                    Comment comment = item.getComment();
+                    Post post = comment.getPost();
+                    CommentInfo commentInfo = this.commentService.getComment(board, post, comment);
+                    return new CommentReportInfo(item, commentInfo);
+                }).collect(Collectors.toList());
+        return CommentReportInfoList.builder()
+                .skip(skip)
+                .limit(limit)
+                .total(total)
+                .commentReportInfoList(commentReportInfoList)
+                .build();
+    }
+
+    @Override
+    public CommentReportInfoList getCommentReportInfoList(Account account, String boardId, String postId, CommentReportInfoSearch commentReportInfoSearch) {
+        Board board = this.getBoard(boardId);
+        Post post = this.getPost(postId);
+        return this.getCommentReportInfoList(account, board, post, commentReportInfoSearch);
+    }
+
+    @Override
+    public CommentReportInfoList getCommentReportInfoList(Account account, Board board, Post post, CommentReportInfoSearch commentReportInfoSearch) {
+        if (!this.boardAuthorizationService.hasAuthorization(account, board)) {
+            throw new IricomException(IricomErrorCode.INVALID_AUTHORIZATION_TO_GET_POST_REPORT_LIST);
+        }
+
+        return null;
+    }
+
+    @Override
+    public CommentReportInfoList getCommentReportInfoList(Account account, String boardId, String postId, String commentId, CommentReportInfoSearch commentReportInfoSearch) {
+        Board board = this.getBoard(boardId);
+        Post post = this.getPost(postId);
+        Comment comment = this.getComment(commentId);
+        return this.getCommentReportInfoList(account, board, post, comment, commentReportInfoSearch);
+    }
+
+    @Override
+    public CommentReportInfoList getCommentReportInfoList(Account account, Board board, Post post, Comment comment, CommentReportInfoSearch commentReportInfoSearch) {
+        if (!this.boardAuthorizationService.hasAuthorization(account, board)) {
+            throw new IricomException(IricomErrorCode.INVALID_AUTHORIZATION_TO_GET_POST_REPORT_LIST);
+        }
+
+        return null;
     }
 
     private Board getBoard(String id) {

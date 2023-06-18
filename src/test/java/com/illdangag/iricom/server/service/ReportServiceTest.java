@@ -1,9 +1,11 @@
 package com.illdangag.iricom.server.service;
 
 import com.illdangag.iricom.server.data.entity.*;
-import com.illdangag.iricom.server.data.request.CommentReportCreate;
+import com.illdangag.iricom.server.data.request.CommentReportInfoCreate;
+import com.illdangag.iricom.server.data.request.CommentReportInfoSearch;
 import com.illdangag.iricom.server.data.request.PostReportInfoCreate;
 import com.illdangag.iricom.server.data.request.PostReportInfoSearch;
+import com.illdangag.iricom.server.data.response.CommentReportInfoList;
 import com.illdangag.iricom.server.data.response.PostReportInfo;
 import com.illdangag.iricom.server.data.response.PostReportInfoList;
 import com.illdangag.iricom.server.exception.IricomException;
@@ -553,158 +555,179 @@ public class ReportServiceTest extends IricomTestSuite {
     @Nested
     @DisplayName("댓글")
     class CommentTest {
-        @Test
-        @DisplayName("댓글 신고")
-        public void testCase00() throws Exception {
-            Account account = getAccount(common00);
-            Comment comment = getComment(reportComment01);
-            Post post = comment.getPost();
-            Board board = post.getBoard();
+        @Nested
+        @DisplayName("신고")
+        class ReportTest {
+            @Test
+            @DisplayName("댓글 신고")
+            public void testCase00() throws Exception {
+                Account account = getAccount(common00);
+                Comment comment = getComment(reportComment01);
+                Post post = comment.getPost();
+                Board board = post.getBoard();
 
-            String boardId = String.valueOf(board.getId());
-            String postId = String.valueOf(post.getId());
-            String commentId = String.valueOf(comment.getId());
+                String boardId = String.valueOf(board.getId());
+                String postId = String.valueOf(post.getId());
+                String commentId = String.valueOf(comment.getId());
 
-            CommentReportCreate commentReportCreate = CommentReportCreate.builder()
-                    .type(ReportType.ETC)
-                    .reason("report test")
-                    .build();
+                CommentReportInfoCreate commentReportInfoCreate = CommentReportInfoCreate.builder()
+                        .type(ReportType.ETC)
+                        .reason("report test")
+                        .build();
 
-            reportService.reportComment(account, boardId, postId, commentId, commentReportCreate);
+                reportService.reportComment(account, boardId, postId, commentId, commentReportInfoCreate);
+            }
+
+            @Test
+            @DisplayName("중복 댓글 신고")
+            public void testCase01() throws Exception {
+                Account account = getAccount(common00);
+                Comment comment = getComment(reportComment02);
+                Post post = comment.getPost();
+                Board board = post.getBoard();
+
+                String boardId = String.valueOf(board.getId());
+                String postId = String.valueOf(post.getId());
+                String commentId = String.valueOf(comment.getId());
+
+                CommentReportInfoCreate commentReportInfoCreate = CommentReportInfoCreate.builder()
+                        .type(ReportType.ETC)
+                        .reason("report test")
+                        .build();
+
+                reportService.reportComment(account, boardId, postId, commentId, commentReportInfoCreate);
+
+                Assertions.assertThrows(IricomException.class, () -> {
+                    reportService.reportComment(account, boardId, postId, commentId, commentReportInfoCreate);
+                });
+            }
+
+            @Test
+            @DisplayName("댓글의 게시물 불일치")
+            public void testCase02() throws Exception {
+                Account account = getAccount(common00);
+                Comment comment = getComment(reportComment03);
+                Post post = comment.getPost();
+                Board board = post.getBoard();
+                Post invalidPost = getPost(disableBoardPost00);
+
+                String boardId = String.valueOf(board.getId());
+                String invalidPostId = String.valueOf(invalidPost.getId());
+                String commentId = String.valueOf(comment.getId());
+
+                CommentReportInfoCreate commentReportInfoCreate = CommentReportInfoCreate.builder()
+                        .type(ReportType.ETC)
+                        .reason("report test")
+                        .build();
+
+                Assertions.assertThrows(IricomException.class, () -> {
+                    reportService.reportComment(account, boardId, invalidPostId, commentId, commentReportInfoCreate);
+                });
+            }
+
+            @Test
+            @DisplayName("댓글의 게시물의 게시판 불일치")
+            public void testCase03() throws Exception {
+                Account account = getAccount(common00);
+                Comment comment = getComment(reportComment03);
+                Post post = comment.getPost();
+                Board invalidBoard = getBoard(disableBoard);
+
+                String invalidBoardId = String.valueOf(invalidBoard.getId());
+                String postId = String.valueOf(post.getId());
+                String commentId = String.valueOf(comment.getId());
+
+                CommentReportInfoCreate commentReportInfoCreate = CommentReportInfoCreate.builder()
+                        .type(ReportType.ETC)
+                        .reason("report test")
+                        .build();
+
+                Assertions.assertThrows(IricomException.class, () -> {
+                    reportService.reportComment(account, invalidBoardId, postId, commentId, commentReportInfoCreate);
+                });
+            }
+
+            @Test
+            @DisplayName("존재하지 않는 댓글")
+            public void testCase07() throws Exception {
+                Account account = getAccount(common00);
+                Comment comment = getComment(reportComment03);
+                Post post = comment.getPost();
+                Board board = post.getBoard();
+
+                String boardId = String.valueOf(board.getId());
+                String postId = String.valueOf(post.getId());
+                String commentId = "NOT_EXIST_COMMENT";
+
+                CommentReportInfoCreate commentReportInfoCreate = CommentReportInfoCreate.builder()
+                        .type(ReportType.ETC)
+                        .reason("report test")
+                        .build();
+
+                Assertions.assertThrows(IricomException.class, () -> {
+                    reportService.reportComment(account, boardId, postId, commentId, commentReportInfoCreate);
+                });
+            }
+
+            @Test
+            @DisplayName("존재하지 않는 게시물")
+            public void testCase08() throws Exception {
+                Account account = getAccount(common00);
+                Comment comment = getComment(reportComment03);
+                Post post = comment.getPost();
+                Board board = post.getBoard();
+
+                String boardId = String.valueOf(board.getId());
+                String postId = "NOT_EXIST_POST";
+                String commentId = String.valueOf(comment.getId());
+
+                CommentReportInfoCreate commentReportInfoCreate = CommentReportInfoCreate.builder()
+                        .type(ReportType.ETC)
+                        .reason("report test")
+                        .build();
+
+                Assertions.assertThrows(IricomException.class, () -> {
+                    reportService.reportComment(account, boardId, postId, commentId, commentReportInfoCreate);
+                });
+            }
+
+            @Test
+            @DisplayName("존재하지 않는 게시판")
+            public void testCase09() throws Exception {
+                Account account = getAccount(common00);
+                Comment comment = getComment(reportComment03);
+                Post post = comment.getPost();
+
+                String boardId = "NOT_EXIST_BOARD";
+                String postId = String.valueOf(post.getId());
+                String commentId = String.valueOf(comment.getId());
+
+                CommentReportInfoCreate commentReportInfoCreate = CommentReportInfoCreate.builder()
+                        .type(ReportType.ETC)
+                        .reason("report test")
+                        .build();
+
+                Assertions.assertThrows(IricomException.class, () -> {
+                    reportService.reportComment(account, boardId, postId, commentId, commentReportInfoCreate);
+                });
+            }
         }
 
-        @Test
-        @DisplayName("중복 댓글 신고")
-        public void testCase01() throws Exception {
-            Account account = getAccount(common00);
-            Comment comment = getComment(reportComment02);
-            Post post = comment.getPost();
-            Board board = post.getBoard();
+        @Nested
+        @DisplayName("목록 조회")
+        class SearchTest {
+            @Test
+            @DisplayName("기본")
+            public void getDefaultSearch() throws Exception {
+                Account account = getAccount(systemAdmin);
+                Board board = getBoard(reportSearchBoard);
 
-            String boardId = String.valueOf(board.getId());
-            String postId = String.valueOf(post.getId());
-            String commentId = String.valueOf(comment.getId());
-
-            CommentReportCreate commentReportCreate = CommentReportCreate.builder()
-                    .type(ReportType.ETC)
-                    .reason("report test")
-                    .build();
-
-            reportService.reportComment(account, boardId, postId, commentId, commentReportCreate);
-
-            Assertions.assertThrows(IricomException.class, () -> {
-                reportService.reportComment(account, boardId, postId, commentId, commentReportCreate);
-            });
-        }
-
-        @Test
-        @DisplayName("댓글의 게시물 불일치")
-        public void testCase02() throws Exception {
-            Account account = getAccount(common00);
-            Comment comment = getComment(reportComment03);
-            Post post = comment.getPost();
-            Board board = post.getBoard();
-            Post invalidPost = getPost(disableBoardPost00);
-
-            String boardId = String.valueOf(board.getId());
-            String invalidPostId = String.valueOf(invalidPost.getId());
-            String commentId = String.valueOf(comment.getId());
-
-            CommentReportCreate commentReportCreate = CommentReportCreate.builder()
-                    .type(ReportType.ETC)
-                    .reason("report test")
-                    .build();
-
-            Assertions.assertThrows(IricomException.class, () -> {
-                reportService.reportComment(account, boardId, invalidPostId, commentId, commentReportCreate);
-            });
-        }
-
-        @Test
-        @DisplayName("댓글의 게시물의 게시판 불일치")
-        public void testCase03() throws Exception {
-            Account account = getAccount(common00);
-            Comment comment = getComment(reportComment03);
-            Post post = comment.getPost();
-            Board invalidBoard = getBoard(disableBoard);
-
-            String invalidBoardId = String.valueOf(invalidBoard.getId());
-            String postId = String.valueOf(post.getId());
-            String commentId = String.valueOf(comment.getId());
-
-            CommentReportCreate commentReportCreate = CommentReportCreate.builder()
-                    .type(ReportType.ETC)
-                    .reason("report test")
-                    .build();
-
-            Assertions.assertThrows(IricomException.class, () -> {
-                reportService.reportComment(account, invalidBoardId, postId, commentId, commentReportCreate);
-            });
-        }
-
-        @Test
-        @DisplayName("존재하지 않는 댓글")
-        public void testCase07() throws Exception {
-            Account account = getAccount(common00);
-            Comment comment = getComment(reportComment03);
-            Post post = comment.getPost();
-            Board board = post.getBoard();
-
-            String boardId = String.valueOf(board.getId());
-            String postId = String.valueOf(post.getId());
-            String commentId = "NOT_EXIST_COMMENT";
-
-            CommentReportCreate commentReportCreate = CommentReportCreate.builder()
-                    .type(ReportType.ETC)
-                    .reason("report test")
-                    .build();
-
-            Assertions.assertThrows(IricomException.class, () -> {
-                reportService.reportComment(account, boardId, postId, commentId, commentReportCreate);
-            });
-        }
-
-        @Test
-        @DisplayName("존재하지 않는 게시물")
-        public void testCase08() throws Exception {
-            Account account = getAccount(common00);
-            Comment comment = getComment(reportComment03);
-            Post post = comment.getPost();
-            Board board = post.getBoard();
-
-            String boardId = String.valueOf(board.getId());
-            String postId = "NOT_EXIST_POST";
-            String commentId = String.valueOf(comment.getId());
-
-            CommentReportCreate commentReportCreate = CommentReportCreate.builder()
-                    .type(ReportType.ETC)
-                    .reason("report test")
-                    .build();
-
-            Assertions.assertThrows(IricomException.class, () -> {
-                reportService.reportComment(account, boardId, postId, commentId, commentReportCreate);
-            });
-        }
-
-        @Test
-        @DisplayName("존재하지 않는 게시판")
-        public void testCase09() throws Exception {
-            Account account = getAccount(common00);
-            Comment comment = getComment(reportComment03);
-            Post post = comment.getPost();
-
-            String boardId = "NOT_EXIST_BOARD";
-            String postId = String.valueOf(post.getId());
-            String commentId = String.valueOf(comment.getId());
-
-            CommentReportCreate commentReportCreate = CommentReportCreate.builder()
-                    .type(ReportType.ETC)
-                    .reason("report test")
-                    .build();
-
-            Assertions.assertThrows(IricomException.class, () -> {
-                reportService.reportComment(account, boardId, postId, commentId, commentReportCreate);
-            });
+                CommentReportInfoSearch commentReportInfoSearch = CommentReportInfoSearch.builder().build();
+                CommentReportInfoList commentReportInfoList = reportService.getCommentReportInfoList(account, board, commentReportInfoSearch);
+                Assertions.assertEquals(0, commentReportInfoList.getSkip());
+                Assertions.assertEquals(20, commentReportInfoList.getLimit());
+                Assertions.assertEquals(8, commentReportInfoList.getTotal());
+            }
         }
     }
 }

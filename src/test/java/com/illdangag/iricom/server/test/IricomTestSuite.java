@@ -553,6 +553,14 @@ public abstract class IricomTestSuite {
             .content("reportedComment00")
             .creator(common00).post(reportedPost00)
             .build();
+    protected static final TestCommentInfo reportedSearchComment00 = TestCommentInfo.builder()
+            .content("reportSearchComment00")
+            .creator(common00).post(reportedSearchPost00)
+            .build();
+    protected static final TestCommentInfo reportedSearchComment01 = TestCommentInfo.builder()
+            .content("reportedSearchComment01")
+            .creator(common00).post(reportedSearchPost00)
+            .build();
 
     private static final TestCommentInfo[] testCommentInfos = {
             enableBoardComment00,
@@ -569,6 +577,8 @@ public abstract class IricomTestSuite {
             reportComment06, reportComment07, reportComment08,
 
             reportedComment00,
+
+            reportedSearchComment00, reportedSearchComment01,
     };
 
     protected static final TestPostReportInfo postReport00 = TestPostReportInfo.builder()
@@ -690,10 +700,44 @@ public abstract class IricomTestSuite {
             .type(ReportType.ETC).reason("test comment report")
             .reportAccount(common09).comment(reportedComment00)
             .build();
+    protected static final TestCommentReportInfo commentReportSearch00 = TestCommentReportInfo.builder()
+            .type(ReportType.HATE).reason("hate")
+            .reportAccount(common01).comment(reportedSearchComment00)
+            .build();
+    protected static final TestCommentReportInfo commentReportSearch01 = TestCommentReportInfo.builder()
+            .type(ReportType.POLITICAL).reason("political")
+            .reportAccount(common02).comment(reportedSearchComment00)
+            .build();
+    protected static final TestCommentReportInfo commentReportSearch02 = TestCommentReportInfo.builder()
+            .type(ReportType.PORNOGRAPHY).reason("pornography")
+            .reportAccount(common03).comment(reportedSearchComment00)
+            .build();
+    protected static final TestCommentReportInfo commentReportSearch03 = TestCommentReportInfo.builder()
+            .type(ReportType.ETC).reason("etc")
+            .reportAccount(common04).comment(reportedSearchComment00)
+            .build();
+    protected static final TestCommentReportInfo commentReportSearch04 = TestCommentReportInfo.builder()
+            .type(ReportType.HATE).reason("hate")
+            .reportAccount(common01).comment(reportedSearchComment01)
+            .build();
+    protected static final TestCommentReportInfo commentReportSearch05 = TestCommentReportInfo.builder()
+            .type(ReportType.POLITICAL).reason("political")
+            .reportAccount(common02).comment(reportedSearchComment01)
+            .build();
+    protected static final TestCommentReportInfo commentReportSearch06 = TestCommentReportInfo.builder()
+            .type(ReportType.PORNOGRAPHY).reason("pornography")
+            .reportAccount(common03).comment(reportedSearchComment01)
+            .build();
+    protected static final TestCommentReportInfo commentReportSearch07 = TestCommentReportInfo.builder()
+            .type(ReportType.ETC).reason("etc")
+            .reportAccount(common04).comment(reportedSearchComment01)
+            .build();
 
     private static final TestCommentReportInfo[] testCommentReportInfos = {
             commentReport00, commentReport01, commentReport02, commentReport03, commentReport04,
             commentReport05, commentReport06, commentReport07, commentReport08, commentReport09,
+            commentReportSearch00, commentReportSearch01, commentReportSearch02,  commentReportSearch03,
+            commentReportSearch04, commentReportSearch05, commentReportSearch06,  commentReportSearch07,
     };
 
     private static final Map<TestAccountInfo, Account> accountMap = new HashMap<>();
@@ -994,11 +1038,11 @@ public abstract class IricomTestSuite {
         String postId = String.valueOf(post.getId());
         String commentId = String.valueOf(comment.getId());
 
-        CommentReportCreate commentReportCreate = CommentReportCreate.builder()
+        CommentReportInfoCreate commentReportInfoCreate = CommentReportInfoCreate.builder()
                 .type(testCommentReportInfo.getType())
                 .reason(testCommentReportInfo.getReason())
                 .build();
-        CommentReportInfo commentReportInfo = this.reportService.reportComment(reportAccount, boardId, postId, commentId, commentReportCreate);
+        CommentReportInfo commentReportInfo = this.reportService.reportComment(reportAccount, boardId, postId, commentId, commentReportInfoCreate);
         return this.getCommentReport(commentReportInfo.getId());
     }
 
@@ -1040,5 +1084,9 @@ public abstract class IricomTestSuite {
 
     protected PostReport getPostReport(TestPostReportInfo testPostReportInfo) {
         return postReportMap.get(testPostReportInfo);
+    }
+
+    protected CommentReport getCommentReport(TestCommentReportInfo testCommentReportInfo) {
+        return commentReportMap.get(testCommentReportInfo);
     }
 }
