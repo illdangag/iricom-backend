@@ -18,6 +18,7 @@ public class IricomFieldsSnippet {
     private static final Map<String, String> commentMap = new LinkedHashMap<>();
 
     private static final Map<String, String> postReportMap = new LinkedHashMap<>();
+    private static final Map<String, String> commentReportMap = new LinkedHashMap<>();
 
     private static final Map<String, String> searchListMap = new LinkedHashMap<>();
 
@@ -75,6 +76,13 @@ public class IricomFieldsSnippet {
         postReportMap.put("type", "종류");
         postReportMap.put("reason", "사유");
         postReportMap.put("post", "신고 게시물");
+
+        commentReportMap.put("id", "아이디");
+        commentReportMap.put("createDate", "생성일");
+        commentReportMap.put("updateDate", "수정일");
+        commentReportMap.put("type", "종류");
+        commentReportMap.put("reason", "사유");
+        commentReportMap.put("comment", "신고 댓글");
     }
     private IricomFieldsSnippet() {
     }
@@ -102,29 +110,31 @@ public class IricomFieldsSnippet {
         return getFieldDescriptors(accountMap, keyPrefix);
     }
 
+    public static List<FieldDescriptor> getBoard(String keyPrefix) {
+        return getFieldDescriptors(boardMap, keyPrefix);
+    }
+
     public static List<FieldDescriptor> getPost(String keyPrefix, boolean hasContent) {
-        Map<String, String> resultMap = new LinkedHashMap<>();
-        resultMap.putAll(postMap);
+        Map<String, String> resultMap = new LinkedHashMap<>(postMap);
         if (!hasContent) {
             resultMap.remove("content");
         }
         return getFieldDescriptors(resultMap, keyPrefix);
     }
 
-    public static List<FieldDescriptor> getBoard(String keyPrefix) {
-        return getFieldDescriptors(boardMap, keyPrefix);
+    public static List<FieldDescriptor> getComment(String keyPrefix, boolean hasContent) {
+        Map<String, String> resultMap = new LinkedHashMap<>(commentMap);
+        if (!hasContent) {
+            resultMap.remove("content");
+        }
+        return getFieldDescriptors(resultMap, keyPrefix);
     }
 
     public static List<FieldDescriptor> getPostReport(String keyPrefix) {
         return getFieldDescriptors(postReportMap, keyPrefix);
     }
 
-    public static List<FieldDescriptor> getComment(String keyPrefix, boolean hasContent) {
-        Map<String, String> resultMap = new LinkedHashMap<>();
-        resultMap.putAll(commentMap);
-        if (!hasContent) {
-            resultMap.remove("content");
-        }
-        return getFieldDescriptors(resultMap, keyPrefix);
+    public static List<FieldDescriptor> getCommentReport(String keyPrefix) {
+        return getFieldDescriptors(commentReportMap, keyPrefix);
     }
 }

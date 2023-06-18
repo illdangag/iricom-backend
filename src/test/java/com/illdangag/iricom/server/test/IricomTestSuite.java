@@ -513,28 +513,32 @@ public abstract class IricomTestSuite {
             .content("voteComment05")
             .creator(common00).post(voteCommentPost00).referenceComment(voteComment00)
             .build();
+    protected static final TestCommentInfo reportRootComment00 = TestCommentInfo.builder()
+            .content("reportRootComment00")
+            .creator(common00).post(reportPost00)
+            .build();
     protected static final TestCommentInfo reportComment00 = TestCommentInfo.builder()
-            .content("reportComment00")
+            .content("reportComment00").referenceComment(reportRootComment00)
             .creator(common00).post(reportPost00)
             .build();
     protected static final TestCommentInfo reportComment01 = TestCommentInfo.builder()
-            .content("reportComment01")
+            .content("reportComment01").referenceComment(reportRootComment00)
             .creator(common00).post(reportPost00)
             .build();
     protected static final TestCommentInfo reportComment02 = TestCommentInfo.builder()
-            .content("reportComment02")
+            .content("reportComment02").referenceComment(reportRootComment00)
             .creator(common00).post(reportPost00)
             .build();
     protected static final TestCommentInfo reportComment03 = TestCommentInfo.builder()
-            .content("reportComment03")
+            .content("reportComment03").referenceComment(reportRootComment00)
             .creator(common00).post(reportPost00)
             .build();
     protected static final TestCommentInfo reportComment04 = TestCommentInfo.builder()
-            .content("reportComment04")
+            .content("reportComment04").referenceComment(reportRootComment00)
             .creator(common00).post(reportPost00)
             .build();
     protected static final TestCommentInfo reportComment05 = TestCommentInfo.builder()
-            .content("reportComment05")
+            .content("reportComment05").referenceComment(reportRootComment00)
             .creator(common00).post(reportPost00)
             .build();
     protected static final TestCommentInfo reportComment06 = TestCommentInfo.builder()
@@ -553,20 +557,28 @@ public abstract class IricomTestSuite {
             .content("reportedComment00")
             .creator(common00).post(reportedPost00)
             .build();
+    protected static final TestCommentInfo reportedSearchRootComment00 = TestCommentInfo.builder()
+            .content("reportedSearchRootComment00")
+            .creator(common00).post(reportedSearchPost00)
+            .build();
     protected static final TestCommentInfo reportedSearchComment00 = TestCommentInfo.builder()
-            .content("reportSearchComment00")
+            .content("reportSearchComment00").referenceComment(reportedSearchRootComment00)
             .creator(common00).post(reportedSearchPost00)
             .build();
     protected static final TestCommentInfo reportedSearchComment01 = TestCommentInfo.builder()
-            .content("reportedSearchComment01")
+            .content("reportedSearchComment01").referenceComment(reportedSearchRootComment00)
             .creator(common00).post(reportedSearchPost00)
             .build();
+    protected static final TestCommentInfo reportedSearchRootComment01 = TestCommentInfo.builder()
+            .content("reportedSearchRootComment01")
+            .creator(common00).post(reportedSearchPost01)
+            .build();
     protected static final TestCommentInfo reportedSearchComment02 = TestCommentInfo.builder()
-            .content("reportedSearchComment02")
+            .content("reportedSearchComment02").referenceComment(reportedSearchRootComment01)
             .creator(common00).post(reportedSearchPost01)
             .build();
     protected static final TestCommentInfo reportedSearchComment03 = TestCommentInfo.builder()
-            .content("reportedSearchComment03")
+            .content("reportedSearchComment03").referenceComment(reportedSearchRootComment01)
             .creator(common00).post(reportedSearchPost01)
             .build();
 
@@ -586,6 +598,7 @@ public abstract class IricomTestSuite {
 
             reportedComment00,
 
+            reportRootComment00, reportedSearchRootComment00, reportedSearchRootComment01,
             reportedSearchComment00, reportedSearchComment01, reportedSearchComment02, reportedSearchComment03,
     };
 
@@ -709,67 +722,67 @@ public abstract class IricomTestSuite {
             .reportAccount(common09).comment(reportedComment00)
             .build();
     protected static final TestCommentReportInfo commentReportSearch00 = TestCommentReportInfo.builder()
-            .type(ReportType.HATE).reason("hate")
+            .type(ReportType.HATE).reason("test comment report hate")
             .reportAccount(common01).comment(reportedSearchComment00)
             .build();
     protected static final TestCommentReportInfo commentReportSearch01 = TestCommentReportInfo.builder()
-            .type(ReportType.POLITICAL).reason("political")
+            .type(ReportType.POLITICAL).reason("test comment report political")
             .reportAccount(common02).comment(reportedSearchComment00)
             .build();
     protected static final TestCommentReportInfo commentReportSearch02 = TestCommentReportInfo.builder()
-            .type(ReportType.PORNOGRAPHY).reason("pornography")
+            .type(ReportType.PORNOGRAPHY).reason("test comment report pornography")
             .reportAccount(common03).comment(reportedSearchComment00)
             .build();
     protected static final TestCommentReportInfo commentReportSearch03 = TestCommentReportInfo.builder()
-            .type(ReportType.ETC).reason("etc")
+            .type(ReportType.ETC).reason("test comment report etc")
             .reportAccount(common04).comment(reportedSearchComment00)
             .build();
     protected static final TestCommentReportInfo commentReportSearch04 = TestCommentReportInfo.builder()
-            .type(ReportType.HATE).reason("hate")
+            .type(ReportType.HATE).reason("test comment report hate")
             .reportAccount(common01).comment(reportedSearchComment01)
             .build();
     protected static final TestCommentReportInfo commentReportSearch05 = TestCommentReportInfo.builder()
-            .type(ReportType.POLITICAL).reason("political")
+            .type(ReportType.POLITICAL).reason("test comment report political")
             .reportAccount(common02).comment(reportedSearchComment01)
             .build();
     protected static final TestCommentReportInfo commentReportSearch06 = TestCommentReportInfo.builder()
-            .type(ReportType.PORNOGRAPHY).reason("pornography")
+            .type(ReportType.PORNOGRAPHY).reason("test comment report pornography")
             .reportAccount(common03).comment(reportedSearchComment01)
             .build();
     protected static final TestCommentReportInfo commentReportSearch07 = TestCommentReportInfo.builder()
-            .type(ReportType.ETC).reason("etc")
+            .type(ReportType.ETC).reason("test comment report etc")
             .reportAccount(common04).comment(reportedSearchComment01)
             .build();
     protected static final TestCommentReportInfo commentReportSearch08 = TestCommentReportInfo.builder()
-            .type(ReportType.HATE).reason("hate")
+            .type(ReportType.HATE).reason("test comment report hate")
             .reportAccount(common01).comment(reportedSearchComment02)
             .build();
     protected static final TestCommentReportInfo commentReportSearch09 = TestCommentReportInfo.builder()
-            .type(ReportType.POLITICAL).reason("political")
+            .type(ReportType.POLITICAL).reason("test comment report political")
             .reportAccount(common02).comment(reportedSearchComment02)
             .build();
     protected static final TestCommentReportInfo commentReportSearch10 = TestCommentReportInfo.builder()
-            .type(ReportType.PORNOGRAPHY).reason("pornography")
+            .type(ReportType.PORNOGRAPHY).reason("test comment report pornography")
             .reportAccount(common03).comment(reportedSearchComment02)
             .build();
     protected static final TestCommentReportInfo commentReportSearch11 = TestCommentReportInfo.builder()
-            .type(ReportType.ETC).reason("etc")
+            .type(ReportType.ETC).reason("test comment report etc")
             .reportAccount(common04).comment(reportedSearchComment02)
             .build();
     protected static final TestCommentReportInfo commentReportSearch12 = TestCommentReportInfo.builder()
-            .type(ReportType.HATE).reason("hate")
+            .type(ReportType.HATE).reason("test comment report hate")
             .reportAccount(common01).comment(reportedSearchComment03)
             .build();
     protected static final TestCommentReportInfo commentReportSearch13 = TestCommentReportInfo.builder()
-            .type(ReportType.POLITICAL).reason("political")
+            .type(ReportType.POLITICAL).reason("test comment report political")
             .reportAccount(common02).comment(reportedSearchComment03)
             .build();
     protected static final TestCommentReportInfo commentReportSearch14 = TestCommentReportInfo.builder()
-            .type(ReportType.PORNOGRAPHY).reason("pornography")
+            .type(ReportType.PORNOGRAPHY).reason("test comment report pornography")
             .reportAccount(common03).comment(reportedSearchComment03)
             .build();
     protected static final TestCommentReportInfo commentReportSearch15 = TestCommentReportInfo.builder()
-            .type(ReportType.ETC).reason("etc")
+            .type(ReportType.ETC).reason("test comment report etc")
             .reportAccount(common04).comment(reportedSearchComment03)
             .build();
 

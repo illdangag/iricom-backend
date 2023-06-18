@@ -238,8 +238,7 @@ public class ReportRepositoryImpl implements ReportRepository {
         final String jpql = "SELECT COUNT(*) FROM CommentReport cr" +
                 " WHERE cr.type = :type" +
                 " AND cr.comment.post.board = :board" +
-                " AND UPPER(cr.reason) LIKE UPPER(:reason)" +
-                " ORDER BY cr.createDate DESC";
+                " AND UPPER(cr.reason) LIKE UPPER(:reason)";
 
         TypedQuery<Long> query = entityManager.createQuery(jpql, Long.class)
                 .setParameter("type", reportType)
