@@ -46,7 +46,7 @@ public class CommentInfo {
         }
 
         this.createDate = DateTimeUtils.getLong(comment.getCreateDate());
-        this.updateDate = comment.getUpdateDate() == null ? null : DateTimeUtils.getLong(comment.getUpdateDate());
+        this.updateDate = comment.getUpdateDate() == null ? this.createDate : DateTimeUtils.getLong(comment.getUpdateDate());
         this.upvote = upvote;
         this.downvote = downvote;
         this.hasNestedComment = comment.getHasNestedComment();

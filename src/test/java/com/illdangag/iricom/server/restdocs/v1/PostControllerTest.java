@@ -2,6 +2,7 @@ package com.illdangag.iricom.server.restdocs.v1;
 
 import com.illdangag.iricom.server.data.entity.Board;
 import com.illdangag.iricom.server.data.entity.Post;
+import com.illdangag.iricom.server.restdocs.snippet.IricomFieldsSnippet;
 import com.illdangag.iricom.server.test.IricomTestSuite;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Order;
@@ -9,10 +10,13 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 import org.springframework.http.MediaType;
+import org.springframework.restdocs.payload.FieldDescriptor;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilder;
 
 import java.util.HashMap;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.Map;
 
 import static org.springframework.restdocs.headers.HeaderDocumentation.requestHeaders;
@@ -51,6 +55,10 @@ public class PostControllerTest extends IricomTestSuite {
                 .contentType(MediaType.APPLICATION_JSON);
         setAuthToken(requestBuilder, systemAdmin);
 
+        List<FieldDescriptor> fieldDescriptorList = new LinkedList<>();
+        fieldDescriptorList.addAll(IricomFieldsSnippet.getPost("", true));
+        fieldDescriptorList.addAll(IricomFieldsSnippet.getAccount("account."));
+
         mockMvc.perform(requestBuilder)
                 .andExpect(status().is(200))
                 .andDo(print())
@@ -74,33 +82,7 @@ public class PostControllerTest extends IricomTestSuite {
                                         fieldWithPath("content").description("내용"),
                                         fieldWithPath("isAllowComment").description("댓글 허용 여부")
                                 ),
-                                responseFields(
-                                        fieldWithPath("id").description("아이디"),
-                                        fieldWithPath("type").description("게시물의 종류"),
-                                        fieldWithPath("createDate").description("작성일"),
-                                        fieldWithPath("updateDate").description("수정일"),
-                                        fieldWithPath("status").description("상태"),
-                                        fieldWithPath("title").description("제목"),
-                                        fieldWithPath("content").description("내용"),
-                                        fieldWithPath("viewCount").description("조회수"),
-                                        fieldWithPath("upvote").description("좋아요"),
-                                        fieldWithPath("downvote").description("싫어요"),
-                                        fieldWithPath("commentCount").description("댓글수"),
-                                        fieldWithPath("isAllowComment").description("댓글 허용 여부"),
-                                        fieldWithPath("isPublish").description("발행 여부"),
-                                        fieldWithPath("hasTemporary").description("임시 저장 여부"),
-                                        fieldWithPath("boardId").description("게시판 아이디"),
-                                        fieldWithPath("isReport").description("신고 여부"),
-                                        fieldWithPath("isBan").description("차단 여부"),
-                                        fieldWithPath("account").description("작성자"),
-                                        fieldWithPath("account.id").description("아이디"),
-                                        fieldWithPath("account.email").description("이메일"),
-                                        fieldWithPath("account.createDate").description("생성일"),
-                                        fieldWithPath("account.lastActivityDate").description("최근 활동일"),
-                                        fieldWithPath("account.nickname").description("닉네임"),
-                                        fieldWithPath("account.description").description("설명"),
-                                        fieldWithPath("account.auth").description("권한")
-                                )
+                                responseFields(fieldDescriptorList.toArray(FieldDescriptor[]::new))
                         )
                 );
     }
@@ -117,6 +99,11 @@ public class PostControllerTest extends IricomTestSuite {
                 .param("keyword", "")
                 .param("type", "post");
         setAuthToken(requestBuilder, common00);
+
+        List<FieldDescriptor> fieldDescriptorList = new LinkedList<>();
+        fieldDescriptorList.addAll(IricomFieldsSnippet.getSearchList(""));
+        fieldDescriptorList.addAll(IricomFieldsSnippet.getPost("posts.[].", false));
+        fieldDescriptorList.addAll(IricomFieldsSnippet.getAccount("posts.[].account."));
 
         mockMvc.perform(requestBuilder)
                 .andExpect(status().is(200))
@@ -141,36 +128,7 @@ public class PostControllerTest extends IricomTestSuite {
                                         parameterWithName("keyword").description("검색어"),
                                         parameterWithName("type").description("게시물의 종류 (post: 게시물, notification: 공지사항)")
                                 ),
-                                responseFields(
-                                        fieldWithPath("total").description("모든 결과의 수"),
-                                        fieldWithPath("skip").description("건너 뛸 결과 수"),
-                                        fieldWithPath("limit").description("조회 할 최대 결과 수"),
-                                        fieldWithPath("posts").description("게시물 목록"),
-                                        fieldWithPath("posts.[].id").description("아이디"),
-                                        fieldWithPath("posts.[].type").description("게시물의 종류"),
-                                        fieldWithPath("posts.[].createDate").description("작성일"),
-                                        fieldWithPath("posts.[].updateDate").description("수정일"),
-                                        fieldWithPath("posts.[].status").description("상태"),
-                                        fieldWithPath("posts.[].title").description("제목"),
-                                        fieldWithPath("posts.[].viewCount").description("조회수"),
-                                        fieldWithPath("posts.[].upvote").description("좋아요"),
-                                        fieldWithPath("posts.[].downvote").description("싫어요"),
-                                        fieldWithPath("posts.[].commentCount").description("댓글수"),
-                                        fieldWithPath("posts.[].isAllowComment").description("댓글 허용 여부"),
-                                        fieldWithPath("posts.[].isPublish").description("발행 여부"),
-                                        fieldWithPath("posts.[].hasTemporary").description("임시 저장 여부"),
-                                        fieldWithPath("posts.[].boardId").description("게시판 아이디"),
-                                        fieldWithPath("posts.[].isReport").description("신고 여부"),
-                                        fieldWithPath("posts.[].isBan").description("차단 여부"),
-                                        fieldWithPath("posts.[].account").description("작성자"),
-                                        fieldWithPath("posts.[].account.id").description("아이디"),
-                                        fieldWithPath("posts.[].account.email").description("이메일"),
-                                        fieldWithPath("posts.[].account.createDate").description("생성일"),
-                                        fieldWithPath("posts.[].account.lastActivityDate").description("최근 활동일"),
-                                        fieldWithPath("posts.[].account.nickname").description("닉네임"),
-                                        fieldWithPath("posts.[].account.description").description("설명"),
-                                        fieldWithPath("posts.[].account.auth").description("권한")
-                                )
+                                responseFields(fieldDescriptorList.toArray(FieldDescriptor[]::new))
                         )
                 );
     }
@@ -185,6 +143,10 @@ public class PostControllerTest extends IricomTestSuite {
         MockHttpServletRequestBuilder requestBuilder = get("/v1/boards/{boardId}/posts/{postId}", board.getId(), post.getId())
                 .param("state", "publish");
         setAuthToken(requestBuilder, common00);
+
+        List<FieldDescriptor> fieldDescriptorList = new LinkedList<>();
+        fieldDescriptorList.addAll(IricomFieldsSnippet.getPost("", true));
+        fieldDescriptorList.addAll(IricomFieldsSnippet.getAccount("account."));
 
         mockMvc.perform(requestBuilder)
                 .andExpect(status().is(200))
@@ -207,33 +169,7 @@ public class PostControllerTest extends IricomTestSuite {
                         requestParameters(
                                 parameterWithName("state").description("게시물의 상태 (publish: 게시물, notification: 공지사항)")
                         ),
-                        responseFields(
-                                fieldWithPath("id").description("아이디"),
-                                fieldWithPath("type").description("게시물의 종류"),
-                                fieldWithPath("createDate").description("작성일"),
-                                fieldWithPath("updateDate").description("수정일"),
-                                fieldWithPath("status").description("상태"),
-                                fieldWithPath("title").description("제목"),
-                                fieldWithPath("content").description("내용"),
-                                fieldWithPath("viewCount").description("조회수"),
-                                fieldWithPath("upvote").description("좋아요"),
-                                fieldWithPath("downvote").description("싫어요"),
-                                fieldWithPath("commentCount").description("댓글수"),
-                                fieldWithPath("isAllowComment").description("댓글 허용 여부"),
-                                fieldWithPath("isPublish").description("발행 여부"),
-                                fieldWithPath("hasTemporary").description("임시 저장 여부"),
-                                fieldWithPath("boardId").description("게시판 아이디"),
-                                fieldWithPath("isReport").description("신고 여부"),
-                                fieldWithPath("isBan").description("차단 여부"),
-                                fieldWithPath("account").description("작성자"),
-                                fieldWithPath("account.id").description("아이디"),
-                                fieldWithPath("account.email").description("이메일"),
-                                fieldWithPath("account.createDate").description("생성일"),
-                                fieldWithPath("account.lastActivityDate").description("최근 활동일"),
-                                fieldWithPath("account.nickname").description("닉네임"),
-                                fieldWithPath("account.description").description("설명"),
-                                fieldWithPath("account.auth").description("권한")
-                        )
+                        responseFields(fieldDescriptorList.toArray(FieldDescriptor[]::new))
                 ));
     }
 
@@ -255,6 +191,10 @@ public class PostControllerTest extends IricomTestSuite {
                 .contentType(MediaType.APPLICATION_JSON);
         ;
         setAuthToken(requestBuilder, allBoardAdmin);
+
+        List<FieldDescriptor> fieldDescriptorList = new LinkedList<>();
+        fieldDescriptorList.addAll(IricomFieldsSnippet.getPost("", true));
+        fieldDescriptorList.addAll(IricomFieldsSnippet.getAccount("account."));
 
         mockMvc.perform(requestBuilder)
                 .andExpect(status().is(200))
@@ -280,33 +220,7 @@ public class PostControllerTest extends IricomTestSuite {
                                 fieldWithPath("content").description("내용"),
                                 fieldWithPath("isAllowComment").description("댓글 허용 여부")
                         ),
-                        responseFields(
-                                fieldWithPath("id").description("아이디"),
-                                fieldWithPath("type").description("게시물의 종류"),
-                                fieldWithPath("createDate").description("작성일"),
-                                fieldWithPath("updateDate").description("수정일"),
-                                fieldWithPath("status").description("상태"),
-                                fieldWithPath("title").description("제목"),
-                                fieldWithPath("content").description("내용"),
-                                fieldWithPath("viewCount").description("조회수"),
-                                fieldWithPath("upvote").description("좋아요"),
-                                fieldWithPath("downvote").description("싫어요"),
-                                fieldWithPath("commentCount").description("댓글수"),
-                                fieldWithPath("isAllowComment").description("댓글 허용 여부"),
-                                fieldWithPath("isPublish").description("발행 여부"),
-                                fieldWithPath("hasTemporary").description("임시 저장 여부"),
-                                fieldWithPath("boardId").description("게시판 아이디"),
-                                fieldWithPath("isReport").description("신고 여부"),
-                                fieldWithPath("isBan").description("차단 여부"),
-                                fieldWithPath("account").description("작성자"),
-                                fieldWithPath("account.id").description("아이디"),
-                                fieldWithPath("account.email").description("이메일"),
-                                fieldWithPath("account.createDate").description("생성일"),
-                                fieldWithPath("account.lastActivityDate").description("최근 활동일"),
-                                fieldWithPath("account.nickname").description("닉네임"),
-                                fieldWithPath("account.description").description("설명"),
-                                fieldWithPath("account.auth").description("권한")
-                        )
+                        responseFields(fieldDescriptorList.toArray(FieldDescriptor[]::new))
                 ));
     }
 
@@ -319,6 +233,10 @@ public class PostControllerTest extends IricomTestSuite {
 
         MockHttpServletRequestBuilder requestBuilder = post("/v1/boards/{boardId}/posts/{postId}/publish", board.getId(), post.getId());
         setAuthToken(requestBuilder, common00);
+
+        List<FieldDescriptor> fieldDescriptorList = new LinkedList<>();
+        fieldDescriptorList.addAll(IricomFieldsSnippet.getPost("", true));
+        fieldDescriptorList.addAll(IricomFieldsSnippet.getAccount("account."));
 
         mockMvc.perform(requestBuilder)
                 .andExpect(status().is(200))
@@ -338,33 +256,7 @@ public class PostControllerTest extends IricomTestSuite {
                         requestHeaders(
 //                                        headerWithName("Authorization").description("firebase 토큰")
                         ),
-                        responseFields(
-                                fieldWithPath("id").description("아이디"),
-                                fieldWithPath("type").description("게시물의 종류"),
-                                fieldWithPath("createDate").description("작성일"),
-                                fieldWithPath("updateDate").description("수정일"),
-                                fieldWithPath("status").description("상태"),
-                                fieldWithPath("title").description("제목"),
-                                fieldWithPath("content").description("내용"),
-                                fieldWithPath("viewCount").description("조회수"),
-                                fieldWithPath("upvote").description("좋아요"),
-                                fieldWithPath("downvote").description("싫어요"),
-                                fieldWithPath("commentCount").description("댓글수"),
-                                fieldWithPath("isAllowComment").description("댓글 허용 여부"),
-                                fieldWithPath("isPublish").description("발행 여부"),
-                                fieldWithPath("hasTemporary").description("임시 저장 여부"),
-                                fieldWithPath("boardId").description("게시판 아이디"),
-                                fieldWithPath("isReport").description("신고 여부"),
-                                fieldWithPath("isBan").description("차단 여부"),
-                                fieldWithPath("account").description("작성자"),
-                                fieldWithPath("account.id").description("아이디"),
-                                fieldWithPath("account.email").description("이메일"),
-                                fieldWithPath("account.createDate").description("생성일"),
-                                fieldWithPath("account.lastActivityDate").description("최근 활동일"),
-                                fieldWithPath("account.nickname").description("닉네임"),
-                                fieldWithPath("account.description").description("설명"),
-                                fieldWithPath("account.auth").description("권한")
-                        )
+                        responseFields(fieldDescriptorList.toArray(FieldDescriptor[]::new))
                 ));
     }
 
@@ -377,6 +269,10 @@ public class PostControllerTest extends IricomTestSuite {
 
         MockHttpServletRequestBuilder requestBuilder = delete("/v1/boards/{boardId}/posts/{postId}", board.getId(), post.getId());
         setAuthToken(requestBuilder, common00);
+
+        List<FieldDescriptor> fieldDescriptorList = new LinkedList<>();
+        fieldDescriptorList.addAll(IricomFieldsSnippet.getPost("", false));
+        fieldDescriptorList.addAll(IricomFieldsSnippet.getAccount("account."));
 
         mockMvc.perform(requestBuilder)
                 .andExpect(status().is(200))
@@ -396,33 +292,7 @@ public class PostControllerTest extends IricomTestSuite {
                         requestHeaders(
 //                                        headerWithName("Authorization").description("firebase 토큰")
                         ),
-                        responseFields(
-                                fieldWithPath("id").description("아이디"),
-                                fieldWithPath("type").description("게시물의 종류"),
-                                fieldWithPath("createDate").description("작성일"),
-                                fieldWithPath("updateDate").description("수정일"),
-                                fieldWithPath("status").description("상태"),
-                                fieldWithPath("title").description("제목"),
-                                fieldWithPath("content").description("내용"),
-                                fieldWithPath("viewCount").description("조회수"),
-                                fieldWithPath("upvote").description("좋아요"),
-                                fieldWithPath("downvote").description("싫어요"),
-                                fieldWithPath("commentCount").description("댓글수"),
-                                fieldWithPath("isAllowComment").description("댓글 허용 여부"),
-                                fieldWithPath("isPublish").description("발행 여부"),
-                                fieldWithPath("hasTemporary").description("임시 저장 여부"),
-                                fieldWithPath("boardId").description("게시판 아이디"),
-                                fieldWithPath("isReport").description("신고 여부"),
-                                fieldWithPath("isBan").description("차단 여부"),
-                                fieldWithPath("account").description("작성자"),
-                                fieldWithPath("account.id").description("아이디"),
-                                fieldWithPath("account.email").description("이메일"),
-                                fieldWithPath("account.createDate").description("생성일"),
-                                fieldWithPath("account.lastActivityDate").description("최근 활동일"),
-                                fieldWithPath("account.nickname").description("닉네임"),
-                                fieldWithPath("account.description").description("설명"),
-                                fieldWithPath("account.auth").description("권한")
-                        )
+                        responseFields(fieldDescriptorList.toArray(FieldDescriptor[]::new))
                 ));
     }
 
@@ -440,6 +310,10 @@ public class PostControllerTest extends IricomTestSuite {
                 .content(getJsonString(requestBody))
                 .contentType(MediaType.APPLICATION_JSON);
         setAuthToken(requestBuilder, common00);
+
+        List<FieldDescriptor> fieldDescriptorList = new LinkedList<>();
+        fieldDescriptorList.addAll(IricomFieldsSnippet.getPost("", true));
+        fieldDescriptorList.addAll(IricomFieldsSnippet.getAccount("account."));
 
         mockMvc.perform(requestBuilder)
                 .andExpect(status().is(200))
@@ -462,33 +336,7 @@ public class PostControllerTest extends IricomTestSuite {
                         requestFields(
                                 fieldWithPath("type").description("종류 (upvote: 좋아요, downvote: 싫어요)")
                         ),
-                        responseFields(
-                                fieldWithPath("id").description("아이디"),
-                                fieldWithPath("type").description("게시물의 종류"),
-                                fieldWithPath("createDate").description("작성일"),
-                                fieldWithPath("updateDate").description("수정일"),
-                                fieldWithPath("status").description("상태"),
-                                fieldWithPath("title").description("제목"),
-                                fieldWithPath("content").description("내용"),
-                                fieldWithPath("viewCount").description("조회수"),
-                                fieldWithPath("upvote").description("좋아요"),
-                                fieldWithPath("downvote").description("싫어요"),
-                                fieldWithPath("commentCount").description("댓글수"),
-                                fieldWithPath("isAllowComment").description("댓글 허용 여부"),
-                                fieldWithPath("isPublish").description("발행 여부"),
-                                fieldWithPath("hasTemporary").description("임시 저장 여부"),
-                                fieldWithPath("boardId").description("게시판 아이디"),
-                                fieldWithPath("isReport").description("신고 여부"),
-                                fieldWithPath("isBan").description("차단 여부"),
-                                fieldWithPath("account").description("작성자"),
-                                fieldWithPath("account.id").description("아이디"),
-                                fieldWithPath("account.email").description("이메일"),
-                                fieldWithPath("account.createDate").description("생성일"),
-                                fieldWithPath("account.lastActivityDate").description("최근 활동일"),
-                                fieldWithPath("account.nickname").description("닉네임"),
-                                fieldWithPath("account.description").description("설명"),
-                                fieldWithPath("account.auth").description("권한")
-                        )
+                        responseFields(fieldDescriptorList.toArray(FieldDescriptor[]::new))
                 ));
     }
 }

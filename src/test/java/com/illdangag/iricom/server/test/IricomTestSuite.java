@@ -471,11 +471,11 @@ public abstract class IricomTestSuite {
             .build();
     protected static final TestCommentInfo commentUpdateComment00 = TestCommentInfo.builder()
             .content("commentUpdateComment00")
-            .creator(common00).post(commentUpdatePost00)
+            .creator(common00).post(commentUpdatePost00).referenceComment(commentGetComment04)
             .build();
     protected static final TestCommentInfo commentDeleteComment00 = TestCommentInfo.builder()
             .content("commentDeleteComment00")
-            .creator(common00).post(commentUpdatePost00)
+            .creator(common00).post(commentUpdatePost00).referenceComment(commentGetComment04)
             .build();
     protected static final TestCommentInfo commentDeleteComment01 = TestCommentInfo.builder()
             .content("commentDeleteComment01")
@@ -511,7 +511,7 @@ public abstract class IricomTestSuite {
             .build();
     protected static final TestCommentInfo voteComment05 = TestCommentInfo.builder()
             .content("voteComment05")
-            .creator(common00).post(voteCommentPost00)
+            .creator(common00).post(voteCommentPost00).referenceComment(voteComment00)
             .build();
     protected static final TestCommentInfo reportComment00 = TestCommentInfo.builder()
             .content("reportComment00")

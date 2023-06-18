@@ -1,13 +1,18 @@
 package com.illdangag.iricom.server.restdocs.v1;
 
+import com.illdangag.iricom.server.restdocs.snippet.IricomFieldsSnippet;
 import com.illdangag.iricom.server.test.IricomTestSuite;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
+import org.springframework.restdocs.payload.FieldDescriptor;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilder;
+
+import java.util.LinkedList;
+import java.util.List;
 
 import static org.springframework.restdocs.headers.HeaderDocumentation.requestHeaders;
 import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document;
@@ -37,6 +42,9 @@ public class InformationControllerTest extends IricomTestSuite {
         MockHttpServletRequestBuilder requestBuilder = get("/v1/infos");
         setAuthToken(requestBuilder, common00);
 
+        List<FieldDescriptor> fieldDescriptorList = new LinkedList<>();
+        fieldDescriptorList.addAll(IricomFieldsSnippet.getAccount(""));
+
         mockMvc.perform(requestBuilder)
                 .andExpect(status().is(200))
                 .andDo(print())
@@ -51,15 +59,7 @@ public class InformationControllerTest extends IricomTestSuite {
                                 requestHeaders(
 //                                        headerWithName("Authorization").description("firebase 토큰")
                                 ),
-                                responseFields(
-                                        fieldWithPath("id").description("아이디"),
-                                        fieldWithPath("email").description("이메일"),
-                                        fieldWithPath("createDate").description("생성일"),
-                                        fieldWithPath("lastActivityDate").description("최근 활동일"),
-                                        fieldWithPath("nickname").description("닉네임"),
-                                        fieldWithPath("description").description("설명"),
-                                        fieldWithPath("auth").description("권한")
-                                )
+                                responseFields(fieldDescriptorList.toArray(FieldDescriptor[]::new))
                         )
                 );
     }
@@ -71,8 +71,12 @@ public class InformationControllerTest extends IricomTestSuite {
         MockHttpServletRequestBuilder requestBuilder = get("/v1/infos/posts")
                 .param("skip", "0")
                 .param("limit", "2");
-
         setAuthToken(requestBuilder, common00);
+
+        List<FieldDescriptor> fieldDescriptorList = new LinkedList<>();
+        fieldDescriptorList.addAll(IricomFieldsSnippet.getSearchList(""));
+        fieldDescriptorList.addAll(IricomFieldsSnippet.getPost("posts.[].", false));
+        fieldDescriptorList.addAll(IricomFieldsSnippet.getAccount("posts.[].account."));
 
         mockMvc.perform(requestBuilder)
                 .andExpect(status().is(200))
@@ -92,36 +96,7 @@ public class InformationControllerTest extends IricomTestSuite {
                                         parameterWithName("skip").description("건너 뛸 수"),
                                         parameterWithName("limit").description("최대 조회 수")
                                 ),
-                                responseFields(
-                                        fieldWithPath("total").description("모든 결과의 수"),
-                                        fieldWithPath("skip").description("건너 뛸 결과 수"),
-                                        fieldWithPath("limit").description("조회 할 최대 결과 수"),
-                                        fieldWithPath("posts").description("게시물 목록"),
-                                        fieldWithPath("posts.[].id").description("아이디"),
-                                        fieldWithPath("posts.[].type").description("게시물의 종류"),
-                                        fieldWithPath("posts.[].createDate").description("작성일"),
-                                        fieldWithPath("posts.[].updateDate").description("수정일"),
-                                        fieldWithPath("posts.[].status").description("상태"),
-                                        fieldWithPath("posts.[].title").description("제목"),
-                                        fieldWithPath("posts.[].viewCount").description("조회수"),
-                                        fieldWithPath("posts.[].upvote").description("좋아요"),
-                                        fieldWithPath("posts.[].downvote").description("싫어요"),
-                                        fieldWithPath("posts.[].commentCount").description("댓글수"),
-                                        fieldWithPath("posts.[].isAllowComment").description("댓글 허용 여부"),
-                                        fieldWithPath("posts.[].isPublish").description("발행 여부"),
-                                        fieldWithPath("posts.[].hasTemporary").description("임시 저장 여부"),
-                                        fieldWithPath("posts.[].boardId").description("게시판 아이디"),
-                                        fieldWithPath("posts.[].isReport").description("신고 여부"),
-                                        fieldWithPath("posts.[].isBan").description("차단 여부"),
-                                        fieldWithPath("posts.[].account").description("작성자"),
-                                        fieldWithPath("posts.[].account.id").description("아이디"),
-                                        fieldWithPath("posts.[].account.email").description("이메일"),
-                                        fieldWithPath("posts.[].account.createDate").description("생성일"),
-                                        fieldWithPath("posts.[].account.lastActivityDate").description("최근 활동일"),
-                                        fieldWithPath("posts.[].account.nickname").description("닉네임"),
-                                        fieldWithPath("posts.[].account.description").description("설명"),
-                                        fieldWithPath("posts.[].account.auth").description("권한")
-                                )
+                                responseFields(fieldDescriptorList.toArray(FieldDescriptor[]::new))
                         )
                 );
     }

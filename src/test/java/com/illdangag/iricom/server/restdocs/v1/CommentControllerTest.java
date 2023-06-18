@@ -3,6 +3,7 @@ package com.illdangag.iricom.server.restdocs.v1;
 import com.illdangag.iricom.server.data.entity.Board;
 import com.illdangag.iricom.server.data.entity.Comment;
 import com.illdangag.iricom.server.data.entity.Post;
+import com.illdangag.iricom.server.restdocs.snippet.IricomFieldsSnippet;
 import com.illdangag.iricom.server.test.IricomTestSuite;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Order;
@@ -10,19 +11,18 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 import org.springframework.http.MediaType;
-import org.springframework.restdocs.payload.JsonFieldType;
+import org.springframework.restdocs.payload.FieldDescriptor;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilder;
 
 import java.util.HashMap;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.Map;
 
 import static org.springframework.restdocs.headers.HeaderDocumentation.requestHeaders;
 import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document;
-import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.delete;
-import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.get;
-import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.post;
-import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.patch;
+import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.*;
 import static org.springframework.restdocs.operation.preprocess.Preprocessors.*;
 import static org.springframework.restdocs.payload.PayloadDocumentation.*;
 import static org.springframework.restdocs.request.RequestDocumentation.*;
@@ -56,6 +56,10 @@ public class CommentControllerTest extends IricomTestSuite {
                 .contentType(MediaType.APPLICATION_JSON);
         setAuthToken(requestBuilder, common01);
 
+        List<FieldDescriptor> fieldDescriptorList = new LinkedList<>();
+        fieldDescriptorList.addAll(IricomFieldsSnippet.getComment("", true));
+        fieldDescriptorList.addAll(IricomFieldsSnippet.getAccount("account."));
+
         mockMvc.perform(requestBuilder)
                 .andExpect(status().is(200))
                 .andDo(print())
@@ -77,25 +81,7 @@ public class CommentControllerTest extends IricomTestSuite {
                                         fieldWithPath("content").description("내용"),
                                         fieldWithPath("referenceCommentId").description("상위 댓글 아이디")
                                 ),
-                                responseFields(
-                                        fieldWithPath("id").description("아이디"),
-                                        fieldWithPath("content").description("내용"),
-                                        fieldWithPath("referenceCommentId").description("상위 댓글 아이디"),
-                                        fieldWithPath("createDate").description("작성일"),
-                                        fieldWithPath("updateDate").description("수정일").optional().type(JsonFieldType.NUMBER),
-                                        fieldWithPath("upvote").description("좋아요"),
-                                        fieldWithPath("downvote").description("싫어요"),
-                                        fieldWithPath("hasNestedComment").description("하위 댓글 여부"),
-                                        fieldWithPath("deleted").description("삭제 여부"),
-                                        fieldWithPath("isReport").description("신고 여부"),
-                                        fieldWithPath("account.id").description("작성자 아이디,"),
-                                        fieldWithPath("account.email").description("작성자 이메일"),
-                                        fieldWithPath("account.createDate").description("작성자 생성일"),
-                                        fieldWithPath("account.lastActivityDate").description("작성자 최근 활동일"),
-                                        fieldWithPath("account.nickname").description("작성자 닉네임"),
-                                        fieldWithPath("account.description").description("작성자 설명"),
-                                        fieldWithPath("account.auth").description("작성자 권한")
-                                )
+                                responseFields(fieldDescriptorList.toArray(FieldDescriptor[]::new))
                         )
 
                 );
@@ -116,8 +102,14 @@ public class CommentControllerTest extends IricomTestSuite {
                 .param("includeComment", "true")
                 .param("referenceCommentId", "" + comment.getId())
                 .param("includeCommentLimit", "5");
-
         setAuthToken(requestBuilder, common00);
+
+        List<FieldDescriptor> fieldDescriptorList = new LinkedList<>();
+        fieldDescriptorList.addAll(IricomFieldsSnippet.getSearchList(""));
+        fieldDescriptorList.addAll(IricomFieldsSnippet.getComment("comments.[].", true));
+        fieldDescriptorList.addAll(IricomFieldsSnippet.getAccount("comments.[].account."));
+        fieldDescriptorList.addAll(IricomFieldsSnippet.getComment("comments.[].nestedComments.[].", true));
+        fieldDescriptorList.addAll(IricomFieldsSnippet.getAccount("comments.[].nestedComments.[].account."));
 
         mockMvc.perform(requestBuilder)
                 .andExpect(status().is(200))
@@ -145,49 +137,7 @@ public class CommentControllerTest extends IricomTestSuite {
                                 parameterWithName("referenceCommentId").description("댓글 기준 대댓글 조회"),
                                 parameterWithName("includeCommentLimit").description("대댓글의 최대 조회 수")
                         ),
-                        responseFields(
-                                fieldWithPath("total").description("모든 결과의 수"),
-                                fieldWithPath("skip").description("건너 뛸 결과 수"),
-                                fieldWithPath("limit").description("조회 할 최대 결과 수"),
-                                fieldWithPath("comments").description("댓글 목록"),
-                                fieldWithPath("comments.[].id").description("아이디"),
-                                fieldWithPath("comments.[].content").description("내용"),
-                                fieldWithPath("comments.[].createDate").description("작성일"),
-                                fieldWithPath("comments.[].updateDate").description("수정일").optional().type(JsonFieldType.NUMBER),
-                                fieldWithPath("comments.[].upvote").description("좋아요"),
-                                fieldWithPath("comments.[].downvote").description("싫어요"),
-                                fieldWithPath("comments.[].hasNestedComment").description("하위 댓글 포함 여부"),
-                                fieldWithPath("comments.[].deleted").description("삭제 여부"),
-                                fieldWithPath("comments.[].isReport").description("신고 여부"),
-                                fieldWithPath("comments.[].referenceCommentId").description("상위 댓글 아이디"),
-                                fieldWithPath("comments.[].account").description("댓글 작성자"),
-                                fieldWithPath("comments.[].account.id").description("댓글 작성자 아이디"),
-                                fieldWithPath("comments.[].account.email").description("댓글 작성자 이메일"),
-                                fieldWithPath("comments.[].account.createDate").description("댓글 작성자 생성일"),
-                                fieldWithPath("comments.[].account.lastActivityDate").description("댓글 작성자 최근 활동일"),
-                                fieldWithPath("comments.[].account.nickname").description("댓글 작성자 닉네임"),
-                                fieldWithPath("comments.[].account.description").description("댓글 작성자 설명"),
-                                fieldWithPath("comments.[].account.auth").description("댓글 작성자 권한"),
-                                fieldWithPath("comments.[].nestedComments").description("하위 댓글 목록"),
-                                fieldWithPath("comments.[].nestedComments.[].id").description("하위 댓글 아이디"),
-                                fieldWithPath("comments.[].nestedComments.[].content").description("하위 댓글 내용"),
-                                fieldWithPath("comments.[].nestedComments.[].referenceCommentId").description("하위 댓글의 부모 댓글 아이디"),
-                                fieldWithPath("comments.[].nestedComments.[].createDate").description("하위 댓글의 작성일"),
-                                fieldWithPath("comments.[].nestedComments.[].updateDate").description("하위 댓글의 수정일").optional().type(JsonFieldType.NUMBER),
-                                fieldWithPath("comments.[].nestedComments.[].upvote").description("하위 댓글의 좋아요"),
-                                fieldWithPath("comments.[].nestedComments.[].downvote").description("하위 댓글의 싫어요"),
-                                fieldWithPath("comments.[].nestedComments.[].hasNestedComment").description("하위 댓글의 대댓글 포함 여부"),
-                                fieldWithPath("comments.[].nestedComments.[].deleted").description("하위 댓글의 삭제 여부"),
-                                fieldWithPath("comments.[].nestedComments.[].isReport").description("신고 여부"),
-                                fieldWithPath("comments.[].nestedComments.[].account").description("하위 댓글 작성자"),
-                                fieldWithPath("comments.[].nestedComments.[].account.id").description("하위 댓글 작성자 아이디"),
-                                fieldWithPath("comments.[].nestedComments.[].account.email").description("하위 댓글 작성자 이메일"),
-                                fieldWithPath("comments.[].nestedComments.[].account.createDate").description("하위 댓글 작성자 생성일"),
-                                fieldWithPath("comments.[].nestedComments.[].account.lastActivityDate").description("하위 댓글 작성자 최근 활동일"),
-                                fieldWithPath("comments.[].nestedComments.[].account.nickname").description("하위 댓글 작성자 닉네임"),
-                                fieldWithPath("comments.[].nestedComments.[].account.description").description("하위 댓글 작성자 설명"),
-                                fieldWithPath("comments.[].nestedComments.[].account.auth").description("하위 댓글 작성자 권한")
-                        )
+                        responseFields(fieldDescriptorList.toArray(FieldDescriptor[]::new))
                 ));
     }
 
@@ -206,6 +156,10 @@ public class CommentControllerTest extends IricomTestSuite {
                 .content(getJsonString(requestBody))
                 .contentType(MediaType.APPLICATION_JSON);
         setAuthToken(requestBuilder, common00);
+
+        List<FieldDescriptor> fieldDescriptorList = new LinkedList<>();
+        fieldDescriptorList.addAll(IricomFieldsSnippet.getComment("", true));
+        fieldDescriptorList.addAll(IricomFieldsSnippet.getAccount("account."));
 
         mockMvc.perform(requestBuilder)
                 .andExpect(status().is(200))
@@ -229,25 +183,7 @@ public class CommentControllerTest extends IricomTestSuite {
                         requestFields(
                                 fieldWithPath("content").description("내용")
                         ),
-                        responseFields(
-                                fieldWithPath("id").description("아이디"),
-                                fieldWithPath("content").description("내용"),
-                                fieldWithPath("createDate").description("작성일"),
-                                fieldWithPath("updateDate").description("수정일"),
-                                fieldWithPath("upvote").description("좋아요"),
-                                fieldWithPath("downvote").description("싫어요"),
-                                fieldWithPath("hasNestedComment").description("하위 댓글 여부"),
-                                fieldWithPath("deleted").description("삭제 여부"),
-                                fieldWithPath("isReport").description("신고 여부"),
-                                fieldWithPath("account").description("작성자"),
-                                fieldWithPath("account.id").description("작성자 아이디"),
-                                fieldWithPath("account.email").description("작성자 이메일"),
-                                fieldWithPath("account.createDate").description("작성자 생성일"),
-                                fieldWithPath("account.lastActivityDate").description("작성자 최근 활동일"),
-                                fieldWithPath("account.nickname").description("작성자 닉네임"),
-                                fieldWithPath("account.description").description("작성자 설명"),
-                                fieldWithPath("account.auth").description("작성자 권한")
-                        )
+                        responseFields(fieldDescriptorList.toArray(FieldDescriptor[]::new))
                 ));
     }
 
@@ -261,6 +197,9 @@ public class CommentControllerTest extends IricomTestSuite {
 
         MockHttpServletRequestBuilder requestBuilder = delete("/v1/boards/{boardId}/posts/{postId}/comments/{commentId}", board.getId(), post.getId(), comment.getId());
         setAuthToken(requestBuilder, common00);
+
+        List<FieldDescriptor> fieldDescriptorList = new LinkedList<>();
+        fieldDescriptorList.addAll(IricomFieldsSnippet.getComment("", false));
 
         mockMvc.perform(requestBuilder)
                 .andExpect(status().is(200))
@@ -281,16 +220,7 @@ public class CommentControllerTest extends IricomTestSuite {
                         requestHeaders(
 //                                        headerWithName("Authorization").description("firebase 토큰")
                         ),
-                        responseFields(
-                                fieldWithPath("id").description("아이디"),
-                                fieldWithPath("createDate").description("작성일"),
-                                fieldWithPath("updateDate").description("수정일").optional().type(JsonFieldType.NUMBER),
-                                fieldWithPath("upvote").description("좋아요"),
-                                fieldWithPath("downvote").description("싫어요"),
-                                fieldWithPath("hasNestedComment").description("하위 댓글 여부"),
-                                fieldWithPath("deleted").description("삭제 여부"),
-                                fieldWithPath("isReport").description("신고 여부")
-                        )
+                        responseFields(fieldDescriptorList.toArray(FieldDescriptor[]::new))
                 ));
     }
 
@@ -309,6 +239,10 @@ public class CommentControllerTest extends IricomTestSuite {
                 .content(getJsonString(requestBody))
                 .contentType(MediaType.APPLICATION_JSON);
         setAuthToken(requestBuilder, common00);
+
+        List<FieldDescriptor> fieldDescriptorList = new LinkedList<>();
+        fieldDescriptorList.addAll(IricomFieldsSnippet.getComment("", true));
+        fieldDescriptorList.addAll(IricomFieldsSnippet.getAccount("account."));
 
         mockMvc.perform(requestBuilder)
                 .andExpect(status().is(200))
@@ -332,25 +266,7 @@ public class CommentControllerTest extends IricomTestSuite {
                         requestFields(
                                 fieldWithPath("type").description("종류 (upvote: 좋아요, downvote: 싫어요)")
                         ),
-                        responseFields(
-                                fieldWithPath("id").description("아이디"),
-                                fieldWithPath("content").description("내용"),
-                                fieldWithPath("createDate").description("작성일"),
-                                fieldWithPath("updateDate").description("수정일").optional().type(JsonFieldType.NUMBER),
-                                fieldWithPath("upvote").description("좋아요"),
-                                fieldWithPath("downvote").description("싫어요"),
-                                fieldWithPath("hasNestedComment").description("하위 댓글 여부"),
-                                fieldWithPath("deleted").description("삭제 여부"),
-                                fieldWithPath("isReport").description("신고 여부"),
-                                fieldWithPath("account").description("작성자"),
-                                fieldWithPath("account.id").description("작성자 아이디"),
-                                fieldWithPath("account.email").description("작성자 이메일"),
-                                fieldWithPath("account.createDate").description("작성자 생성일"),
-                                fieldWithPath("account.lastActivityDate").description("작성자 최근 활동일"),
-                                fieldWithPath("account.nickname").description("작성자 닉네임"),
-                                fieldWithPath("account.description").description("작성자 설명"),
-                                fieldWithPath("account.auth").description("작성자 권한")
-                        )
+                        responseFields(fieldDescriptorList.toArray(FieldDescriptor[]::new))
                 ));
     }
 }

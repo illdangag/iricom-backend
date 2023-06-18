@@ -3,7 +3,7 @@ package com.illdangag.iricom.server.restdocs.v1;
 import com.illdangag.iricom.server.data.entity.Board;
 import com.illdangag.iricom.server.data.entity.Post;
 import com.illdangag.iricom.server.data.entity.PostReport;
-import com.illdangag.iricom.server.restdocs.snippet.ResponseFieldSnippet;
+import com.illdangag.iricom.server.restdocs.snippet.IricomFieldsSnippet;
 import com.illdangag.iricom.server.test.IricomTestSuite;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -53,10 +53,10 @@ public class ReportControllerTest extends IricomTestSuite {
         setAuthToken(requestBuilder, allBoardAdmin);
 
         List<FieldDescriptor> fieldDescriptorList = new LinkedList<>();
-        fieldDescriptorList.addAll(ResponseFieldSnippet.getSearchList(""));
-        fieldDescriptorList.addAll(ResponseFieldSnippet.getPostReport("reports.[]."));
-        fieldDescriptorList.addAll(ResponseFieldSnippet.getPost("reports.[].post.", false));
-        fieldDescriptorList.addAll(ResponseFieldSnippet.getAccount("reports.[].post.account."));
+        fieldDescriptorList.addAll(IricomFieldsSnippet.getSearchList(""));
+        fieldDescriptorList.addAll(IricomFieldsSnippet.getPostReport("reports.[]."));
+        fieldDescriptorList.addAll(IricomFieldsSnippet.getPost("reports.[].post.", false));
+        fieldDescriptorList.addAll(IricomFieldsSnippet.getAccount("reports.[].post.account."));
 
         mockMvc.perform(requestBuilder)
                 .andExpect(status().is(200))
@@ -104,10 +104,10 @@ public class ReportControllerTest extends IricomTestSuite {
         setAuthToken(requestBuilder, allBoardAdmin);
 
         List<FieldDescriptor> fieldDescriptorList = new LinkedList<>();
-        fieldDescriptorList.addAll(ResponseFieldSnippet.getSearchList(""));
-        fieldDescriptorList.addAll(ResponseFieldSnippet.getPostReport("reports.[]."));
-        fieldDescriptorList.addAll(ResponseFieldSnippet.getPost("reports.[].post.", false));
-        fieldDescriptorList.addAll(ResponseFieldSnippet.getAccount("reports.[].post.account."));
+        fieldDescriptorList.addAll(IricomFieldsSnippet.getSearchList(""));
+        fieldDescriptorList.addAll(IricomFieldsSnippet.getPostReport("reports.[]."));
+        fieldDescriptorList.addAll(IricomFieldsSnippet.getPost("reports.[].post.", false));
+        fieldDescriptorList.addAll(IricomFieldsSnippet.getAccount("reports.[].post.account."));
 
         mockMvc.perform(requestBuilder)
                 .andExpect(status().is(200))
@@ -157,9 +157,9 @@ public class ReportControllerTest extends IricomTestSuite {
         setAuthToken(requestBuilder, allBoardAdmin);
 
         List<FieldDescriptor> fieldDescriptorList = new LinkedList<>();
-        fieldDescriptorList.addAll(ResponseFieldSnippet.getPostReport(""));
-        fieldDescriptorList.addAll(ResponseFieldSnippet.getPost("post.", false));
-        fieldDescriptorList.addAll(ResponseFieldSnippet.getAccount("post.account."));
+        fieldDescriptorList.addAll(IricomFieldsSnippet.getPostReport(""));
+        fieldDescriptorList.addAll(IricomFieldsSnippet.getPost("post.", false));
+        fieldDescriptorList.addAll(IricomFieldsSnippet.getAccount("post.account."));
 
         mockMvc.perform(requestBuilder)
                 .andExpect(status().is(200))
@@ -210,9 +210,9 @@ public class ReportControllerTest extends IricomTestSuite {
         setAuthToken(requestBuilder, common00);
 
         List<FieldDescriptor> fieldDescriptorList = new LinkedList<>();
-        fieldDescriptorList.addAll(ResponseFieldSnippet.getPostReport(""));
-        fieldDescriptorList.addAll(ResponseFieldSnippet.getPost("post.", false));
-        fieldDescriptorList.addAll(ResponseFieldSnippet.getAccount("post.account."));
+        fieldDescriptorList.addAll(IricomFieldsSnippet.getPostReport(""));
+        fieldDescriptorList.addAll(IricomFieldsSnippet.getPost("post.", false));
+        fieldDescriptorList.addAll(IricomFieldsSnippet.getAccount("post.account."));
 
         mockMvc.perform(requestBuilder)
                 .andExpect(status().is(200))

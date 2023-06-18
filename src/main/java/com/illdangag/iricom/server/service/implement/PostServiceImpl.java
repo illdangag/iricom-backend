@@ -339,7 +339,7 @@ public class PostServiceImpl implements PostService {
         } else {
             responsePostState = PostState.TEMPORARY;
         }
-        return this.getPostInfo(post, responsePostState, true);
+        return this.getPostInfo(post, responsePostState, false);
     }
 
     public PostInfo votePost(Account account, String boardId, String postId, VoteType voteType) {

@@ -10,11 +10,16 @@ import java.util.stream.Collectors;
 
 import static org.springframework.restdocs.payload.PayloadDocumentation.fieldWithPath;
 
-public class ResponseFieldSnippet {
-    private static final Map<String, String> searchListMap = new LinkedHashMap<>();
+public class IricomFieldsSnippet {
     private static final Map<String, String> accountMap = new LinkedHashMap<>();
+
+    private static final Map<String, String> boardMap = new LinkedHashMap<>();
     private static final Map<String, String> postMap = new LinkedHashMap<>();
+    private static final Map<String, String> commentMap = new LinkedHashMap<>();
+
     private static final Map<String, String> postReportMap = new LinkedHashMap<>();
+
+    private static final Map<String, String> searchListMap = new LinkedHashMap<>();
 
     static {
         searchListMap.put("total", "모든 결과 수");
@@ -48,6 +53,22 @@ public class ResponseFieldSnippet {
         postMap.put("isBan", "차단 여부");
         postMap.put("account", "작성자");
 
+        boardMap.put("id", "아이디");
+        boardMap.put("title", "제목");
+        boardMap.put("description", "설명");
+        boardMap.put("enabled", "활성화 여부");
+
+        commentMap.put("id", "아이디");
+        commentMap.put("content", "내용");
+        commentMap.put("referenceCommentId", "상위 댓글 아이디");
+        commentMap.put("createDate", "작성일");
+        commentMap.put("updateDate", "수정일");
+        commentMap.put("upvote", "좋아요");
+        commentMap.put("downvote", "싫어요");
+        commentMap.put("hasNestedComment", "하위 댓글 여부");
+        commentMap.put("deleted", "삭제 여부");
+        commentMap.put("isReport", "신고 여부");
+
         postReportMap.put("id", "아이디");
         postReportMap.put("createDate", "생성일");
         postReportMap.put("updateDate", "수정일");
@@ -55,7 +76,7 @@ public class ResponseFieldSnippet {
         postReportMap.put("reason", "사유");
         postReportMap.put("post", "신고 게시물");
     }
-    private ResponseFieldSnippet() {
+    private IricomFieldsSnippet() {
     }
 
     private static List<FieldDescriptor> getFieldDescriptors(Map<String, String> keyDescriptionMap, String keyPrefix) {
@@ -90,7 +111,20 @@ public class ResponseFieldSnippet {
         return getFieldDescriptors(resultMap, keyPrefix);
     }
 
+    public static List<FieldDescriptor> getBoard(String keyPrefix) {
+        return getFieldDescriptors(boardMap, keyPrefix);
+    }
+
     public static List<FieldDescriptor> getPostReport(String keyPrefix) {
         return getFieldDescriptors(postReportMap, keyPrefix);
+    }
+
+    public static List<FieldDescriptor> getComment(String keyPrefix, boolean hasContent) {
+        Map<String, String> resultMap = new LinkedHashMap<>();
+        resultMap.putAll(commentMap);
+        if (!hasContent) {
+            resultMap.remove("content");
+        }
+        return getFieldDescriptors(resultMap, keyPrefix);
     }
 }

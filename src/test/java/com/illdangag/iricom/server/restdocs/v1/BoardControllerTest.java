@@ -1,6 +1,7 @@
 package com.illdangag.iricom.server.restdocs.v1;
 
 import com.illdangag.iricom.server.data.entity.Board;
+import com.illdangag.iricom.server.restdocs.snippet.IricomFieldsSnippet;
 import com.illdangag.iricom.server.test.IricomTestSuite;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Order;
@@ -8,10 +9,13 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 import org.springframework.http.MediaType;
+import org.springframework.restdocs.payload.FieldDescriptor;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilder;
 
 import java.util.HashMap;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.Map;
 
 import static org.springframework.restdocs.headers.HeaderDocumentation.requestHeaders;
@@ -34,62 +38,23 @@ public class BoardControllerTest extends IricomTestSuite {
     }
 
     @Test
-    @DisplayName("생성")
-    @Order(0)
-    public void testCase00() throws Exception {
-        Map<String, Object> requestBody = new HashMap<>();
-        requestBody.put("title", "new_board");
-        requestBody.put("description", "new_board_description");
-        requestBody.put("enabled", true);
-
-        MockHttpServletRequestBuilder requestBuilder = post("/v1/boards")
-                .content(getJsonString(requestBody))
-                .contentType(MediaType.APPLICATION_JSON);
-        setAuthToken(requestBuilder, systemAdmin);
-
-        mockMvc.perform(requestBuilder)
-                .andExpect(status().is(200))
-                .andDo(print())
-                .andDo(document("BD_001",
-                                preprocessRequest(
-                                        removeHeaders("Authorization"),
-                                        prettyPrint()
-                                ),
-                                preprocessResponse(
-                                        prettyPrint()
-                                ),
-                                requestHeaders(
-//                                        headerWithName("Authorization").description("firebase 토큰")
-                                ),
-                                requestFields(
-                                        fieldWithPath("title").description("제목"),
-                                        fieldWithPath("description").description("설명"),
-                                        fieldWithPath("enabled").description("활성화 여부")
-                                ),
-                                responseFields(
-                                        fieldWithPath("id").description("아이디"),
-                                        fieldWithPath("title").description("제목"),
-                                        fieldWithPath("description").description("설명"),
-                                        fieldWithPath("enabled").description("활성화 여부")
-                                )
-                        )
-                );
-    }
-
-    @Test
     @DisplayName("목록 조회")
-    @Order(1)
-    public void testCase01() throws Exception {
+    @Order(0)
+    public void bd001() throws Exception {
         MockHttpServletRequestBuilder requestBuilder = get("/v1/boards")
                 .param("skip", "0")
                 .param("limit", "20")
                 .param("keyword", "Board");
         setAuthToken(requestBuilder, common00);
 
+        List<FieldDescriptor> fieldDescriptorList = new LinkedList<>();
+        fieldDescriptorList.addAll(IricomFieldsSnippet.getSearchList(""));
+        fieldDescriptorList.addAll(IricomFieldsSnippet.getBoard("boards.[]."));
+
         mockMvc.perform(requestBuilder)
                 .andExpect(status().is(200))
                 .andDo(print())
-                .andDo(document("BD_002",
+                .andDo(document("BD_001",
                                 preprocessRequest(
                                         removeHeaders("Authorization"),
                                         prettyPrint()
@@ -105,28 +70,61 @@ public class BoardControllerTest extends IricomTestSuite {
                                 requestHeaders(
 //                                        headerWithName("Authorization").description("firebase 토큰")
                                 ),
-                                responseFields(
-                                        fieldWithPath("total").description("모든 결과의 수"),
-                                        fieldWithPath("skip").description("건너 뛸 결과 수"),
-                                        fieldWithPath("limit").description("조회 할 최대 결과 수"),
-                                        fieldWithPath("boards").description("게시판 목록"),
-                                        fieldWithPath("boards.[].id").description("아이디"),
-                                        fieldWithPath("boards.[].title").description("제목"),
-                                        fieldWithPath("boards.[].description").description("설명"),
-                                        fieldWithPath("boards.[].enabled").description("활성화 여부")
-                                )
+                                responseFields(fieldDescriptorList.toArray(FieldDescriptor[]::new))
                         )
                 );
     }
 
     @Test
     @DisplayName("정보 조회")
-    @Order(2)
-    public void testCase02() throws Exception {
+    @Order(1)
+    public void bd002() throws Exception {
         Board board = getBoard(enableBoard);
 
         MockHttpServletRequestBuilder requestBuilder = get("/v1/boards/{id}", board.getId());
         setAuthToken(requestBuilder, common00);
+
+        List<FieldDescriptor> fieldDescriptorList = new LinkedList<>();
+        fieldDescriptorList.addAll(IricomFieldsSnippet.getBoard(""));
+
+        mockMvc.perform(requestBuilder)
+                .andExpect(status().is(200))
+                .andDo(print())
+                .andDo(document("BD_002",
+                                preprocessRequest(
+                                        removeHeaders("Authorization"),
+                                        prettyPrint()
+                                ),
+                                preprocessResponse(
+                                        prettyPrint()
+                                ),
+                                requestHeaders(
+//                                        headerWithName("Authorization").description("firebase 토큰")
+                                ),
+                                pathParameters(
+                                        parameterWithName("id").description("아이디")
+                                ),
+                                responseFields(fieldDescriptorList.toArray(FieldDescriptor[]::new))
+                        )
+                );
+    }
+
+    @Test
+    @DisplayName("생성")
+    @Order(2)
+    public void bd003() throws Exception {
+        Map<String, Object> requestBody = new HashMap<>();
+        requestBody.put("title", "new_board");
+        requestBody.put("description", "new_board_description");
+        requestBody.put("enabled", true);
+
+        MockHttpServletRequestBuilder requestBuilder = post("/v1/boards")
+                .content(getJsonString(requestBody))
+                .contentType(MediaType.APPLICATION_JSON);
+        setAuthToken(requestBuilder, systemAdmin);
+
+        List<FieldDescriptor> fieldDescriptorList = new LinkedList<>();
+        fieldDescriptorList.addAll(IricomFieldsSnippet.getBoard(""));
 
         mockMvc.perform(requestBuilder)
                 .andExpect(status().is(200))
@@ -142,15 +140,12 @@ public class BoardControllerTest extends IricomTestSuite {
                                 requestHeaders(
 //                                        headerWithName("Authorization").description("firebase 토큰")
                                 ),
-                                pathParameters(
-                                        parameterWithName("id").description("아이디")
-                                ),
-                                responseFields(
-                                        fieldWithPath("id").description("아이디"),
+                                requestFields(
                                         fieldWithPath("title").description("제목"),
                                         fieldWithPath("description").description("설명"),
                                         fieldWithPath("enabled").description("활성화 여부")
-                                )
+                                ),
+                                responseFields(fieldDescriptorList.toArray(FieldDescriptor[]::new))
                         )
                 );
     }
@@ -170,6 +165,9 @@ public class BoardControllerTest extends IricomTestSuite {
                 .content(getJsonString(requestBody))
                 .contentType(MediaType.APPLICATION_JSON);
         setAuthToken(requestBuilder, systemAdmin);
+
+        List<FieldDescriptor> fieldDescriptorList = new LinkedList<>();
+        fieldDescriptorList.addAll(IricomFieldsSnippet.getBoard(""));
 
         mockMvc.perform(requestBuilder)
                 .andExpect(status().is(200))
@@ -193,12 +191,7 @@ public class BoardControllerTest extends IricomTestSuite {
                                 pathParameters(
                                         parameterWithName("id").description("아이디")
                                 ),
-                                responseFields(
-                                        fieldWithPath("id").description("아이디"),
-                                        fieldWithPath("title").description("제목"),
-                                        fieldWithPath("description").description("설명"),
-                                        fieldWithPath("enabled").description("활성화 여부")
-                                )
+                                responseFields(fieldDescriptorList.toArray(FieldDescriptor[]::new))
                         )
                 );
     }

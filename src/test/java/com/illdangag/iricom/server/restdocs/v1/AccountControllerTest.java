@@ -1,6 +1,7 @@
 package com.illdangag.iricom.server.restdocs.v1;
 
 import com.illdangag.iricom.server.data.entity.Account;
+import com.illdangag.iricom.server.restdocs.snippet.IricomFieldsSnippet;
 import com.illdangag.iricom.server.test.IricomTestSuite;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Order;
@@ -8,10 +9,13 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 import org.springframework.http.MediaType;
+import org.springframework.restdocs.payload.FieldDescriptor;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilder;
 
 import java.util.HashMap;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.Map;
 
 import static org.springframework.restdocs.headers.HeaderDocumentation.requestHeaders;
@@ -37,13 +41,17 @@ public class AccountControllerTest extends IricomTestSuite {
     @Test
     @DisplayName("목록 조회")
     @Order(0)
-    public void testCase00() throws Exception {
+    public void ac001() throws Exception {
         MockHttpServletRequestBuilder requestBuilder = get("/v1/accounts/")
                 .param("skip", "0")
                 .param("limit", "20")
                 .param("keyword", "common");
 
         setAuthToken(requestBuilder, systemAdmin);
+
+        List<FieldDescriptor> fieldDescriptorList = new LinkedList<>();
+        fieldDescriptorList.addAll(IricomFieldsSnippet.getSearchList(""));
+        fieldDescriptorList.addAll(IricomFieldsSnippet.getAccount("accounts.[]."));
 
         mockMvc.perform(requestBuilder)
                 .andExpect(status().is(200))
@@ -64,19 +72,7 @@ public class AccountControllerTest extends IricomTestSuite {
                                         parameterWithName("limit").description("최대 조회 수"),
                                         parameterWithName("keyword").description("검색어")
                                 ),
-                                responseFields(
-                                        fieldWithPath("total").description("모든 결과의 수"),
-                                        fieldWithPath("skip").description("건너 뛸 결과 수"),
-                                        fieldWithPath("limit").description("조회 할 최대 결과 수"),
-                                        fieldWithPath("accounts").description("사용자 목록"),
-                                        fieldWithPath("accounts.[].id").description("아이디"),
-                                        fieldWithPath("accounts.[].email").description("이메일"),
-                                        fieldWithPath("accounts.[].createDate").description("생성일"),
-                                        fieldWithPath("accounts.[].lastActivityDate").description("최근 활동일"),
-                                        fieldWithPath("accounts.[].nickname").description("닉네임"),
-                                        fieldWithPath("accounts.[].description").description("설명"),
-                                        fieldWithPath("accounts.[].auth").description("권한")
-                                )
+                                responseFields(fieldDescriptorList.toArray(FieldDescriptor[]::new))
                         )
                 );
     }
@@ -84,11 +80,14 @@ public class AccountControllerTest extends IricomTestSuite {
     @Test
     @DisplayName("정보 조회")
     @Order(1)
-    public void testCase01() throws Exception {
+    public void ac002() throws Exception {
         Account account = getAccount(systemAdmin);
 
         MockHttpServletRequestBuilder requestBuilder = get("/v1/accounts/{id}", account.getId());
         setAuthToken(requestBuilder, systemAdmin);
+
+        List<FieldDescriptor> fieldDescriptorList = new LinkedList<>();
+        fieldDescriptorList.addAll(IricomFieldsSnippet.getAccount(""));
 
         mockMvc.perform(requestBuilder)
                 .andExpect(status().is(200))
@@ -107,15 +106,7 @@ public class AccountControllerTest extends IricomTestSuite {
                                 pathParameters(
                                         parameterWithName("id").description("아이디")
                                 ),
-                                responseFields(
-                                        fieldWithPath("id").description("아이디"),
-                                        fieldWithPath("email").description("이메일"),
-                                        fieldWithPath("createDate").description("생성일"),
-                                        fieldWithPath("lastActivityDate").description("최근 활동일"),
-                                        fieldWithPath("nickname").description("닉네임"),
-                                        fieldWithPath("description").description("설명"),
-                                        fieldWithPath("auth").description("권한")
-                                )
+                                responseFields(fieldDescriptorList.toArray(FieldDescriptor[]::new))
                         )
                 );
 
@@ -124,7 +115,7 @@ public class AccountControllerTest extends IricomTestSuite {
     @Test
     @DisplayName("수정")
     @Order(2)
-    public void testCase02() throws Exception {
+    public void ac003() throws Exception {
         Map<String, Object> requestBody = new HashMap<>();
         requestBody.put("nickname", "common00_00");
         requestBody.put("description", "update_description");
@@ -133,6 +124,9 @@ public class AccountControllerTest extends IricomTestSuite {
                 .content(getJsonString(requestBody))
                 .contentType(MediaType.APPLICATION_JSON);
         setAuthToken(requestBuilder, common00);
+
+        List<FieldDescriptor> fieldDescriptorList = new LinkedList<>();
+        fieldDescriptorList.addAll(IricomFieldsSnippet.getAccount(""));
 
         mockMvc.perform(requestBuilder)
                 .andExpect(status().is(200))
@@ -152,15 +146,7 @@ public class AccountControllerTest extends IricomTestSuite {
                                         fieldWithPath("nickname").description("닉네임"),
                                         fieldWithPath("description").description("설명")
                                 ),
-                                responseFields(
-                                        fieldWithPath("id").description("아이디"),
-                                        fieldWithPath("email").description("이메일"),
-                                        fieldWithPath("createDate").description("생성일"),
-                                        fieldWithPath("lastActivityDate").description("최근 활동일"),
-                                        fieldWithPath("nickname").description("닉네임"),
-                                        fieldWithPath("description").description("설명"),
-                                        fieldWithPath("auth").description("권한")
-                                )
+                                responseFields(fieldDescriptorList.toArray(FieldDescriptor[]::new))
                         )
                 );
     }
@@ -168,7 +154,7 @@ public class AccountControllerTest extends IricomTestSuite {
     @Test
     @DisplayName("수정")
     @Order(3)
-    public void testCase03() throws Exception {
+    public void ac004() throws Exception {
         Account account = getAccount(common00);
 
         Map<String, Object> requestBody = new HashMap<>();
@@ -179,6 +165,9 @@ public class AccountControllerTest extends IricomTestSuite {
                 .content(getJsonString(requestBody))
                 .contentType(MediaType.APPLICATION_JSON);
         setAuthToken(requestBuilder, systemAdmin);
+
+        List<FieldDescriptor> fieldDescriptorList = new LinkedList<>();
+        fieldDescriptorList.addAll(IricomFieldsSnippet.getAccount(""));
 
         mockMvc.perform(requestBuilder)
                 .andExpect(status().is(200))
@@ -201,15 +190,7 @@ public class AccountControllerTest extends IricomTestSuite {
                                         fieldWithPath("nickname").description("닉네임"),
                                         fieldWithPath("description").description("설명")
                                 ),
-                                responseFields(
-                                        fieldWithPath("id").description("아이디"),
-                                        fieldWithPath("email").description("이메일"),
-                                        fieldWithPath("createDate").description("생성일"),
-                                        fieldWithPath("lastActivityDate").description("최근 활동일"),
-                                        fieldWithPath("nickname").description("닉네임"),
-                                        fieldWithPath("description").description("설명"),
-                                        fieldWithPath("auth").description("권한")
-                                )
+                                responseFields(fieldDescriptorList.toArray(FieldDescriptor[]::new))
                         )
                 );
     }
