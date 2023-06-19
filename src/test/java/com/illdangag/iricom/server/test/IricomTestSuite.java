@@ -19,6 +19,7 @@ import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilde
 import org.springframework.util.StopWatch;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 @Slf4j
 @SpringBootTest
@@ -833,8 +834,8 @@ public abstract class IricomTestSuite {
     /**
      * 계정 생성
      */
-    protected void setAccount(TestAccountInfo[] testAccountInfos) {
-        for (TestAccountInfo testAccountInfo : testAccountInfos) {
+    protected void setAccount(List<TestAccountInfo> testAccountInfoList) {
+        for (TestAccountInfo testAccountInfo : testAccountInfoList) {
             Set<TestAccountInfo> keySet = accountMap.keySet();
             if (keySet.contains(testAccountInfo)) {
                 continue;
@@ -852,8 +853,8 @@ public abstract class IricomTestSuite {
     /**
      * 게시판 생성
      */
-    protected void setBoard(TestBoardInfo[] testBoardInfos) {
-        for (TestBoardInfo testBoardInfo : testBoardInfos) {
+    protected void setBoard(List<TestBoardInfo> testBoardInfoList) {
+        for (TestBoardInfo testBoardInfo : testBoardInfoList) {
             Board board = this.createBoard(testBoardInfo);
             boardMap.put(testBoardInfo, board);
 
@@ -865,12 +866,11 @@ public abstract class IricomTestSuite {
         }
     }
 
-    protected void init() {
-        this.setAccount(testAccountInfos);
-        this.setBoard(testBoardInfos);
-
-        // 게시물 생성
-        for (TestPostInfo testPostInfo : testPostInfos) {
+    /**
+     * 게시물 생성
+     */
+    protected void setPost(List<TestPostInfo> testPostInfoList) {
+        for (TestPostInfo testPostInfo : testPostInfoList) {
             Post post = this.createPost(testPostInfo);
             postMap.put(testPostInfo, post);
 
@@ -878,53 +878,88 @@ public abstract class IricomTestSuite {
                 this.publishPost(testPostInfo);
             }
         }
+    }
 
-        // 댓글 생성
-        // 대댓글이 아닌 댓글
-        for (TestCommentInfo testCommentInfo : testCommentInfos) {
-            if (testCommentInfo.getReferenceComment() == null) {
-                Comment comment = this.createComment(testCommentInfo);
-                commentMap.put(testCommentInfo, comment);
-            }
-        }
-        // 대댓글
-        for (TestCommentInfo testCommentInfo : testCommentInfos) {
-            if (testCommentInfo.getReferenceComment() != null) {
-                Comment comment = this.createComment(testCommentInfo);
-                commentMap.put(testCommentInfo, comment);
-            }
-        }
+    /**
+     * 댓글 생성
+     */
+    protected void setComment(List<TestCommentInfo> testCommentInfoList) {
+        List<TestCommentInfo> filteredList = testCommentInfoList.stream()
+                .filter(item -> {
+                    TestCommentInfo referenceTestCommentInfo = item.getReferenceComment();
+                    Set<TestCommentInfo> keySet = commentMap.keySet();
+                    if (item.getReferenceComment() == null || keySet.contains(referenceTestCommentInfo)) {
+                        Comment comment = this.createComment(item);
+                        commentMap.put(item, comment);
+                        return false;
+                    } else {
+                        return true;
+                    }
+                }).collect(Collectors.toList());
 
-        // 게시물 신고
-        for (TestPostReportInfo testPostReportInfo : testPostReportInfos) {
+        if (!filteredList.isEmpty()) {
+            setComment(filteredList);
+        }
+    }
+
+    /**
+     * 게시물 신고
+     */
+    protected void setPostReport(List<TestPostReportInfo> testPostReportInfoList) {
+        for (TestPostReportInfo testPostReportInfo : testPostReportInfoList) {
             PostReport postReport = this.reportPost(testPostReportInfo);
             postReportMap.put(testPostReportInfo, postReport);
         }
+    }
 
-        // 댓글 신고
-        for (TestCommentReportInfo testCommentReportInfo : testCommentReportInfos) {
+    /**
+     * 댓글 신고
+     */
+    protected void setCommentReport(List<TestCommentReportInfo> testCommentReportInfoList) {
+        for (TestCommentReportInfo testCommentReportInfo : testCommentReportInfoList) {
             CommentReport commentReport = this.reportComment(testCommentReportInfo);
             commentReportMap.put(testCommentReportInfo, commentReport);
         }
+    }
 
-        // 삭제 할 댓글
-        Arrays.stream(testCommentInfos)
+    /**
+     * 댓글 삭제
+     */
+    protected void setDeletedComment(List<TestCommentInfo> testCommentInfoList) {
+        testCommentInfoList.stream()
                 .filter(TestCommentInfo::isDeleted)
                 .forEach(this::deleteComment);
+    }
 
-        for (TestPostInfo testPostInfo : testPostInfos) {
-            if (!testPostInfo.isAllowComment()) {
-                this.updateDisabledAllowComment(testPostInfo);
-            }
-        }
+    /**
+     * 게시물에 댓글 설정 비활성화
+     */
+    protected void setDisabledCommentBoard(List<TestPostInfo> testPostInfoList) {
+        testPostInfoList.stream()
+                .filter(item -> !item.isAllowComment())
+                .forEach(this::updateDisabledAllowComment);
+    }
 
-        // 게시판 비활성화
-        for (TestBoardInfo testBoardInfo : testBoardInfos) {
-            Board board = boardMap.get(testBoardInfo);
-            if (!testBoardInfo.isEnabled()) {
-                this.disableBoard(board);
-            }
-        }
+    /**
+     * 게시판 비활성화
+     */
+    protected void setDisabledBoard(List<TestBoardInfo> testBoardInfoList) {
+        testBoardInfoList.stream()
+                .filter(item -> !item.isEnabled())
+                .map(boardMap::get)
+                .forEach(this::disableBoard);
+    }
+
+    protected void init() {
+        this.setAccount(Arrays.asList(testAccountInfos));
+        this.setBoard(Arrays.asList(testBoardInfos));
+        this.setPost(Arrays.asList(testPostInfos));
+        this.setComment(Arrays.asList(testCommentInfos));
+        this.setPostReport(Arrays.asList(testPostReportInfos));
+        this.setCommentReport(Arrays.asList(testCommentReportInfos));
+        this.setDeletedComment(Arrays.asList(testCommentInfos));
+        this.setDisabledCommentBoard(Arrays.asList(testPostInfos));
+        this.setDisabledBoard(Arrays.asList(testBoardInfos));
     }
 
     private Account createAccount(TestAccountInfo testAccountInfo) {
