@@ -830,9 +830,16 @@ public abstract class IricomTestSuite {
         }
     }
 
-    protected void init() {
-        // 계정 생성
+    /**
+     * 계정 생성
+     */
+    protected void setAccount(TestAccountInfo[] testAccountInfos) {
         for (TestAccountInfo testAccountInfo : testAccountInfos) {
+            Set<TestAccountInfo> keySet = accountMap.keySet();
+            if (keySet.contains(testAccountInfo)) {
+                continue;
+            }
+
             Account account = this.createAccount(testAccountInfo);
             accountMap.put(testAccountInfo, account);
 
@@ -840,8 +847,12 @@ public abstract class IricomTestSuite {
                 this.updateAccountDetail(testAccountInfo, account);
             }
         }
+    }
 
-        // 게시판 생성
+    /**
+     * 게시판 생성
+     */
+    protected void setBoard(TestBoardInfo[] testBoardInfos) {
         for (TestBoardInfo testBoardInfo : testBoardInfos) {
             Board board = this.createBoard(testBoardInfo);
             boardMap.put(testBoardInfo, board);
@@ -852,6 +863,11 @@ public abstract class IricomTestSuite {
                 this.createBoardAdmin(accountId, boardId);
             }
         }
+    }
+
+    protected void init() {
+        this.setAccount(testAccountInfos);
+        this.setBoard(testBoardInfos);
 
         // 게시물 생성
         for (TestPostInfo testPostInfo : testPostInfos) {

@@ -17,4 +17,19 @@ public class TestAccountInfo {
 
     @Builder.Default
     private boolean isUnregistered = false;
+
+    @Override
+    public boolean equals(Object object) {
+        if (!(object instanceof TestAccountInfo)) {
+            return false;
+        }
+
+        TestAccountInfo other = (TestAccountInfo) object;
+        return this.email.equals(other.email);
+    }
+
+    @Override
+    public int hashCode() {
+        return this.email.hashCode();
+    }
 }
