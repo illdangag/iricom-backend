@@ -8,8 +8,8 @@ import javax.validation.constraints.Size;
 
 @Getter
 @Builder
-public class PostBanCreate {
-    @NotNull(message = "Reason is requried.")
+public class PostBanInfoCreate {
+    @NotNull(message = "Reason is required.")
     @Size(min = 1, max = 1000, message = "Reason must be at least 1 character and less then 1000 characters.")
     private String reason;
 }

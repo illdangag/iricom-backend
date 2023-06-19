@@ -52,6 +52,7 @@ public enum IricomErrorCode {
     NOT_EXIST_ACCOUNT_NICKNAME_TO_POST("04000008", 400, "Not exist nickname."),
     INVALID_AUTHORIZATION_TO_BAN_POST("04000009", 401, "Invalid authorization."),
     ALREADY_BAN_POST("04000010", 400, "Already ban post."),
+    ALREADY_UNBAN_POST("04000011", 400, "Already unban post."),
 
     // comment: 05XXXXXX
     NOT_EXIST_COMMENT("05000000", 404, "Not exist comment."),

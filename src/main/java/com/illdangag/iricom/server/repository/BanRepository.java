@@ -1,5 +1,6 @@
 package com.illdangag.iricom.server.repository;
 
+import com.illdangag.iricom.server.data.entity.Board;
 import com.illdangag.iricom.server.data.entity.Post;
 import com.illdangag.iricom.server.data.entity.PostBan;
 
@@ -11,4 +12,8 @@ public interface BanRepository {
     long getPostBanCount(Post post);
 
     void savePostBan(PostBan postBan);
+
+    List<PostBan> getPostBanList(Board board, String reason, int offset, int limit);
+
+    long getPostBanListCount(Board board, String reason);
 }
