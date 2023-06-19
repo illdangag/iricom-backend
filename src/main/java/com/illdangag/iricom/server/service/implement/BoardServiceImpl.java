@@ -32,7 +32,7 @@ public class BoardServiceImpl implements BoardService {
     }
 
     @Override
-    public BoardInfo createBoardInfo(@Valid BoardInfoCreate boardInfoCreate) {
+    public BoardInfo createBoardInfo(BoardInfoCreate boardInfoCreate) {
         Board board = Board.builder()
                 .title(boardInfoCreate.getTitle())
                 .description(boardInfoCreate.getDescription())
@@ -48,7 +48,7 @@ public class BoardServiceImpl implements BoardService {
     }
 
     @Override
-    public BoardInfoList getBoardInfoList(@Valid BoardInfoSearch boardInfoSearch) {
+    public BoardInfoList getBoardInfoList(BoardInfoSearch boardInfoSearch) {
         List<Board> boardList;
         long totalBoardCount;
 
@@ -80,7 +80,7 @@ public class BoardServiceImpl implements BoardService {
     }
 
     @Override
-    public BoardInfo updateBoardInfo(Board board, @Valid BoardInfoUpdate boardInfoUpdate) {
+    public BoardInfo updateBoardInfo(Board board, BoardInfoUpdate boardInfoUpdate) {
         if (boardInfoUpdate.getTitle() != null) {
             board.setTitle(boardInfoUpdate.getTitle());
         }

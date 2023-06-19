@@ -413,45 +413,6 @@ public class PostServiceImpl implements PostService {
                 .build();
     }
 
-    @Override
-    public PostInfo banPost(Account account, String boardId, PostBanCreate postBanCreate) {
-        Board board = this.getBoard(boardId);
-        return this.banPost(account, board, postBanCreate);
-    }
-
-    @Override
-    public PostInfo banPost(Account account, Board board, PostBanCreate postBanCreate) {
-        if (!this.hasAuthorization(account, board)) {
-            throw new IricomException(IricomErrorCode.INVALID_AUTHORIZATION_TO_BAN_POST);
-        }
-
-        Optional<Post> postOptional = this.postRepository.getPost(postBanCreate.getPostId());
-        Post post = postOptional.orElseThrow(() -> {
-            return new IricomException(IricomErrorCode.NOT_EXIST_POST);
-        });
-
-        if (!post.isPublish()) {
-            // 발행되지 않은 게시물인 경우, 밴 처리를 하지 않음
-            throw new IricomException(IricomErrorCode.NOT_EXIST_PUBLISH_CONTENT);
-        }
-
-        // 이미 밴 처리 된 게시물인지 확인
-        List<PostBan> postBanList = this.banRepository.getPostBanList(post);
-        if (!postBanList.isEmpty()) {
-            throw new IricomException(IricomErrorCode.ALREADY_BAN_POST);
-        }
-
-        PostBan postBan = PostBan.builder()
-                .post(post)
-                .adminAccount(account)
-                .reason(postBanCreate.getReason())
-                .enabled(true)
-                .build();
-        this.banRepository.savePostBan(postBan);
-
-        return this.getPostInfo(post, PostState.PUBLISH, true);
-    }
-
     /**
      * 시스템 관리자 이거나 해당 게시판에 관리자 권한이 있는 계정인지 확인
      */

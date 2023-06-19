@@ -40,8 +40,4 @@ public interface PostService {
     PostInfo votePost(Account account, Board board, Post post, VoteType voteType);
 
     PostInfoList getPostInfoList(Account account, @Valid PostInfoSearch postInfoSearch);
-
-    PostInfo banPost(Account account, String boardId, @Valid PostBanCreate postBanCreate);
-
-    PostInfo banPost(Account account, Board board, @Valid PostBanCreate postBanCreate);
 }

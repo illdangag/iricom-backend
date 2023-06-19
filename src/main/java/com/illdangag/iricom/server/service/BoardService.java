@@ -16,7 +16,7 @@ public interface BoardService {
 
     BoardInfoList getBoardInfoList(@Valid BoardInfoSearch boardInfoSearch);
 
-    BoardInfo updateBoardInfo(String id, BoardInfoUpdate boardInfoUpdate);
+    BoardInfo updateBoardInfo(String id, @Valid BoardInfoUpdate boardInfoUpdate);
 
     BoardInfo updateBoardInfo(Board board, @Valid BoardInfoUpdate boardInfoUpdate);
 }

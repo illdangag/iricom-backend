@@ -39,21 +39,21 @@ public class BanServiceImpl implements BanService {
     }
 
     @Override
-    public PostInfo banPost(Account account, String boardId, PostBanCreate postBanCreate) {
+    public PostInfo banPost(Account account, String boardId, String postId, PostBanCreate postBanCreate) {
         Board board = this.getBoard(boardId);
-        return this.banPost(account, board, postBanCreate);
+        Post post = this.getPost(postId);
+        return this.banPost(account, board, post, postBanCreate);
     }
 
     @Override
-    public PostInfo banPost(Account account, Board board, PostBanCreate postBanCreate) {
+    public PostInfo banPost(Account account, Board board, Post post, PostBanCreate postBanCreate) {
         if (!this.boardAuthorizationService.hasAuthorization(account, board)) {
             throw new IricomException(IricomErrorCode.INVALID_AUTHORIZATION_TO_BAN_POST);
         }
 
-        Optional<Post> postOptional = this.postRepository.getPost(postBanCreate.getPostId());
-        Post post = postOptional.orElseThrow(() -> {
-            return new IricomException(IricomErrorCode.NOT_EXIST_POST);
-        });
+        if (!post.getBoard().equals(board)) {
+            throw new IricomException(IricomErrorCode.NOT_EXIST_POST);
+        }
 
         if (!post.isPublish()) {
             // 발행되지 않은 게시물인 경우, 밴 처리를 하지 않음
@@ -77,8 +77,37 @@ public class BanServiceImpl implements BanService {
         return this.postService.getPostInfo(post, PostState.PUBLISH, true);
     }
 
+    @Override
+    public PostInfo unbanPost(Account account, String boardId, String postId) {
+        Board board = this.getBoard(boardId);
+        Post post = this.getPost(postId);
+        return this.unbanPost(account, board, post);
+    }
+
+    @Override
+    public PostInfo unbanPost(Account account, Board board, Post post) {
+        if (!this.boardAuthorizationService.hasAuthorization(account, board)) {
+            throw new IricomException(IricomErrorCode.INVALID_AUTHORIZATION_TO_BAN_POST);
+        }
+
+        if (!post.getBoard().equals(board)) {
+            throw new IricomException(IricomErrorCode.NOT_EXIST_POST);
+        }
+
+        List<PostBan> postBanList = this.banRepository.getPostBanList(post);
+        postBanList.forEach(item -> item.setEnabled(false));
+        postBanList.forEach(this.banRepository::savePostBan);
+
+        return this.postService.getPostInfo(post, PostState.PUBLISH, true);
+    }
+
     private Board getBoard(String id) {
         Optional<Board> boardOptional = this.boardRepository.getBoard(id);
         return boardOptional.orElseThrow(() -> new IricomException(IricomErrorCode.NOT_EXIST_BOARD));
+    }
+
+    private Post getPost(String id) {
+        Optional<Post> postOptional = this.postRepository.getPost(id);
+        return postOptional.orElseThrow(() -> new IricomException(IricomErrorCode.NOT_EXIST_POST));
     }
 }
