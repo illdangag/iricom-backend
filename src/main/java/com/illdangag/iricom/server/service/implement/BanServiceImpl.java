@@ -3,6 +3,7 @@ package com.illdangag.iricom.server.service.implement;
 import com.illdangag.iricom.server.data.entity.*;
 import com.illdangag.iricom.server.data.request.PostBanInfoCreate;
 import com.illdangag.iricom.server.data.request.PostBanInfoSearch;
+import com.illdangag.iricom.server.data.request.PostBanInfoUpdate;
 import com.illdangag.iricom.server.data.response.PostBanInfo;
 import com.illdangag.iricom.server.data.response.PostBanInfoList;
 import com.illdangag.iricom.server.data.response.PostInfo;
@@ -143,6 +144,66 @@ public class BanServiceImpl implements BanService {
                 .limit(limit)
                 .postBanInfoList(postBanInfoList)
                 .build();
+    }
+
+    @Override
+    public PostBanInfo getPostBanInfo(Account account, String boardId, String postId) {
+        Board board = this.getBoard(boardId);
+        Post post = this.getPost(postId);
+        return this.getPostBanInfo(account, board, post);
+    }
+
+    @Override
+    public PostBanInfo getPostBanInfo(Account account, Board board, Post post) {
+        if (!this.boardAuthorizationService.hasAuthorization(account, board)) {
+            throw new IricomException(IricomErrorCode.INVALID_AUTHORIZATION_TO_BAN_POST);
+        }
+
+        if (!board.equals(post.getBoard())) {
+            throw new IricomException(IricomErrorCode.NOT_EXIST_POST);
+        }
+
+        List<PostBan> postBanList = this.banRepository.getPostBanList(post);
+        if (postBanList.isEmpty()) {
+            throw new IricomException(IricomErrorCode.NOT_EXIST_POST_BAN);
+        }
+
+        PostBan postBan = postBanList.get(0);
+
+        PostInfo postInfo = this.postService.getPostInfo(post, PostState.PUBLISH, false);
+        return new PostBanInfo(postBan, postInfo);
+    }
+
+    @Override
+    public PostBanInfo updatePostBanInfo(Account account, String boardId, String postId, PostBanInfoUpdate postBanInfoUpdate) {
+        Board board = this.getBoard(boardId);
+        Post post = this.getPost(postId);
+        return this.updatePostBanInfo(account, board, post, postBanInfoUpdate);
+    }
+
+    @Override
+    public PostBanInfo updatePostBanInfo(Account account, Board board, Post post, PostBanInfoUpdate postBanInfoUpdate) {
+        if (!this.boardAuthorizationService.hasAuthorization(account, board)) {
+            throw new IricomException(IricomErrorCode.INVALID_AUTHORIZATION_TO_BAN_POST);
+        }
+
+        if (!board.equals(post.getBoard())) {
+            throw new IricomException(IricomErrorCode.NOT_EXIST_POST);
+        }
+
+        List<PostBan> postBanList = this.banRepository.getPostBanList(post);
+        if (postBanList.isEmpty()) {
+            throw new IricomException(IricomErrorCode.NOT_EXIST_POST_BAN);
+        }
+
+        PostBan postBan = postBanList.get(0);
+
+        String reason = postBanInfoUpdate.getReason();
+        postBan.setReason(reason);
+        this.banRepository.savePostBan(postBan);
+
+        PostInfo postInfo = this.postService.getPostInfo(post, PostState.PUBLISH, false);
+        return new PostBanInfo(postBan, postInfo);
     }
 
     private Board getBoard(String id) {

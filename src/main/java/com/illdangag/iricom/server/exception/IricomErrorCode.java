@@ -70,9 +70,13 @@ public enum IricomErrorCode {
     INVALID_AUTHORIZATION_TO_GET_POST_REPORT_LIST("06000002", 401, "Invalid authorization."),
     // report comment: 0601XXXX
     NOT_EXIST_COMMENT_REPORT("06010000", 404, "Not exist comment report."),
-    ALREADY_REPORT_COMMENT("06010001", 400, "Already report comment.");
+    ALREADY_REPORT_COMMENT("06010001", 400, "Already report comment."),
     // report account: 0602XXXX
 
+    // ban: 07XXXXXX
+    // ban post: 0700XXXX
+    NOT_EXIST_POST_BAN("07000000", 404, "Not exist post ban.")
+    ;
 
     private final String code;
     private final int httpStatusCode;
