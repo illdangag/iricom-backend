@@ -32,12 +32,14 @@ public abstract class IricomTestSuite {
     private final PostService postService;
     private final CommentService commentService;
     private final ReportService reportService;
+    private final BanService banService;
 
     private final AccountRepository accountRepository;
     private final BoardRepository boardRepository;
     private final PostRepository postRepository;
     private final CommentRepository commentRepository;
     private final ReportRepository reportRepository;
+    private final BanRepository banRepository;
 
     // 계정 설정
     private static final String ACCOUNT_PASSWORD = "111111";
@@ -808,6 +810,7 @@ public abstract class IricomTestSuite {
     private static final Map<TestCommentInfo, Comment> commentMap = new HashMap<>();
     private static final Map<TestPostReportInfo, PostReport> postReportMap = new HashMap<>();
     private static final Map<TestCommentReportInfo, CommentReport> commentReportMap = new HashMap<>();
+    private static final Map<TestPostBanInfo, PostBan> postBanMap = new HashMap<>();
 
     private static boolean isInit = false;
 
@@ -818,12 +821,15 @@ public abstract class IricomTestSuite {
         this.postService = context.getBean(PostService.class);
         this.commentService = context.getBean(CommentService.class);
         this.reportService = context.getBean(ReportService.class);
+        this.banService = context.getBean(BanService.class);
 
         this.accountRepository = context.getBean(AccountRepository.class);
         this.boardRepository = context.getBean(BoardRepository.class);
         this.postRepository = context.getBean(PostRepository.class);
         this.commentRepository = context.getBean(CommentRepository.class);
         this.reportRepository = context.getBean(ReportRepository.class);
+        this.banRepository = context.getBean(BanRepository.class);
+
 
         if (!isInit) {
             this.init();
@@ -950,6 +956,16 @@ public abstract class IricomTestSuite {
                 .forEach(this::disableBoard);
     }
 
+    /**
+     * 게시물 차단
+     */
+    protected void setBanPost(List<TestPostBanInfo> testPostBanInfoList) {
+        testPostBanInfoList.forEach(item -> {
+            PostBan postBan = this.banPost(item);
+            postBanMap.put(item, postBan);
+        });
+    }
+
     protected void init() {
         this.setAccount(Arrays.asList(testAccountInfos));
         this.setBoard(Arrays.asList(testBoardInfos));
@@ -970,16 +986,15 @@ public abstract class IricomTestSuite {
         Account account = accountBuilder.build();
         this.accountRepository.saveAccount(account);
 
-        if (!testAccountInfo.isUnregistered()) {
-            AccountDetail accountDetail = AccountDetail.builder().account(account).nickname(testAccountInfo.getNickname())
-                    .description(testAccountInfo.getDescription())
-                    .build();
-            this.accountRepository.saveAccountDetail(accountDetail);
-            account.setAccountDetail(accountDetail);
-            this.accountRepository.saveAccount(account);
-        }
+        AccountDetail accountDetail = AccountDetail.builder().account(account).nickname(testAccountInfo.getNickname())
+                .description(testAccountInfo.getDescription())
+                .build();
+        this.accountRepository.saveAccountDetail(accountDetail);
+        account.setAccountDetail(accountDetail);
+        this.accountRepository.saveAccount(account);
 
-        return account;
+        Optional<Account> accountOptional = this.accountRepository.getAccount(account.getId());
+        return accountOptional.get();
     }
 
     private void updateAccountDetail(TestAccountInfo testAccountInfo, Account account) {
@@ -1106,6 +1121,11 @@ public abstract class IricomTestSuite {
         return postReportOptional.orElseThrow(() -> new IricomException(IricomErrorCode.NOT_EXIST_POST_REPORT));
     }
 
+    private PostBan getPostBan(String id) {
+        Optional<PostBan> postBanOptional = this.banRepository.getPostBan(id);
+        return postBanOptional.orElseThrow(() -> new IricomException(IricomErrorCode.NOT_EXIST_POST_BAN));
+    }
+
     private CommentReport getCommentReport(String id) {
         Optional<CommentReport> commentReportOptional = this.reportRepository.getCommentReport(id);
         return commentReportOptional.orElseThrow(() -> new IricomException(IricomErrorCode.NOT_EXIST_COMMENT_REPORT));
@@ -1152,6 +1172,21 @@ public abstract class IricomTestSuite {
         return this.getCommentReport(commentReportInfo.getId());
     }
 
+    private PostBan banPost(TestPostBanInfo testPostBanInfo) {
+        TestAccountInfo banTestAccountInfo = testPostBanInfo.getBanAccount();
+        TestPostInfo testPostInfo = testPostBanInfo.getPost();
+
+        Account banAccount = accountMap.get(banTestAccountInfo);
+        Post post = postMap.get(testPostInfo);
+        Board board = post.getBoard();
+
+        PostBanInfoCreate postBanInfoCreate = PostBanInfoCreate.builder()
+                .reason("BAN")
+                .build();
+        PostBanInfo postBanInfo = banService.banPost(banAccount, board, post, postBanInfoCreate);
+        return this.getPostBan(postBanInfo.getId());
+    }
+
     protected void setAuthToken(MockHttpServletRequestBuilder builder, TestAccountInfo testAccountInfo) throws Exception {
         String token = tokenMap.get(testAccountInfo);
         if (token == null) {
@@ -1194,5 +1229,9 @@ public abstract class IricomTestSuite {
 
     protected CommentReport getCommentReport(TestCommentReportInfo testCommentReportInfo) {
         return commentReportMap.get(testCommentReportInfo);
+    }
+
+    protected PostBan getPostBan(TestPostBanInfo testPostBanInfo) {
+        return postBanMap.get(testPostBanInfo);
     }
 }

@@ -13,6 +13,7 @@ import javax.persistence.EntityManagerFactory;
 import javax.persistence.EntityTransaction;
 import javax.persistence.TypedQuery;
 import java.util.List;
+import java.util.Optional;
 
 @Repository
 public class BanRepositoryImpl implements BanRepository {
@@ -85,6 +86,37 @@ public class BanRepositoryImpl implements BanRepository {
         long result = query.getSingleResult();
         entityManager.close();
         return result;
+    }
+
+    @Override
+    public Optional<PostBan> getPostBan(String id) {
+        long postBanId = -1;
+
+        try {
+            postBanId = Long.parseLong(id);
+        } catch (Exception exception) {
+            return Optional.empty();
+        }
+
+        return this.getPostBan(postBanId);
+    }
+
+    @Override
+    public Optional<PostBan> getPostBan(long id) {
+        EntityManager entityManager = this.entityManagerFactory.createEntityManager();
+        final String jpql = "SELECT pb FROM PostBan pb" +
+                " WHERE pb.id = :id";
+
+        TypedQuery<PostBan> query = entityManager.createQuery(jpql, PostBan.class)
+                .setParameter("id", id);
+
+        List<PostBan> resultList = query.getResultList();
+        entityManager.close();
+        if (resultList.isEmpty()) {
+            return Optional.empty();
+        } else {
+            return Optional.of(resultList.get(0));
+        }
     }
 
     @Override

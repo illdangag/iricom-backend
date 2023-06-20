@@ -5,6 +5,7 @@ import com.illdangag.iricom.server.data.entity.Post;
 import com.illdangag.iricom.server.data.entity.PostBan;
 
 import java.util.List;
+import java.util.Optional;
 
 public interface BanRepository {
     List<PostBan> getPostBanList(Post post);
@@ -16,4 +17,8 @@ public interface BanRepository {
     List<PostBan> getPostBanList(Board board, String reason, int offset, int limit);
 
     long getPostBanListCount(Board board, String reason);
+
+    Optional<PostBan> getPostBan(String id);
+
+    Optional<PostBan> getPostBan(long id);
 }
