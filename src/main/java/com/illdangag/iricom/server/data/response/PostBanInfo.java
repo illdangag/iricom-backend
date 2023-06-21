@@ -15,6 +15,8 @@ public class PostBanInfo {
 
     private String reason;
 
+    private Boolean enabled;
+
     @JsonProperty("post")
     private PostInfo postInfo;
 
@@ -23,6 +25,7 @@ public class PostBanInfo {
         this.creatDate = DateTimeUtils.getLong(postBan.getCreateDate());
         this.updateDate = DateTimeUtils.getLong(postBan.getUpdateDate());
         this.reason = postBan.getReason();
+        this.enabled = postBan.getEnabled();
         this.postInfo = postInfo;
     }
 }
