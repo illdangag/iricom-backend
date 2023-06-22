@@ -1,6 +1,5 @@
 package com.illdangag.iricom.server.service;
 
-import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import com.illdangag.iricom.server.data.entity.*;
 import com.illdangag.iricom.server.data.request.PostBanInfoCreate;
 import com.illdangag.iricom.server.data.request.PostBanInfoSearch;
@@ -320,6 +319,74 @@ public class BanServiceTest extends IricomTestSuite {
 
                 Assertions.assertThrows(IricomException.class, () -> {
                     banService.getPostBanInfoList(account, board, postBanInfoSearch);
+                });
+            }
+        }
+    }
+
+    @Nested
+    @DisplayName("조회")
+    class Get {
+
+        @Nested
+        @DisplayName("권한별")
+        class Auth {
+
+            @Test
+            @DisplayName("시스템 관리자")
+            public void getPostBanInfoSystemAdmin() throws Exception {
+                Account account = getAccount(systemAdmin);
+                Post post = getPost(alreadyBanPostInfo00);
+                Board board = post.getBoard();
+
+                PostBanInfo postBanInfo = banService.getPostBanInfo(account, board, post);
+                Assertions.assertTrue(postBanInfo.getEnabled());
+            }
+
+            @Test
+            @DisplayName("게시판 관리자")
+            public void getPostBanInfoBoardAdmin() throws Exception {
+                Account account = getAccount(allBoardAdmin);
+                Post post = getPost(alreadyBanPostInfo00);
+                Board board = post.getBoard();
+
+                PostBanInfo postBanInfo = banService.getPostBanInfo(account, board, post);
+                Assertions.assertTrue(postBanInfo.getEnabled());
+            }
+
+            @Test
+            @DisplayName("다른 게시판 관리자")
+            public void getPostBanInfoOtherBoardAdmin() throws Exception {
+                Account account = getAccount(enableBoardAdmin);
+                Post post = getPost(alreadyBanPostInfo00);
+                Board board = post.getBoard();
+
+                Assertions.assertThrows(IricomException.class, () -> {
+                   banService.getPostBanInfo(account, board, post);
+                });
+            }
+
+            @Test
+            @DisplayName("일반 사용자")
+            public void getPostBanInfoAccount() throws Exception {
+                Account account = getAccount(common00);
+                Post post = getPost(alreadyBanPostInfo00);
+                Board board = post.getBoard();
+
+                Assertions.assertThrows(IricomException.class, () -> {
+                    banService.getPostBanInfo(account, board, post);
+                });
+            }
+
+            @Test
+            @DisplayName("등록되지 않은 사용자")
+            public void getPostBanInfoUnknown() throws Exception {
+                Account account = getAccount(unknown00);
+                Post post = getPost(alreadyBanPostInfo00);
+                Board board = post.getBoard();
+
+                Assertions.assertThrows(IricomException.class, () -> {
+                    banService.getPostBanInfo(account, board, post);
                 });
             }
         }
