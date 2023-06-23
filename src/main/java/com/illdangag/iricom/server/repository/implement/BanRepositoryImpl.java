@@ -132,4 +132,33 @@ public class BanRepositoryImpl implements BanRepository {
         transaction.commit();
         entityManager.close();
     }
+
+    @Override
+    public List<PostBan> getPostBanList(String reason, int offset, int limit) {
+        EntityManager entityManager = this.entityManagerFactory.createEntityManager();
+        final String jpql = "SELECT pb FROM PostBan pb" +
+                " WHERE pb.enabled = true" +
+                " AND UPPER(pb.reason) LIKE UPPER(:reason)" +
+                " ORDER BY pb.createDate ASC";
+
+        TypedQuery<PostBan> query = entityManager.createQuery(jpql, PostBan.class)
+                .setParameter("reason", "%" + StringUtils.escape(reason) + "%");
+        List<PostBan> resultList = query.getResultList();
+        entityManager.close();
+        return resultList;
+    }
+
+    @Override
+    public long getPostBanListCount(String reason) {
+        EntityManager entityManager = this.entityManagerFactory.createEntityManager();
+        final String jpql = "SELECT COUNT(*) FROM PostBan pb" +
+                " WHERE pb.enabled = true" +
+                " AND UPPER(pb.reason) LIKE UPPER(:reason)";
+
+        TypedQuery<Long> query = entityManager.createQuery(jpql, Long.class)
+                .setParameter("reason", "%" + StringUtils.escape(reason) + "%");
+        long result = query.getSingleResult();
+        entityManager.close();
+        return result;
+    }
 }

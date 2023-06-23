@@ -14,6 +14,10 @@ public interface BanRepository {
 
     void savePostBan(PostBan postBan);
 
+    List<PostBan> getPostBanList(String reason, int offset, int limit);
+
+    long getPostBanListCount(String reason);
+
     List<PostBan> getPostBanList(Board board, String reason, int offset, int limit);
 
     long getPostBanListCount(Board board, String reason);

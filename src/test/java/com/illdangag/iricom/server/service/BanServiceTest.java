@@ -55,6 +55,11 @@ public class BanServiceTest extends IricomTestSuite {
             .postType(PostType.POST).postState(PostState.PUBLISH)
             .creator(allBoardAdmin).board(boardInfo00)
             .build();
+    protected static final TestPostInfo toBanPostInfo04 = TestPostInfo.builder()
+            .title("toBanPostInfo04").content("toBanPostInfo04").isAllowComment(true)
+            .postType(PostType.POST).postState(PostState.PUBLISH)
+            .creator(allBoardAdmin).board(boardInfo01)
+            .build();
     protected static final TestPostInfo alreadyBanPostInfo00 = TestPostInfo.builder()
             .title("alreadyBanPostInfo00").content("alreadyBanPostInfo00").isAllowComment(true)
             .postType(PostType.POST).postState(PostState.PUBLISH)
@@ -104,6 +109,7 @@ public class BanServiceTest extends IricomTestSuite {
 
         List<TestBoardInfo> testBoardInfoList = Arrays.asList(boardInfo00, boardInfo01, boardInfo02);
         List<TestPostInfo> testPostInfoList = Arrays.asList(toBanPostInfo00, toBanPostInfo01, toBanPostInfo02, toBanPostInfo03,
+                toBanPostInfo04,
                 alreadyBanPostInfo00, alreadyBanPostInfo01, alreadyBanPostInfo02, alreadyBanPostInfo03, alreadyBanPostInfo04);
         List<TestPostBanInfo> testPostBanInfoList = Arrays.asList(postBanInfo00, postBanInfo01, postBanInfo02, postBanInfo03,
                 postBanInfo04);
@@ -218,6 +224,26 @@ public class BanServiceTest extends IricomTestSuite {
                         .reason("BAN")
                         .build();
 
+                Assertions.assertThrows(IricomException.class, () -> {
+                    banService.banPost(account, board, post, postBanInfoCreate);
+                });
+            }
+        }
+
+        @Nested
+        @DisplayName("차단된 게시물")
+        class AlreadyBan {
+
+            @Test
+            @DisplayName("차단")
+            public void banAlreadyBanPost() {
+                Account account = getAccount(systemAdmin);
+                Post post = getPost(alreadyBanPostInfo01);
+                Board board = post.getBoard();
+
+                PostBanInfoCreate postBanInfoCreate = PostBanInfoCreate.builder()
+                        .reason("Already ban")
+                        .build();
                 Assertions.assertThrows(IricomException.class, () -> {
                     banService.banPost(account, board, post, postBanInfoCreate);
                 });
@@ -549,6 +575,50 @@ public class BanServiceTest extends IricomTestSuite {
                     banService.unbanPost(account, board, post);
                 });
             }
+        }
+    }
+
+    @Nested
+    @DisplayName("다른 게시판의 게시물")
+    class OtherBoardPost {
+
+        @Test
+        @DisplayName("차단")
+        public void ban() throws Exception {
+            Account account = getAccount(systemAdmin);
+            Board board = getBoard(boardInfo00);
+            Post post = getPost(toBanPostInfo04);
+
+            PostBanInfoCreate postBanInfoCreate = PostBanInfoCreate.builder()
+                    .reason("not exist post")
+                    .build();
+            Assertions.assertThrows(IricomException.class, () -> {
+                banService.banPost(account, board, post, postBanInfoCreate);
+            });
+        }
+
+        @Test
+        @DisplayName("차단 해제")
+        public void unban() throws Exception {
+            Account account = getAccount(systemAdmin);
+            Board board = getBoard(boardInfo00);
+            Post post = getPost(alreadyBanPostInfo01);
+
+            Assertions.assertThrows(IricomException.class, () -> {
+                banService.unbanPost(account, board, post);
+            });
+        }
+
+        @Test
+        @DisplayName("시스템 관리자")
+        public void get() throws Exception {
+            Account account = getAccount(systemAdmin);
+            Board board = getBoard(boardInfo00);
+            Post post = getPost(alreadyBanPostInfo00);
+
+            Assertions.assertThrows(IricomException.class, () -> {
+                banService.getPostBanInfo(account, board, post);
+            });
         }
     }
 }

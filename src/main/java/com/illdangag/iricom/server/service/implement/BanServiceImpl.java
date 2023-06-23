@@ -115,6 +115,34 @@ public class BanServiceImpl implements BanService {
     }
 
     @Override
+    public PostBanInfoList getPostBanInfoList(Account account, PostBanInfoSearch postBanInfoSearch) {
+        if (!account.getAuth().equals(AccountAuth.SYSTEM_ADMIN)) {
+            throw new IricomException(IricomErrorCode.INVALID_AUTHORIZATION_TO_BAN_POST);
+        }
+
+        String reason = postBanInfoSearch.getReason();
+        int skip = postBanInfoSearch.getSkip();
+        int limit = postBanInfoSearch.getLimit();
+
+        List<PostBan> postBanList = this.banRepository.getPostBanList(reason, skip, limit);
+        long total = this.banRepository.getPostBanListCount(reason);
+
+        List<PostBanInfo> postBanInfoList = postBanList.stream()
+                .map(item -> {
+                    PostInfo postInfo = this.postService.getPostInfo(item.getPost(), PostState.PUBLISH, false);
+                    return new PostBanInfo(item, postInfo);
+                })
+                .collect(Collectors.toList());
+
+        return PostBanInfoList.builder()
+                .total(total)
+                .skip(skip)
+                .limit(limit)
+                .postBanInfoList(postBanInfoList)
+                .build();
+    }
+
+    @Override
     public PostBanInfoList getPostBanInfoList(Account account, String boardId, PostBanInfoSearch postBanInfoSearch) {
         Board board = this.getBoard(boardId);
         return this.getPostBanInfoList(account, board, postBanInfoSearch);
@@ -131,6 +159,7 @@ public class BanServiceImpl implements BanService {
         int limit = postBanInfoSearch.getLimit();
 
         List<PostBan> postBanList = this.banRepository.getPostBanList(board, reason, skip, limit);
+        long total = this.banRepository.getPostBanListCount(board, reason);
 
         List<PostBanInfo> postBanInfoList = postBanList.stream()
                 .map(item -> {
@@ -140,6 +169,7 @@ public class BanServiceImpl implements BanService {
                 .collect(Collectors.toList());
 
         return PostBanInfoList.builder()
+                .total(total)
                 .skip(skip)
                 .limit(limit)
                 .postBanInfoList(postBanInfoList)

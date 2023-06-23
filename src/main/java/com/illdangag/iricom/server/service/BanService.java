@@ -20,6 +20,8 @@ public interface BanService {
 
     PostBanInfo unbanPost(Account account, Board board, Post post);
 
+    PostBanInfoList getPostBanInfoList(Account account, @Valid PostBanInfoSearch postBanInfoSearch);
+
     PostBanInfoList getPostBanInfoList(Account account, String boardId, @Valid PostBanInfoSearch postBanInfoSearch);
 
     PostBanInfoList getPostBanInfoList(Account account, Board board, @Valid PostBanInfoSearch postBanInfoSearch);
