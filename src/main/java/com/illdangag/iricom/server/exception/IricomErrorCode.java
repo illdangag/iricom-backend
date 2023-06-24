@@ -75,8 +75,7 @@ public enum IricomErrorCode {
 
     // ban: 07XXXXXX
     // ban post: 0700XXXX
-    NOT_EXIST_POST_BAN("07000000", 404, "Not exist post ban.")
-    ;
+    NOT_EXIST_POST_BAN("07000000", 404, "Not exist post ban.");
 
     private final String code;
     private final int httpStatusCode;

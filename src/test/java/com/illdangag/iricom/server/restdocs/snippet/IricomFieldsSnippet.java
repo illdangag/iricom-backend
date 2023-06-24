@@ -1,6 +1,5 @@
 package com.illdangag.iricom.server.restdocs.snippet;
 
-import io.opencensus.trace.Link;
 import org.springframework.restdocs.payload.FieldDescriptor;
 
 import java.util.LinkedHashMap;

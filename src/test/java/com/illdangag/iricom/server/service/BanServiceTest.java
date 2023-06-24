@@ -388,7 +388,7 @@ public class BanServiceTest extends IricomTestSuite {
                 Board board = post.getBoard();
 
                 Assertions.assertThrows(IricomException.class, () -> {
-                   banService.getPostBanInfo(account, board, post);
+                    banService.getPostBanInfo(account, board, post);
                 });
             }
 

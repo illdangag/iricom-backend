@@ -1,7 +1,6 @@
 package com.illdangag.iricom.server.service.implement;
 
 import com.illdangag.iricom.server.data.entity.Board;
-import com.illdangag.iricom.server.repository.BoardRepository;
 import com.illdangag.iricom.server.data.request.BoardInfoCreate;
 import com.illdangag.iricom.server.data.request.BoardInfoSearch;
 import com.illdangag.iricom.server.data.request.BoardInfoUpdate;
@@ -9,13 +8,13 @@ import com.illdangag.iricom.server.data.response.BoardInfo;
 import com.illdangag.iricom.server.data.response.BoardInfoList;
 import com.illdangag.iricom.server.exception.IricomErrorCode;
 import com.illdangag.iricom.server.exception.IricomException;
+import com.illdangag.iricom.server.repository.BoardRepository;
 import com.illdangag.iricom.server.service.BoardService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.validation.annotation.Validated;
 
-import javax.validation.Valid;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
