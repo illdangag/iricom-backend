@@ -23,4 +23,7 @@ public class BoardInfoCreate {
 
     @Builder.Default
     private Boolean enabled = Boolean.TRUE;
+
+    @Builder.Default
+    private Boolean undisclosed = Boolean.FALSE;
 }

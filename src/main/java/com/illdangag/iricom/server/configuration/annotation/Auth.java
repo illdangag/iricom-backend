@@ -12,5 +12,5 @@ import static java.lang.annotation.RetentionPolicy.RUNTIME;
 @Retention(RUNTIME)
 @Target(METHOD)
 public @interface Auth {
-    AuthRole role() default AuthRole.NONE;
+    AuthRole[] role() default AuthRole.NONE;
 }

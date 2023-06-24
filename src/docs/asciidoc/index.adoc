@@ -222,22 +222,22 @@ operation::RC_005[snippets='curl-request,path-parameters,http-response,response-
 
 operation::BP_001[snippets='curl-request,path-parameters,request-fields,http-response,response-fields']
 
-== 차단된 게시물 목록 조회
+=== 차단된 게시물 목록 조회
 ==== BP_002
 
 operation::BP_002[snippets='curl-request,request-parameters,http-response,response-fields']
 
-== 차단된 게시물 목록 조회 (게시판)
+=== 차단된 게시물 목록 조회 (게시판)
 ==== BP_003
 
 operation::BP_003[snippets='curl-request,path-parameters,request-parameters,http-response,response-fields']
 
-== 차단된 게시물 정보 조회
+=== 차단된 게시물 정보 조회
 ==== BP_004
 
 operation::BP_004[snippets='curl-request,path-parameters,http-response,response-fields']
 
-== 차단된 게시물 정보 갱신
+=== 차단된 게시물 정보 갱신
 ==== BP_005
 
 operation::BP_005[snippets='curl-request,path-parameters,request-fields,http-response,response-fields']

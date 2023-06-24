@@ -43,6 +43,8 @@ public class Board {
     @Size(max = 100)
     private String description;
 
+    private Boolean undisclosed; // 공개되지 않은 게시판
+
     @Override
     public boolean equals(Object object) {
         if (!(object instanceof Board)) {

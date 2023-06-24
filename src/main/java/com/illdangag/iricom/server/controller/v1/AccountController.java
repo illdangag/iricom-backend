@@ -34,7 +34,7 @@ public class AccountController {
      * 계정 목록 조회
      */
     @ApiCallLog(apiCode = "AC_001")
-    @Auth(role = AuthRole.ACCOUNT)
+    @Auth(role = { AuthRole.ACCOUNT, })
     @RequestMapping(method = RequestMethod.GET, value = "")
     public ResponseEntity<AccountInfoList> getAccountInfoList(@RequestParam(name = "skip", defaultValue = "0", required = false) String skipVariable,
                                                               @RequestParam(name = "limit", defaultValue = "20", required = false) String limitVariable,
