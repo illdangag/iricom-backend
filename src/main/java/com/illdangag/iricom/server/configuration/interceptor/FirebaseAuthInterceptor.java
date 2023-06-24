@@ -115,7 +115,7 @@ public class FirebaseAuthInterceptor implements HandlerInterceptor {
                 .map(BoardAdmin::getBoard)
                 .sorted(Comparator.comparing(Board::getId))
                 .collect(Collectors.toList());
-        if (boardList.isEmpty()) {
+        if (account.getAuth() != AccountAuth.SYSTEM_ADMIN || boardList.isEmpty()) {
             throw new IricomException(IricomErrorCode.NOT_REGISTERED_BOARD_ADMIN);
         }
         return boardList;

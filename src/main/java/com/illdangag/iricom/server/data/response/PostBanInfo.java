@@ -9,7 +9,7 @@ import lombok.Getter;
 public class PostBanInfo {
     private String id;
 
-    private Long creatDate;
+    private Long createDate;
 
     private Long updateDate;
 
@@ -22,7 +22,7 @@ public class PostBanInfo {
 
     public PostBanInfo(PostBan postBan, PostInfo postInfo) {
         this.id = String.valueOf(postBan.getId());
-        this.creatDate = DateTimeUtils.getLong(postBan.getCreateDate());
+        this.createDate = DateTimeUtils.getLong(postBan.getCreateDate());
         this.updateDate = DateTimeUtils.getLong(postBan.getUpdateDate());
         this.reason = postBan.getReason();
         this.enabled = postBan.getEnabled();

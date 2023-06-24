@@ -1,5 +1,6 @@
 package com.illdangag.iricom.server.restdocs.snippet;
 
+import io.opencensus.trace.Link;
 import org.springframework.restdocs.payload.FieldDescriptor;
 
 import java.util.LinkedHashMap;
@@ -19,6 +20,8 @@ public class IricomFieldsSnippet {
 
     private static final Map<String, String> postReportMap = new LinkedHashMap<>();
     private static final Map<String, String> commentReportMap = new LinkedHashMap<>();
+
+    private static final Map<String, String> postBanMap = new LinkedHashMap<>();
 
     private static final Map<String, String> searchListMap = new LinkedHashMap<>();
 
@@ -83,6 +86,12 @@ public class IricomFieldsSnippet {
         commentReportMap.put("type", "종류");
         commentReportMap.put("reason", "사유");
         commentReportMap.put("comment", "신고 댓글");
+
+        postBanMap.put("id", "아이디");
+        postBanMap.put("createDate", "생성일");
+        postBanMap.put("updateDate", "수정일");
+        postBanMap.put("reason", "사유");
+        postBanMap.put("enabled", "활성화 여부");
     }
     private IricomFieldsSnippet() {
     }
@@ -136,5 +145,9 @@ public class IricomFieldsSnippet {
 
     public static List<FieldDescriptor> getCommentReport(String keyPrefix) {
         return getFieldDescriptors(commentReportMap, keyPrefix);
+    }
+
+    public static List<FieldDescriptor> getPostBan(String keyPrefix) {
+        return getFieldDescriptors(postBanMap, keyPrefix);
     }
 }

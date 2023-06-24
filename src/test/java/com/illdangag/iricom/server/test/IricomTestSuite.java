@@ -1181,7 +1181,7 @@ public abstract class IricomTestSuite {
         Board board = post.getBoard();
 
         PostBanInfoCreate postBanInfoCreate = PostBanInfoCreate.builder()
-                .reason("BAN")
+                .reason(testPostBanInfo.getReason())
                 .build();
         PostBanInfo postBanInfo = banService.banPost(banAccount, board, post, postBanInfoCreate);
         return this.getPostBan(postBanInfo.getId());
