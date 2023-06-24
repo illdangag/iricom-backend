@@ -57,10 +57,11 @@ public class FirebaseAuthInterceptor implements HandlerInterceptor {
         Optional<FirebaseToken> firebaseTokenOptional = this.getFirebaseToken(request);
         Account account = null;
         if (firebaseTokenOptional.isPresent()) {
+            // firebase 토큰으로 사용자를 조회
             FirebaseToken firebaseToken = firebaseTokenOptional.get();
             FirebaseAuthentication firebaseAuthentication = this.getFirebaseAuthentication(firebaseToken);
             account = firebaseAuthentication.getAccount();
-            request.setAttribute("account", account);
+            request.setAttribute("account", account); // 계정 정보를 api endpoint로 전달
         }
 
         HandlerMethod handlerMethod = (HandlerMethod) handler;
@@ -68,31 +69,35 @@ public class FirebaseAuthInterceptor implements HandlerInterceptor {
         if (auth == null) { // @Auth 어노테이션이 설정되지 않은 메서드를 호출 한 경우
             // 인증 및 인가를 확인하지 않음
             return HandlerInterceptor.super.preHandle(request, response, handler);
-        } else {
-            AuthRole role = auth.role();
-            if (role != AuthRole.NONE && firebaseTokenOptional.isEmpty()) {
+        } else { // @Auth 어노테이션이 설정된 경우 계정의 권한 정보를 확인
+            AuthRole requireAuth = auth.role(); // api endpoint에서 요구하는 권한 정보
+            if (requireAuth != AuthRole.NONE && firebaseTokenOptional.isEmpty()) { // 권한이 필요하지만 firebase 토큰이 존재하지 않는 경우
+                // 요청의 권한을 확인 할 수 없으므로 오류 처리
                 throw new IricomException(IricomErrorCode.NOT_EXIST_FIREBASE_ID_TOKEN);
-            } else if (role == AuthRole.SYSTEM_ADMIN) {
-                // 시스템 관리자
+            } else {
                 this.checkAccount(account);
-                this.checkAccountDetail(account);
-                this.checkSystemAdmin(account);
-            } else if (role == AuthRole.BOARD_ADMIN) {
-                // 게시판 관리자
-                this.checkAccount(account);
-                this.checkAccountDetail(account);
-                List<Board> boardList = this.checkBoardAdmin(account);
-                request.setAttribute("boards", boardList.toArray(new Board[0]));
-            } else if (role == AuthRole.ACCOUNT) {
-                // 등록된 계정
-                this.checkAccount(account);
-                this.checkAccountDetail(account);
-            } else if (role == AuthRole.UNREGISTERED_ACCOUNT) {
-                // 등록되지 않은 계정
-                this.checkAccount(account);
+
+                if (requireAuth == AuthRole.SYSTEM_ADMIN) { // 요구하는 권한이 시스템 관리자
+                    this.checkSystemAdmin(account);
+                } else if (requireAuth == AuthRole.BOARD_ADMIN) { // 요구하는 권힌이 게시판 관리자
+                    this.checkAccountDetail(account);
+                    List<Board> boardList = null;
+                    if (account.getAuth() == AccountAuth.SYSTEM_ADMIN) {
+                        // 시스템 관리자는 관리자로 등록된 게시판이 없어도 허용
+                        boardList = Collections.emptyList();
+                    } else {
+                        // 시스템 관리자가 아닌 경우에는 1개 이상의 게시판 관리자 권한이 있어야 함
+                        boardList = this.checkBoardAdmin(account);
+                    }
+                    request.setAttribute("boards", boardList.toArray(new Board[0]));
+                } else if (requireAuth == AuthRole.ACCOUNT) { // 요구하는 권한이 사용자
+                    this.checkAccountDetail(account);
+                } else if (requireAuth == AuthRole.UNREGISTERED_ACCOUNT) { // 요구하는 권한이 등록되지 않은 사용자
+                    // 별도로 확인하지 않음
+                }
             }
+            return HandlerInterceptor.super.preHandle(request, response, handler);
         }
-        return HandlerInterceptor.super.preHandle(request, response, handler);
     }
 
     private void checkAccount(Account account) {
@@ -103,7 +108,9 @@ public class FirebaseAuthInterceptor implements HandlerInterceptor {
 
     private void checkAccountDetail(Account account) {
         Optional<AccountDetail> accountDetailOptional = this.accountRepository.getAccountDetail(account);
-        if (accountDetailOptional.isEmpty()) {
+        AccountDetail accountDetail = accountDetailOptional.orElseThrow(() -> new IricomException(IricomErrorCode.NOT_REGISTERED_ACCOUNT_DETAIL));
+        String nickname = accountDetail.getNickname();
+        if (nickname == null || nickname.isEmpty()) {
             throw new IricomException(IricomErrorCode.NOT_REGISTERED_ACCOUNT_DETAIL);
         }
     }
@@ -115,7 +122,8 @@ public class FirebaseAuthInterceptor implements HandlerInterceptor {
                 .map(BoardAdmin::getBoard)
                 .sorted(Comparator.comparing(Board::getId))
                 .collect(Collectors.toList());
-        if (account.getAuth() != AccountAuth.SYSTEM_ADMIN || boardList.isEmpty()) {
+
+        if (boardList.isEmpty()) {
             throw new IricomException(IricomErrorCode.NOT_REGISTERED_BOARD_ADMIN);
         }
         return boardList;
