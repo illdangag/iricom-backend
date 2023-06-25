@@ -1,5 +1,6 @@
 package com.illdangag.iricom.server.repository;
 
+import com.illdangag.iricom.server.data.entity.Account;
 import com.illdangag.iricom.server.data.entity.Board;
 
 import java.util.Collection;
@@ -13,13 +14,17 @@ public interface BoardRepository {
 
     long getBoardCount();
 
-    List<Board> getBoardList(String containTitle, int offset, int limit);
+    List<Board> getBoardList(String title, int offset, int limit);
 
-    long getBoardCount(String containTitle);
+    long getBoardCount(String title);
 
-    List<Board> getBoardList(String likeTitle, boolean enabled, int offset, int limit);
+    List<Board> getBoardList(String title, boolean enabled, int offset, int limit);
 
-    long getBoardCount(String containTitle, boolean enabled);
+    long getBoardCount(String title, boolean enabled);
+
+    List<Board> getBoardList(Account account, String title, boolean enabled, int offset, int limit);
+
+    long getBoardCount(Account account, String title, boolean enabled);
 
     Optional<Board> getBoard(String id);
 

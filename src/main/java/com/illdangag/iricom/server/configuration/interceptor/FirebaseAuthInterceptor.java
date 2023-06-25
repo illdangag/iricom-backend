@@ -14,7 +14,6 @@ import com.illdangag.iricom.server.repository.AccountRepository;
 import com.illdangag.iricom.server.repository.BoardAdminRepository;
 import com.illdangag.iricom.server.repository.FirebaseAuthenticationRepository;
 import lombok.extern.slf4j.Slf4j;
-import org.checkerframework.checker.units.qual.A;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.web.method.HandlerMethod;
@@ -67,6 +66,7 @@ public class FirebaseAuthInterceptor implements HandlerInterceptor {
 
         HandlerMethod handlerMethod = (HandlerMethod) handler;
         Auth auth = handlerMethod.getMethodAnnotation(Auth.class);
+
         if (auth == null) { // @Auth 어노테이션이 설정되지 않은 메서드를 호출 한 경우
             // 인증 및 인가를 확인하지 않음
             return HandlerInterceptor.super.preHandle(request, response, handler);
@@ -77,13 +77,13 @@ public class FirebaseAuthInterceptor implements HandlerInterceptor {
             if (!requireAuthList.isEmpty() && !requireAuthList.contains(AuthRole.NONE) && firebaseTokenOptional.isEmpty()) { // 권한이 필요하지만 firebase 토큰이 존재하지 않는 경우
                 throw new IricomException(IricomErrorCode.NOT_EXIST_FIREBASE_ID_TOKEN); // 요청의 권한을 확인 할 수 없으므로 오류 처리
             } else {
-                this.checkAccount(account);
-
-                if (requireAuthList.contains(AuthRole.UNREGISTERED_ACCOUNT)) { // 요구하는 권한이 등록되지 않은 사용자
+                if (requireAuthList.contains(AuthRole.NONE) || requireAuthList.contains(AuthRole.UNREGISTERED_ACCOUNT)) { // 요구하는 권한이 등록되지 않은 사용자
                     // 별도로 확인하지 않음
                 } else if (requireAuthList.contains(AuthRole.ACCOUNT)) { // 요구하는 권한이 사용자
+                    this.checkAccount(account);
                     this.checkAccountDetail(account);
                 } else if (requireAuthList.contains(AuthRole.BOARD_ADMIN)) { // 요구하는 권한이 게시판 관리자
+                    this.checkAccount(account);
                     this.checkAccountDetail(account);
                     List<Board> boardList = null;
                     if (account.getAuth() == AccountAuth.SYSTEM_ADMIN) {
@@ -95,6 +95,7 @@ public class FirebaseAuthInterceptor implements HandlerInterceptor {
                     }
                     request.setAttribute("boards", boardList.toArray(new Board[0]));
                 } else if (requireAuthList.contains(AuthRole.SYSTEM_ADMIN)) { // 요구하는 권한이 시스템 관리자
+                    this.checkAccount(account);
                     this.checkSystemAdmin(account);
                 }
             }

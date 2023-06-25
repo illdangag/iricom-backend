@@ -19,5 +19,8 @@ public class TestBoardInfo {
     private boolean isEnabled = true;
 
     @Builder.Default
+    private boolean undisclosed = false;
+
+    @Builder.Default
     private List<TestAccountInfo> adminList = new LinkedList<>();
 }
