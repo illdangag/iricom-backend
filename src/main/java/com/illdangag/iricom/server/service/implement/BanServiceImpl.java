@@ -237,7 +237,13 @@ public class BanServiceImpl implements BanService {
     }
 
     private Board getBoard(String id) {
-        Optional<Board> boardOptional = this.boardRepository.getBoard(id);
+        long boardId = -1;
+        try {
+            boardId = Long.parseLong(id);
+        } catch (Exception exception) {
+            throw new IricomException(IricomErrorCode.NOT_EXIST_BOARD);
+        }
+        Optional<Board> boardOptional = this.boardRepository.getBoard(boardId);
         return boardOptional.orElseThrow(() -> new IricomException(IricomErrorCode.NOT_EXIST_BOARD));
     }
 

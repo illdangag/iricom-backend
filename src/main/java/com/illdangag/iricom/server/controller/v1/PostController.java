@@ -55,13 +55,14 @@ public class PostController {
      * 발행된 게시물만 조회
      */
     @ApiCallLog(apiCode = "PS_002")
-    @Auth(role = { AuthRole.NONE, AuthRole.ACCOUNT, })
+    @Auth(role = AuthRole.NONE)
     @RequestMapping(method = RequestMethod.GET, value = "/posts")
     public ResponseEntity<PostInfoList> getPostInfoList(@PathVariable(value = "board_id") String boardId,
                                                         @RequestParam(name = "skip", defaultValue = "0", required = false) String skipVariable,
                                                         @RequestParam(name = "limit", defaultValue = "20", required = false) String limitVariable,
                                                         @RequestParam(name = "type", defaultValue = "post", required = false) String typeVariable,
-                                                        @RequestParam(name = "title", defaultValue = "", required = false) String title) {
+                                                        @RequestParam(name = "title", defaultValue = "", required = false) String title,
+                                                        @RequestContext Account account) {
         PostType type;
         int skip;
         int limit;

@@ -107,10 +107,18 @@ public class BoardController {
      * 게시판 정보 조회
      */
     @ApiCallLog(apiCode = "BD_003")
-    @Auth(role = { AuthRole.NONE, AuthRole.ACCOUNT, })
+    @Auth(role = AuthRole.NONE)
     @RequestMapping(method = RequestMethod.GET, value = "/{board_id}")
-    public ResponseEntity<BoardInfo> getBoard(@PathVariable(value = "board_id") String boardId) {
-        BoardInfo boardInfo = this.boardService.getBoardInfo(boardId);
+    public ResponseEntity<BoardInfo> getBoard(@PathVariable(value = "board_id") String boardId,
+                                              @RequestContext Account account) {
+        BoardInfo boardInfo = null;
+
+        if (account != null) {
+            boardInfo = this.boardService.getBoardInfo(account, boardId);
+        } else {
+            boardInfo = this.boardService.getBoardInfo(boardId);
+        }
+
         return ResponseEntity.status(HttpStatus.OK).contentType(MediaType.APPLICATION_JSON).body(boardInfo);
     }
 

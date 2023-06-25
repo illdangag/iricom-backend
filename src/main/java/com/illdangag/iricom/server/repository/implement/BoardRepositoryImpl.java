@@ -12,9 +12,9 @@ import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.EntityTransaction;
 import javax.persistence.TypedQuery;
-import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Slf4j
 @Repository
@@ -27,45 +27,34 @@ public class BoardRepositoryImpl implements BoardRepository {
     }
 
     @Override
-    public long getBoardCount() {
+    public Optional<Board> getDisclosedBoard(Account account, long id) {
         EntityManager entityManager = this.entityManagerFactory.createEntityManager();
-        final String jpql = "SELECT COUNT(*) FROM Board b";
-        TypedQuery<Long> query = entityManager.createQuery(jpql, Long.class);
-        long result = query.getSingleResult();
-        entityManager.close();
-        return result;
-    }
 
-    @Override
-    public List<Board> getBoardList(String id) {
-        long boardId = -1;
-        try {
-            boardId = Long.parseLong(id);
-        } catch (Exception exception) {
-            return Collections.emptyList();
-        }
+        List<Long> boardIdList = this.getBoardIdByAccount(entityManager, account);
+        boardIdList = boardIdList.stream().filter(item -> item.equals(id)).collect(Collectors.toList());
 
-        return this.getBoardList(boardId);
-    }
-
-    @Override
-    public List<Board> getBoardList(long id) {
-        EntityManager entityManager = this.entityManagerFactory.createEntityManager();
         final String jpql = "SELECT b FROM Board b" +
-                " WHERE b.id = :id";
+                " WHERE b.id = :id AND b.undisclosed = false" +
+                " OR b.id = :id AND b.id IN :boardId";
 
-        TypedQuery<Board> query = entityManager.createQuery(jpql, Board.class);
-        query.setParameter("id", id);
+        TypedQuery<Board> query = entityManager.createQuery(jpql, Board.class)
+                .setParameter("id", id)
+                .setParameter("boardId", boardIdList);
         List<Board> resultList = query.getResultList();
         entityManager.close();
-        return resultList;
+
+        if (resultList.isEmpty()) {
+            return Optional.empty();
+        } else {
+            return Optional.of(resultList.get(0));
+        }
     }
 
     @Override
     public List<Board> getBoardList(String title, int offset, int limit) {
         EntityManager entityManager = this.entityManagerFactory.createEntityManager();
         final String jpql = "SELECT b FROM Board b" +
-                " WHERE UPPER(b.title) LIKE UPPER(:title)" +
+                " WHERE UPPER(b.title) LIKE UPPER(:title) AND b.undisclosed = false" +
                 " ORDER BY title";
 
         TypedQuery<Board> query = entityManager.createQuery(jpql, Board.class);
@@ -81,7 +70,7 @@ public class BoardRepositoryImpl implements BoardRepository {
     public long getBoardCount(String title) {
         EntityManager entityManager = this.entityManagerFactory.createEntityManager();
         final String jpql = "SELECT COUNT(*) FROM Board b" +
-                " WHERE UPPER(b.title) LIKE UPPER(:title)";
+                " WHERE UPPER(b.title) LIKE UPPER(:title) AND b.undisclosed = false";
 
         TypedQuery<Long> query = entityManager.createQuery(jpql, Long.class);
         query.setParameter("title", "%" + StringUtils.escape(title) + "%");
@@ -94,7 +83,7 @@ public class BoardRepositoryImpl implements BoardRepository {
     public List<Board> getBoardList(String title, boolean enabled, int offset, int limit) {
         EntityManager entityManager = this.entityManagerFactory.createEntityManager();
         final String jpql = "SELECT b FROM Board b" +
-                " WHERE UPPER(b.title) LIKE UPPER(:title) AND b.enabled = :enabled";
+                " WHERE UPPER(b.title) LIKE UPPER(:title) AND b.enabled = :enabled AND b.undisclosed = false";
 
         TypedQuery<Board> query = entityManager.createQuery(jpql, Board.class);
         query.setParameter("title", "%" + StringUtils.escape(title) + "%")
@@ -110,7 +99,7 @@ public class BoardRepositoryImpl implements BoardRepository {
     public long getBoardCount(String title, boolean enabled) {
         EntityManager entityManager = this.entityManagerFactory.createEntityManager();
         final String jpql = "SELECT COUNT(*) FROM Board b" +
-                " WHERE UPPER(b.title) LIKE UPPER(:title) AND b.enabled = :enabled";
+                " WHERE UPPER(b.title) LIKE UPPER(:title) AND b.enabled = :enabled AND b.undisclosed = false";
 
         TypedQuery<Long> query = entityManager.createQuery(jpql, Long.class);
         query.setParameter("title", "%" + StringUtils.escape(title) + "%")
@@ -207,24 +196,38 @@ public class BoardRepositoryImpl implements BoardRepository {
     }
 
     @Override
-    public Optional<Board> getBoard(String id) {
-        long boardId = -1;
-        try {
-            boardId = Long.parseLong(id);
-        } catch (Exception exception) {
-            return Optional.empty();
-        }
+    public Optional<Board> getBoard(long id) {
+        EntityManager entityManager = this.entityManagerFactory.createEntityManager();
+        final String jpql = "SELECT b FROM Board b" +
+                " WHERE b.id = :id";
 
-        return this.getBoard(boardId);
+        TypedQuery<Board> query = entityManager.createQuery(jpql, Board.class);
+        query.setParameter("id", id);
+        List<Board> resultList = query.getResultList();
+        entityManager.close();
+
+        if (resultList.isEmpty()) {
+            return Optional.empty();
+        } else {
+            return Optional.of(resultList.get(0));
+        }
     }
 
     @Override
-    public Optional<Board> getBoard(long id) {
-        List<Board> boardList = getBoardList(id);
-        if (boardList.isEmpty()) {
+    public Optional<Board> getDisclosedBoard(long id) {
+        EntityManager entityManager = this.entityManagerFactory.createEntityManager();
+        final String jpql = "SELECT b FROM Board b" +
+                " WHERE b.id = :id AND b.undisclosed = false";
+
+        TypedQuery<Board> query = entityManager.createQuery(jpql, Board.class);
+        query.setParameter("id", id);
+        List<Board> resultList = query.getResultList();
+        entityManager.close();
+
+        if (resultList.isEmpty()) {
             return Optional.empty();
         } else {
-            return Optional.of(boardList.get(0));
+            return Optional.of(resultList.get(0));
         }
     }
 

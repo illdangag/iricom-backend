@@ -47,8 +47,7 @@ public class PostServiceImpl implements PostService {
 
     @Override
     public PostInfo createPostInfo(Account account, String boardId, PostInfoCreate postInfoCreate) {
-        Optional<Board> boardOptional = this.boardRepository.getBoard(boardId);
-        Board board = boardOptional.orElseThrow(() -> new IricomException(IricomErrorCode.NOT_EXIST_BOARD));
+        Board board = this.getBoard(boardId);
         return this.createPostInfo(account, board, postInfoCreate);
     }
 
@@ -90,8 +89,7 @@ public class PostServiceImpl implements PostService {
 
     @Override
     public PostInfo updatePostInfo(Account account, String boardId, String postId, PostInfoUpdate postInfoUpdate) {
-        Optional<Board> boardOptional = this.boardRepository.getBoard(boardId);
-        Board board = boardOptional.orElseThrow(() -> new IricomException(IricomErrorCode.NOT_EXIST_BOARD));
+        Board board = this.getBoard(boardId);
         Post post = this.getPost(postId);
         return this.updatePostInfo(account, board, post, postInfoUpdate);
     }
@@ -249,10 +247,18 @@ public class PostServiceImpl implements PostService {
     }
 
     @Override
-    public PostInfoList getPublishPostInfoList(String boardId, @Valid PostInfoSearch postInfoSearch) {
-        Optional<Board> boardOptional = this.boardRepository.getBoard(boardId);
-        Board board = boardOptional.orElseThrow(() -> new IricomException(IricomErrorCode.NOT_EXIST_BOARD));
+    public PostInfoList getPublishPostInfoList(String boardId, PostInfoSearch postInfoSearch) {
+        Board board = this.getBoard(boardId);
+        return this.getPublishPostInfoList(board, postInfoSearch);
+    }
 
+    @Override
+    public PostInfoList getPublishPostInfoList(Account account, String boardId, PostInfoSearch postInfoSearch) {
+        Board board = this.getBoard(account, boardId);
+        return this.getPublishPostInfoList(board, postInfoSearch);
+    }
+
+    private PostInfoList getPublishPostInfoList(Board board, PostInfoSearch postInfoSearch) {
         List<Post> postList;
         long totalPostCount;
         if (postInfoSearch.getTitle().isEmpty()) {
@@ -424,8 +430,27 @@ public class PostServiceImpl implements PostService {
         return boardAdminOptional.isPresent();
     }
 
+    private Board getBoard(Account account, String id) {
+        long boardId = -1;
+        try {
+            boardId = Long.parseLong(id);
+        } catch (Exception exception) {
+            throw new IricomException(IricomErrorCode.NOT_EXIST_BOARD);
+        }
+
+        Optional<Board> boardOptional = this.boardRepository.getDisclosedBoard(account, boardId);
+        return boardOptional.orElseThrow(() -> new IricomException(IricomErrorCode.NOT_EXIST_BOARD));
+    }
+
     private Board getBoard(String id) {
-        Optional<Board> boardOptional = this.boardRepository.getBoard(id);
+        long boardId = -1;
+        try {
+            boardId = Long.parseLong(id);
+        } catch (Exception exception) {
+            throw new IricomException(IricomErrorCode.NOT_EXIST_BOARD);
+        }
+
+        Optional<Board> boardOptional = this.boardRepository.getBoard(boardId);
         return boardOptional.orElseThrow(() -> new IricomException(IricomErrorCode.NOT_EXIST_BOARD));
     }
 

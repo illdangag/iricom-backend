@@ -6,7 +6,7 @@ import com.illdangag.iricom.server.data.entity.UndisclosedBoardAccount;
 import java.util.List;
 
 public interface UndisclosedBoardAccountRepository {
-    void save(UndisclosedBoardAccount undisclosedBoardAccount);
-
     List<UndisclosedBoardAccount> getUndisclosedBoardAccountList(Account account);
+
+    void save(UndisclosedBoardAccount undisclosedBoardAccount);
 }
