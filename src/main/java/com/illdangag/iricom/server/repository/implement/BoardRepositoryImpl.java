@@ -5,12 +5,13 @@ import com.illdangag.iricom.server.data.entity.Board;
 import com.illdangag.iricom.server.repository.BoardRepository;
 import com.illdangag.iricom.server.util.StringUtils;
 import lombok.extern.slf4j.Slf4j;
-import org.checkerframework.checker.units.qual.A;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
-import javax.persistence.*;
-import java.util.Collection;
+import javax.persistence.EntityManager;
+import javax.persistence.EntityManagerFactory;
+import javax.persistence.EntityTransaction;
+import javax.persistence.TypedQuery;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
@@ -93,8 +94,7 @@ public class BoardRepositoryImpl implements BoardRepository {
     public List<Board> getBoardList(String title, boolean enabled, int offset, int limit) {
         EntityManager entityManager = this.entityManagerFactory.createEntityManager();
         final String jpql = "SELECT b FROM Board b" +
-                " WHERE UPPER(b.title) LIKE UPPER(:title)" +
-                " AND b.enabled = :enabled";
+                " WHERE UPPER(b.title) LIKE UPPER(:title) AND b.enabled = :enabled";
 
         TypedQuery<Board> query = entityManager.createQuery(jpql, Board.class);
         query.setParameter("title", "%" + StringUtils.escape(title) + "%")
@@ -110,8 +110,7 @@ public class BoardRepositoryImpl implements BoardRepository {
     public long getBoardCount(String title, boolean enabled) {
         EntityManager entityManager = this.entityManagerFactory.createEntityManager();
         final String jpql = "SELECT COUNT(*) FROM Board b" +
-                " WHERE UPPER(b.title) LIKE UPPER(:title)" +
-                " AND b.enabled = :enabled";
+                " WHERE UPPER(b.title) LIKE UPPER(:title) AND b.enabled = :enabled";
 
         TypedQuery<Long> query = entityManager.createQuery(jpql, Long.class);
         query.setParameter("title", "%" + StringUtils.escape(title) + "%")
@@ -161,55 +160,51 @@ public class BoardRepositoryImpl implements BoardRepository {
         return result;
     }
 
+    @Override
+    public List<Board> getBoardList(Account account, String title, int offset, int limit) {
+        EntityManager entityManager = this.entityManagerFactory.createEntityManager();
+
+        List<Long> boardIdList = this.getBoardIdByAccount(entityManager, account);
+
+        final String jpql = "SELECT b FROM Board b" +
+                " WHERE (UPPER(b.title) LIKE UPPER(:title) AND b.undisclosed = false)" +
+                " OR (UPPER(b.title) LIKE UPPER(:title) AND b.id IN (:boardId))";
+
+        TypedQuery<Board> query = entityManager.createQuery(jpql, Board.class);
+        query.setParameter("title", "%" + StringUtils.escape(title) + "%")
+                .setParameter("boardId", boardIdList)
+                .setFirstResult(offset)
+                .setMaxResults(limit);
+        List<Board> resultList = query.getResultList();
+        entityManager.close();
+        return resultList;
+    }
+
+    @Override
+    public long getBoardCount(Account account, String title) {
+        EntityManager entityManager = this.entityManagerFactory.createEntityManager();
+
+        List<Long> boardIdList = this.getBoardIdByAccount(entityManager, account);
+
+        final String jpql = "SELECT COUNT(*) FROM Board b" +
+                " WHERE (UPPER(b.title) LIKE UPPER(:title) AND b.undisclosed = false)" +
+                " OR (UPPER(b.title) LIKE UPPER(:title) AND b.id IN (:boardId))";
+
+        TypedQuery<Long> query = entityManager.createQuery(jpql, Long.class)
+                .setParameter("title", "%" + StringUtils.escape(title) + "%")
+                .setParameter("boardId", boardIdList);
+        Long result = query.getSingleResult();
+        entityManager.close();
+        return result;
+    }
+
     private List<Long> getBoardIdByAccount(EntityManager entityManager, Account account) {
-        final String jpql = "SELECT b.id FROM Board b RIGHT JOIN UndisclosedBoardAccount uba ON b = uba.board WHERE uba.account = :account";
+        final String jpql = "SELECT b.id FROM Board b" +
+                " RIGHT JOIN UndisclosedBoardAccount uba ON b = uba.board WHERE uba.account = :account";
         TypedQuery<Long> query = entityManager.createQuery(jpql, Long.class)
                 .setParameter("account", account);
         return query.getResultList();
     }
-
-//    private void testQuery00(Account account) {
-//        EntityManager entityManager = this.entityManagerFactory.createEntityManager();
-//        final String jpql = "SELECT b FROM Board b RIGHT JOIN UndisclosedBoardAccount uba ON b = uba.board";
-//
-//        Query query = entityManager.createQuery(jpql);
-//
-//        List<Object[]> resultList = query.getResultList();
-//        entityManager.close();
-//    }
-//
-//    private void testQuery01(Account account) {
-//        EntityManager entityManager = this.entityManagerFactory.createEntityManager();
-//        final String jpql = "SELECT b FROM Board b RIGHT JOIN UndisclosedBoardAccount uba ON b = uba.board WHERE uba.account = :account";
-//
-//        TypedQuery<Board> query = entityManager.createQuery(jpql, Board.class)
-//                .setParameter("account", account);
-//
-//        List<Board> resultList = query.getResultList();
-//        entityManager.close();
-//    }
-//
-//    private void testQuery02(Account account) {
-//        EntityManager entityManager = this.entityManagerFactory.createEntityManager();
-//        final String jpql = "SELECT b.id FROM Board b RIGHT JOIN UndisclosedBoardAccount uba ON b = uba.board WHERE uba.account = :account";
-//
-//        TypedQuery<Long> query = entityManager.createQuery(jpql, Long.class)
-//                .setParameter("account", account);
-//
-//        List<Long> resultList = query.getResultList();
-//        entityManager.close();
-//    }
-//
-//    private void testQuery(Account account) {
-//        EntityManager entityManager = this.entityManagerFactory.createEntityManager();
-//        final String jpql = "SELECT b.id FROM Board b RIGHT JOIN UndisclosedBoardAccount uba ON b = uba.board WHERE uba.account = :account";
-//
-//        TypedQuery<Long> query = entityManager.createQuery(jpql, Long.class)
-//                .setParameter("account", account);
-//
-//        List<Long> resultList = query.getResultList();
-//        entityManager.close();
-//    }
 
     @Override
     public Optional<Board> getBoard(String id) {
@@ -242,22 +237,6 @@ public class BoardRepositoryImpl implements BoardRepository {
             entityManager.persist(board);
         } else {
             entityManager.merge(board);
-        }
-        entityTransaction.commit();
-        entityManager.close();
-    }
-
-    @Override
-    public void saveAll(Collection<Board> boards) {
-        EntityManager entityManager = this.entityManagerFactory.createEntityManager();
-        EntityTransaction entityTransaction = entityManager.getTransaction();
-        entityTransaction.begin();
-        for (Board board : boards) {
-            if (board.getId() == null) {
-                entityManager.persist(board);
-            } else {
-                entityManager.merge(board);
-            }
         }
         entityTransaction.commit();
         entityManager.close();

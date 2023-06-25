@@ -48,7 +48,7 @@ public class BoardController {
      * 게시판 목록 조회
      */
     @ApiCallLog(apiCode = "BD_002")
-    @Auth(role = { AuthRole.NONE, AuthRole.ACCOUNT, })
+    @Auth(role = AuthRole.NONE)
     @RequestMapping(method = RequestMethod.GET, value = "")
     public ResponseEntity<BoardInfoList> getBoardList(@RequestParam(name = "skip", defaultValue = "0", required = false) String skipVariable,
                                                       @RequestParam(name = "limit", defaultValue = "20", required = false) String limitVariable,
@@ -85,14 +85,21 @@ public class BoardController {
             throw new IricomException(IricomErrorCode.INVALID_REQUEST, "Enabled value is invalid");
         }
 
-        BoardInfoSearch searchOption = BoardInfoSearch.builder()
+        BoardInfoSearch boardInfoSearch = BoardInfoSearch.builder()
                 .skip(skip)
                 .limit(limit)
                 .keyword(keyword)
                 .enabled(enabled)
                 .build();
 
-        BoardInfoList boardInfoList = this.boardService.getBoardInfoList(searchOption);
+        BoardInfoList boardInfoList = null;
+
+        if (account != null) {
+            boardInfoList = this.boardService.getBoardInfoList(account, boardInfoSearch);
+        } else {
+            boardInfoList = this.boardService.getBoardInfoList(boardInfoSearch);
+        }
+
         return ResponseEntity.status(HttpStatus.OK).body(boardInfoList);
     }
 

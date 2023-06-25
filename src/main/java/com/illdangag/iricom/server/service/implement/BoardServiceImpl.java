@@ -1,5 +1,6 @@
 package com.illdangag.iricom.server.service.implement;
 
+import com.illdangag.iricom.server.data.entity.Account;
 import com.illdangag.iricom.server.data.entity.Board;
 import com.illdangag.iricom.server.data.request.BoardInfoCreate;
 import com.illdangag.iricom.server.data.request.BoardInfoSearch;
@@ -69,14 +70,32 @@ public class BoardServiceImpl implements BoardService {
                 .build();
     }
 
-    public BoardInfo updateBoardInfo(String id, BoardInfoUpdate boardInfoUpdate) {
-        try {
-            long boardId = Long.parseLong(id);
-            Board board = this.boardRepository.getBoard(boardId).orElseThrow(() -> new IricomException(IricomErrorCode.NOT_EXIST_BOARD));
-            return this.updateBoardInfo(board, boardInfoUpdate);
-        } catch (Exception exception) {
-            throw new IricomException(IricomErrorCode.NOT_EXIST_BOARD);
+    @Override
+    public BoardInfoList getBoardInfoList(Account account, BoardInfoSearch boardInfoSearch) {
+        List<Board> boardList;
+        long totalBoardCount;
+
+        if (boardInfoSearch.getEnabled() != null) {
+            boardList = this.boardRepository.getBoardList(account, boardInfoSearch.getKeyword(), boardInfoSearch.getEnabled(), boardInfoSearch.getSkip(), boardInfoSearch.getLimit());
+            totalBoardCount = this.boardRepository.getBoardCount(account, boardInfoSearch.getKeyword(), boardInfoSearch.getEnabled());
+        } else {
+            boardList = this.boardRepository.getBoardList(account, boardInfoSearch.getKeyword(), boardInfoSearch.getSkip(), boardInfoSearch.getLimit());
+            totalBoardCount = this.boardRepository.getBoardCount(account, boardInfoSearch.getKeyword());
         }
+        List<BoardInfo> boardInfoList = boardList.stream().map(BoardInfo::new).collect(Collectors.toList());
+
+        return BoardInfoList.builder()
+                .total(totalBoardCount)
+                .skip(boardInfoSearch.getSkip())
+                .limit(boardInfoSearch.getLimit())
+                .boardInfoList(boardInfoList)
+                .build();
+    }
+
+    @Override
+    public BoardInfo updateBoardInfo(String id, BoardInfoUpdate boardInfoUpdate) {
+        Board board = this.getBoard(id);
+        return this.updateBoardInfo(board, boardInfoUpdate);
     }
 
     @Override

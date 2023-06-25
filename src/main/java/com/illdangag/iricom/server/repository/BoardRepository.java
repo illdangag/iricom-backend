@@ -26,11 +26,13 @@ public interface BoardRepository {
 
     long getBoardCount(Account account, String title, boolean enabled);
 
+    List<Board> getBoardList(Account account, String title, int offset, int limit);
+
+    long getBoardCount(Account account, String title);
+
     Optional<Board> getBoard(String id);
 
     Optional<Board> getBoard(long id);
 
     void save(Board board);
-
-    void saveAll(Collection<Board> boards);
 }
