@@ -8,11 +8,11 @@ import org.hibernate.annotations.UpdateTimestamp;
 import javax.persistence.*;
 import java.time.LocalDateTime;
 
-@Builder
-@NoArgsConstructor
-@AllArgsConstructor
 @Getter
 @Setter
+@Builder
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
+@AllArgsConstructor(access = AccessLevel.PRIVATE)
 @ToString
 @Entity
 @Table(indexes = {

@@ -12,7 +12,7 @@ import javax.validation.constraints.Size;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class BoardInfoCreate {
+public class GroupInfoCreate {
     @NotNull(message = "Title is required.")
     @Size(min = 1, max = 20, message = "Title must be at least 1 character and less than 20 characters.")
     private String title;
@@ -22,8 +22,5 @@ public class BoardInfoCreate {
     private String description = "";
 
     @Builder.Default
-    private Boolean enabled = Boolean.TRUE;
-
-    @Builder.Default
-    private Boolean undisclosed = Boolean.FALSE;
+    private Boolean enabled = true;
 }

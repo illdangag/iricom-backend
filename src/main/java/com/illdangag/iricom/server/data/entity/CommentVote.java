@@ -8,8 +8,8 @@ import java.time.LocalDateTime;
 @Getter
 @Setter
 @Builder
-@NoArgsConstructor
-@AllArgsConstructor
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
+@AllArgsConstructor(access = AccessLevel.PRIVATE)
 @Entity
 @Table(indexes = {
         @Index(name = "comment_vote_comment_id", columnList = "comment_id"),

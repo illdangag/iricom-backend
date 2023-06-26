@@ -178,7 +178,11 @@ public class FirebaseAuthInterceptor implements HandlerInterceptor {
             } else {
                 account = accountList.get(0);
             }
-            firebaseAuthentication = new FirebaseAuthentication(firebaseToken.getUid(), account);
+
+            firebaseAuthentication = FirebaseAuthentication.builder()
+                    .id(firebaseToken.getUid())
+                    .account(account)
+                    .build();
             this.accountRepository.saveAccount(account);
 
             AccountDetail accountDetail = account.getAccountDetail();

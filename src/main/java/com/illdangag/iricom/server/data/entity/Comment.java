@@ -10,8 +10,8 @@ import java.util.Objects;
 @Getter
 @Setter
 @Builder
-@AllArgsConstructor
-@NoArgsConstructor
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
+@AllArgsConstructor(access = AccessLevel.PRIVATE)
 @Entity
 @Table(indexes = {
         @Index(name = "comment_createDate", columnList = "createDate"),

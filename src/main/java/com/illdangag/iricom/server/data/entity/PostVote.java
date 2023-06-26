@@ -9,8 +9,8 @@ import java.time.LocalDateTime;
 @Getter
 @Setter
 @Builder
-@NoArgsConstructor
-@AllArgsConstructor
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
+@AllArgsConstructor(access = AccessLevel.PRIVATE)
 @Entity
 @Table(indexes = {
         @Index(name = "post_vote_post_id", columnList = "post_id"),

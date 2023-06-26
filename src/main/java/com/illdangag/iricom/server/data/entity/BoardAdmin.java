@@ -7,14 +7,11 @@ import org.hibernate.annotations.CreationTimestamp;
 import javax.persistence.*;
 import java.time.LocalDateTime;
 
-import static lombok.AccessLevel.PRIVATE;
-import static lombok.AccessLevel.PROTECTED;
-
 @Getter
 @Setter
 @Builder
-@NoArgsConstructor(access = PROTECTED)
-@AllArgsConstructor(access = PRIVATE)
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
+@AllArgsConstructor(access = AccessLevel.PRIVATE)
 @Entity
 @Table(indexes = {
         @Index(name = "boardAdmin_createDate", columnList = "createDate"),

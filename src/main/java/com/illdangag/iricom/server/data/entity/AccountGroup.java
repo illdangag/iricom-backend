@@ -5,24 +5,23 @@ import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
 import javax.persistence.*;
-import javax.validation.constraints.Size;
 import java.time.LocalDateTime;
-import java.util.Objects;
 
 @Getter
 @Setter
 @Builder
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
+@ToString
 @Entity
-public class AccountDetail {
+@Table(indexes = {
+        @Index(name = "AccountGroup_enabled", columnList = "enabled"),
+        @Index(name = "AccountGroup_deleted", columnList = "deleted")
+})
+public class AccountGroup {
     @Id
     @GeneratedValue
     private Long id;
-
-    @OneToOne
-    @JoinColumn(name = "account_id")
-    private Account account;
 
     @Builder.Default
     @CreationTimestamp
@@ -32,26 +31,15 @@ public class AccountDetail {
     @UpdateTimestamp
     private LocalDateTime updateDate = LocalDateTime.now();
 
-    @Size(min = 0, max = 20)
     @Builder.Default
-    private String nickname = "";
+    private String title = "";
 
-    @Size(max = 100)
     @Builder.Default
     private String description = "";
 
-    @Override
-    public boolean equals(Object object) {
-        if (!(object instanceof AccountDetail)) {
-            return false;
-        }
+    @Builder.Default
+    private Boolean enabled = true;
 
-        AccountDetail other = (AccountDetail) object;
-        return this.id.equals(other.id);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hashCode(this.id);
-    }
+    @Builder.Default
+    private Boolean deleted = false;
 }
