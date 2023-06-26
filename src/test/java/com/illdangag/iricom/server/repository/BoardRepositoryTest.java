@@ -4,7 +4,6 @@ import com.illdangag.iricom.server.data.entity.Account;
 import com.illdangag.iricom.server.data.entity.Board;
 import com.illdangag.iricom.server.test.IricomTestSuite;
 import com.illdangag.iricom.server.test.data.TestBoardInfo;
-import com.illdangag.iricom.server.test.data.TestUndisclosedInfo;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
@@ -27,17 +26,11 @@ public class BoardRepositoryTest extends IricomTestSuite {
             .isEnabled(true).undisclosed(true)
             .build();
 
-    private TestUndisclosedInfo testUndisclosedInfo00 = TestUndisclosedInfo.builder()
-            .account(common00)
-            .board(testBoardInfo00)
-            .build();
-
     @Autowired
     public BoardRepositoryTest(ApplicationContext context) {
         super(context);
 
         super.setBoard(Arrays.asList(testBoardInfo00));
-        super.setUndisclosedBoardAccount(Arrays.asList(testUndisclosedInfo00));
     }
 
     @Test

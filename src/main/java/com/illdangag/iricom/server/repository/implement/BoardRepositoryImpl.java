@@ -30,16 +30,12 @@ public class BoardRepositoryImpl implements BoardRepository {
     public Optional<Board> getDisclosedBoard(Account account, long id) {
         EntityManager entityManager = this.entityManagerFactory.createEntityManager();
 
-        List<Long> boardIdList = this.getBoardIdByAccount(entityManager, account);
-        boardIdList = boardIdList.stream().filter(item -> item.equals(id)).collect(Collectors.toList());
 
         final String jpql = "SELECT b FROM Board b" +
-                " WHERE b.id = :id AND b.undisclosed = false" +
-                " OR b.id = :id AND b.id IN :boardId";
+                " WHERE b.id = :id AND b.undisclosed = false";
 
         TypedQuery<Board> query = entityManager.createQuery(jpql, Board.class)
-                .setParameter("id", id)
-                .setParameter("boardId", boardIdList);
+                .setParameter("id", id);
         List<Board> resultList = query.getResultList();
         entityManager.close();
 
@@ -113,16 +109,12 @@ public class BoardRepositoryImpl implements BoardRepository {
     public List<Board> getBoardList(Account account, String title, boolean enabled, int offset, int limit) {
         EntityManager entityManager = this.entityManagerFactory.createEntityManager();
 
-        List<Long> boardIdList = this.getBoardIdByAccount(entityManager, account);
-
         final String jpql = "SELECT b FROM Board b" +
-                " WHERE (UPPER(b.title) LIKE UPPER(:title) AND b.enabled = :enabled AND b.undisclosed = false)" +
-                " OR (UPPER(b.title) LIKE UPPER(:title) AND b.enabled = :enabled AND b.id IN (:boardId))";
+                " WHERE (UPPER(b.title) LIKE UPPER(:title) AND b.enabled = :enabled AND b.undisclosed = false)";
 
         TypedQuery<Board> query = entityManager.createQuery(jpql, Board.class);
         query.setParameter("title", "%" + StringUtils.escape(title) + "%")
                 .setParameter("enabled", enabled)
-                .setParameter("boardId", boardIdList)
                 .setFirstResult(offset)
                 .setMaxResults(limit);
         List<Board> resultList = query.getResultList();
@@ -134,16 +126,12 @@ public class BoardRepositoryImpl implements BoardRepository {
     public long getBoardCount(Account account, String title, boolean enabled) {
         EntityManager entityManager = this.entityManagerFactory.createEntityManager();
 
-        List<Long> boardIdList = this.getBoardIdByAccount(entityManager, account);
-
         final String jpql = "SELECT COUNT(*) FROM Board b" +
-                " WHERE (UPPER(b.title) LIKE UPPER(:title) AND b.enabled = :enabled AND b.undisclosed = false)" +
-                " OR (UPPER(b.title) LIKE UPPER(:title) AND b.enabled = :enabled AND b.id IN (:boardId))";
+                " WHERE (UPPER(b.title) LIKE UPPER(:title) AND b.enabled = :enabled AND b.undisclosed = false)";
 
         TypedQuery<Long> query = entityManager.createQuery(jpql, Long.class)
                 .setParameter("title", "%" + StringUtils.escape(title) + "%")
-                .setParameter("enabled", enabled)
-                .setParameter("boardId", boardIdList);
+                .setParameter("enabled", enabled);
         Long result = query.getSingleResult();
         entityManager.close();
         return result;
@@ -153,15 +141,11 @@ public class BoardRepositoryImpl implements BoardRepository {
     public List<Board> getBoardList(Account account, String title, int offset, int limit) {
         EntityManager entityManager = this.entityManagerFactory.createEntityManager();
 
-        List<Long> boardIdList = this.getBoardIdByAccount(entityManager, account);
-
         final String jpql = "SELECT b FROM Board b" +
-                " WHERE (UPPER(b.title) LIKE UPPER(:title) AND b.undisclosed = false)" +
-                " OR (UPPER(b.title) LIKE UPPER(:title) AND b.id IN (:boardId))";
+                " WHERE (UPPER(b.title) LIKE UPPER(:title) AND b.undisclosed = false)";
 
         TypedQuery<Board> query = entityManager.createQuery(jpql, Board.class);
         query.setParameter("title", "%" + StringUtils.escape(title) + "%")
-                .setParameter("boardId", boardIdList)
                 .setFirstResult(offset)
                 .setMaxResults(limit);
         List<Board> resultList = query.getResultList();
@@ -173,26 +157,14 @@ public class BoardRepositoryImpl implements BoardRepository {
     public long getBoardCount(Account account, String title) {
         EntityManager entityManager = this.entityManagerFactory.createEntityManager();
 
-        List<Long> boardIdList = this.getBoardIdByAccount(entityManager, account);
-
         final String jpql = "SELECT COUNT(*) FROM Board b" +
-                " WHERE (UPPER(b.title) LIKE UPPER(:title) AND b.undisclosed = false)" +
-                " OR (UPPER(b.title) LIKE UPPER(:title) AND b.id IN (:boardId))";
+                " WHERE (UPPER(b.title) LIKE UPPER(:title) AND b.undisclosed = false)";
 
         TypedQuery<Long> query = entityManager.createQuery(jpql, Long.class)
-                .setParameter("title", "%" + StringUtils.escape(title) + "%")
-                .setParameter("boardId", boardIdList);
+                .setParameter("title", "%" + StringUtils.escape(title) + "%");
         Long result = query.getSingleResult();
         entityManager.close();
         return result;
-    }
-
-    private List<Long> getBoardIdByAccount(EntityManager entityManager, Account account) {
-        final String jpql = "SELECT b.id FROM Board b" +
-                " RIGHT JOIN UndisclosedBoardAccount uba ON b = uba.board WHERE uba.account = :account";
-        TypedQuery<Long> query = entityManager.createQuery(jpql, Long.class)
-                .setParameter("account", account);
-        return query.getResultList();
     }
 
     @Override

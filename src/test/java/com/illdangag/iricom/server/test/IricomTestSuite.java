@@ -40,7 +40,6 @@ public abstract class IricomTestSuite {
     private final CommentRepository commentRepository;
     private final ReportRepository reportRepository;
     private final BanRepository banRepository;
-    private final UndisclosedBoardAccountRepository undisclosedBoardAccountRepository;
 
     // 계정 설정
     private static final String ACCOUNT_PASSWORD = "111111";
@@ -812,7 +811,6 @@ public abstract class IricomTestSuite {
     private static final Map<TestPostReportInfo, PostReport> postReportMap = new HashMap<>();
     private static final Map<TestCommentReportInfo, CommentReport> commentReportMap = new HashMap<>();
     private static final Map<TestPostBanInfo, PostBan> postBanMap = new HashMap<>();
-    private static final Map<TestUndisclosedInfo, UndisclosedBoardAccount> undisclosedBoardAccountMap = new HashMap<>();
 
     private static boolean isInit = false;
 
@@ -831,7 +829,6 @@ public abstract class IricomTestSuite {
         this.commentRepository = context.getBean(CommentRepository.class);
         this.reportRepository = context.getBean(ReportRepository.class);
         this.banRepository = context.getBean(BanRepository.class);
-        this.undisclosedBoardAccountRepository = context.getBean(UndisclosedBoardAccountRepository.class);
 
         if (!isInit) {
             this.init();
@@ -968,17 +965,6 @@ public abstract class IricomTestSuite {
         });
     }
 
-    /**
-     * 비공개 게시판을 사용자에게 할당
-     */
-    protected void setUndisclosedBoardAccount(List<TestUndisclosedInfo> testUndisclosedInfoList) {
-        testUndisclosedInfoList.forEach(item -> {
-            UndisclosedBoardAccount undisclosedBoardAccount = getUndisclosedBoardAccount(item);
-            this.undisclosedBoardAccountRepository.save(undisclosedBoardAccount);
-            undisclosedBoardAccountMap.put(item, undisclosedBoardAccount);
-        });
-    }
-
     protected void init() {
         this.setAccount(Arrays.asList(testAccountInfos));
         this.setBoard(Arrays.asList(testBoardInfos));
@@ -1036,6 +1022,7 @@ public abstract class IricomTestSuite {
                 .enabled(testBoardInfo.isEnabled())
                 .undisclosed(testBoardInfo.isUndisclosed())
                 .build();
+
         BoardInfo boardInfo = this.boardService.createBoardInfo(boardInfoCreate);
         return this.getBoard(boardInfo.getId());
     }
@@ -1205,13 +1192,6 @@ public abstract class IricomTestSuite {
                 .build();
         PostBanInfo postBanInfo = banService.banPost(banAccount, board, post, postBanInfoCreate);
         return this.getPostBan(postBanInfo.getId());
-    }
-
-    private UndisclosedBoardAccount getUndisclosedBoardAccount(TestUndisclosedInfo testUndisclosedInfo) {
-        return UndisclosedBoardAccount.builder()
-                .account(getAccount(testUndisclosedInfo.getAccount()))
-                .board(getBoard(testUndisclosedInfo.getBoard()))
-                .build();
     }
 
     protected void setAuthToken(MockHttpServletRequestBuilder builder, TestAccountInfo testAccountInfo) throws Exception {

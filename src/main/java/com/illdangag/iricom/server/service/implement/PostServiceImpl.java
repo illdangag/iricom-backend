@@ -47,7 +47,7 @@ public class PostServiceImpl implements PostService {
 
     @Override
     public PostInfo createPostInfo(Account account, String boardId, PostInfoCreate postInfoCreate) {
-        Board board = this.getBoard(boardId);
+        Board board = this.getDisclosedBoard(account, boardId);
         return this.createPostInfo(account, board, postInfoCreate);
     }
 
@@ -89,7 +89,7 @@ public class PostServiceImpl implements PostService {
 
     @Override
     public PostInfo updatePostInfo(Account account, String boardId, String postId, PostInfoUpdate postInfoUpdate) {
-        Board board = this.getBoard(boardId);
+        Board board = this.getDisclosedBoard(account, boardId);
         Post post = this.getPost(postId);
         return this.updatePostInfo(account, board, post, postInfoUpdate);
     }
@@ -167,7 +167,7 @@ public class PostServiceImpl implements PostService {
 
     @Override
     public PostInfo getPostInfo(Account account, String boardId, String postId, PostState postState) {
-        Board board = this.getBoard(boardId);
+        Board board = this.getDisclosedBoard(account, boardId);
         Post post = this.getPost(postId);
         return this.getPostInfo(account, board, post, postState);
     }
@@ -199,7 +199,7 @@ public class PostServiceImpl implements PostService {
 
     @Override
     public PostInfo publishPostInfo(Account account, String boardId, String postId) {
-        Board board = this.getBoard(boardId);
+        Board board = this.getDisclosedBoard(account, boardId);
         Post post = this.getPost(postId);
         return this.publishPostInfo(account, board, post);
     }
@@ -248,13 +248,13 @@ public class PostServiceImpl implements PostService {
 
     @Override
     public PostInfoList getPublishPostInfoList(String boardId, PostInfoSearch postInfoSearch) {
-        Board board = this.getBoard(boardId);
+        Board board = this.getDisclosedBoard(boardId);
         return this.getPublishPostInfoList(board, postInfoSearch);
     }
 
     @Override
     public PostInfoList getPublishPostInfoList(Account account, String boardId, PostInfoSearch postInfoSearch) {
-        Board board = this.getBoard(account, boardId);
+        Board board = this.getDisclosedBoard(account, boardId);
         return this.getPublishPostInfoList(board, postInfoSearch);
     }
 
@@ -297,7 +297,7 @@ public class PostServiceImpl implements PostService {
 
     @Override
     public PostInfo deletePostInfo(Account account, String boardId, String postId) {
-        Board board = this.getBoard(boardId);
+        Board board = this.getDisclosedBoard(account, boardId);
         Post post = this.getPost(postId);
         return this.deletePostInfo(account, board, post);
     }
@@ -348,7 +348,7 @@ public class PostServiceImpl implements PostService {
     }
 
     public PostInfo votePost(Account account, String boardId, String postId, VoteType voteType) {
-        Board board = this.getBoard(boardId);
+        Board board = this.getDisclosedBoard(account, boardId);
         Post post = this.getPost(postId);
         return this.votePost(account, board, post, voteType);
     }
@@ -430,7 +430,24 @@ public class PostServiceImpl implements PostService {
         return boardAdminOptional.isPresent();
     }
 
-    private Board getBoard(Account account, String id) {
+    private Post getPost(String id) {
+        Optional<Post> postOptional = this.postRepository.getPost(id);
+        return postOptional.orElseThrow(() -> new IricomException(IricomErrorCode.NOT_EXIST_POST));
+    }
+
+    private Board getDisclosedBoard(String id) {
+        long boardId = -1;
+        try {
+            boardId = Long.parseLong(id);
+        } catch (Exception exception) {
+            throw new IricomException(IricomErrorCode.NOT_EXIST_BOARD);
+        }
+
+        Optional<Board> boardOptional = this.boardRepository.getDisclosedBoard(boardId);
+        return boardOptional.orElseThrow(() -> new IricomException(IricomErrorCode.NOT_EXIST_BOARD));
+    }
+
+    private Board getDisclosedBoard(Account account, String id) {
         long boardId = -1;
         try {
             boardId = Long.parseLong(id);
@@ -440,23 +457,6 @@ public class PostServiceImpl implements PostService {
 
         Optional<Board> boardOptional = this.boardRepository.getDisclosedBoard(account, boardId);
         return boardOptional.orElseThrow(() -> new IricomException(IricomErrorCode.NOT_EXIST_BOARD));
-    }
-
-    private Board getBoard(String id) {
-        long boardId = -1;
-        try {
-            boardId = Long.parseLong(id);
-        } catch (Exception exception) {
-            throw new IricomException(IricomErrorCode.NOT_EXIST_BOARD);
-        }
-
-        Optional<Board> boardOptional = this.boardRepository.getBoard(boardId);
-        return boardOptional.orElseThrow(() -> new IricomException(IricomErrorCode.NOT_EXIST_BOARD));
-    }
-
-    private Post getPost(String id) {
-        Optional<Post> postOptional = this.postRepository.getPost(id);
-        return postOptional.orElseThrow(() -> new IricomException(IricomErrorCode.NOT_EXIST_POST));
     }
 
     private boolean isBanPost(Post post) {
