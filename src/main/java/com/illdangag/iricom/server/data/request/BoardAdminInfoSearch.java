@@ -13,7 +13,7 @@ import javax.validation.constraints.NotNull;
 @SuperBuilder
 @ToString
 public class BoardAdminInfoSearch extends SearchRequest {
-    @NotNull(message = "Keyword is required.")
+    @NotNull(message = "The keyword is required.")
     @Builder.Default
     private String keyword = "";
 

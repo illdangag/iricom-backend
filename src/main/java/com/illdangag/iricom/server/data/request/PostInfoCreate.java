@@ -11,11 +11,11 @@ import javax.validation.constraints.Size;
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class PostInfoCreate {
-    @NotNull(message = "Title is required.")
+    @NotNull(message = "The title is required.")
     @Size(min = 1, max = 40, message = "The title must be at least 1 character and less than 40 characters.")
     private String title;
 
-    @NotNull(message = "Type is required.")
+    @NotNull(message = "The type is required.")
     private PostType type;
 
     @Builder.Default

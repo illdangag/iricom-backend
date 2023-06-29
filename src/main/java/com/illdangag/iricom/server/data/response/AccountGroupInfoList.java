@@ -12,8 +12,8 @@ import java.util.List;
 @Getter
 @SuperBuilder
 @JsonInclude(JsonInclude.Include.NON_NULL)
-public class GroupInfoList extends SearchList {
+public class AccountGroupInfoList extends SearchList {
     @Builder.Default
-    @JsonProperty("groups")
-    private List<GroupInfo> groupInfoList = new LinkedList<>();
+    @JsonProperty("accountGroups")
+    private List<AccountGroupInfo> accountGroupInfoList = new LinkedList<>();
 }

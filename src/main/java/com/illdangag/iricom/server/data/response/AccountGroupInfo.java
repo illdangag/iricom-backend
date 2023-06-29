@@ -9,7 +9,7 @@ import java.util.List;
 
 @Getter
 @JsonInclude(JsonInclude.Include.NON_NULL)
-public class GroupInfo {
+public class AccountGroupInfo {
     private String id;
 
     private String name;

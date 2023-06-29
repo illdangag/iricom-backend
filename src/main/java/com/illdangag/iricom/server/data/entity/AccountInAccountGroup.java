@@ -13,7 +13,7 @@ import javax.persistence.*;
 @Entity
 @Table(indexes = {
 })
-public class GroupAccount {
+public class AccountInAccountGroup {
     @Id
     @GeneratedValue
     private Long id;

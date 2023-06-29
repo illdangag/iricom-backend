@@ -14,7 +14,6 @@ import javax.persistence.EntityTransaction;
 import javax.persistence.TypedQuery;
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 @Slf4j
 @Repository
@@ -208,11 +207,13 @@ public class BoardRepositoryImpl implements BoardRepository {
         EntityManager entityManager = this.entityManagerFactory.createEntityManager();
         EntityTransaction entityTransaction = entityManager.getTransaction();
         entityTransaction.begin();
+
         if (board.getId() == null) {
             entityManager.persist(board);
         } else {
             entityManager.merge(board);
         }
+
         entityTransaction.commit();
         entityManager.close();
     }

@@ -9,11 +9,11 @@ import javax.validation.constraints.Size;
 @Getter
 @Builder
 public class BoardAdminInfoDelete {
-    @NotNull(message = "Account id is required.")
+    @NotNull(message = "The account id is required.")
     @Size(min = 1)
     private String accountId;
 
-    @NotNull(message = "Board id is required.")
+    @NotNull(message = "The board id is required.")
     @Size(min = 1)
     private String boardId;
 }

@@ -12,7 +12,7 @@ public class AccountInfoCreate {
     @Builder.Default
     private String email = "";
 
-    @NotNull
+    @NotNull(message = "The nickname is required.")
     @Size(min = 1, max = 20, message = "The nickname must be at least 1 character and less than 20 characters.")
     private String nickname;
 
