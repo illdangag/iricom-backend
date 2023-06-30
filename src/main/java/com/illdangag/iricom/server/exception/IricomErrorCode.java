@@ -75,7 +75,13 @@ public enum IricomErrorCode {
 
     // ban: 07XXXXXX
     // ban post: 0700XXXX
-    NOT_EXIST_POST_BAN("07000000", 404, "Not exist post ban.");
+    NOT_EXIST_POST_BAN("07000000", 404, "Not exist post ban."),
+
+    // account group: 08XXXXXX
+    NOT_EXIST_ACCOUNT_GROUP("08000000", 404, "Not exist account group."),
+    INVALID_ACCOUNT_LIST("08000001", 400, "Invalid account id list."),
+    INVALID_BOARD_LIST("08000002", 400, "Invalid board id list.")
+    ;
 
     private final String code;
     private final int httpStatusCode;

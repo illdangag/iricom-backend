@@ -164,6 +164,24 @@ public class AccountRepositoryImpl implements AccountRepository {
     }
 
     @Override
+    public boolean existAccount(List<Long> accountIdList) {
+        Set<Long> accountIdSet = new HashSet<>(accountIdList);
+        EntityManager entityManager = this.entityManagerFactory.createEntityManager();
+        final String jpql = "SELECT COUNT(*) FROM Account a WHERE a.id IN (:accountIdSet)";
+
+        TypedQuery<Long> query = entityManager.createQuery(jpql, Long.class)
+                .setParameter("accountIdSet", accountIdSet);
+
+        long result = query.getSingleResult();
+
+        if (accountIdSet.size() == result) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    @Override
     public Optional<Account> getAccountByNickname(String nickname) {
         EntityManager entityManager = this.entityManagerFactory.createEntityManager();
         final String jpql = "SELECT a FROM Account a" +

@@ -28,6 +28,8 @@ public interface AccountRepository {
 
     Map<Account, AccountDetail> getAccountDetailList(List<Account> accountList);
 
+    boolean existAccount(List<Long> accountIdList);
+
     void saveAccount(Account account);
 
     void saveAccountDetail(AccountDetail accountDetail);

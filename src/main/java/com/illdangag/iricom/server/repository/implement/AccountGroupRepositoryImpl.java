@@ -96,6 +96,9 @@ public class AccountGroupRepositoryImpl implements AccountGroupRepository {
         return resultList;
     }
 
+    /**
+     * 계정이 포함된 계정 그룹의 ID 목록 조회
+     */
     private List<Long> getAccountGroupId(EntityManager entityManager, Account account) {
         final String jpql = "SELECT ag.id FROM AccountGroup ag RIGHT JOIN AccountInAccountGroup aiag ON ag.id = aiag.accountGroup.id WHERE aiag.account = :account";
         TypedQuery<Long> query = entityManager.createQuery(jpql, Long.class)

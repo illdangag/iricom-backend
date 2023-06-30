@@ -12,8 +12,10 @@ import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.EntityTransaction;
 import javax.persistence.TypedQuery;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 
 @Slf4j
 @Repository
@@ -199,6 +201,24 @@ public class BoardRepositoryImpl implements BoardRepository {
             return Optional.empty();
         } else {
             return Optional.of(resultList.get(0));
+        }
+    }
+
+    @Override
+    public boolean existBoard(List<Long> boardIdList) {
+        Set<Long> boardIdSet = new HashSet<>(boardIdList);
+        EntityManager entityManager = this.entityManagerFactory.createEntityManager();
+        final String jpql = "SELECT COUNT(*) FROM Board b WHERE b.id IN (:boardIdSet)";
+
+        TypedQuery<Long> query = entityManager.createQuery(jpql, Long.class)
+                .setParameter("boardIdSet", boardIdSet);
+
+        long result = query.getSingleResult();
+
+        if (boardIdSet.size() == result) {
+            return true;
+        } else {
+            return false;
         }
     }
 
