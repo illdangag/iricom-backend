@@ -78,7 +78,6 @@ ext {
     snippetsDir = file('build/generated-snippets')
 }
 
-
 test {
     outputs.dir snippetsDir
     useJUnitPlatform()

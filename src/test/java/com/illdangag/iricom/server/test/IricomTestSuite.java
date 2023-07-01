@@ -40,6 +40,7 @@ public abstract class IricomTestSuite {
     private final CommentRepository commentRepository;
     private final ReportRepository reportRepository;
     private final BanRepository banRepository;
+    private final AccountGroupRepository accountGroupRepository;
 
     // 계정 설정
     private static final String ACCOUNT_PASSWORD = "111111";
@@ -811,6 +812,7 @@ public abstract class IricomTestSuite {
     private static final Map<TestPostReportInfo, PostReport> postReportMap = new HashMap<>();
     private static final Map<TestCommentReportInfo, CommentReport> commentReportMap = new HashMap<>();
     private static final Map<TestPostBanInfo, PostBan> postBanMap = new HashMap<>();
+    private static final Map<TestAccountGroupInfo, AccountGroup> accountGroupMap = new HashMap<>();
 
     private static boolean isInit = false;
 
@@ -829,6 +831,7 @@ public abstract class IricomTestSuite {
         this.commentRepository = context.getBean(CommentRepository.class);
         this.reportRepository = context.getBean(ReportRepository.class);
         this.banRepository = context.getBean(BanRepository.class);
+        this.accountGroupRepository = context.getBean(AccountGroupRepository.class);
 
         if (!isInit) {
             this.init();
@@ -962,6 +965,16 @@ public abstract class IricomTestSuite {
         testPostBanInfoList.forEach(item -> {
             PostBan postBan = this.banPost(item);
             postBanMap.put(item, postBan);
+        });
+    }
+
+    /**
+     * 계정 그룹 생성
+     */
+    protected void setAccountGroup(List<TestAccountGroupInfo> testAccountGroupInfoList) {
+        testAccountGroupInfoList.forEach(item -> {
+            AccountGroup accountGroup = this.setAccountGroup(item);
+            accountGroupMap.put(item, accountGroup);
         });
     }
 
@@ -1194,6 +1207,31 @@ public abstract class IricomTestSuite {
         return this.getPostBan(postBanInfo.getId());
     }
 
+    private AccountGroup setAccountGroup(TestAccountGroupInfo testAccountGroupInfo) {
+        AccountGroup accountGroup = AccountGroup.builder()
+                .title(testAccountGroupInfo.getTitle())
+                .description(testAccountGroupInfo.getDescription())
+                .enabled(testAccountGroupInfo.getEnabled())
+                .deleted(testAccountGroupInfo.getDeleted())
+                .build();
+        List<AccountInAccountGroup> accountInAccountGroupList = testAccountGroupInfo.getAccountList().stream()
+                .map(item -> getAccount(item))
+                .map(item -> AccountInAccountGroup.builder()
+                        .accountGroup(accountGroup)
+                        .account(item)
+                        .build())
+                .collect(Collectors.toList());
+        List<BoardInAccountGroup> boardInAccountGroupList = testAccountGroupInfo.getBoardList().stream()
+                .map(item -> getBoard(item))
+                .map(item -> BoardInAccountGroup.builder()
+                        .accountGroup(accountGroup)
+                        .board(item)
+                        .build())
+                .collect(Collectors.toList());
+        this.accountGroupRepository.saveAccountGroup(accountGroup, accountInAccountGroupList, boardInAccountGroupList);
+        return accountGroup;
+    }
+
     protected void setAuthToken(MockHttpServletRequestBuilder builder, TestAccountInfo testAccountInfo) throws Exception {
         String token = tokenMap.get(testAccountInfo);
         if (token == null) {
@@ -1240,5 +1278,9 @@ public abstract class IricomTestSuite {
 
     protected PostBan getPostBan(TestPostBanInfo testPostBanInfo) {
         return postBanMap.get(testPostBanInfo);
+    }
+
+    protected AccountGroup getAccountGroup(TestAccountGroupInfo testAccountGroupInfo) {
+        return accountGroupMap.get(testAccountGroupInfo);
     }
 }

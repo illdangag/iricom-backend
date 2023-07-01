@@ -11,6 +11,7 @@ import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.EntityTransaction;
 import javax.persistence.TypedQuery;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -145,18 +146,31 @@ public class AccountGroupRepositoryImpl implements AccountGroupRepository {
             throw new IricomException(IricomErrorCode.NOT_EXIST_ACCOUNT_GROUP);
         }
 
-        List<AccountInAccountGroup> dbAccountInAccountGroupList = this.getAccountInAccountGroupList(entityManager, accountGroup);
-        List<AccountInAccountGroup> addAccountInAccountGroupList = accountInAccountGroupList.stream()
-                .filter(item -> !dbAccountInAccountGroupList.contains(item)).collect(Collectors.toList());
-        List<AccountInAccountGroup> removeAccountInAccountGroupList = dbAccountInAccountGroupList.stream()
-                .filter(item -> !accountInAccountGroupList.contains(item)).collect(Collectors.toList());
+        List<AccountInAccountGroup> addAccountInAccountGroupList;
+        List<AccountInAccountGroup> removeAccountInAccountGroupList;
+        if (accountInAccountGroupList != null) {
+            List<AccountInAccountGroup> dbAccountInAccountGroupList = this.getAccountInAccountGroupList(entityManager, accountGroup);
+            addAccountInAccountGroupList = accountInAccountGroupList.stream()
+                    .filter(item -> !dbAccountInAccountGroupList.contains(item)).collect(Collectors.toList());
+            removeAccountInAccountGroupList = dbAccountInAccountGroupList.stream()
+                    .filter(item -> !accountInAccountGroupList.contains(item)).collect(Collectors.toList());
+        } else {
+            addAccountInAccountGroupList = Collections.emptyList();
+            removeAccountInAccountGroupList = Collections.emptyList();
+        }
 
-        List<BoardInAccountGroup> dbBoardInAccountGroupList = this.getBoardInAccountGroupList(entityManager, accountGroup);
-        List<BoardInAccountGroup> addBoardInAccountGroupList = boardInAccountGroupList.stream()
-                .filter(item -> !dbBoardInAccountGroupList.contains(item)).collect(Collectors.toList());
-        List<BoardInAccountGroup> removeBoardInAccountGroupList = dbBoardInAccountGroupList.stream()
-                .filter(item -> !boardInAccountGroupList.contains(item)).collect(Collectors.toList());
-
+        List<BoardInAccountGroup> addBoardInAccountGroupList;
+        List<BoardInAccountGroup> removeBoardInAccountGroupList;
+        if (boardInAccountGroupList != null) {
+            List<BoardInAccountGroup> dbBoardInAccountGroupList = this.getBoardInAccountGroupList(entityManager, accountGroup);
+            addBoardInAccountGroupList = boardInAccountGroupList.stream()
+                    .filter(item -> !dbBoardInAccountGroupList.contains(item)).collect(Collectors.toList());
+            removeBoardInAccountGroupList = dbBoardInAccountGroupList.stream()
+                    .filter(item -> !boardInAccountGroupList.contains(item)).collect(Collectors.toList());
+        } else {
+            addBoardInAccountGroupList = Collections.emptyList();
+            removeBoardInAccountGroupList = Collections.emptyList();
+        }
 
         EntityTransaction entityTransaction = entityManager.getTransaction();
         entityTransaction.begin();

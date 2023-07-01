@@ -6,7 +6,6 @@ import lombok.Getter;
 
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
-import java.util.ArrayList;
 import java.util.List;
 
 @Getter
@@ -16,17 +15,14 @@ public class AccountGroupInfoUpdate {
     @Size(min = 1, max = 20, message = "The title must be at least 1 character and less then 20 characters.")
     private String title;
 
-    @Builder.Default
     @Size(max = 100, message = "The description must be less then 100 characters.")
-    private String description = "";
+    private String description;
 
-    @Builder.Default
     @JsonProperty("accountIds")
-    private List<String> accountIdList = new ArrayList<>();
+    private List<String> accountIdList;
 
-    @Builder.Default
     @JsonProperty("boardIds")
-    private List<String> boardIdList = new ArrayList<>();
+    private List<String> boardIdList;
 
     private Boolean enabled;
 }
