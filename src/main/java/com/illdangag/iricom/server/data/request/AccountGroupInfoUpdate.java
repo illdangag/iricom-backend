@@ -27,4 +27,6 @@ public class AccountGroupInfoUpdate {
     @Builder.Default
     @JsonProperty("boardIds")
     private List<String> boardIdList = new ArrayList<>();
+
+    private Boolean enabled;
 }

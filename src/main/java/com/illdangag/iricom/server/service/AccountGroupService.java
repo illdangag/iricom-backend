@@ -13,9 +13,9 @@ public interface AccountGroupService {
 
     AccountGroupInfoList getAccountGroupInfoList(@Valid AccountGroupInfoSearch accountGroupInfoSearch);
 
-    AccountGroupInfo getAccountGroupInfo(String groupId);
+    AccountGroupInfo getAccountGroupInfo(String accountGroupId);
 
-    AccountGroupInfo updateAccountGroupInfo(String groupId, @Valid AccountGroupInfoUpdate accountGroupInfoUpdate);
+    AccountGroupInfo updateAccountGroupInfo(String accountGroupId, @Valid AccountGroupInfoUpdate accountGroupInfoUpdate);
 
-    AccountGroupInfo deleteAccountGroupInfo(String groupId);
+    AccountGroupInfo deleteAccountGroupInfo(String accountGroupId);
 }

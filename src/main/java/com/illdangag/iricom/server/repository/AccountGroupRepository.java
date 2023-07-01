@@ -16,9 +16,7 @@ public interface AccountGroupRepository {
 
     List<Board> getAccessibleBoardList(Account account);
 
-    void save(AccountGroup accountGroup);
+    void saveAccountGroup(AccountGroup accountGroup, List<AccountInAccountGroup> accountInAccountGroupList, List<BoardInAccountGroup> boardInAccountGroupList);
 
-    void save(AccountInAccountGroup accountInAccountGroup);
-
-    void save(BoardInAccountGroup boardInAccountGroup);
+    void updateAccountGroup(AccountGroup accountGroup, List<AccountInAccountGroup> accountInAccountGroupList, List<BoardInAccountGroup> boardInAccountGroupList);
 }

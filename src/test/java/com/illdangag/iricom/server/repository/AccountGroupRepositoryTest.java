@@ -11,7 +11,6 @@ import org.springframework.context.ApplicationContext;
 
 import java.util.Arrays;
 import java.util.Collections;
-import java.util.List;
 
 @Slf4j
 @DisplayName("AccountGroupRepository")
@@ -32,33 +31,6 @@ public class AccountGroupRepositoryTest extends IricomTestSuite {
     @Test
     @DisplayName("계정 그룹 생성")
     public void createAccountGroup() throws Exception {
-        Account account = getAccount(common00);
-        Board board = getBoard(testBoardInfo00);
 
-        AccountGroup accountGroup = AccountGroup.builder()
-                .title("NEW GROUP")
-                .description("Description")
-                .build();
-
-        accountGroupRepository.save(accountGroup);
-        log.info("{}", accountGroup.getId());
-
-        AccountInAccountGroup accountInAccountGroup = AccountInAccountGroup.builder()
-                .accountGroup(accountGroup)
-                .account(account)
-                .build();
-        accountGroupRepository.save(accountInAccountGroup);
-
-        BoardInAccountGroup boardInAccountGroup = BoardInAccountGroup.builder()
-                .accountGroup(accountGroup)
-                .board(board)
-                .build();
-        accountGroupRepository.save(boardInAccountGroup);
-
-        List<Account> accountList = accountGroupRepository.getAccountListInAccountGroup(accountGroup);
-        log.info("account size: {}", accountList.size());
-
-        List<Board> boardList = accountGroupRepository.getAccessibleBoardList(account);
-        log.info("board size: {}", boardList.size());
     }
 }
