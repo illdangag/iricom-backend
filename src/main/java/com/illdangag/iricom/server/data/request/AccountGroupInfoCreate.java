@@ -13,7 +13,7 @@ import java.util.List;
 @Builder
 public class AccountGroupInfoCreate {
     @NotNull(message = "The title is required.")
-    @Size(min = 1, max = 20, message = "The title must be at least 1 character and less then 20 characters.")
+    @Size(min = 1, max = 50, message = "The title must be at least 1 character and less then 50 characters.")
     private String title;
 
     @Builder.Default

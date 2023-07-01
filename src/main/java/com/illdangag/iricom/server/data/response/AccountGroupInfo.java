@@ -2,9 +2,7 @@ package com.illdangag.iricom.server.data.response;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.illdangag.iricom.server.data.entity.AccountGroup;
-import com.illdangag.iricom.server.data.entity.AccountInAccountGroup;
-import com.illdangag.iricom.server.data.entity.BoardInAccountGroup;
+import com.illdangag.iricom.server.data.entity.*;
 import lombok.*;
 
 import java.util.ArrayList;
@@ -29,19 +27,16 @@ public class AccountGroupInfo {
     @JsonProperty("accounts")
     private List<AccountInfo> accountInfoList = new ArrayList<>();
 
-    public AccountGroupInfo(AccountGroup accountGroup, List<AccountInAccountGroup> accountInAccountGroupList, List<BoardInAccountGroup> boardInAccountGroupList) {
-        List<AccountInfo> accountInfoList = accountInAccountGroupList.stream()
-                .map(item -> new AccountInfo(item.getAccount()))
-                .collect(Collectors.toList());
-
-        List<BoardInfo> boardInfoList = boardInAccountGroupList.stream()
-                .map(item -> new BoardInfo(item.getBoard()))
-                .collect(Collectors.toList());
-
+    public AccountGroupInfo(AccountGroup accountGroup, List<Account> accountList, List<Board> boardList) {
         this.id = String.valueOf(accountGroup.getId());
         this.title = accountGroup.getTitle();
         this.description = accountGroup.getDescription();
-        this.accountInfoList = accountInfoList;
-        this.boardInfoList = boardInfoList;
+
+        this.accountInfoList = accountList.stream()
+                .map(AccountInfo::new)
+                .collect(Collectors.toList());
+        this.boardInfoList = boardList.stream()
+                .map(BoardInfo::new)
+                .collect(Collectors.toList());
     }
 }

@@ -14,11 +14,13 @@ import com.illdangag.iricom.server.repository.BoardRepository;
 import com.illdangag.iricom.server.service.AccountGroupService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.validation.annotation.Validated;
 
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+@Validated
 @Service
 public class AccountGroupServiceImpl implements AccountGroupService {
     private final AccountRepository accountRepository;
@@ -61,6 +63,9 @@ public class AccountGroupServiceImpl implements AccountGroupService {
                             .build();
                 })
                 .collect(Collectors.toList());
+        List<Account> accountList = accountInAccountGroupList.stream()
+                .map(AccountInAccountGroup::getAccount)
+                .collect(Collectors.toList());
 
         List<BoardInAccountGroup> boardInAccountGroupList = boardIdList.stream()
                 .map(item -> {
@@ -70,9 +75,12 @@ public class AccountGroupServiceImpl implements AccountGroupService {
                             .build();
                 })
                 .collect(Collectors.toList());
+        List<Board> boardList = boardInAccountGroupList.stream()
+                .map(BoardInAccountGroup::getBoard)
+                .collect(Collectors.toList());
 
         this.accountGroupRepository.saveAccountGroup(accountGroup, accountInAccountGroupList, boardInAccountGroupList);
-        return new AccountGroupInfo(accountGroup, accountInAccountGroupList, boardInAccountGroupList);
+        return new AccountGroupInfo(accountGroup, accountList, boardList);
     }
 
     @Override
@@ -82,7 +90,10 @@ public class AccountGroupServiceImpl implements AccountGroupService {
 
     @Override
     public AccountGroupInfo getAccountGroupInfo(String accountGroupId) {
-        return null;
+        AccountGroup accountGroup = this.getAccountGroup(accountGroupId);
+        List<Account> accountList = this.accountGroupRepository.getAccountListInAccountGroup(accountGroup);
+        List<Board> boardList = this.accountGroupRepository.getBoardListInAccountGroup(accountGroup);
+        return new AccountGroupInfo(accountGroup, accountList, boardList);
     }
 
     @Override
@@ -147,6 +158,9 @@ public class AccountGroupServiceImpl implements AccountGroupService {
                     .map(item -> AccountInAccountGroup.builder().accountGroup(accountGroup).account(item).build())
                     .collect(Collectors.toList());
         }
+        List<Account> accountList = accountInAccountGroupList.stream()
+                .map(AccountInAccountGroup::getAccount)
+                .collect(Collectors.toList());
 
         if (boardInAccountGroupList == null) {
             List<Board> boardList = this.accountGroupRepository.getBoardListInAccountGroup(accountGroup);
@@ -154,8 +168,11 @@ public class AccountGroupServiceImpl implements AccountGroupService {
                     .map(item -> BoardInAccountGroup.builder().accountGroup(accountGroup).board(item).build())
                     .collect(Collectors.toList());
         }
+        List<Board> boardList = boardInAccountGroupList.stream()
+                .map(BoardInAccountGroup::getBoard)
+                .collect(Collectors.toList());
 
-        return new AccountGroupInfo(accountGroup, accountInAccountGroupList, boardInAccountGroupList);
+        return new AccountGroupInfo(accountGroup, accountList, boardList);
     }
 
     @Override

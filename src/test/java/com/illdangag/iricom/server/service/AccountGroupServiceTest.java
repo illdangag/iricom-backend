@@ -8,6 +8,7 @@ import com.illdangag.iricom.server.data.request.AccountGroupInfoUpdate;
 import com.illdangag.iricom.server.data.response.AccountGroupInfo;
 import com.illdangag.iricom.server.data.response.AccountInfo;
 import com.illdangag.iricom.server.data.response.BoardInfo;
+import com.illdangag.iricom.server.exception.IricomException;
 import com.illdangag.iricom.server.test.IricomTestSuite;
 import com.illdangag.iricom.server.test.data.TestAccountGroupInfo;
 import com.illdangag.iricom.server.test.data.TestBoardInfo;
@@ -19,6 +20,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 
+import javax.validation.ConstraintViolationException;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
@@ -46,6 +48,11 @@ public class AccountGroupServiceTest extends IricomTestSuite {
     private TestAccountGroupInfo testAccountGroupInfo03 = TestAccountGroupInfo.builder()
             .title("testAccountGroupInfo03").description("description")
             .accountList(Arrays.asList(common00, common01)).boardList(Arrays.asList(testBoardInfo00, testBoardInfo01)).build();
+    private TestAccountGroupInfo testAccountGroupInfo04 = TestAccountGroupInfo.builder()
+            .title("testAccountGroupInfo04").description("description")
+            .accountList(Arrays.asList(common00, common01)).boardList(Arrays.asList(testBoardInfo00, testBoardInfo01)).build();
+    private TestAccountGroupInfo testAccountGroupInfo05 = TestAccountGroupInfo.builder()
+            .title("testAccountGroupInfo05").description("description").build();
 
     @Autowired
     public AccountGroupServiceTest(ApplicationContext context) {
@@ -53,7 +60,7 @@ public class AccountGroupServiceTest extends IricomTestSuite {
 
         super.setBoard(Arrays.asList(testBoardInfo00, testBoardInfo01, testBoardInfo02));
         super.setAccountGroup(Arrays.asList(testAccountGroupInfo00, testAccountGroupInfo01, testAccountGroupInfo02,
-                testAccountGroupInfo03));
+                testAccountGroupInfo03, testAccountGroupInfo04, testAccountGroupInfo05));
     }
 
     @Nested
@@ -149,6 +156,60 @@ public class AccountGroupServiceTest extends IricomTestSuite {
             Assertions.assertEquals(description, accountGroupInfo.getDescription());
             Assertions.assertEquals(1, accountGroupInfo.getAccountInfoList().size());
             Assertions.assertEquals(1, accountGroupInfo.getBoardInfoList().size());
+        }
+
+        @Test
+        @DisplayName("제목을 입력하지 않음")
+        public void createNullTitle() throws Exception {
+            AccountGroupInfoCreate accountGroupInfoCreate = AccountGroupInfoCreate.builder()
+                    .title(null)
+                    .description("description")
+                    .build();
+
+            Assertions.assertThrows(ConstraintViolationException.class, () -> {
+                accountGroupService.createAccountGroupInfo(accountGroupInfoCreate);
+            });
+        }
+
+        @Test
+        @DisplayName("제목을 빈 문자열을 입력")
+        public void createEmptyTitle() throws Exception {
+            AccountGroupInfoCreate accountGroupInfoCreate = AccountGroupInfoCreate.builder()
+                    .title("")
+                    .description("description")
+                    .build();
+
+            Assertions.assertThrows(ConstraintViolationException.class, () -> {
+                accountGroupService.createAccountGroupInfo(accountGroupInfoCreate);
+            });
+        }
+
+        @Test
+        @DisplayName("존재하지 않는 계정을 추가")
+        public void createNotExistAccount() throws Exception {
+            AccountGroupInfoCreate accountGroupInfoCreate = AccountGroupInfoCreate.builder()
+                    .title("not exist account")
+                    .description("description")
+                    .accountIdList(Arrays.asList("NOT_EXIST_ACCOUNT"))
+                    .build();
+
+            Assertions.assertThrows(IricomException.class, () -> {
+                accountGroupService.createAccountGroupInfo(accountGroupInfoCreate);
+            });
+        }
+
+        @Test
+        @DisplayName("존재하지 않는 게시판을 추가")
+        public void createNotExistBoard() throws Exception {
+            AccountGroupInfoCreate accountGroupInfoCreate = AccountGroupInfoCreate.builder()
+                    .title("not exist account")
+                    .description("description")
+                    .boardIdList(Arrays.asList("NOT_EXIST_BOARD"))
+                    .build();
+
+            Assertions.assertThrows(IricomException.class, () -> {
+                accountGroupService.createAccountGroupInfo(accountGroupInfoCreate);
+            });
         }
     }
 
@@ -287,6 +348,98 @@ public class AccountGroupServiceTest extends IricomTestSuite {
             BoardInfo boardInfo01 = boardInfoList.get(1);
             Assertions.assertEquals(boardId00, boardInfo00.getId());
             Assertions.assertEquals(boardId01, boardInfo01.getId());
+        }
+
+        @Test
+        @DisplayName("존재하지 않는 계정 그룹")
+        public void updateNotExistAccountGroup() throws Exception {
+            String accountGroupId = "NOT_EXIST_ACCOUNT_GROUP";
+
+            AccountGroupInfoUpdate accountGroupInfoUpdate = AccountGroupInfoUpdate.builder()
+                    .title("update")
+                    .description("description")
+                    .build();
+
+            Assertions.assertThrows(IricomException.class, () -> {
+                accountGroupService.updateAccountGroupInfo(accountGroupId, accountGroupInfoUpdate);
+            });
+        }
+
+        @Test
+        @DisplayName("존재하지 않는 계정을 추가")
+        public void updateNotExistAccount() throws Exception {
+            AccountGroup accountGroup = getAccountGroup(testAccountGroupInfo05);
+            String accountGroupId = String.valueOf(accountGroup.getId());
+
+            AccountGroupInfoUpdate accountGroupInfoUpdate = AccountGroupInfoUpdate.builder()
+                    .accountIdList(Arrays.asList("NOT_EXIST_ACCOUNT"))
+                    .build();
+
+            Assertions.assertThrows(IricomException.class, () -> {
+                accountGroupService.updateAccountGroupInfo(accountGroupId, accountGroupInfoUpdate);
+            });
+        }
+
+        @Test
+        @DisplayName("존재하지 않는 게시판을 추가")
+        public void updateNotExistBoard() throws Exception {
+            AccountGroup accountGroup = getAccountGroup(testAccountGroupInfo05);
+            String accountGroupId = String.valueOf(accountGroup.getId());
+
+            AccountGroupInfoUpdate accountGroupInfoUpdate = AccountGroupInfoUpdate.builder()
+                    .boardIdList(Arrays.asList("NOT_EXIST_BOARD"))
+                    .build();
+
+            Assertions.assertThrows(IricomException.class, () -> {
+                accountGroupService.updateAccountGroupInfo(accountGroupId, accountGroupInfoUpdate);
+            });
+        }
+    }
+
+    @Nested
+    @DisplayName("조회")
+    class Get {
+
+        @Test
+        @DisplayName("그룹 정보 조회")
+        public void get() {
+            AccountGroup accountGroup = getAccountGroup(testAccountGroupInfo04);
+            String accountGroupId = String.valueOf(accountGroup.getId());
+
+            String[] accountIds = testAccountGroupInfo04.getAccountList().stream()
+                    .map(AccountGroupServiceTest.this::getAccount)
+                    .map(item -> String.valueOf(item.getId()))
+                    .toArray(String[]::new);
+            String[] boardIds = testAccountGroupInfo04.getBoardList().stream()
+                    .map(AccountGroupServiceTest.this::getBoard)
+                    .map(item -> String.valueOf(item.getId()))
+                    .toArray(String[]::new);
+
+            AccountGroupInfo accountGroupInfo = accountGroupService.getAccountGroupInfo(accountGroupId);
+
+            Assertions.assertNotNull(accountGroupInfo);
+            Assertions.assertEquals(accountGroup.getTitle(), accountGroupInfo.getTitle());
+            Assertions.assertEquals(accountGroup.getDescription(), accountGroupInfo.getDescription());
+
+            String[] accountInfoIds = accountGroupInfo.getAccountInfoList().stream()
+                    .map(AccountInfo::getId)
+                    .toArray(String[]::new);
+            String[] boardInfoIds = accountGroupInfo.getBoardInfoList().stream()
+                    .map(BoardInfo::getId)
+                    .toArray(String[]::new);
+
+            Assertions.assertArrayEquals(accountIds, accountInfoIds);
+            Assertions.assertArrayEquals(boardIds, boardInfoIds);
+        }
+
+        @Test
+        @DisplayName("존재하지 않는 그룹 조회")
+        public void getNotExistAccountGroup() throws Exception {
+            String accountGroupId = "NOT_EXIST_ACCOUNT_GROUP";
+
+            Assertions.assertThrows(IricomException.class, () -> {
+                accountGroupService.getAccountGroupInfo(accountGroupId);
+            });
         }
     }
 }
