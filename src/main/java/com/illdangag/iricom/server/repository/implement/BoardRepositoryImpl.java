@@ -28,15 +28,12 @@ public class BoardRepositoryImpl implements BoardRepository {
     }
 
     @Override
-    public Optional<Board> getDisclosedBoard(Account account, long id) {
+    public Optional<Board> getBoard(long id) {
         EntityManager entityManager = this.entityManagerFactory.createEntityManager();
+        final String jpql = "SELECT b FROM Board b WHERE b.id = :id";
 
-
-        final String jpql = "SELECT b FROM Board b" +
-                " WHERE b.id = :id AND b.undisclosed = false";
-
-        TypedQuery<Board> query = entityManager.createQuery(jpql, Board.class)
-                .setParameter("id", id);
+        TypedQuery<Board> query = entityManager.createQuery(jpql, Board.class);
+        query.setParameter("id", id);
         List<Board> resultList = query.getResultList();
         entityManager.close();
 
@@ -45,6 +42,63 @@ public class BoardRepositoryImpl implements BoardRepository {
         } else {
             return Optional.of(resultList.get(0));
         }
+    }
+
+    @Override
+    public Optional<Board> getDisclosedBoard(long id) {
+        EntityManager entityManager = this.entityManagerFactory.createEntityManager();
+        final String jpql = "SELECT b FROM Board b" +
+                " WHERE b.id = :id AND b.undisclosed = false";
+
+        TypedQuery<Board> query = entityManager.createQuery(jpql, Board.class);
+        query.setParameter("id", id);
+        List<Board> resultList = query.getResultList();
+        entityManager.close();
+
+        if (resultList.isEmpty()) {
+            return Optional.empty();
+        } else {
+            return Optional.of(resultList.get(0));
+        }
+    }
+
+    @Override
+    public Optional<Board> getDisclosedBoard(Account account, long id) {
+        EntityManager entityManager = this.entityManagerFactory.createEntityManager();
+
+        List<Long> accessibleBoardIdList = getAccessibleBoardIdList(entityManager, account);
+        final String jpql = "SELECT b FROM Board b LEFT JOIN BoardInAccountGroup biag ON b.id = biag.board.id" +
+                " WHERE b.id = :id AND (b.undisclosed = false OR b.id IN :boardIdList)";
+
+        TypedQuery<Board> query = entityManager.createQuery(jpql, Board.class)
+                .setParameter("id", id)
+                .setParameter("boardIdList", accessibleBoardIdList);
+        List<Board> resultList = query.getResultList();
+        entityManager.close();
+
+        if (resultList.isEmpty()) {
+            return Optional.empty();
+        } else {
+            return Optional.of(resultList.get(0));
+        }
+    }
+
+    private List<Long> getAccessibleBoardIdList(EntityManager entityManager, Account account) {
+        List<Long> accountGroupIdList = this.getAccountGroupId(entityManager, account);
+
+        final String jpql = "SELECT biag.board.id FROM BoardInAccountGroup biag WHERE biag.accountGroup.id IN :accountGroupId";
+
+        TypedQuery<Long> query = entityManager.createQuery(jpql, Long.class)
+                .setParameter("accountGroupId", accountGroupIdList);
+
+        return query.getResultList();
+    }
+
+    private List<Long> getAccountGroupId(EntityManager entityManager, Account account) {
+        final String jpql = "SELECT ag.id FROM AccountGroup ag RIGHT JOIN AccountInAccountGroup aiag ON ag.id = aiag.accountGroup.id WHERE aiag.account = :account";
+        TypedQuery<Long> query = entityManager.createQuery(jpql, Long.class)
+                .setParameter("account", account);
+        return query.getResultList();
     }
 
     @Override
@@ -166,42 +220,6 @@ public class BoardRepositoryImpl implements BoardRepository {
         Long result = query.getSingleResult();
         entityManager.close();
         return result;
-    }
-
-    @Override
-    public Optional<Board> getBoard(long id) {
-        EntityManager entityManager = this.entityManagerFactory.createEntityManager();
-        final String jpql = "SELECT b FROM Board b" +
-                " WHERE b.id = :id";
-
-        TypedQuery<Board> query = entityManager.createQuery(jpql, Board.class);
-        query.setParameter("id", id);
-        List<Board> resultList = query.getResultList();
-        entityManager.close();
-
-        if (resultList.isEmpty()) {
-            return Optional.empty();
-        } else {
-            return Optional.of(resultList.get(0));
-        }
-    }
-
-    @Override
-    public Optional<Board> getDisclosedBoard(long id) {
-        EntityManager entityManager = this.entityManagerFactory.createEntityManager();
-        final String jpql = "SELECT b FROM Board b" +
-                " WHERE b.id = :id AND b.undisclosed = false";
-
-        TypedQuery<Board> query = entityManager.createQuery(jpql, Board.class);
-        query.setParameter("id", id);
-        List<Board> resultList = query.getResultList();
-        entityManager.close();
-
-        if (resultList.isEmpty()) {
-            return Optional.empty();
-        } else {
-            return Optional.of(resultList.get(0));
-        }
     }
 
     @Override

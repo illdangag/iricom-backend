@@ -44,7 +44,7 @@ public class BoardServiceImpl implements BoardService {
 
     @Override
     public BoardInfo getBoardInfo(String id) {
-        Board board = this.getBoard(id);
+        Board board = this.getDiscloseBoard(id);
         return new BoardInfo(board);
     }
 
@@ -129,6 +129,17 @@ public class BoardServiceImpl implements BoardService {
         }
 
         Optional<Board> boardOptional = this.boardRepository.getBoard(boardId);
+        return boardOptional.orElseThrow(() -> new IricomException(IricomErrorCode.NOT_EXIST_BOARD));
+    }
+
+    private Board getDiscloseBoard(String id) {
+        long boardId = -1;
+        try {
+            boardId = Long.parseLong(id);
+        } catch (Exception exception) {
+            throw new IricomException(IricomErrorCode.NOT_EXIST_BOARD);
+        }
+        Optional<Board> boardOptional = this.boardRepository.getDisclosedBoard(boardId);
         return boardOptional.orElseThrow(() -> new IricomException(IricomErrorCode.NOT_EXIST_BOARD));
     }
 

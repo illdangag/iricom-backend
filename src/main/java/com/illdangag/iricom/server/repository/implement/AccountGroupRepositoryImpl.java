@@ -88,33 +88,6 @@ public class AccountGroupRepositoryImpl implements AccountGroupRepository {
     }
 
     @Override
-    public List<Board> getAccessibleBoardList(Account account) {
-        EntityManager entityManager = this.entityManagerFactory.createEntityManager();
-
-        List<Long> accountGroupIdList = this.getAccountGroupId(entityManager, account);
-
-        final String jpql = "SELECT biag.board FROM BoardInAccountGroup biag" +
-                " WHERE biag.accountGroup.id IN :accountGroupId";
-
-        TypedQuery<Board> query = entityManager.createQuery(jpql, Board.class)
-                .setParameter("accountGroupId", accountGroupIdList);
-
-        List<Board> resultList = query.getResultList();
-        entityManager.close();
-        return resultList;
-    }
-
-    /**
-     * 계정이 포함된 계정 그룹의 ID 목록 조회
-     */
-    private List<Long> getAccountGroupId(EntityManager entityManager, Account account) {
-        final String jpql = "SELECT ag.id FROM AccountGroup ag RIGHT JOIN AccountInAccountGroup aiag ON ag.id = aiag.accountGroup.id WHERE aiag.account = :account";
-        TypedQuery<Long> query = entityManager.createQuery(jpql, Long.class)
-                .setParameter("account", account);
-        return query.getResultList();
-    }
-
-    @Override
     public void saveAccountGroup(AccountGroup accountGroup, List<AccountInAccountGroup> accountInAccountGroupList, List<BoardInAccountGroup> boardInAccountGroupList) {
         EntityManager entityManager = this.entityManagerFactory.createEntityManager();
         EntityTransaction entityTransaction = entityManager.getTransaction();

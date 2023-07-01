@@ -11,6 +11,9 @@ import com.illdangag.iricom.server.data.response.BoardInfoList;
 import javax.validation.Valid;
 
 public interface BoardService {
+    /**
+     * 게시판 생성
+     */
     BoardInfo createBoardInfo(@Valid BoardInfoCreate boardInfoCreate);
 
     /**
