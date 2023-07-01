@@ -85,7 +85,24 @@ public class AccountGroupServiceImpl implements AccountGroupService {
 
     @Override
     public AccountGroupInfoList getAccountGroupInfoList(AccountGroupInfoSearch accountGroupInfoSearch) {
-        return null;
+        int skip = accountGroupInfoSearch.getSkip();
+        int limit = accountGroupInfoSearch.getLimit();
+
+        List<AccountGroup> accountGroupList = this.accountGroupRepository.getAccountGroupList(skip, limit);
+        long total = this.accountGroupRepository.getAccountGroupCount();
+
+        List<AccountGroupInfo> accountGroupInfoList = accountGroupList.stream()
+                .map(item -> {
+                    List<Account> accountList = this.accountGroupRepository.getAccountListInAccountGroup(item);
+                    List<Board> boardList = this.accountGroupRepository.getBoardListInAccountGroup(item);
+                    return new AccountGroupInfo(item, accountList, boardList);
+                }).collect(Collectors.toList());
+        return AccountGroupInfoList.builder()
+                .accountGroupInfoList(accountGroupInfoList)
+                .total(total)
+                .skip(skip)
+                .limit(limit)
+                .build();
     }
 
     @Override

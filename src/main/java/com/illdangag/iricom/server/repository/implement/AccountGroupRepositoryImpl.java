@@ -146,6 +146,7 @@ public class AccountGroupRepositoryImpl implements AccountGroupRepository {
             throw new IricomException(IricomErrorCode.NOT_EXIST_ACCOUNT_GROUP);
         }
 
+        // 계정 그룹에 추가할 계정과 제거할 계정 처리
         List<AccountInAccountGroup> addAccountInAccountGroupList;
         List<AccountInAccountGroup> removeAccountInAccountGroupList;
         if (accountInAccountGroupList != null) {
@@ -159,6 +160,7 @@ public class AccountGroupRepositoryImpl implements AccountGroupRepository {
             removeAccountInAccountGroupList = Collections.emptyList();
         }
 
+        // 계정 그룹에 추가할 게시물과 제거할 게시물 처리
         List<BoardInAccountGroup> addBoardInAccountGroupList;
         List<BoardInAccountGroup> removeBoardInAccountGroupList;
         if (boardInAccountGroupList != null) {
@@ -199,5 +201,29 @@ public class AccountGroupRepositoryImpl implements AccountGroupRepository {
         TypedQuery<BoardInAccountGroup> query = entityManager.createQuery(jpql, BoardInAccountGroup.class)
                 .setParameter("accountGroup", accountGroup);
         return query.getResultList();
+    }
+
+    @Override
+    public List<AccountGroup> getAccountGroupList(int skip, int limit) {
+        EntityManager entityManager = this.entityManagerFactory.createEntityManager();
+        final String jpql = "SELECT ag FROM AccountGroup ag";
+
+        TypedQuery<AccountGroup> query = entityManager.createQuery(jpql, AccountGroup.class)
+                .setFirstResult(skip)
+                .setMaxResults(limit);
+        List<AccountGroup> resultList = query.getResultList();
+        entityManager.close();
+        return resultList;
+    }
+
+    @Override
+    public long getAccountGroupCount() {
+        EntityManager entityManager = this.entityManagerFactory.createEntityManager();
+        final String jpql = "SELECT COUNT(*) FROM AccountGroup ag";
+
+        TypedQuery<Long> query = entityManager.createQuery(jpql, Long.class);
+        long result = query.getSingleResult();
+        entityManager.close();
+        return result;
     }
 }

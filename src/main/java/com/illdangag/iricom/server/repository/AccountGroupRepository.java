@@ -19,4 +19,8 @@ public interface AccountGroupRepository {
     void saveAccountGroup(AccountGroup accountGroup, List<AccountInAccountGroup> accountInAccountGroupList, List<BoardInAccountGroup> boardInAccountGroupList);
 
     void updateAccountGroup(AccountGroup accountGroup, List<AccountInAccountGroup> accountInAccountGroupList, List<BoardInAccountGroup> boardInAccountGroupList);
+
+    List<AccountGroup> getAccountGroupList(int skip, int limit);
+
+    long getAccountGroupCount();
 }
