@@ -98,7 +98,7 @@ public class BoardControllerTest extends IricomTestSuite {
         @DisplayName("제목 길이 초과")
         public void testCase03() throws Exception {
             Map<String, Object> requestBody = new HashMap<>();
-            requestBody.put("title", "012345678901234567890");
+            requestBody.put("title", "012345678901234567890123456789012345678901234567890");
 
             MockHttpServletRequestBuilder requestBuilder = post("/v1/boards")
                     .content(getJsonString(requestBody))

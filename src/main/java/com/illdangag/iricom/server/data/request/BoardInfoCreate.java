@@ -14,7 +14,7 @@ import javax.validation.constraints.Size;
 @AllArgsConstructor
 public class BoardInfoCreate {
     @NotNull(message = "The title is required.")
-    @Size(min = 1, max = 20, message = "The title must be at least 1 character and less than 20 characters.")
+    @Size(min = 1, max = 50, message = "The title must be at least 1 character and less than 50 characters.")
     private String title;
 
     @Size(max = 100, message = "The description must be less than 100 characters.")

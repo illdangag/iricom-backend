@@ -69,7 +69,7 @@ public class ReportServiceImpl implements ReportService {
             throw new IricomException(IricomErrorCode.NOT_EXIST_POST_REPORT);
         }
 
-        PostInfo postInfo = this.postService.getPostInfo(post, PostState.PUBLISH, false);
+        PostInfo postInfo = this.postService.getPostInfo(account, post, PostState.PUBLISH, false);
         return new PostReportInfo(postReport, postInfo);
     }
 
@@ -103,7 +103,7 @@ public class ReportServiceImpl implements ReportService {
 
         List<PostReportInfo> postReportInfoList = postReportList.stream()
                 .map(item -> {
-                    PostInfo postInfo = this.postService.getPostInfo(item.getPost(), PostState.PUBLISH, false);
+                    PostInfo postInfo = this.postService.getPostInfo(account, item.getPost(), PostState.PUBLISH, false);
                     return new PostReportInfo(item, postInfo);
                 })
                 .collect(Collectors.toList());
@@ -147,7 +147,7 @@ public class ReportServiceImpl implements ReportService {
 
         List<PostReportInfo> postReportInfoList = postReportList.stream()
                 .map(item -> {
-                    PostInfo postInfo = this.postService.getPostInfo(item.getPost(), PostState.PUBLISH, false);
+                    PostInfo postInfo = this.postService.getPostInfo(account, item.getPost(), PostState.PUBLISH, false);
                     return new PostReportInfo(item, postInfo);
                 })
                 .collect(Collectors.toList());
@@ -188,7 +188,7 @@ public class ReportServiceImpl implements ReportService {
 
         this.reportRepository.savePostReport(postReport);
 
-        PostInfo postInfo = this.postService.getPostInfo(post, PostState.PUBLISH, false);
+        PostInfo postInfo = this.postService.getPostInfo(account, post, PostState.PUBLISH, false);
         return new PostReportInfo(postReport, postInfo);
     }
 

@@ -37,7 +37,7 @@ public class Board {
     @Column(name = "is_enabled")
     private Boolean enabled = true;
 
-    @Size(min = 1, max = 20)
+    @Size(min = 1, max = 50)
     private String title;
 
     @Size(max = 100)

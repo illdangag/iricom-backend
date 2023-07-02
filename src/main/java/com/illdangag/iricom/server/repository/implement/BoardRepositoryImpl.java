@@ -1,6 +1,7 @@
 package com.illdangag.iricom.server.repository.implement;
 
 import com.illdangag.iricom.server.data.entity.Account;
+import com.illdangag.iricom.server.data.entity.AccountAuth;
 import com.illdangag.iricom.server.data.entity.Board;
 import com.illdangag.iricom.server.repository.BoardRepository;
 import com.illdangag.iricom.server.util.StringUtils;
@@ -87,7 +88,13 @@ public class BoardRepositoryImpl implements BoardRepository {
     }
 
     private List<Long> getAccessibleBoardIdList(EntityManager entityManager, Account account) {
-        List<Long> accountGroupIdList = this.getAccountGroupId(entityManager, account);
+        List<Long> accountGroupIdList = null;
+
+        if (account.getAuth() == AccountAuth.SYSTEM_ADMIN) {
+            accountGroupIdList = this.getAccountGroupAll(entityManager);
+        } else {
+            accountGroupIdList = this.getAccountGroupId(entityManager, account);
+        }
 
         final String jpql = "SELECT biag.board.id FROM BoardInAccountGroup biag" +
                 " WHERE biag.accountGroup.id IN :accountGroupId";
@@ -103,6 +110,13 @@ public class BoardRepositoryImpl implements BoardRepository {
                 " WHERE ag.deleted = false AND aiag.account = :account";
         TypedQuery<Long> query = entityManager.createQuery(jpql, Long.class)
                 .setParameter("account", account);
+        return query.getResultList();
+    }
+
+    private List<Long> getAccountGroupAll(EntityManager entityManager) {
+        final String jpql = "SELECT ag.id FROM AccountGroup ag" +
+                " WHERE ag.deleted = false";
+        TypedQuery<Long> query = entityManager.createQuery(jpql, Long.class);
         return query.getResultList();
     }
 

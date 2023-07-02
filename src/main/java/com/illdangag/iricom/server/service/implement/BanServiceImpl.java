@@ -79,7 +79,7 @@ public class BanServiceImpl implements BanService {
                 .build();
         this.banRepository.savePostBan(postBan);
 
-        PostInfo postInfo = this.postService.getPostInfo(post, PostState.PUBLISH, false);
+        PostInfo postInfo = this.postService.getPostInfo(account, post, PostState.PUBLISH, false);
         return new PostBanInfo(postBan, postInfo);
     }
 
@@ -110,7 +110,7 @@ public class BanServiceImpl implements BanService {
         postBanList.forEach(this.banRepository::savePostBan);
 
         PostBan postBan = postBanList.get(0);
-        PostInfo postInfo = this.postService.getPostInfo(post, PostState.PUBLISH, false);
+        PostInfo postInfo = this.postService.getPostInfo(account, post, PostState.PUBLISH, false);
         return new PostBanInfo(postBan, postInfo);
     }
 
@@ -129,7 +129,7 @@ public class BanServiceImpl implements BanService {
 
         List<PostBanInfo> postBanInfoList = postBanList.stream()
                 .map(item -> {
-                    PostInfo postInfo = this.postService.getPostInfo(item.getPost(), PostState.PUBLISH, false);
+                    PostInfo postInfo = this.postService.getPostInfo(account, item.getPost(), PostState.PUBLISH, false);
                     return new PostBanInfo(item, postInfo);
                 })
                 .collect(Collectors.toList());
@@ -163,7 +163,7 @@ public class BanServiceImpl implements BanService {
 
         List<PostBanInfo> postBanInfoList = postBanList.stream()
                 .map(item -> {
-                    PostInfo postInfo = this.postService.getPostInfo(item.getPost(), PostState.PUBLISH, false);
+                    PostInfo postInfo = this.postService.getPostInfo(account, item.getPost(), PostState.PUBLISH, false);
                     return new PostBanInfo(item, postInfo);
                 })
                 .collect(Collectors.toList());
@@ -200,7 +200,7 @@ public class BanServiceImpl implements BanService {
 
         PostBan postBan = postBanList.get(0);
 
-        PostInfo postInfo = this.postService.getPostInfo(post, PostState.PUBLISH, false);
+        PostInfo postInfo = this.postService.getPostInfo(account, post, PostState.PUBLISH, false);
         return new PostBanInfo(postBan, postInfo);
     }
 
@@ -232,7 +232,7 @@ public class BanServiceImpl implements BanService {
         postBan.setReason(reason);
         this.banRepository.savePostBan(postBan);
 
-        PostInfo postInfo = this.postService.getPostInfo(post, PostState.PUBLISH, false);
+        PostInfo postInfo = this.postService.getPostInfo(account, post, PostState.PUBLISH, false);
         return new PostBanInfo(postBan, postInfo);
     }
 
