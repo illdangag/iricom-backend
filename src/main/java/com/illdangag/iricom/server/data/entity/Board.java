@@ -17,8 +17,10 @@ import java.util.Objects;
 @ToString
 @Entity
 @Table(indexes = {
-        @Index(name = "board_createDate", columnList = "createDate"),
-        @Index(name = "board_title", columnList = "title"),
+        @Index(name = "Board_createDate", columnList = "createDate"),
+        @Index(name = "Board_title", columnList = "title"),
+        @Index(name = "Board_undisclosed", columnList = "undisclosed"),
+        @Index(name = "Board_enabled", columnList = "enabled"),
 })
 public class Board {
     @Id
@@ -34,7 +36,6 @@ public class Board {
     private LocalDateTime updateDate = LocalDateTime.now();
 
     @Builder.Default
-    @Column(name = "is_enabled")
     private Boolean enabled = true;
 
     @Size(min = 1, max = 50)
@@ -43,7 +44,8 @@ public class Board {
     @Size(max = 100)
     private String description;
 
-    private Boolean undisclosed; // 공개되지 않은 게시판
+    @Builder.Default
+    private Boolean undisclosed = false; // 공개되지 않은 게시판
 
     @Override
     public boolean equals(Object object) {

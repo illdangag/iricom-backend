@@ -15,6 +15,8 @@ import java.util.Objects;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 @Entity
+@Table(indexes = {
+})
 public class PostContent {
     @Id
     @GeneratedValue
@@ -46,7 +48,6 @@ public class PostContent {
     private PostState state;
 
     @Builder.Default
-    @Column(name = "is_allow_comment")
     private Boolean allowComment = true;
 
     public static PostContentBuilder builder(Post post, PostState state) {

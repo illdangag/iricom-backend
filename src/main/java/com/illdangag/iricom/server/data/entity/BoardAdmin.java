@@ -14,7 +14,8 @@ import java.time.LocalDateTime;
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 @Entity
 @Table(indexes = {
-        @Index(name = "boardAdmin_createDate", columnList = "createDate"),
+        @Index(name = "BoardAdmin_createDate", columnList = "createDate"),
+        @Index(name = "BoardAdmin_deleted", columnList = "deleted"),
 })
 public class BoardAdmin {
     @Id
@@ -33,9 +34,8 @@ public class BoardAdmin {
     @CreationTimestamp
     private LocalDateTime createDate = LocalDateTime.now();
 
-    @Column(name = "is_deleted")
     @Builder.Default
-    private Boolean deleted = Boolean.FALSE;
+    private Boolean deleted = false;
 
     @Override
     public boolean equals(Object object) {

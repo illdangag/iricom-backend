@@ -16,8 +16,8 @@ import java.time.LocalDateTime;
 @ToString
 @Entity
 @Table(indexes = {
-        @Index(name = "account_id_and_comment_id", columnList = "report_account_id,comment_id"),
-        @Index(name = "enabled", columnList = "enabled"),
+        @Index(name = "CommentReport_account_and_comment", columnList = "report_account_id,comment_id"),
+        @Index(name = "CommentReport_enabled", columnList = "enabled"),
 })
 public class CommentReport {
     @Id

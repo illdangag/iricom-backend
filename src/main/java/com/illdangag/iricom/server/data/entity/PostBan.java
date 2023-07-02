@@ -16,6 +16,7 @@ import java.time.LocalDateTime;
 @Entity
 @Table(indexes = {
         @Index(name = "PostBan_createDate", columnList = "createDate"),
+        @Index(name = "PostBan_reason", columnList = "reason"),
         @Index(name = "PostBan_post", columnList = "post_id"),
         @Index(name = "PostBan_adminAccount", columnList = "admin_account_id"),
         @Index(name = "PostBan_enabled", columnList = "enabled"),

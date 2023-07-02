@@ -16,7 +16,7 @@ import java.time.LocalDateTime;
 @ToString
 @Entity
 @Table(indexes = {
-        @Index(name = "account_email", columnList = "email"),
+        @Index(name = "Account_email", columnList = "email"),
 })
 public class Account {
     @Id
@@ -40,7 +40,6 @@ public class Account {
     private AccountDetail accountDetail;
 
     @Builder.Default
-    @Column(name = "is_deleted")
     private boolean deleted = false;
 
     private String email;

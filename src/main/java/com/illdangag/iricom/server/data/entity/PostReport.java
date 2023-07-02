@@ -16,8 +16,10 @@ import java.time.LocalDateTime;
 @ToString
 @Entity
 @Table(indexes = {
-        @Index(name = "PostReport_account_id_and_post_id", columnList = "report_account_id,post_id"),
+        @Index(name = "PostReport_account_and_post", columnList = "report_account_id,post_id"),
         @Index(name = "PostReport_enabled", columnList = "enabled"),
+        @Index(name = "PostReport_reason", columnList = "reason"),
+        @Index(name = "PostReport_createDate", columnList = "createDate"),
 })
 public class PostReport {
     @Id

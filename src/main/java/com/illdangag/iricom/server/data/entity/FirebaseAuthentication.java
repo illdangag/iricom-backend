@@ -2,10 +2,7 @@ package com.illdangag.iricom.server.data.entity;
 
 import lombok.*;
 
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
+import javax.persistence.*;
 import java.util.Objects;
 
 @Getter
@@ -13,6 +10,8 @@ import java.util.Objects;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 @Entity
+@Table(indexes = {
+})
 public class FirebaseAuthentication {
     @Id
     private String id;

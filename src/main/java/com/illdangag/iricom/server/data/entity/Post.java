@@ -15,7 +15,7 @@ import java.time.LocalDateTime;
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 @Entity
 @Table(indexes = {
-        @Index(name = "post_createDate", columnList = "createDate")
+        @Index(name = "Post_createDate", columnList = "createDate"),
 })
 public class Post {
     @Id
@@ -50,7 +50,6 @@ public class Post {
     private Long viewCount = 0L;
 
     @Builder.Default
-    @Column(name = "is_deleted")
     private Boolean deleted = false;
 
     @Override

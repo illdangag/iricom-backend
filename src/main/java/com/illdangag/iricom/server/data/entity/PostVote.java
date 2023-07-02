@@ -13,9 +13,9 @@ import java.time.LocalDateTime;
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 @Entity
 @Table(indexes = {
-        @Index(name = "post_vote_post_id", columnList = "post_id"),
-        @Index(name = "post_vote_account_id", columnList = "account_id"),
-        @Index(name = "post_vote_type", columnList = "type")
+        @Index(name = "PostVote_post", columnList = "post_id"),
+        @Index(name = "PostVote_account", columnList = "account_id"),
+        @Index(name = "PostVote_type", columnList = "type")
 })
 public class PostVote {
     @Id

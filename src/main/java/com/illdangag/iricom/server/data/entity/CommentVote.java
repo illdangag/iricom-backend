@@ -12,9 +12,9 @@ import java.time.LocalDateTime;
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 @Entity
 @Table(indexes = {
-        @Index(name = "comment_vote_comment_id", columnList = "comment_id"),
-        @Index(name = "comment_vote_account_id", columnList = "account_id"),
-        @Index(name = "comment_vote_type", columnList = "type")
+        @Index(name = "CommentVote_comment", columnList = "comment_id"),
+        @Index(name = "CommentVote_account", columnList = "account_id"),
+        @Index(name = "CommentVote_type", columnList = "type"),
 })
 public class CommentVote {
     @Id

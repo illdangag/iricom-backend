@@ -13,6 +13,7 @@ import java.util.Objects;
 @ToString
 @Entity
 @Table(indexes = {
+        @Index(name = "BoardInAccountGroup_accountGroup", columnList = "account_group_id"),
 })
 public class BoardInAccountGroup {
     @Id

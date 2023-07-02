@@ -14,7 +14,7 @@ import java.util.Objects;
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 @Entity
 @Table(indexes = {
-        @Index(name = "comment_createDate", columnList = "createDate"),
+        @Index(name = "Comment_createDate", columnList = "createDate"),
 })
 public class Comment {
     @Id
@@ -45,11 +45,9 @@ public class Comment {
     private String content = "";
 
     @Builder.Default
-    @Column(name = "is_deleted")
     private Boolean deleted = false;
 
     @Builder.Default
-    @Column(name = "has_nested_comment")
     private Boolean hasNestedComment = false;
 
     @Override
