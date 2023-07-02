@@ -40,29 +40,46 @@ public class BoardServiceTest extends IricomTestSuite {
     private TestBoardInfo undisclosedBoard02 = TestBoardInfo.builder()
             .title("undisclosedBoard02").isEnabled(true).undisclosed(true)
             .adminList(Collections.singletonList(allBoardAdmin)).build();
+    private TestBoardInfo undisclosedBoard03 = TestBoardInfo.builder()
+            .title("undisclosedBoard03").isEnabled(true).undisclosed(true)
+            .adminList(Collections.singletonList(allBoardAdmin)).build();
+    private TestBoardInfo undisclosedBoard04 = TestBoardInfo.builder()
+            .title("undisclosedBoard04").isEnabled(true).undisclosed(true)
+            .adminList(Collections.singletonList(allBoardAdmin)).build();
 
     private TestAccountGroupInfo testAccountGroupInfo00 = TestAccountGroupInfo.builder()
             .title("testAccountGroupInfo00").description("description")
             .accountList(Arrays.asList(common00)).boardList(Arrays.asList(undisclosedBoard00))
             .build();
-
     private TestAccountGroupInfo testAccountGroupInfo01 = TestAccountGroupInfo.builder()
             .title("testAccountGroupInfo01").description("description")
             .accountList(Arrays.asList(common01)).boardList(Arrays.asList(undisclosedBoard01))
             .build();
-
     private TestAccountGroupInfo testAccountGroupInfo02 = TestAccountGroupInfo.builder()
             .title("testAccountGroupInfo02").description("description")
             .accountList(Arrays.asList(common02)).boardList(Arrays.asList(undisclosedBoard02))
             .build();
-
+    private TestAccountGroupInfo testAccountGroupInfo03 = TestAccountGroupInfo.builder()
+            .title("testAccountGroupInfo04").description("description").deleted(true)
+            .accountList(Arrays.asList(common00)).boardList(Arrays.asList(undisclosedBoard03))
+            .build();
+    private TestAccountGroupInfo testAccountGroupInfo04 = TestAccountGroupInfo.builder()
+            .title("testAccountGroupInfo04").description("description").deleted(true)
+            .accountList(Arrays.asList(common01)).boardList(Arrays.asList(undisclosedBoard04))
+            .build();
 
     @Autowired
     public BoardServiceTest(ApplicationContext context) {
         super(context);
 
-        super.setBoard(Arrays.asList(disclosedBoard00, undisclosedBoard00, undisclosedBoard01, undisclosedBoard02));
-        super.setAccountGroup(Arrays.asList(testAccountGroupInfo00, testAccountGroupInfo01, testAccountGroupInfo02));
+        List<TestBoardInfo> testBoardInfoList = Arrays.asList(disclosedBoard00, undisclosedBoard00, undisclosedBoard01,
+                undisclosedBoard02, undisclosedBoard03, undisclosedBoard04);
+        List<TestAccountGroupInfo> testAccountGroupInfoList = Arrays.asList(testAccountGroupInfo00, testAccountGroupInfo01,
+                testAccountGroupInfo02, testAccountGroupInfo03, testAccountGroupInfo04);
+
+        super.setBoard(testBoardInfoList);
+        super.setAccountGroup(testAccountGroupInfoList);
+        super.deleteAccountGroup(testAccountGroupInfoList);
     }
 
     @Nested
@@ -115,6 +132,18 @@ public class BoardServiceTest extends IricomTestSuite {
                 boardService.getBoardInfo(account, boardId);
             });
         }
+
+        @Test
+        @DisplayName("삭제된 계정 그룹에 포함된 비공개 게시판 조회")
+        public void getUndisclosedBoardAndDeletedAccountGroup() throws Exception {
+            Account account = getAccount(common00);
+            Board board = getBoard(undisclosedBoard03);
+            String boardId = String.valueOf(board.getId());
+
+            Assertions.assertThrows(IricomException.class, () -> {
+                boardService.getBoardInfo(account, boardId);
+            });
+        }
     }
 
     @Nested
@@ -151,7 +180,7 @@ public class BoardServiceTest extends IricomTestSuite {
             String inaccessibleBoardId = String.valueOf(getBoard(undisclosedBoard01).getId());
 
             BoardInfoSearch boardInfoSearch = BoardInfoSearch.builder()
-                    .skip(0).limit(100)
+                    .skip(0).limit(200)
                     .build();
 
             BoardInfoList boardInfoList = boardService.getBoardInfoList(account, boardInfoSearch);
@@ -162,6 +191,26 @@ public class BoardServiceTest extends IricomTestSuite {
 
             Assertions.assertTrue(boardInfoIdList.contains(accessibleBoardId));
             Assertions.assertFalse(boardInfoIdList.contains(inaccessibleBoardId));
+        }
+
+        @Test
+        @DisplayName("삭제된 계정 그룹에 포함된 게시판 목록 조회")
+        public void searchDisclosedBoardAndDeletedAccountGroupBoardList() throws Exception {
+            Account account = getAccount(common01);
+
+            String deletedAccountGroupBoardId = String.valueOf(getBoard(undisclosedBoard04).getId());
+
+            BoardInfoSearch boardInfoSearch = BoardInfoSearch.builder()
+                    .skip(0).limit(100)
+                    .build();
+
+            BoardInfoList boardInfoList = boardService.getBoardInfoList(account, boardInfoSearch);
+
+            List<String> boardInfoIdList = boardInfoList.getBoardInfoList().stream()
+                    .map(BoardInfo::getId)
+                    .collect(Collectors.toList());
+
+            Assertions.assertFalse(boardInfoIdList.contains(deletedAccountGroupBoardId));
         }
     }
 }

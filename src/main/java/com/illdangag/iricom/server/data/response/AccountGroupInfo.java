@@ -22,9 +22,11 @@ public class AccountGroupInfo {
     private String description;
 
     @JsonProperty("boards")
+    @Builder.Default
     private List<BoardInfo> boardInfoList = new ArrayList<>();
 
     @JsonProperty("accounts")
+    @Builder.Default
     private List<AccountInfo> accountInfoList = new ArrayList<>();
 
     public AccountGroupInfo(AccountGroup accountGroup, List<Account> accountList, List<Board> boardList) {

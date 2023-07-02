@@ -8,15 +8,15 @@ import java.util.Optional;
 public interface AccountGroupRepository {
     Optional<AccountGroup> getAccountGroup(long id);
 
-    List<AccountGroup> getAccountGroupList(Account account);
+    void saveAccountGroup(AccountGroup accountGroup, List<AccountInAccountGroup> accountInAccountGroupList, List<BoardInAccountGroup> boardInAccountGroupList);
+
+    void updateAccountGroup(AccountGroup accountGroup, List<AccountInAccountGroup> accountInAccountGroupList, List<BoardInAccountGroup> boardInAccountGroupList);
+
+    void updateAccountGroup(AccountGroup accountGroup);
 
     List<Account> getAccountListInAccountGroup(AccountGroup accountGroup);
 
     List<Board> getBoardListInAccountGroup(AccountGroup accountGroup);
-
-    void saveAccountGroup(AccountGroup accountGroup, List<AccountInAccountGroup> accountInAccountGroupList, List<BoardInAccountGroup> boardInAccountGroupList);
-
-    void updateAccountGroup(AccountGroup accountGroup, List<AccountInAccountGroup> accountInAccountGroupList, List<BoardInAccountGroup> boardInAccountGroupList);
 
     List<AccountGroup> getAccountGroupList(int skip, int limit);
 

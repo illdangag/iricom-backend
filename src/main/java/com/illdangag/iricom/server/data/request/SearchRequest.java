@@ -17,7 +17,7 @@ public abstract class SearchRequest {
     protected int skip = 0;
 
     @Min(value = 1, message = "Limit must be 1 or greater.")
-    @Max(value = 100, message = "Limit must be 100 or less.")
+    @Max(value = 200, message = "Limit must be 200 or less.")
     @Builder.Default
     protected int limit = 20;
 }

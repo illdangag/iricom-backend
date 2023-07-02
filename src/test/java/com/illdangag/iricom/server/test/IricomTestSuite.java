@@ -33,6 +33,7 @@ public abstract class IricomTestSuite {
     private final CommentService commentService;
     private final ReportService reportService;
     private final BanService banService;
+    private final AccountGroupService accountGroupService;
 
     private final AccountRepository accountRepository;
     private final BoardRepository boardRepository;
@@ -824,6 +825,7 @@ public abstract class IricomTestSuite {
         this.commentService = context.getBean(CommentService.class);
         this.reportService = context.getBean(ReportService.class);
         this.banService = context.getBean(BanService.class);
+        this.accountGroupService = context.getBean(AccountGroupService.class);
 
         this.accountRepository = context.getBean(AccountRepository.class);
         this.boardRepository = context.getBean(BoardRepository.class);
@@ -976,6 +978,15 @@ public abstract class IricomTestSuite {
             AccountGroup accountGroup = this.setAccountGroup(item);
             accountGroupMap.put(item, accountGroup);
         });
+    }
+
+    /**
+     * 계정 그룹 삭제
+     */
+    protected void deleteAccountGroup(List<TestAccountGroupInfo> testAccountGroupInfoList) {
+        testAccountGroupInfoList.stream()
+                .filter(TestAccountGroupInfo::getDeleted)
+                .forEach(this::deleteAccountGroup);
     }
 
     protected void init() {
@@ -1230,6 +1241,12 @@ public abstract class IricomTestSuite {
                 .collect(Collectors.toList());
         this.accountGroupRepository.saveAccountGroup(accountGroup, accountInAccountGroupList, boardInAccountGroupList);
         return accountGroup;
+    }
+
+    private void deleteAccountGroup(TestAccountGroupInfo testAccountGroupInfo) {
+        AccountGroup accountGroup = getAccountGroup(testAccountGroupInfo);
+        String accountGroupId = String.valueOf(accountGroup.getId());
+        this.accountGroupService.deleteAccountGroupInfo(accountGroupId);
     }
 
     protected void setAuthToken(MockHttpServletRequestBuilder builder, TestAccountInfo testAccountInfo) throws Exception {

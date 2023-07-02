@@ -55,14 +55,21 @@ public class AccountGroupServiceTest extends IricomTestSuite {
             .accountList(Arrays.asList(common00, common01)).boardList(Arrays.asList(testBoardInfo00, testBoardInfo01)).build();
     private TestAccountGroupInfo testAccountGroupInfo05 = TestAccountGroupInfo.builder()
             .title("testAccountGroupInfo05").description("description").build();
+    private TestAccountGroupInfo testAccountGroupInfo06 = TestAccountGroupInfo.builder()
+            .title("testAccountGroupInfo06").description("description").build();
 
     @Autowired
     public AccountGroupServiceTest(ApplicationContext context) {
         super(context);
 
-        super.setBoard(Arrays.asList(testBoardInfo00, testBoardInfo01, testBoardInfo02));
-        super.setAccountGroup(Arrays.asList(testAccountGroupInfo00, testAccountGroupInfo01, testAccountGroupInfo02,
-                testAccountGroupInfo03, testAccountGroupInfo04, testAccountGroupInfo05));
+        List<TestBoardInfo> testBoardInfoList = Arrays.asList(testBoardInfo00, testBoardInfo01, testBoardInfo02);
+        List<TestAccountGroupInfo> testAccountGroupInfoList = Arrays.asList(testAccountGroupInfo00,
+                testAccountGroupInfo01, testAccountGroupInfo02, testAccountGroupInfo03, testAccountGroupInfo04,
+                testAccountGroupInfo05, testAccountGroupInfo06);
+
+        super.setBoard(testBoardInfoList);
+        super.setAccountGroup(testAccountGroupInfoList);
+        super.deleteAccountGroup(testAccountGroupInfoList);
     }
 
     @Nested
@@ -458,6 +465,24 @@ public class AccountGroupServiceTest extends IricomTestSuite {
             AccountGroupInfoList accountGroupInfoList = accountGroupService.getAccountGroupInfoList(accountGroupInfoSearch);
 
             Assertions.assertNotNull(accountGroupInfoList);
+        }
+    }
+
+    @Nested
+    @DisplayName("삭제")
+    class Delete {
+
+        @Test
+        @DisplayName("계정 그룹 삭제")
+        public void delete() throws Exception {
+            AccountGroup accountGroup = getAccountGroup(testAccountGroupInfo06);
+            String accountGroupId = String.valueOf(accountGroup.getId());
+
+            accountGroupService.deleteAccountGroupInfo(accountGroupId);
+
+            Assertions.assertThrows(IricomException.class, () -> {
+                accountGroupService.getAccountGroupInfo(accountGroupId);
+            });
         }
     }
 }

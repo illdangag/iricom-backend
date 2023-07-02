@@ -108,6 +108,11 @@ public class AccountGroupServiceImpl implements AccountGroupService {
     @Override
     public AccountGroupInfo getAccountGroupInfo(String accountGroupId) {
         AccountGroup accountGroup = this.getAccountGroup(accountGroupId);
+
+        if (accountGroup.getDeleted()) { // 삭제된 계정 그룹인 경우
+            throw new IricomException(IricomErrorCode.NOT_EXIST_ACCOUNT_GROUP);
+        }
+
         List<Account> accountList = this.accountGroupRepository.getAccountListInAccountGroup(accountGroup);
         List<Board> boardList = this.accountGroupRepository.getBoardListInAccountGroup(accountGroup);
         return new AccountGroupInfo(accountGroup, accountList, boardList);
@@ -116,6 +121,11 @@ public class AccountGroupServiceImpl implements AccountGroupService {
     @Override
     public AccountGroupInfo updateAccountGroupInfo(String accountGroupId, AccountGroupInfoUpdate accountGroupInfoUpdate) {
         AccountGroup accountGroup = this.getAccountGroup(accountGroupId);
+
+        if (accountGroup.getDeleted()) { // 삭제된 계정 그룹인 경우
+            throw new IricomException(IricomErrorCode.NOT_EXIST_ACCOUNT_GROUP);
+        }
+
         List<String> accountIdList = accountGroupInfoUpdate.getAccountIdList();
         if (accountIdList != null) {
             accountIdList = accountIdList.stream().distinct().collect(Collectors.toList());
@@ -194,7 +204,14 @@ public class AccountGroupServiceImpl implements AccountGroupService {
 
     @Override
     public AccountGroupInfo deleteAccountGroupInfo(String accountGroupId) {
-        return null;
+        AccountGroup accountGroup = this.getAccountGroup(accountGroupId);
+        accountGroup.setDeleted(true);
+        this.accountGroupRepository.updateAccountGroup(accountGroup);
+
+        List<Account> accountList = this.accountGroupRepository.getAccountListInAccountGroup(accountGroup);
+        List<Board> boardList = this.accountGroupRepository.getBoardListInAccountGroup(accountGroup);
+
+        return new AccountGroupInfo(accountGroup, accountList, boardList);
     }
 
     private boolean validateBoard(List<String> idList) {

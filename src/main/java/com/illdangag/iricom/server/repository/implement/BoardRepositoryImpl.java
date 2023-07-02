@@ -100,7 +100,7 @@ public class BoardRepositoryImpl implements BoardRepository {
 
     private List<Long> getAccountGroupId(EntityManager entityManager, Account account) {
         final String jpql = "SELECT ag.id FROM AccountGroup ag RIGHT JOIN AccountInAccountGroup aiag ON ag.id = aiag.accountGroup.id" +
-                " WHERE aiag.account = :account";
+                " WHERE ag.deleted = false AND aiag.account = :account";
         TypedQuery<Long> query = entityManager.createQuery(jpql, Long.class)
                 .setParameter("account", account);
         return query.getResultList();

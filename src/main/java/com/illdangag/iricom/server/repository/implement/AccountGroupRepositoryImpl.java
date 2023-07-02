@@ -49,19 +49,6 @@ public class AccountGroupRepositoryImpl implements AccountGroupRepository {
     }
 
     @Override
-    public List<AccountGroup> getAccountGroupList(Account account) {
-        EntityManager entityManager = this.entityManagerFactory.createEntityManager();
-        final String jpql = "SELECT aiag FROM AccountInAccountGroup aiag WHERE aiag.account = :account";
-
-        TypedQuery<AccountGroup> query = entityManager.createQuery(jpql, AccountGroup.class)
-                .setParameter("account", account);
-
-        List<AccountGroup> resultList = query.getResultList();
-        entityManager.close();
-        return resultList;
-    }
-
-    @Override
     public List<Account> getAccountListInAccountGroup(AccountGroup accountGroup) {
         EntityManager entityManager = this.entityManagerFactory.createEntityManager();
         final String jpql = "SELECT aiag.account FROM AccountInAccountGroup aiag WHERE aiag.accountGroup = :accountGroup";
@@ -160,6 +147,18 @@ public class AccountGroupRepositoryImpl implements AccountGroupRepository {
         entityManager.close();
     }
 
+    @Override
+    public void updateAccountGroup(AccountGroup accountGroup) {
+        EntityManager entityManager = this.entityManagerFactory.createEntityManager();
+        EntityTransaction entityTransaction = entityManager.getTransaction();
+        entityTransaction.begin();
+
+        entityManager.merge(accountGroup);
+
+        entityTransaction.commit();
+        entityManager.close();
+    }
+
     private List<AccountInAccountGroup> getAccountInAccountGroupList(EntityManager entityManager, AccountGroup accountGroup) {
         final String jpql = "SELECT aiag FROM AccountInAccountGroup aiag WHERE aiag.accountGroup = :accountGroup";
 
@@ -179,7 +178,7 @@ public class AccountGroupRepositoryImpl implements AccountGroupRepository {
     @Override
     public List<AccountGroup> getAccountGroupList(int skip, int limit) {
         EntityManager entityManager = this.entityManagerFactory.createEntityManager();
-        final String jpql = "SELECT ag FROM AccountGroup ag";
+        final String jpql = "SELECT ag FROM AccountGroup ag WHERE ag.deleted = false";
 
         TypedQuery<AccountGroup> query = entityManager.createQuery(jpql, AccountGroup.class)
                 .setFirstResult(skip)
@@ -192,7 +191,7 @@ public class AccountGroupRepositoryImpl implements AccountGroupRepository {
     @Override
     public long getAccountGroupCount() {
         EntityManager entityManager = this.entityManagerFactory.createEntityManager();
-        final String jpql = "SELECT COUNT(*) FROM AccountGroup ag";
+        final String jpql = "SELECT COUNT(*) FROM AccountGroup ag WHERE ag.deleted = false";
 
         TypedQuery<Long> query = entityManager.createQuery(jpql, Long.class);
         long result = query.getSingleResult();
