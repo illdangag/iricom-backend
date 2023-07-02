@@ -276,18 +276,19 @@ public class PostServiceImpl implements PostService {
     @Override
     public PostInfoList getPublishPostInfoList(String boardId, PostInfoSearch postInfoSearch) {
         Board board = this.getDisclosedBoard(boardId);
-        return this.getPublishPostInfoList(board, postInfoSearch);
+        return this.getPublishPostInfoList(null, board, postInfoSearch);
     }
 
     @Override
     public PostInfoList getPublishPostInfoList(Account account, String boardId, PostInfoSearch postInfoSearch) {
         Board board = this.getDisclosedBoard(account, boardId);
-        return this.getPublishPostInfoList(board, postInfoSearch);
+        return this.getPublishPostInfoList(account, board, postInfoSearch);
     }
 
-    private PostInfoList getPublishPostInfoList(Board board, PostInfoSearch postInfoSearch) {
+    private PostInfoList getPublishPostInfoList(Account account, Board board, PostInfoSearch postInfoSearch) {
         List<Post> postList;
         long totalPostCount;
+
         if (postInfoSearch.getTitle().isEmpty()) {
             if (postInfoSearch.getType() != null) {
                 // 제목 없음, 게시물 종류 있음
@@ -311,7 +312,11 @@ public class PostServiceImpl implements PostService {
         }
 
         List<PostInfo> postInfoList = postList.stream().map(post -> {
-            return this.getPostInfo(post, PostState.PUBLISH, false);
+            if (account != null) {
+                return this.getPostInfo(account, post, PostState.PUBLISH, false);
+            } else {
+                return this.getPostInfo(post, PostState.PUBLISH, false);
+            }
         }).collect(Collectors.toList());
 
         return PostInfoList.builder()
@@ -418,8 +423,9 @@ public class PostServiceImpl implements PostService {
 
     @Override
     public PostInfoList getPostInfoList(Account account, PostInfoSearch postInfoSearch) {
-        List<Post> postList = this.postRepository.getPostList(account, postInfoSearch.getSkip(), postInfoSearch.getLimit());
-        long totalPostCount = this.postRepository.getPostCount(account);
+        List<Long> accessibleBoardIdList = this.boardRepository.getAccessibleBoardIdList(account);
+        List<Post> postList = this.postRepository.getPostList(account, accessibleBoardIdList, postInfoSearch.getSkip(), postInfoSearch.getLimit());
+        long totalPostCount = this.postRepository.getPostCount(account, accessibleBoardIdList);
 
         List<PostInfo> postInfoList = postList.stream().map(post -> {
             long commentCount = this.commentRepository.getCommentCount(post);

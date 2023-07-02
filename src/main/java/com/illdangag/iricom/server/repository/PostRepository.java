@@ -26,9 +26,9 @@ public interface PostRepository {
 
     long getPublishPostCount(Board board);
 
-    List<Post> getPostList(Account account, int offset, int limit);
+    List<Post> getPostList(Account account, List<Long> boardIdList, int offset, int limit);
 
-    long getPostCount(Account account);
+    long getPostCount(Account account, List<Long> boardIdList);
 
     void save(Post post);
 

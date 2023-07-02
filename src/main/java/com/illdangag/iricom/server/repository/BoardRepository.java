@@ -38,6 +38,8 @@ public interface BoardRepository {
 
     long getBoardCount(Account account, String title);
 
+    List<Long> getAccessibleBoardIdList(Account account);
+
     boolean existBoard(List<Long> boardIdList);
 
     void save(Board board);

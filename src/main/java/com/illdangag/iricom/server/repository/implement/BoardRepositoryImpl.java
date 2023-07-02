@@ -266,6 +266,14 @@ public class BoardRepositoryImpl implements BoardRepository {
     }
 
     @Override
+    public List<Long> getAccessibleBoardIdList(Account account) {
+        EntityManager entityManager = this.entityManagerFactory.createEntityManager();
+        List<Long> boardIdList = this.getAccessibleBoardIdList(entityManager, account);
+        entityManager.close();
+        return boardIdList;
+    }
+
+    @Override
     public boolean existBoard(List<Long> boardIdList) {
         Set<Long> boardIdSet = new HashSet<>(boardIdList);
         EntityManager entityManager = this.entityManagerFactory.createEntityManager();

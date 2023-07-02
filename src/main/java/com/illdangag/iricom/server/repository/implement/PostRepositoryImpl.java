@@ -90,15 +90,18 @@ public class PostRepositoryImpl implements PostRepository {
     }
 
     @Override
-    public List<Post> getPostList(Account account, int offset, int limit) {
+    public List<Post> getPostList(Account account, List<Long> boardIdList, int offset, int limit) {
         EntityManager entityManager = this.entityManagerFactory.createEntityManager();
+
         final String jpql = "SELECT p FROM Post p" +
                 " WHERE p.account = :account" +
                 " AND p.deleted = false" +
+                " AND (p.board.undisclosed = false OR p.board.id IN :boardIdList)" +
                 " ORDER BY p.createDate DESC";
 
         TypedQuery<Post> query = entityManager.createQuery(jpql, Post.class)
                 .setParameter("account", account)
+                .setParameter("boardIdList", boardIdList)
                 .setFirstResult(offset)
                 .setMaxResults(limit);
         List<Post> resultList = query.getResultList();
@@ -107,14 +110,16 @@ public class PostRepositoryImpl implements PostRepository {
     }
 
     @Override
-    public long getPostCount(Account account) {
+    public long getPostCount(Account account, List<Long> boardIdList) {
         EntityManager entityManager = this.entityManagerFactory.createEntityManager();
         final String jpql = "SELECT COUNT(*) FROM Post p" +
                 " WHERE p.account = :account" +
-                " AND p.deleted = false";
+                " AND p.deleted = false" +
+                " AND (p.board.undisclosed = false OR p.board.id IN :boardIdList)";
 
         TypedQuery<Long> query = entityManager.createQuery(jpql, Long.class)
-                .setParameter("account", account);
+                .setParameter("account", account)
+                .setParameter("boardIdList", boardIdList);
         long result = query.getSingleResult();
         entityManager.close();
         return result;
@@ -141,8 +146,7 @@ public class PostRepositoryImpl implements PostRepository {
         EntityManager entityManager = this.entityManagerFactory.createEntityManager();
         final String jpql = "SELECT COUNT(*) FROM Post p" +
                 " WHERE p.board = :board " +
-                " AND p.content IS NOT NULL" +
-                " AND p.content.type = :type";
+                " AND p.content IS NOT NULL";
 
         TypedQuery<Long> query = entityManager.createQuery(jpql, Long.class)
                 .setParameter("board", board);

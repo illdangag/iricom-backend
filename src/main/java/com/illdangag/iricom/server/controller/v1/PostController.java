@@ -92,7 +92,13 @@ public class PostController {
                 .title(title)
                 .build();
 
-        PostInfoList postInfoList = this.postService.getPublishPostInfoList(boardId, postInfoSearch);
+        PostInfoList postInfoList;
+        if (account != null) {
+            postInfoList = this.postService.getPublishPostInfoList(account, boardId, postInfoSearch);
+        } else {
+            postInfoList = this.postService.getPublishPostInfoList(boardId, postInfoSearch);
+        }
+
         return ResponseEntity.status(HttpStatus.OK).body(postInfoList);
     }
 
