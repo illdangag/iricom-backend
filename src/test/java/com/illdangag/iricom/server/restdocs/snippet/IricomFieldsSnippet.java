@@ -22,6 +22,8 @@ public class IricomFieldsSnippet {
 
     private static final Map<String, String> postBanMap = new LinkedHashMap<>();
 
+    private static final Map<String, String> accountGroupMap = new LinkedHashMap<>();
+
     private static final Map<String, String> searchListMap = new LinkedHashMap<>();
 
     static {
@@ -91,6 +93,13 @@ public class IricomFieldsSnippet {
         postBanMap.put("updateDate", "수정일");
         postBanMap.put("reason", "사유");
         postBanMap.put("enabled", "활성화 여부");
+
+        accountGroupMap.put("id", "아이디");
+        accountGroupMap.put("title", "제목");
+        accountGroupMap.put("description", "설명");
+        accountGroupMap.put("boards", "게시판 목록");
+        accountGroupMap.put("accounts", "계정 목록");
+
     }
     private IricomFieldsSnippet() {
     }
@@ -148,5 +157,9 @@ public class IricomFieldsSnippet {
 
     public static List<FieldDescriptor> getPostBan(String keyPrefix) {
         return getFieldDescriptors(postBanMap, keyPrefix);
+    }
+
+    public static List<FieldDescriptor> getAccountGroup(String keyPrefix) {
+        return getFieldDescriptors(accountGroupMap, keyPrefix);
     }
 }

@@ -246,3 +246,9 @@ operation::BP_005[snippets='curl-request,path-parameters,request-fields,http-res
 ==== BP_006
 
 operation::BP_006[snippets='curl-request,path-parameters,http-response,response-fields']
+
+== 계정 그룹
+=== 계정 그룹 생성
+==== AG_001
+
+operation::AG_001[snippets='curl-request,request-fields,http-response,response-fields']

@@ -75,7 +75,7 @@ public class AccountGroupController {
 
 
     /**
-     * 계정 그룹 회
+     * 계정 그룹 조회
      */
     @ApiCallLog(apiCode = "AG_003")
     @Auth(role = { AuthRole.SYSTEM_ADMIN, })
