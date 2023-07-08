@@ -12,18 +12,13 @@ import static org.springframework.restdocs.payload.PayloadDocumentation.fieldWit
 
 public class IricomFieldsSnippet {
     private static final Map<String, String> accountMap = new LinkedHashMap<>();
-
     private static final Map<String, String> boardMap = new LinkedHashMap<>();
     private static final Map<String, String> postMap = new LinkedHashMap<>();
     private static final Map<String, String> commentMap = new LinkedHashMap<>();
-
     private static final Map<String, String> postReportMap = new LinkedHashMap<>();
     private static final Map<String, String> commentReportMap = new LinkedHashMap<>();
-
     private static final Map<String, String> postBanMap = new LinkedHashMap<>();
-
     private static final Map<String, String> accountGroupMap = new LinkedHashMap<>();
-
     private static final Map<String, String> searchListMap = new LinkedHashMap<>();
 
     static {
@@ -99,14 +94,15 @@ public class IricomFieldsSnippet {
         accountGroupMap.put("description", "설명");
         accountGroupMap.put("boards", "게시판 목록");
         accountGroupMap.put("accounts", "계정 목록");
-
     }
+
     private IricomFieldsSnippet() {
     }
 
     private static List<FieldDescriptor> getFieldDescriptors(Map<String, String> keyDescriptionMap, String keyPrefix) {
         return keyDescriptionMap.entrySet().stream()
-                .map(item -> fieldWithPath(keyPrefix + item.getKey()).description(item.getValue()))
+                .map(item -> fieldWithPath(keyPrefix + item.getKey())
+                        .description(item.getValue()))
                 .collect(Collectors.toList());
     }
 

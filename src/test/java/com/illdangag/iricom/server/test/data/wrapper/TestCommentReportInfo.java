@@ -1,4 +1,4 @@
-package com.illdangag.iricom.server.test.data;
+package com.illdangag.iricom.server.test.data.wrapper;
 
 import com.illdangag.iricom.server.data.entity.ReportType;
 import lombok.Builder;

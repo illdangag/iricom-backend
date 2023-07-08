@@ -9,6 +9,7 @@ import com.illdangag.iricom.server.service.*;
 import com.illdangag.iricom.server.test.data.*;
 import com.illdangag.iricom.server.data.entity.*;
 import com.illdangag.iricom.server.data.request.*;
+import com.illdangag.iricom.server.test.data.wrapper.*;
 import com.illdangag.iricom.server.test.util.FirebaseUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.test.autoconfigure.restdocs.AutoConfigureRestDocs;

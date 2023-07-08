@@ -1,8 +1,7 @@
 package com.illdangag.iricom.server.repository;
 
-import com.illdangag.iricom.server.data.entity.*;
 import com.illdangag.iricom.server.test.IricomTestSuite;
-import com.illdangag.iricom.server.test.data.TestBoardInfo;
+import com.illdangag.iricom.server.test.data.wrapper.TestBoardInfo;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
