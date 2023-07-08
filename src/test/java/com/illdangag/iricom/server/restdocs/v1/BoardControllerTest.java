@@ -179,26 +179,26 @@ public class BoardControllerTest extends IricomTestSuite {
                 .andExpect(status().is(200))
                 .andDo(print())
                 .andDo(document("BD_004",
-                                preprocessRequest(
-                                        removeHeaders("Authorization"),
-                                        prettyPrint()
-                                ),
-                                preprocessResponse(
-                                        prettyPrint()
-                                ),
-                                requestHeaders(
-//                                        headerWithName("Authorization").description("firebase 토큰")
-                                ),
-                                requestFields(
-                                        fieldWithPath("title").description("제목"),
-                                        fieldWithPath("description").description("설명"),
-                                        fieldWithPath("enabled").description("활성화 여부")
-                                ),
-                                pathParameters(
-                                        parameterWithName("id").description("아이디")
-                                ),
-                                responseFields(fieldDescriptorList.toArray(FieldDescriptor[]::new))
-                        )
+                        preprocessRequest(
+                                removeHeaders("Authorization"),
+                                prettyPrint()
+                        ),
+                        preprocessResponse(
+                                prettyPrint()
+                        ),
+                        requestHeaders(
+//                              headerWithName("Authorization").description("firebase 토큰")
+                        ),
+                        pathParameters(
+                                parameterWithName("id").description("아이디")
+                        ),
+                        requestFields(
+                                fieldWithPath("title").description("제목"),
+                                fieldWithPath("description").description("설명"),
+                                fieldWithPath("enabled").description("활성화 여부")
+                        ),
+                        responseFields(fieldDescriptorList.toArray(FieldDescriptor[]::new))
+                    )
                 );
     }
 }
