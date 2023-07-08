@@ -1,0 +1,8 @@
+== 내 정보
+=== 내 정보 조회
+==== IF_001
+operation::IF_001[snippets='curl-request,http-response,response-fields']
+
+=== 내가 작성한 게시물 조회
+==== IF_002
+operation::IF_002[snippets='curl-request,request-parameters,http-response,response-fields']

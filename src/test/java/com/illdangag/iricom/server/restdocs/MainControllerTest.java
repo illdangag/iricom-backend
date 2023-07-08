@@ -47,6 +47,7 @@ public class MainControllerTest extends IricomTestSuite {
                                 fieldWithPath("branch").description("git branch"),
                                 fieldWithPath("commit").description("git commit"),
                                 fieldWithPath("tags").description("git tags"),
-                                fieldWithPath("version").description("service version"))));
+                                fieldWithPath("version").description("service version"))
+                ));
     }
 }

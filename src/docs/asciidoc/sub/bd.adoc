@@ -1,0 +1,25 @@
+== 게시판
+
+=== 게시판 생성
+==== BD_001
+새로운 게시판을 생성
+
+operation::BD_001[snippets='curl-request,request-fields,http-response,response-fields']
+
+=== 게시판 목록 조회
+==== BD_002
+게시판 목록 조회, 페이지네이션, 키워드 검색을 지원
+
+operation::BD_002[snippets='curl-request,request-parameters,http-response,response-fields']
+
+=== 게시판 정보 조회
+==== BD_003
+게시판 정보 조회
+
+operation::BD_003[snippets='curl-request,path-parameters,http-response,response-fields']
+
+=== 게시판 수정
+==== BD_004
+게시판 정보 수정
+
+operation::BD_004[snippets='curl-request,path-parameters,request-fields,http-response,response-fields']

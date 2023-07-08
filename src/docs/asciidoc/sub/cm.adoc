@@ -1,0 +1,31 @@
+== 댓글
+
+=== 댓글 생성
+==== CM_001
+
+operation::CM_001[snippets='curl-request,path-parameters,request-fields,http-response,response-fields']
+
+=== 댓글 목록 조회
+==== CM_002
+
+operation::CM_002[snippets='curl-request,path-parameters,request-parameters,http-response,response-fields']
+
+=== 댓글 정보 조회
+==== CM_003
+
+operation::CM_003[snippets='curl-request,path-parameters,http-response,response-fields']
+
+=== 댓글 수정
+==== CM_004
+
+operation::CM_004[snippets='curl-request,path-parameters,request-fields,http-response,response-fields']
+
+=== 댓글 삭제
+==== CM_005
+
+operation::CM_005[snippets='curl-request,path-parameters,http-response,response-fields']
+
+=== 댓글 좋아요/싫어요
+==== CM_006
+
+operation::CM_006[snippets='curl-request,path-parameters,request-fields,http-response,response-fields']

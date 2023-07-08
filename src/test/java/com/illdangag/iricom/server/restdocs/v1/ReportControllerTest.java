@@ -61,27 +61,26 @@ public class ReportControllerTest extends IricomTestSuite {
                 .andExpect(status().is(200))
                 .andDo(print())
                 .andDo(document("RP_001",
-                                preprocessRequest(
-                                        removeHeaders("Authorization"),
-                                        prettyPrint()
-                                ),
-                                preprocessResponse(
-                                        prettyPrint()
-                                ),
-                                pathParameters(
-                                        parameterWithName("boardId").description("게시판 아이디"),
-                                        parameterWithName("postId").description("게시물 아이디")
-                                ),
-                                requestHeaders(
-//                                        headerWithName("Authorization").description("firebase 토큰")
-                                ),
-                                requestFields(
-                                        fieldWithPath("type").description("종류"),
-                                        fieldWithPath("reason").description("사유")
-                                ),
-                                responseFields(fieldDescriptorList.toArray(FieldDescriptor[]::new))
-                        )
-                );
+                        preprocessRequest(
+                                removeHeaders("Authorization"),
+                                prettyPrint()
+                        ),
+                        preprocessResponse(
+                                prettyPrint()
+                        ),
+                        pathParameters(
+                                parameterWithName("boardId").description("게시판 아이디"),
+                                parameterWithName("postId").description("게시물 아이디")
+                        ),
+                        requestHeaders(
+//                                headerWithName("Authorization").description("firebase 토큰")
+                        ),
+                        requestFields(
+                                fieldWithPath("type").description("종류"),
+                                fieldWithPath("reason").description("사유")
+                        ),
+                        responseFields(fieldDescriptorList.toArray(FieldDescriptor[]::new))
+                ));
     }
 
     @Test
@@ -106,30 +105,29 @@ public class ReportControllerTest extends IricomTestSuite {
                 .andExpect(status().is(200))
                 .andDo(print())
                 .andDo(document("RP_002",
-                                preprocessRequest(
-                                        removeHeaders("Authorization"),
-                                        prettyPrint()
-                                ),
-                                preprocessResponse(
-                                        prettyPrint()
-                                ),
-                                pathParameters(
-                                        parameterWithName("boardId").description("게시판 아이디")
-                                ),
-                                requestHeaders(
-//                                        headerWithName("Authorization").description("firebase 토큰")
-                                ),
-                                requestParameters(
-                                        parameterWithName("skip").description("건너 뛸 수"),
-                                        parameterWithName("limit").description("최대 조회 수"),
-                                        parameterWithName("type").description("게시물의 종류 (hate: 증오, pornography: 음란물, political: 정치, etc: 기타)"),
-                                        parameterWithName("reason").description("신고 사유")
-                                ),
-                                responseFields(
-                                        fieldDescriptorList.toArray(FieldDescriptor[]::new)
-                                )
+                        preprocessRequest(
+                                removeHeaders("Authorization"),
+                                prettyPrint()
+                        ),
+                        preprocessResponse(
+                                prettyPrint()
+                        ),
+                        pathParameters(
+                                parameterWithName("boardId").description("게시판 아이디")
+                        ),
+                        requestHeaders(
+//                                headerWithName("Authorization").description("firebase 토큰")
+                        ),
+                        requestParameters(
+                                parameterWithName("skip").description("건너 뛸 수"),
+                                parameterWithName("limit").description("최대 조회 수"),
+                                parameterWithName("type").description("게시물의 종류 (hate: 증오, pornography: 음란물, political: 정치, etc: 기타)"),
+                                parameterWithName("reason").description("신고 사유")
+                        ),
+                        responseFields(
+                                fieldDescriptorList.toArray(FieldDescriptor[]::new)
                         )
-                );
+                ));
     }
 
     @Test
@@ -155,31 +153,30 @@ public class ReportControllerTest extends IricomTestSuite {
                 .andExpect(status().is(200))
                 .andDo(print())
                 .andDo(document("RP_003",
-                                preprocessRequest(
-                                        removeHeaders("Authorization"),
-                                        prettyPrint()
-                                ),
-                                preprocessResponse(
-                                        prettyPrint()
-                                ),
-                                pathParameters(
-                                        parameterWithName("boardId").description("게시판 아이디"),
-                                        parameterWithName("postId").description("게시물 아이디")
-                                ),
-                                requestHeaders(
-//                                        headerWithName("Authorization").description("firebase 토큰")
-                                ),
-                                requestParameters(
-                                        parameterWithName("skip").description("건너 뛸 수"),
-                                        parameterWithName("limit").description("최대 조회 수"),
-                                        parameterWithName("type").description("게시물의 종류 (hate: 증오, pornography: 음란물, political: 정치, etc: 기타)"),
-                                        parameterWithName("reason").description("신고 사유")
-                                ),
-                                responseFields(
-                                        fieldDescriptorList.toArray(FieldDescriptor[]::new)
-                                )
+                        preprocessRequest(
+                                removeHeaders("Authorization"),
+                                prettyPrint()
+                        ),
+                        preprocessResponse(
+                                prettyPrint()
+                        ),
+                        pathParameters(
+                                parameterWithName("boardId").description("게시판 아이디"),
+                                parameterWithName("postId").description("게시물 아이디")
+                        ),
+                        requestHeaders(
+//                                headerWithName("Authorization").description("firebase 토큰")
+                        ),
+                        requestParameters(
+                                parameterWithName("skip").description("건너 뛸 수"),
+                                parameterWithName("limit").description("최대 조회 수"),
+                                parameterWithName("type").description("게시물의 종류 (hate: 증오, pornography: 음란물, political: 정치, etc: 기타)"),
+                                parameterWithName("reason").description("신고 사유")
+                        ),
+                        responseFields(
+                                fieldDescriptorList.toArray(FieldDescriptor[]::new)
                         )
-                );
+                ));
     }
 
     @Test
@@ -205,32 +202,31 @@ public class ReportControllerTest extends IricomTestSuite {
                 .andExpect(status().is(200))
                 .andDo(print())
                 .andDo(document("RP_004",
-                                preprocessRequest(
-                                        removeHeaders("Authorization"),
-                                        prettyPrint()
-                                ),
-                                preprocessResponse(
-                                        prettyPrint()
-                                ),
-                                pathParameters(
-                                        parameterWithName("boardId").description("게시판 아이디"),
-                                        parameterWithName("postId").description("게시물 아이디"),
-                                        parameterWithName("reportId").description("신고 아이디")
-                                ),
-                                requestHeaders(
-//                                        headerWithName("Authorization").description("firebase 토큰")
-                                ),
-                                requestParameters(
-                                        parameterWithName("skip").description("건너 뛸 수"),
-                                        parameterWithName("limit").description("최대 조회 수"),
-                                        parameterWithName("type").description("게시물의 종류 (hate: 증오, pornography: 음란물, political: 정치, etc: 기타)"),
-                                        parameterWithName("reason").description("신고 사유")
-                                ),
-                                responseFields(
-                                        fieldDescriptorList.toArray(FieldDescriptor[]::new)
-                                )
+                        preprocessRequest(
+                                removeHeaders("Authorization"),
+                                prettyPrint()
+                        ),
+                        preprocessResponse(
+                                prettyPrint()
+                        ),
+                        pathParameters(
+                                parameterWithName("boardId").description("게시판 아이디"),
+                                parameterWithName("postId").description("게시물 아이디"),
+                                parameterWithName("reportId").description("신고 아이디")
+                        ),
+                        requestHeaders(
+//                                headerWithName("Authorization").description("firebase 토큰")
+                        ),
+                        requestParameters(
+                                parameterWithName("skip").description("건너 뛸 수"),
+                                parameterWithName("limit").description("최대 조회 수"),
+                                parameterWithName("type").description("게시물의 종류 (hate: 증오, pornography: 음란물, political: 정치, etc: 기타)"),
+                                parameterWithName("reason").description("신고 사유")
+                        ),
+                        responseFields(
+                                fieldDescriptorList.toArray(FieldDescriptor[]::new)
                         )
-                );
+                ));
     }
 
     @Test
@@ -258,30 +254,29 @@ public class ReportControllerTest extends IricomTestSuite {
                 .andExpect(status().is(200))
                 .andDo(print())
                 .andDo(document("RC_001",
-                                preprocessRequest(
-                                        removeHeaders("Authorization"),
-                                        prettyPrint()
-                                ),
-                                preprocessResponse(
-                                        prettyPrint()
-                                ),
-                                pathParameters(
-                                        parameterWithName("boardId").description("게시판 아이디"),
-                                        parameterWithName("postId").description("게시물 아이디"),
-                                        parameterWithName("commentId").description("댓글 아이디")
-                                ),
-                                requestHeaders(
-//                                        headerWithName("Authorization").description("firebase 토큰")
-                                ),
-                                requestFields(
-                                        fieldWithPath("type").description("종류"),
-                                        fieldWithPath("reason").description("사유")
-                                ),
-                                responseFields(
-                                        fieldDescriptorList.toArray(FieldDescriptor[]::new)
-                                )
+                        preprocessRequest(
+                                removeHeaders("Authorization"),
+                                prettyPrint()
+                        ),
+                        preprocessResponse(
+                                prettyPrint()
+                        ),
+                        pathParameters(
+                                parameterWithName("boardId").description("게시판 아이디"),
+                                parameterWithName("postId").description("게시물 아이디"),
+                                parameterWithName("commentId").description("댓글 아이디")
+                        ),
+                        requestHeaders(
+//                                headerWithName("Authorization").description("firebase 토큰")
+                        ),
+                        requestFields(
+                                fieldWithPath("type").description("종류"),
+                                fieldWithPath("reason").description("사유")
+                        ),
+                        responseFields(
+                                fieldDescriptorList.toArray(FieldDescriptor[]::new)
                         )
-                );
+                ));
     }
 
     @Test
@@ -309,30 +304,29 @@ public class ReportControllerTest extends IricomTestSuite {
                 .andExpect(status().is(200))
                 .andDo(print())
                 .andDo(document("RC_002",
-                                preprocessRequest(
-                                        removeHeaders("Authorization"),
-                                        prettyPrint()
-                                ),
-                                preprocessResponse(
-                                        prettyPrint()
-                                ),
-                                pathParameters(
-                                        parameterWithName("boardId").description("게시판 아이디")
-                                ),
-                                requestHeaders(
-//                                        headerWithName("Authorization").description("firebase 토큰")
-                                ),
-                                requestParameters(
-                                        parameterWithName("skip").description("건너 뛸 수"),
-                                        parameterWithName("limit").description("최대 조회 수"),
-                                        parameterWithName("type").description("게시물의 종류 (hate: 증오, pornography: 음란물, political: 정치, etc: 기타)"),
-                                        parameterWithName("reason").description("신고 사유")
-                                ),
-                                responseFields(
-                                        fieldDescriptorList.toArray(FieldDescriptor[]::new)
-                                )
+                        preprocessRequest(
+                                removeHeaders("Authorization"),
+                                prettyPrint()
+                        ),
+                        preprocessResponse(
+                                prettyPrint()
+                        ),
+                        pathParameters(
+                                parameterWithName("boardId").description("게시판 아이디")
+                        ),
+                        requestHeaders(
+//                                headerWithName("Authorization").description("firebase 토큰")
+                        ),
+                        requestParameters(
+                                parameterWithName("skip").description("건너 뛸 수"),
+                                parameterWithName("limit").description("최대 조회 수"),
+                                parameterWithName("type").description("게시물의 종류 (hate: 증오, pornography: 음란물, political: 정치, etc: 기타)"),
+                                parameterWithName("reason").description("신고 사유")
+                        ),
+                        responseFields(
+                                fieldDescriptorList.toArray(FieldDescriptor[]::new)
                         )
-                );
+                ));
     }
 
     @Test
@@ -360,31 +354,30 @@ public class ReportControllerTest extends IricomTestSuite {
                 .andExpect(status().is(200))
                 .andDo(print())
                 .andDo(document("RC_003",
-                                preprocessRequest(
-                                        removeHeaders("Authorization"),
-                                        prettyPrint()
-                                ),
-                                preprocessResponse(
-                                        prettyPrint()
-                                ),
-                                pathParameters(
-                                        parameterWithName("boardId").description("게시판 아이디"),
-                                        parameterWithName("postId").description("게시물 아이디")
-                                ),
-                                requestHeaders(
-//                                        headerWithName("Authorization").description("firebase 토큰")
-                                ),
-                                requestParameters(
-                                        parameterWithName("skip").description("건너 뛸 수"),
-                                        parameterWithName("limit").description("최대 조회 수"),
-                                        parameterWithName("type").description("게시물의 종류 (hate: 증오, pornography: 음란물, political: 정치, etc: 기타)"),
-                                        parameterWithName("reason").description("신고 사유")
-                                ),
-                                responseFields(
-                                        fieldDescriptorList.toArray(FieldDescriptor[]::new)
-                                )
+                        preprocessRequest(
+                                removeHeaders("Authorization"),
+                                prettyPrint()
+                        ),
+                        preprocessResponse(
+                                prettyPrint()
+                        ),
+                        pathParameters(
+                                parameterWithName("boardId").description("게시판 아이디"),
+                                parameterWithName("postId").description("게시물 아이디")
+                        ),
+                        requestHeaders(
+//                                headerWithName("Authorization").description("firebase 토큰")
+                        ),
+                        requestParameters(
+                                parameterWithName("skip").description("건너 뛸 수"),
+                                parameterWithName("limit").description("최대 조회 수"),
+                                parameterWithName("type").description("게시물의 종류 (hate: 증오, pornography: 음란물, political: 정치, etc: 기타)"),
+                                parameterWithName("reason").description("신고 사유")
+                        ),
+                        responseFields(
+                                fieldDescriptorList.toArray(FieldDescriptor[]::new)
                         )
-                );
+                ));
     }
 
     @Test
@@ -412,32 +405,31 @@ public class ReportControllerTest extends IricomTestSuite {
                 .andExpect(status().is(200))
                 .andDo(print())
                 .andDo(document("RC_004",
-                                preprocessRequest(
-                                        removeHeaders("Authorization"),
-                                        prettyPrint()
-                                ),
-                                preprocessResponse(
-                                        prettyPrint()
-                                ),
-                                pathParameters(
-                                        parameterWithName("boardId").description("게시판 아이디"),
-                                        parameterWithName("postId").description("게시물 아이디"),
-                                        parameterWithName("commentId").description("댓글 아이디")
-                                ),
-                                requestHeaders(
-//                                        headerWithName("Authorization").description("firebase 토큰")
-                                ),
-                                requestParameters(
-                                        parameterWithName("skip").description("건너 뛸 수"),
-                                        parameterWithName("limit").description("최대 조회 수"),
-                                        parameterWithName("type").description("게시물의 종류 (hate: 증오, pornography: 음란물, political: 정치, etc: 기타)"),
-                                        parameterWithName("reason").description("신고 사유")
-                                ),
-                                responseFields(
-                                        fieldDescriptorList.toArray(FieldDescriptor[]::new)
-                                )
+                        preprocessRequest(
+                                removeHeaders("Authorization"),
+                                prettyPrint()
+                        ),
+                        preprocessResponse(
+                                prettyPrint()
+                        ),
+                        pathParameters(
+                                parameterWithName("boardId").description("게시판 아이디"),
+                                parameterWithName("postId").description("게시물 아이디"),
+                                parameterWithName("commentId").description("댓글 아이디")
+                        ),
+                        requestHeaders(
+//                                headerWithName("Authorization").description("firebase 토큰")
+                        ),
+                        requestParameters(
+                                parameterWithName("skip").description("건너 뛸 수"),
+                                parameterWithName("limit").description("최대 조회 수"),
+                                parameterWithName("type").description("게시물의 종류 (hate: 증오, pornography: 음란물, political: 정치, etc: 기타)"),
+                                parameterWithName("reason").description("신고 사유")
+                        ),
+                        responseFields(
+                                fieldDescriptorList.toArray(FieldDescriptor[]::new)
                         )
-                );
+                ));
     }
 
     @Test
@@ -460,26 +452,25 @@ public class ReportControllerTest extends IricomTestSuite {
                 .andExpect(status().is(200))
                 .andDo(print())
                 .andDo(document("RC_005",
-                                preprocessRequest(
-                                        removeHeaders("Authorization"),
-                                        prettyPrint()
-                                ),
-                                preprocessResponse(
-                                        prettyPrint()
-                                ),
-                                pathParameters(
-                                        parameterWithName("boardId").description("게시판 아이디"),
-                                        parameterWithName("postId").description("게시물 아이디"),
-                                        parameterWithName("commentId").description("댓글 아이디"),
-                                        parameterWithName("reportId").description("신고 아이디")
-                                ),
-                                requestHeaders(
-//                                        headerWithName("Authorization").description("firebase 토큰")
-                                ),
-                                responseFields(
-                                        fieldDescriptorList.toArray(FieldDescriptor[]::new)
-                                )
+                        preprocessRequest(
+                                removeHeaders("Authorization"),
+                                prettyPrint()
+                        ),
+                        preprocessResponse(
+                                prettyPrint()
+                        ),
+                        pathParameters(
+                                parameterWithName("boardId").description("게시판 아이디"),
+                                parameterWithName("postId").description("게시물 아이디"),
+                                parameterWithName("commentId").description("댓글 아이디"),
+                                parameterWithName("reportId").description("신고 아이디")
+                        ),
+                        requestHeaders(
+//                                headerWithName("Authorization").description("firebase 토큰")
+                        ),
+                        responseFields(
+                                fieldDescriptorList.toArray(FieldDescriptor[]::new)
                         )
-                );
+                ));
     }
 }

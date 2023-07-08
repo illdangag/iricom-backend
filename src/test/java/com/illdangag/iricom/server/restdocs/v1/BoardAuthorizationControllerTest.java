@@ -68,7 +68,7 @@ public class BoardAuthorizationControllerTest extends IricomTestSuite {
                                 prettyPrint()
                         ),
                         requestHeaders(
-//                                        headerWithName("Authorization").description("firebase 토큰")
+//                                headerWithName("Authorization").description("firebase 토큰")
                         ),
                         requestFields(
                                 fieldWithPath("accountId").description("사용자 아이디"),
@@ -108,7 +108,7 @@ public class BoardAuthorizationControllerTest extends IricomTestSuite {
                                 prettyPrint()
                         ),
                         requestHeaders(
-//                                        headerWithName("Authorization").description("firebase 토큰")
+//                                headerWithName("Authorization").description("firebase 토큰")
                         ),
                         requestParameters(
                                 parameterWithName("skip").description("건너 뛸 수"),
@@ -147,7 +147,7 @@ public class BoardAuthorizationControllerTest extends IricomTestSuite {
                                 prettyPrint()
                         ),
                         requestHeaders(
-//                                        headerWithName("Authorization").description("firebase 토큰")
+//                                headerWithName("Authorization").description("firebase 토큰")
                         ),
                         pathParameters(
                                 parameterWithName("id").description("아이디")
@@ -184,7 +184,7 @@ public class BoardAuthorizationControllerTest extends IricomTestSuite {
                                 prettyPrint()
                         ),
                         requestHeaders(
-//                                        headerWithName("Authorization").description("firebase 토큰")
+//                                headerWithName("Authorization").description("firebase 토큰")
                         ),
                         requestFields(
                                 fieldWithPath("accountId").description("사용자 아이디"),

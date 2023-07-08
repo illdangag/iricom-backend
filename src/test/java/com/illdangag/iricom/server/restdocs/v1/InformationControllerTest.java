@@ -48,19 +48,18 @@ public class InformationControllerTest extends IricomTestSuite {
                 .andExpect(status().is(200))
                 .andDo(print())
                 .andDo(document("IF_001",
-                                preprocessRequest(
-                                        removeHeaders("Authorization"),
-                                        prettyPrint()
-                                ),
-                                preprocessResponse(
-                                        prettyPrint()
-                                ),
-                                requestHeaders(
-//                                        headerWithName("Authorization").description("firebase 토큰")
-                                ),
-                                responseFields(fieldDescriptorList.toArray(FieldDescriptor[]::new))
-                        )
-                );
+                        preprocessRequest(
+                                removeHeaders("Authorization"),
+                                prettyPrint()
+                        ),
+                        preprocessResponse(
+                                prettyPrint()
+                        ),
+                        requestHeaders(
+//                                headerWithName("Authorization").description("firebase 토큰")
+                        ),
+                        responseFields(fieldDescriptorList.toArray(FieldDescriptor[]::new))
+                ));
     }
 
     @Test
@@ -81,22 +80,21 @@ public class InformationControllerTest extends IricomTestSuite {
                 .andExpect(status().is(200))
                 .andDo(print())
                 .andDo(document("IF_002",
-                                preprocessRequest(
-                                        removeHeaders("Authorization"),
-                                        prettyPrint()
-                                ),
-                                preprocessResponse(
-                                        prettyPrint()
-                                ),
-                                requestHeaders(
-//                                        headerWithName("Authorization").description("firebase 토큰")
-                                ),
-                                requestParameters(
-                                        parameterWithName("skip").description("건너 뛸 수"),
-                                        parameterWithName("limit").description("최대 조회 수")
-                                ),
-                                responseFields(fieldDescriptorList.toArray(FieldDescriptor[]::new))
-                        )
-                );
+                        preprocessRequest(
+                                removeHeaders("Authorization"),
+                                prettyPrint()
+                        ),
+                        preprocessResponse(
+                                prettyPrint()
+                        ),
+                        requestHeaders(
+//                                headerWithName("Authorization").description("firebase 토큰")
+                        ),
+                        requestParameters(
+                                parameterWithName("skip").description("건너 뛸 수"),
+                                parameterWithName("limit").description("최대 조회 수")
+                        ),
+                        responseFields(fieldDescriptorList.toArray(FieldDescriptor[]::new))
+                ));
     }
 }

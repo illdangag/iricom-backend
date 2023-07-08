@@ -57,24 +57,23 @@ public class AccountControllerTest extends IricomTestSuite {
                 .andExpect(status().is(200))
                 .andDo(print())
                 .andDo(document("AC_001",
-                                preprocessRequest(
-                                        removeHeaders("Authorization"),
-                                        prettyPrint()
-                                ),
-                                preprocessResponse(
-                                        prettyPrint()
-                                ),
-                                requestHeaders(
+                        preprocessRequest(
+                                removeHeaders("Authorization"),
+                                prettyPrint()
+                        ),
+                        preprocessResponse(
+                                prettyPrint()
+                        ),
+                        requestHeaders(
 //                                        headerWithName("Authorization").description("firebase 토큰")
-                                ),
-                                requestParameters(
-                                        parameterWithName("skip").description("건너 뛸 수"),
-                                        parameterWithName("limit").description("최대 조회 수"),
-                                        parameterWithName("keyword").description("검색어")
-                                ),
-                                responseFields(fieldDescriptorList.toArray(FieldDescriptor[]::new))
-                        )
-                );
+                        ),
+                        requestParameters(
+                                parameterWithName("skip").description("건너 뛸 수"),
+                                parameterWithName("limit").description("최대 조회 수"),
+                                parameterWithName("keyword").description("검색어")
+                        ),
+                        responseFields(fieldDescriptorList.toArray(FieldDescriptor[]::new))
+                ));
     }
 
     @Test
@@ -93,22 +92,21 @@ public class AccountControllerTest extends IricomTestSuite {
                 .andExpect(status().is(200))
                 .andDo(print())
                 .andDo(document("AC_002",
-                                preprocessRequest(
-                                        removeHeaders("Authorization"),
-                                        prettyPrint()
-                                ),
-                                preprocessResponse(
-                                        prettyPrint()
-                                ),
-                                requestHeaders(
-//                                        headerWithName("Authorization").description("firebase 토큰")
-                                ),
-                                pathParameters(
-                                        parameterWithName("id").description("아이디")
-                                ),
-                                responseFields(fieldDescriptorList.toArray(FieldDescriptor[]::new))
-                        )
-                );
+                        preprocessRequest(
+                                removeHeaders("Authorization"),
+                                prettyPrint()
+                        ),
+                        preprocessResponse(
+                                prettyPrint()
+                        ),
+                        requestHeaders(
+//                                headerWithName("Authorization").description("firebase 토큰")
+                        ),
+                        pathParameters(
+                                parameterWithName("id").description("아이디")
+                        ),
+                        responseFields(fieldDescriptorList.toArray(FieldDescriptor[]::new))
+                ));
 
     }
 
@@ -132,23 +130,22 @@ public class AccountControllerTest extends IricomTestSuite {
                 .andExpect(status().is(200))
                 .andDo(print())
                 .andDo(document("AC_003",
-                                preprocessRequest(
-                                        removeHeaders("Authorization"),
-                                        prettyPrint()
-                                ),
-                                preprocessResponse(
-                                        prettyPrint()
-                                ),
-                                requestHeaders(
-//                                        headerWithName("Authorization").description("firebase 토큰")
-                                ),
-                                requestFields(
-                                        fieldWithPath("nickname").description("닉네임"),
-                                        fieldWithPath("description").description("설명")
-                                ),
-                                responseFields(fieldDescriptorList.toArray(FieldDescriptor[]::new))
-                        )
-                );
+                        preprocessRequest(
+                                removeHeaders("Authorization"),
+                                prettyPrint()
+                        ),
+                        preprocessResponse(
+                                prettyPrint()
+                        ),
+                        requestHeaders(
+//                                headerWithName("Authorization").description("firebase 토큰")
+                        ),
+                        requestFields(
+                                fieldWithPath("nickname").description("닉네임"),
+                                fieldWithPath("description").description("설명")
+                        ),
+                        responseFields(fieldDescriptorList.toArray(FieldDescriptor[]::new))
+                ));
     }
 
     @Test
@@ -173,25 +170,24 @@ public class AccountControllerTest extends IricomTestSuite {
                 .andExpect(status().is(200))
                 .andDo(print())
                 .andDo(document("AC_004",
-                                preprocessRequest(
-                                        removeHeaders("Authorization"),
-                                        prettyPrint()
-                                ),
-                                preprocessResponse(
-                                        prettyPrint()
-                                ),
-                                requestHeaders(
-//                                        headerWithName("Authorization").description("firebase 토큰")
-                                ),
-                                pathParameters(
-                                        parameterWithName("id").description("아이디")
-                                ),
-                                requestFields(
-                                        fieldWithPath("nickname").description("닉네임"),
-                                        fieldWithPath("description").description("설명")
-                                ),
-                                responseFields(fieldDescriptorList.toArray(FieldDescriptor[]::new))
-                        )
-                );
+                        preprocessRequest(
+                                removeHeaders("Authorization"),
+                                prettyPrint()
+                        ),
+                        preprocessResponse(
+                                prettyPrint()
+                        ),
+                        requestHeaders(
+//                                headerWithName("Authorization").description("firebase 토큰")
+                        ),
+                        pathParameters(
+                                parameterWithName("id").description("아이디")
+                        ),
+                        requestFields(
+                                fieldWithPath("nickname").description("닉네임"),
+                                fieldWithPath("description").description("설명")
+                        ),
+                        responseFields(fieldDescriptorList.toArray(FieldDescriptor[]::new))
+                ));
     }
 }

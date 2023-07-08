@@ -58,24 +58,23 @@ public class BoardControllerTest extends IricomTestSuite {
                 .andExpect(status().is(200))
                 .andDo(print())
                 .andDo(document("BD_001",
-                                preprocessRequest(
-                                        removeHeaders("Authorization"),
-                                        prettyPrint()
-                                ),
-                                preprocessResponse(
-                                        prettyPrint()
-                                ),
-                                requestHeaders(
-//                                        headerWithName("Authorization").description("firebase 토큰")
-                                ),
-                                requestFields(
-                                        fieldWithPath("title").description("제목"),
-                                        fieldWithPath("description").description("설명"),
-                                        fieldWithPath("enabled").description("활성화 여부")
-                                ),
-                                responseFields(fieldDescriptorList.toArray(FieldDescriptor[]::new))
-                        )
-                );
+                        preprocessRequest(
+                                removeHeaders("Authorization"),
+                                prettyPrint()
+                        ),
+                        preprocessResponse(
+                                prettyPrint()
+                        ),
+                        requestHeaders(
+//                                headerWithName("Authorization").description("firebase 토큰")
+                        ),
+                        requestFields(
+                                fieldWithPath("title").description("제목"),
+                                fieldWithPath("description").description("설명"),
+                                fieldWithPath("enabled").description("활성화 여부")
+                        ),
+                        responseFields(fieldDescriptorList.toArray(FieldDescriptor[]::new))
+                ));
     }
 
 
@@ -97,29 +96,23 @@ public class BoardControllerTest extends IricomTestSuite {
                 .andExpect(status().is(200))
                 .andDo(print())
                 .andDo(document("BD_002",
-                                preprocessRequest(
-                                        removeHeaders("Authorization"),
-                                        prettyPrint()
-                                ),
-                                preprocessResponse(
-                                        prettyPrint()
-                                ),
-                                requestParameters(
-                                        parameterWithName("skip").description("건너 뛸 수"),
-                                        parameterWithName("limit").description("최대 조회 수"),
-                                        parameterWithName("keyword").description("검색어")
-                                ),
-                                requestHeaders(
-//                                        headerWithName("Authorization").description("firebase 토큰")
-                                ),
-//                                requestFields(
-//                                        fieldWithPath("title").description("제목"),
-//                                        fieldWithPath("description").description("설명"),
-//                                        fieldWithPath("enabled").description("활성화 여부")
-//                                ),
-                                responseFields(fieldDescriptorList.toArray(FieldDescriptor[]::new))
-                        )
-                );
+                        preprocessRequest(
+                                removeHeaders("Authorization"),
+                                prettyPrint()
+                        ),
+                        preprocessResponse(
+                                prettyPrint()
+                        ),
+                        requestParameters(
+                                parameterWithName("skip").description("건너 뛸 수"),
+                                parameterWithName("limit").description("최대 조회 수"),
+                                parameterWithName("keyword").description("검색어")
+                        ),
+                        requestHeaders(
+//                                headerWithName("Authorization").description("firebase 토큰")
+                        ),
+                        responseFields(fieldDescriptorList.toArray(FieldDescriptor[]::new))
+                ));
     }
 
     @Test
@@ -138,22 +131,21 @@ public class BoardControllerTest extends IricomTestSuite {
                 .andExpect(status().is(200))
                 .andDo(print())
                 .andDo(document("BD_003",
-                                preprocessRequest(
-                                        removeHeaders("Authorization"),
-                                        prettyPrint()
-                                ),
-                                preprocessResponse(
-                                        prettyPrint()
-                                ),
-                                requestHeaders(
-//                                        headerWithName("Authorization").description("firebase 토큰")
-                                ),
-                                pathParameters(
-                                        parameterWithName("id").description("아이디")
-                                ),
-                                responseFields(fieldDescriptorList.toArray(FieldDescriptor[]::new))
-                        )
-                );
+                        preprocessRequest(
+                                removeHeaders("Authorization"),
+                                prettyPrint()
+                        ),
+                        preprocessResponse(
+                                prettyPrint()
+                        ),
+                        requestHeaders(
+//                                headerWithName("Authorization").description("firebase 토큰")
+                        ),
+                        pathParameters(
+                                parameterWithName("id").description("아이디")
+                        ),
+                        responseFields(fieldDescriptorList.toArray(FieldDescriptor[]::new))
+                ));
     }
 
     @Test
@@ -187,7 +179,7 @@ public class BoardControllerTest extends IricomTestSuite {
                                 prettyPrint()
                         ),
                         requestHeaders(
-//                              headerWithName("Authorization").description("firebase 토큰")
+//                                headerWithName("Authorization").description("firebase 토큰")
                         ),
                         pathParameters(
                                 parameterWithName("id").description("아이디")
@@ -198,7 +190,6 @@ public class BoardControllerTest extends IricomTestSuite {
                                 fieldWithPath("enabled").description("활성화 여부")
                         ),
                         responseFields(fieldDescriptorList.toArray(FieldDescriptor[]::new))
-                    )
-                );
+                ));
     }
 }

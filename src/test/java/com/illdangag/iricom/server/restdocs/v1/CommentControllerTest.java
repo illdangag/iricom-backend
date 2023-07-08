@@ -64,27 +64,25 @@ public class CommentControllerTest extends IricomTestSuite {
                 .andExpect(status().is(200))
                 .andDo(print())
                 .andDo(document("CM_001", preprocessRequest(
-                                        removeHeaders("Authorization"),
-                                        prettyPrint()
-                                ),
-                                preprocessResponse(
-                                        prettyPrint()
-                                ),
-                                pathParameters(
-                                        parameterWithName("boardId").description("게시판 아이디"),
-                                        parameterWithName("postId").description("게시물 아이디")
-                                ),
-                                requestHeaders(
-//                                        headerWithName("Authorization").description("firebase 토큰")
-                                ),
-                                requestFields(
-                                        fieldWithPath("content").description("내용"),
-                                        fieldWithPath("referenceCommentId").description("상위 댓글 아이디")
-                                ),
-                                responseFields(fieldDescriptorList.toArray(FieldDescriptor[]::new))
-                        )
-
-                );
+                                removeHeaders("Authorization"),
+                                prettyPrint()
+                        ),
+                        preprocessResponse(
+                                prettyPrint()
+                        ),
+                        pathParameters(
+                                parameterWithName("boardId").description("게시판 아이디"),
+                                parameterWithName("postId").description("게시물 아이디")
+                        ),
+                        requestHeaders(
+//                                headerWithName("Authorization").description("firebase 토큰")
+                        ),
+                        requestFields(
+                                fieldWithPath("content").description("내용"),
+                                fieldWithPath("referenceCommentId").description("상위 댓글 아이디")
+                        ),
+                        responseFields(fieldDescriptorList.toArray(FieldDescriptor[]::new))
+                ));
     }
 
     @Test
@@ -127,7 +125,7 @@ public class CommentControllerTest extends IricomTestSuite {
                                 parameterWithName("postId").description("게시물 아이디")
                         ),
                         requestHeaders(
-//                                        headerWithName("Authorization").description("firebase 토큰")
+//                                headerWithName("Authorization").description("firebase 토큰")
                         ),
                         requestParameters(
                                 parameterWithName("skip").description("건너 뛸 수"),
@@ -173,7 +171,7 @@ public class CommentControllerTest extends IricomTestSuite {
                                 parameterWithName("commentId").description("댓글 아이디")
                         ),
                         requestHeaders(
-//                                        headerWithName("Authorization").description("firebase 토큰")
+//                                headerWithName("Authorization").description("firebase 토큰")
                         ),
                         responseFields(fieldDescriptorList.toArray(FieldDescriptor[]::new))
                 ));
@@ -216,7 +214,7 @@ public class CommentControllerTest extends IricomTestSuite {
                                 parameterWithName("commentId").description("댓글 아이디")
                         ),
                         requestHeaders(
-//                                        headerWithName("Authorization").description("firebase 토큰")
+//                                headerWithName("Authorization").description("firebase 토큰")
                         ),
                         requestFields(
                                 fieldWithPath("content").description("내용")
@@ -256,7 +254,7 @@ public class CommentControllerTest extends IricomTestSuite {
                                 parameterWithName("commentId").description("댓글 아이디")
                         ),
                         requestHeaders(
-//                                        headerWithName("Authorization").description("firebase 토큰")
+//                                headerWithName("Authorization").description("firebase 토큰")
                         ),
                         responseFields(fieldDescriptorList.toArray(FieldDescriptor[]::new))
                 ));
@@ -299,7 +297,7 @@ public class CommentControllerTest extends IricomTestSuite {
                                 parameterWithName("commentId").description("댓글 아이디")
                         ),
                         requestHeaders(
-//                                        headerWithName("Authorization").description("firebase 토큰")
+//                                headerWithName("Authorization").description("firebase 토큰")
                         ),
                         requestFields(
                                 fieldWithPath("type").description("종류 (upvote: 좋아요, downvote: 싫어요)")

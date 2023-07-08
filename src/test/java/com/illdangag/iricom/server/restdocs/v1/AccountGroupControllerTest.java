@@ -89,25 +89,24 @@ public class AccountGroupControllerTest extends IricomTestSuite {
                 .andExpect(status().is(200))
                 .andDo(print())
                 .andDo(document("AG_001",
-                                preprocessRequest(
-                                        removeHeaders("Authorization"),
-                                        prettyPrint()
-                                ),
-                                preprocessResponse(
-                                        prettyPrint()
-                                ),
-                                requestHeaders(
-//                                        headerWithName("Authorization").description("firebase 토큰")
-                                ),
-                                requestFields(
-                                        fieldWithPath("title").description("제목"),
-                                        fieldWithPath("description").description("설명"),
-                                        fieldWithPath("accountIds").description("계정 그룹에 포함 할 계정의 아이디 목록"),
-                                        fieldWithPath("boardIds").description("계정 그룹에 포함 할 게시판의 아이디 목록")
-                                ),
+                        preprocessRequest(
+                                removeHeaders("Authorization"),
+                                prettyPrint()
+                        ),
+                        preprocessResponse(
+                                prettyPrint()
+                        ),
+                        requestHeaders(
+//                                headerWithName("Authorization").description("firebase 토큰")
+                        ),
+                        requestFields(
+                                fieldWithPath("title").description("제목"),
+                                fieldWithPath("description").description("설명"),
+                                fieldWithPath("accountIds").description("계정 그룹에 포함 할 계정의 아이디 목록"),
+                                fieldWithPath("boardIds").description("계정 그룹에 포함 할 게시판의 아이디 목록")
+                        ),
                         responseFields(fieldDescriptorList.toArray(FieldDescriptor[]::new))
-                        )
-                );
+                ));
     }
 
     @Test
@@ -136,7 +135,7 @@ public class AccountGroupControllerTest extends IricomTestSuite {
                                 prettyPrint()
                         ),
                         requestHeaders(
-//                              headerWithName("Authorization").description("firebase 토큰")
+//                                headerWithName("Authorization").description("firebase 토큰")
                         ),
                         requestParameters(
                                 parameterWithName("skip").description("건너 뛸 수"),
@@ -144,7 +143,8 @@ public class AccountGroupControllerTest extends IricomTestSuite {
                         ),
                         responseFields(
                                 fieldDescriptorList.toArray(FieldDescriptor[]::new)
-                        )));
+                        )
+                ));
     }
 
     @Test
@@ -179,7 +179,8 @@ public class AccountGroupControllerTest extends IricomTestSuite {
                         ),
                         responseFields(
                                 fieldDescriptorList.toArray(FieldDescriptor[]::new)
-                        )));
+                        )
+                ));
     }
 
 
@@ -236,7 +237,8 @@ public class AccountGroupControllerTest extends IricomTestSuite {
                         ),
                         responseFields(
                                 fieldDescriptorList.toArray(FieldDescriptor[]::new)
-                        )));
+                        ))
+                );
     }
 
     @Test
@@ -271,6 +273,7 @@ public class AccountGroupControllerTest extends IricomTestSuite {
                         ),
                         responseFields(
                                 fieldDescriptorList.toArray(FieldDescriptor[]::new)
-                        )));
+                        ))
+                );
     }
 }

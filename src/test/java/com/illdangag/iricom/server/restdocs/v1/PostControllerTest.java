@@ -63,28 +63,27 @@ public class PostControllerTest extends IricomTestSuite {
                 .andExpect(status().is(200))
                 .andDo(print())
                 .andDo(document("PS_001",
-                                preprocessRequest(
-                                        removeHeaders("Authorization"),
-                                        prettyPrint()
-                                ),
-                                preprocessResponse(
-                                        prettyPrint()
-                                ),
-                                pathParameters(
-                                        parameterWithName("boardId").description("게시판 아이디")
-                                ),
-                                requestHeaders(
-//                                        headerWithName("Authorization").description("firebase 토큰")
-                                ),
-                                requestFields(
-                                        fieldWithPath("title").description("제목"),
-                                        fieldWithPath("type").description("게시물의 종류 (post: 게시물, notification: 공지사항)"),
-                                        fieldWithPath("content").description("내용"),
-                                        fieldWithPath("isAllowComment").description("댓글 허용 여부")
-                                ),
-                                responseFields(fieldDescriptorList.toArray(FieldDescriptor[]::new))
-                        )
-                );
+                        preprocessRequest(
+                                removeHeaders("Authorization"),
+                                prettyPrint()
+                        ),
+                        preprocessResponse(
+                                prettyPrint()
+                        ),
+                        pathParameters(
+                                parameterWithName("boardId").description("게시판 아이디")
+                        ),
+                        requestHeaders(
+//                                headerWithName("Authorization").description("firebase 토큰")
+                        ),
+                        requestFields(
+                                fieldWithPath("title").description("제목"),
+                                fieldWithPath("type").description("게시물의 종류 (post: 게시물, notification: 공지사항)"),
+                                fieldWithPath("content").description("내용"),
+                                fieldWithPath("isAllowComment").description("댓글 허용 여부")
+                        ),
+                        responseFields(fieldDescriptorList.toArray(FieldDescriptor[]::new))
+                ));
     }
 
     @Test
@@ -109,28 +108,27 @@ public class PostControllerTest extends IricomTestSuite {
                 .andExpect(status().is(200))
                 .andDo(print())
                 .andDo(document("PS_002",
-                                preprocessRequest(
-                                        removeHeaders("Authorization"),
-                                        prettyPrint()
-                                ),
-                                preprocessResponse(
-                                        prettyPrint()
-                                ),
-                                pathParameters(
-                                        parameterWithName("boardId").description("게시판 아이디")
-                                ),
-                                requestHeaders(
-//                                        headerWithName("Authorization").description("firebase 토큰")
-                                ),
-                                requestParameters(
-                                        parameterWithName("skip").description("건너 뛸 수"),
-                                        parameterWithName("limit").description("최대 조회 수"),
-                                        parameterWithName("keyword").description("검색어"),
-                                        parameterWithName("type").description("게시물의 종류 (post: 게시물, notification: 공지사항)")
-                                ),
-                                responseFields(fieldDescriptorList.toArray(FieldDescriptor[]::new))
-                        )
-                );
+                        preprocessRequest(
+                                removeHeaders("Authorization"),
+                                prettyPrint()
+                        ),
+                        preprocessResponse(
+                                prettyPrint()
+                        ),
+                        pathParameters(
+                                parameterWithName("boardId").description("게시판 아이디")
+                        ),
+                        requestHeaders(
+//                                headerWithName("Authorization").description("firebase 토큰")
+                        ),
+                        requestParameters(
+                                parameterWithName("skip").description("건너 뛸 수"),
+                                parameterWithName("limit").description("최대 조회 수"),
+                                parameterWithName("keyword").description("검색어"),
+                                parameterWithName("type").description("게시물의 종류 (post: 게시물, notification: 공지사항)")
+                        ),
+                        responseFields(fieldDescriptorList.toArray(FieldDescriptor[]::new))
+                ));
     }
 
     @Test
@@ -164,7 +162,7 @@ public class PostControllerTest extends IricomTestSuite {
                                 parameterWithName("postId").description("게시물 아이디")
                         ),
                         requestHeaders(
-//                                        headerWithName("Authorization").description("firebase 토큰")
+//                                headerWithName("Authorization").description("firebase 토큰")
                         ),
                         requestParameters(
                                 parameterWithName("state").description("게시물의 상태 (publish: 게시물, notification: 공지사항)")
@@ -212,7 +210,7 @@ public class PostControllerTest extends IricomTestSuite {
                                 parameterWithName("postId").description("게시물 아이디")
                         ),
                         requestHeaders(
-//                                        headerWithName("Authorization").description("firebase 토큰")
+//                                headerWithName("Authorization").description("firebase 토큰")
                         ),
                         requestFields(
                                 fieldWithPath("title").description("제목"),
@@ -254,7 +252,7 @@ public class PostControllerTest extends IricomTestSuite {
                                 parameterWithName("postId").description("게시물 아이디")
                         ),
                         requestHeaders(
-//                                        headerWithName("Authorization").description("firebase 토큰")
+//                                headerWithName("Authorization").description("firebase 토큰")
                         ),
                         responseFields(fieldDescriptorList.toArray(FieldDescriptor[]::new))
                 ));
@@ -290,7 +288,7 @@ public class PostControllerTest extends IricomTestSuite {
                                 parameterWithName("postId").description("게시물 아이디")
                         ),
                         requestHeaders(
-//                                        headerWithName("Authorization").description("firebase 토큰")
+//                                headerWithName("Authorization").description("firebase 토큰")
                         ),
                         responseFields(fieldDescriptorList.toArray(FieldDescriptor[]::new))
                 ));
@@ -331,7 +329,7 @@ public class PostControllerTest extends IricomTestSuite {
                                 parameterWithName("postId").description("게시물 아이디")
                         ),
                         requestHeaders(
-//                                        headerWithName("Authorization").description("firebase 토큰")
+//                                headerWithName("Authorization").description("firebase 토큰")
                         ),
                         requestFields(
                                 fieldWithPath("type").description("종류 (upvote: 좋아요, downvote: 싫어요)")
