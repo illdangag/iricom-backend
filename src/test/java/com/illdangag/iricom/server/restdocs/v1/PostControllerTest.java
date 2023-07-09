@@ -41,7 +41,7 @@ public class PostControllerTest extends IricomTestSuite {
     @Test
     @DisplayName("생성")
     @Order(0)
-    public void testCase00() throws Exception {
+    public void ps001() throws Exception {
         Board board = getBoard(createBoard);
 
         Map<String, Object> requestBody = new HashMap<>();
@@ -56,7 +56,7 @@ public class PostControllerTest extends IricomTestSuite {
         setAuthToken(requestBuilder, systemAdmin);
 
         List<FieldDescriptor> fieldDescriptorList = new LinkedList<>();
-        fieldDescriptorList.addAll(IricomFieldsSnippet.getPost("", true));
+        fieldDescriptorList.addAll(IricomFieldsSnippet.getPost(""));
         fieldDescriptorList.addAll(IricomFieldsSnippet.getAccount("account."));
 
         mockMvc.perform(requestBuilder)
@@ -89,19 +89,19 @@ public class PostControllerTest extends IricomTestSuite {
     @Test
     @DisplayName("목록 조회")
     @Order(1)
-    public void testCase01() throws Exception {
+    public void ps002() throws Exception {
         Board board = getBoard(enableBoard);
 
         MockHttpServletRequestBuilder requestBuilder = get("/v1/boards/{boardId}/posts", board.getId())
                 .param("skip", "0")
-                .param("limit", "20")
+                .param("limit", "5")
                 .param("keyword", "")
                 .param("type", "post");
         setAuthToken(requestBuilder, common00);
 
         List<FieldDescriptor> fieldDescriptorList = new LinkedList<>();
         fieldDescriptorList.addAll(IricomFieldsSnippet.getSearchList(""));
-        fieldDescriptorList.addAll(IricomFieldsSnippet.getPost("posts.[].", false));
+        fieldDescriptorList.addAll(IricomFieldsSnippet.getPost("posts.[]."));
         fieldDescriptorList.addAll(IricomFieldsSnippet.getAccount("posts.[].account."));
 
         mockMvc.perform(requestBuilder)
@@ -134,7 +134,7 @@ public class PostControllerTest extends IricomTestSuite {
     @Test
     @DisplayName("조회")
     @Order(2)
-    public void testCase02() throws Exception {
+    public void ps003() throws Exception {
         Board board = getBoard(enableBoard);
         Post post = getPost(enableBoardPost00);
 
@@ -143,7 +143,7 @@ public class PostControllerTest extends IricomTestSuite {
         setAuthToken(requestBuilder, common00);
 
         List<FieldDescriptor> fieldDescriptorList = new LinkedList<>();
-        fieldDescriptorList.addAll(IricomFieldsSnippet.getPost("", true));
+        fieldDescriptorList.addAll(IricomFieldsSnippet.getPost(""));
         fieldDescriptorList.addAll(IricomFieldsSnippet.getAccount("account."));
 
         mockMvc.perform(requestBuilder)
@@ -174,7 +174,7 @@ public class PostControllerTest extends IricomTestSuite {
     @Test
     @DisplayName("수정")
     @Order(3)
-    public void testCase03() throws Exception {
+    public void ps004() throws Exception {
         Board board = getBoard(restDocBoard);
         Post post = getPost(updateBoardPost12);
 
@@ -187,11 +187,10 @@ public class PostControllerTest extends IricomTestSuite {
         MockHttpServletRequestBuilder requestBuilder = patch("/v1/boards/{boardId}/posts/{postId}", board.getId(), post.getId())
                 .content(getJsonString(requestBody))
                 .contentType(MediaType.APPLICATION_JSON);
-        ;
         setAuthToken(requestBuilder, allBoardAdmin);
 
         List<FieldDescriptor> fieldDescriptorList = new LinkedList<>();
-        fieldDescriptorList.addAll(IricomFieldsSnippet.getPost("", true));
+        fieldDescriptorList.addAll(IricomFieldsSnippet.getPost(""));
         fieldDescriptorList.addAll(IricomFieldsSnippet.getAccount("account."));
 
         mockMvc.perform(requestBuilder)
@@ -225,7 +224,7 @@ public class PostControllerTest extends IricomTestSuite {
     @Test
     @DisplayName("발행")
     @Order(4)
-    public void testCase04() throws Exception {
+    public void ps005() throws Exception {
         Board board = getBoard(restDocBoard);
         Post post = getPost(updateBoardPost13);
 
@@ -233,7 +232,7 @@ public class PostControllerTest extends IricomTestSuite {
         setAuthToken(requestBuilder, common00);
 
         List<FieldDescriptor> fieldDescriptorList = new LinkedList<>();
-        fieldDescriptorList.addAll(IricomFieldsSnippet.getPost("", true));
+        fieldDescriptorList.addAll(IricomFieldsSnippet.getPost(""));
         fieldDescriptorList.addAll(IricomFieldsSnippet.getAccount("account."));
 
         mockMvc.perform(requestBuilder)
@@ -261,7 +260,7 @@ public class PostControllerTest extends IricomTestSuite {
     @Test
     @DisplayName("삭제")
     @Order(5)
-    public void testCase05() throws Exception {
+    public void ps006() throws Exception {
         Board board = getBoard(restDocBoard);
         Post post = getPost(updateBoardPost14);
 
@@ -269,7 +268,7 @@ public class PostControllerTest extends IricomTestSuite {
         setAuthToken(requestBuilder, common00);
 
         List<FieldDescriptor> fieldDescriptorList = new LinkedList<>();
-        fieldDescriptorList.addAll(IricomFieldsSnippet.getPost("", false));
+        fieldDescriptorList.addAll(IricomFieldsSnippet.getPost(""));
         fieldDescriptorList.addAll(IricomFieldsSnippet.getAccount("account."));
 
         mockMvc.perform(requestBuilder)
@@ -297,7 +296,7 @@ public class PostControllerTest extends IricomTestSuite {
     @Test
     @DisplayName("게시물 좋아요/싫어요")
     @Order(6)
-    public void testCase06() throws Exception {
+    public void ps007() throws Exception {
         Board board = getBoard(voteBoard);
         Post post = getPost(votePost02);
 
@@ -310,7 +309,7 @@ public class PostControllerTest extends IricomTestSuite {
         setAuthToken(requestBuilder, common00);
 
         List<FieldDescriptor> fieldDescriptorList = new LinkedList<>();
-        fieldDescriptorList.addAll(IricomFieldsSnippet.getPost("", true));
+        fieldDescriptorList.addAll(IricomFieldsSnippet.getPost(""));
         fieldDescriptorList.addAll(IricomFieldsSnippet.getAccount("account."));
 
         mockMvc.perform(requestBuilder)

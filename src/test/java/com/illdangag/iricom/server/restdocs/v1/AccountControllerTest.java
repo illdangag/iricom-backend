@@ -44,7 +44,7 @@ public class AccountControllerTest extends IricomTestSuite {
     public void ac001() throws Exception {
         MockHttpServletRequestBuilder requestBuilder = get("/v1/accounts/")
                 .param("skip", "0")
-                .param("limit", "20")
+                .param("limit", "5")
                 .param("keyword", "common");
 
         setAuthToken(requestBuilder, systemAdmin);

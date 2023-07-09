@@ -54,7 +54,7 @@ public class ReportControllerTest extends IricomTestSuite {
 
         List<FieldDescriptor> fieldDescriptorList = new LinkedList<>();
         fieldDescriptorList.addAll(IricomFieldsSnippet.getPostReport(""));
-        fieldDescriptorList.addAll(IricomFieldsSnippet.getPost("post.", false));
+        fieldDescriptorList.addAll(IricomFieldsSnippet.getPost("post."));
         fieldDescriptorList.addAll(IricomFieldsSnippet.getAccount("post.account."));
 
         mockMvc.perform(requestBuilder)
@@ -90,7 +90,7 @@ public class ReportControllerTest extends IricomTestSuite {
 
         MockHttpServletRequestBuilder requestBuilder = get("/v1/report/post/boards/{boardId}", board.getId())
                 .param("skip", "0")
-                .param("limit", "20")
+                .param("limit", "5")
                 .param("type", "hate")
                 .param("reason", "report");
         setAuthToken(requestBuilder, allBoardAdmin);
@@ -98,7 +98,7 @@ public class ReportControllerTest extends IricomTestSuite {
         List<FieldDescriptor> fieldDescriptorList = new LinkedList<>();
         fieldDescriptorList.addAll(IricomFieldsSnippet.getSearchList(""));
         fieldDescriptorList.addAll(IricomFieldsSnippet.getPostReport("reports.[]."));
-        fieldDescriptorList.addAll(IricomFieldsSnippet.getPost("reports.[].post.", false));
+        fieldDescriptorList.addAll(IricomFieldsSnippet.getPost("reports.[].post."));
         fieldDescriptorList.addAll(IricomFieldsSnippet.getAccount("reports.[].post.account."));
 
         mockMvc.perform(requestBuilder)
@@ -138,7 +138,7 @@ public class ReportControllerTest extends IricomTestSuite {
 
         MockHttpServletRequestBuilder requestBuilder = get("/v1/report/post/boards/{boardId}/posts/{postId}", board.getId(), post.getId())
                 .param("skip", "0")
-                .param("limit", "20")
+                .param("limit", "5")
                 .param("type", "hate")
                 .param("reason", "report");
         setAuthToken(requestBuilder, allBoardAdmin);
@@ -146,7 +146,7 @@ public class ReportControllerTest extends IricomTestSuite {
         List<FieldDescriptor> fieldDescriptorList = new LinkedList<>();
         fieldDescriptorList.addAll(IricomFieldsSnippet.getSearchList(""));
         fieldDescriptorList.addAll(IricomFieldsSnippet.getPostReport("reports.[]."));
-        fieldDescriptorList.addAll(IricomFieldsSnippet.getPost("reports.[].post.", false));
+        fieldDescriptorList.addAll(IricomFieldsSnippet.getPost("reports.[].post."));
         fieldDescriptorList.addAll(IricomFieldsSnippet.getAccount("reports.[].post.account."));
 
         mockMvc.perform(requestBuilder)
@@ -188,14 +188,14 @@ public class ReportControllerTest extends IricomTestSuite {
 
         MockHttpServletRequestBuilder requestBuilder = get("/v1/report/post/boards/{boardId}/posts/{postId}/reports/{reportId}", board.getId(), post.getId(), postReport.getId())
                 .param("skip", "0")
-                .param("limit", "20")
+                .param("limit", "5")
                 .param("type", "hate")
                 .param("reason", "report");
         setAuthToken(requestBuilder, allBoardAdmin);
 
         List<FieldDescriptor> fieldDescriptorList = new LinkedList<>();
         fieldDescriptorList.addAll(IricomFieldsSnippet.getPostReport(""));
-        fieldDescriptorList.addAll(IricomFieldsSnippet.getPost("post.", false));
+        fieldDescriptorList.addAll(IricomFieldsSnippet.getPost("post."));
         fieldDescriptorList.addAll(IricomFieldsSnippet.getAccount("post.account."));
 
         mockMvc.perform(requestBuilder)
@@ -247,7 +247,7 @@ public class ReportControllerTest extends IricomTestSuite {
 
         List<FieldDescriptor> fieldDescriptorList = new LinkedList<>();
         fieldDescriptorList.addAll(IricomFieldsSnippet.getCommentReport(""));
-        fieldDescriptorList.addAll(IricomFieldsSnippet.getComment("comment.", true));
+        fieldDescriptorList.addAll(IricomFieldsSnippet.getComment("comment."));
         fieldDescriptorList.addAll(IricomFieldsSnippet.getAccount("comment.account."));
 
         mockMvc.perform(requestBuilder)
@@ -289,7 +289,7 @@ public class ReportControllerTest extends IricomTestSuite {
 
         MockHttpServletRequestBuilder requestBuilder = get("/v1/report/comment/boards/{boardId}", board.getId())
                 .param("skip", "0")
-                .param("limit", "20")
+                .param("limit", "5")
                 .param("type", "hate")
                 .param("reason", "comment");
         setAuthToken(requestBuilder, allBoardAdmin);
@@ -297,7 +297,7 @@ public class ReportControllerTest extends IricomTestSuite {
         List<FieldDescriptor> fieldDescriptorList = new LinkedList<>();
         fieldDescriptorList.addAll(IricomFieldsSnippet.getSearchList(""));
         fieldDescriptorList.addAll(IricomFieldsSnippet.getCommentReport("reports.[]."));
-        fieldDescriptorList.addAll(IricomFieldsSnippet.getComment("reports.[].comment.", true));
+        fieldDescriptorList.addAll(IricomFieldsSnippet.getComment("reports.[].comment."));
         fieldDescriptorList.addAll(IricomFieldsSnippet.getAccount("reports.[].comment.account."));
 
         mockMvc.perform(requestBuilder)
@@ -339,7 +339,7 @@ public class ReportControllerTest extends IricomTestSuite {
 
         MockHttpServletRequestBuilder requestBuilder = get("/v1/report/comment/boards/{boardId}/posts/{postId}", board.getId(), post.getId())
                 .param("skip", "0")
-                .param("limit", "20")
+                .param("limit", "5")
                 .param("type", "hate")
                 .param("reason", "comment");
         setAuthToken(requestBuilder, allBoardAdmin);
@@ -347,7 +347,7 @@ public class ReportControllerTest extends IricomTestSuite {
         List<FieldDescriptor> fieldDescriptorList = new LinkedList<>();
         fieldDescriptorList.addAll(IricomFieldsSnippet.getSearchList(""));
         fieldDescriptorList.addAll(IricomFieldsSnippet.getCommentReport("reports.[]."));
-        fieldDescriptorList.addAll(IricomFieldsSnippet.getComment("reports.[].comment.", true));
+        fieldDescriptorList.addAll(IricomFieldsSnippet.getComment("reports.[].comment."));
         fieldDescriptorList.addAll(IricomFieldsSnippet.getAccount("reports.[].comment.account."));
 
         mockMvc.perform(requestBuilder)
@@ -390,7 +390,7 @@ public class ReportControllerTest extends IricomTestSuite {
 
         MockHttpServletRequestBuilder requestBuilder = get("/v1/report/comment/boards/{boardId}/posts/{postId}/comments/{commentId}", board.getId(), post.getId(), comment.getId())
                 .param("skip", "0")
-                .param("limit", "20")
+                .param("limit", "5")
                 .param("type", "hate")
                 .param("reason", "comment");
         setAuthToken(requestBuilder, allBoardAdmin);
@@ -398,7 +398,7 @@ public class ReportControllerTest extends IricomTestSuite {
         List<FieldDescriptor> fieldDescriptorList = new LinkedList<>();
         fieldDescriptorList.addAll(IricomFieldsSnippet.getSearchList(""));
         fieldDescriptorList.addAll(IricomFieldsSnippet.getCommentReport("reports.[]."));
-        fieldDescriptorList.addAll(IricomFieldsSnippet.getComment("reports.[].comment.", true));
+        fieldDescriptorList.addAll(IricomFieldsSnippet.getComment("reports.[].comment."));
         fieldDescriptorList.addAll(IricomFieldsSnippet.getAccount("reports.[].comment.account."));
 
         mockMvc.perform(requestBuilder)
@@ -445,7 +445,7 @@ public class ReportControllerTest extends IricomTestSuite {
 
         List<FieldDescriptor> fieldDescriptorList = new LinkedList<>();
         fieldDescriptorList.addAll(IricomFieldsSnippet.getCommentReport(""));
-        fieldDescriptorList.addAll(IricomFieldsSnippet.getComment("comment.", true));
+        fieldDescriptorList.addAll(IricomFieldsSnippet.getComment("comment."));
         fieldDescriptorList.addAll(IricomFieldsSnippet.getAccount("comment.account."));
 
         mockMvc.perform(requestBuilder)

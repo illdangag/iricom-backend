@@ -1,100 +1,108 @@
 package com.illdangag.iricom.server.restdocs.snippet;
 
+import com.illdangag.iricom.server.test.data.ResponseField;
 import org.springframework.restdocs.payload.FieldDescriptor;
+import org.springframework.restdocs.payload.JsonFieldType;
 
-import java.util.LinkedHashMap;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 import java.util.stream.Collectors;
 
 import static org.springframework.restdocs.payload.PayloadDocumentation.fieldWithPath;
 
 public class IricomFieldsSnippet {
-    private static final Map<String, String> accountMap = new LinkedHashMap<>();
-    private static final Map<String, String> boardMap = new LinkedHashMap<>();
-    private static final Map<String, String> postMap = new LinkedHashMap<>();
-    private static final Map<String, String> commentMap = new LinkedHashMap<>();
-    private static final Map<String, String> postReportMap = new LinkedHashMap<>();
-    private static final Map<String, String> commentReportMap = new LinkedHashMap<>();
-    private static final Map<String, String> postBanMap = new LinkedHashMap<>();
-    private static final Map<String, String> accountGroupMap = new LinkedHashMap<>();
-    private static final Map<String, String> searchListMap = new LinkedHashMap<>();
+    private static final List<ResponseField> accountResponseFieldList = Arrays.asList(
+            ResponseField.builder().path("id").description("아이디").build(),
+            ResponseField.builder().path("email").description("이메일").build(),
+            ResponseField.builder().path("createDate").description("생성일").build(),
+            ResponseField.builder().path("lastActivityDate").description("최근 활동일").build(),
+            ResponseField.builder().path("nickname").description("닉네임").build(),
+            ResponseField.builder().path("description").description("설명").build(),
+            ResponseField.builder().path("auth").description("권한").build()
+    );
 
-    static {
-        searchListMap.put("total", "모든 결과 수");
-        searchListMap.put("skip", "건너 뛸 결과 수");
-        searchListMap.put("limit", "조회 할 최대 결과 수");
+    private static final List<ResponseField> boardResponseFieldList = Arrays.asList(
+            ResponseField.builder().path("id").description("아이디").build(),
+            ResponseField.builder().path("title").description("제목").build(),
+            ResponseField.builder().path("description").description("설명").build(),
+            ResponseField.builder().path("isEnabled").description("활성화 여부").build()
+    );
 
-        accountMap.put("id", "아이디");
-        accountMap.put("email", "이메일");
-        accountMap.put("createDate", "생성일");
-        accountMap.put("lastActivityDate", "최근 활동일");
-        accountMap.put("nickname", "닉네임");
-        accountMap.put("description", "설명");
-        accountMap.put("auth", "권한");
+    private static final List<ResponseField> postResponseFieldList = Arrays.asList(
+            ResponseField.builder().path("id").description("아이디").build(),
+            ResponseField.builder().path("type").description("종류").build(),
+            ResponseField.builder().path("createDate").description("생성일").build(),
+            ResponseField.builder().path("updateDate").description("수정일").build(),
+            ResponseField.builder().path("status").description("상태").build(),
+            ResponseField.builder().path("title").description("제목").build(),
+            ResponseField.builder().path("content").description("내용").isOptional(true).type(JsonFieldType.STRING).build(),
+            ResponseField.builder().path("viewCount").description("조회수").build(),
+            ResponseField.builder().path("upvote").description("좋아요").build(),
+            ResponseField.builder().path("downvote").description("싫어요").build(),
+            ResponseField.builder().path("commentCount").description("댓글 수").build(),
+            ResponseField.builder().path("isAllowComment").description("댓글 허용 여부").build(),
+            ResponseField.builder().path("isPublish").description("임시 저장 여부").build(),
+            ResponseField.builder().path("hasTemporary").description("임시 저장 여부").build(),
+            ResponseField.builder().path("boardId").description("게시물이 작성된 게시판 아이디").build(),
+            ResponseField.builder().path("isReport").description("신고 여부").build(),
+            ResponseField.builder().path("isBan").description("차단 여부").build(),
+            ResponseField.builder().path("account").description("작성자").build()
+    );
 
-        boardMap.put("id", "아이디");
-        boardMap.put("title", "제목");
-        boardMap.put("description", "설명");
-        boardMap.put("isEnabled", "활성화 여부");
+    private static final List<ResponseField> commentResponseFieldList = Arrays.asList(
+            ResponseField.builder().path("id").description("아이디").build(),
+            ResponseField.builder().path("content").description("내용").isOptional(true).type(JsonFieldType.STRING).build(),
+            ResponseField.builder().path("referenceCommentId").description("상위 댓글 아이디").build(),
+            ResponseField.builder().path("createDate").description("작성일").build(),
+            ResponseField.builder().path("updateDate").description("수정일").build(),
+            ResponseField.builder().path("upvote").description("좋아요").build(),
+            ResponseField.builder().path("downvote").description("싫어요").build(),
+            ResponseField.builder().path("hasNestedComment").description("하위 댓글 여부").build(),
+            ResponseField.builder().path("isDeleted").description("삭제 여부").build(),
+            ResponseField.builder().path("isReport").description("신고 여부").build(),
+            ResponseField.builder().path("nestedComments").description("대댓글 목록").isOptional(true).type(JsonFieldType.ARRAY).build()
+    );
 
-        postMap.put("id", "아이디");
-        postMap.put("type", "종류");
-        postMap.put("createDate", "생성일");
-        postMap.put("updateDate", "수정일");
-        postMap.put("status", "상태");
-        postMap.put("title", "제목");
-        postMap.put("content", "내용");
-        postMap.put("viewCount", "조회수");
-        postMap.put("upvote", "좋아요");
-        postMap.put("downvote", "싫어요");
-        postMap.put("commentCount", "댓글 수");
-        postMap.put("isAllowComment", "댓글 허용 여부");
-        postMap.put("isPublish", "발행 여부");
-        postMap.put("hasTemporary", "임시 저장 여부");
-        postMap.put("boardId", "게시물이 작성된 게시판 아이디");
-        postMap.put("isReport", "신고 여부");
-        postMap.put("isBan", "차단 여부");
-        postMap.put("account", "작성자");
+    private static final List<ResponseField> postReportResponseFieldList = Arrays.asList(
+            ResponseField.builder().path("id").description("이이디").build(),
+            ResponseField.builder().path("createDate").description("생성일").build(),
+            ResponseField.builder().path("updateDate").description("수정일").build(),
+            ResponseField.builder().path("type").description("종류").build(),
+            ResponseField.builder().path("reason").description("종류").build(),
+            ResponseField.builder().path("post").description("신고 게시물").build()
+    );
 
-        commentMap.put("id", "아이디");
-        commentMap.put("content", "내용");
-        commentMap.put("referenceCommentId", "상위 댓글 아이디");
-        commentMap.put("createDate", "작성일");
-        commentMap.put("updateDate", "수정일");
-        commentMap.put("upvote", "좋아요");
-        commentMap.put("downvote", "싫어요");
-        commentMap.put("hasNestedComment", "하위 댓글 여부");
-        commentMap.put("isDeleted", "삭제 여부");
-        commentMap.put("isReport", "신고 여부");
+    private static final List<ResponseField> commentReportResponseFieldList = Arrays.asList(
+            ResponseField.builder().path("id").description("아이디").build(),
+            ResponseField.builder().path("createDate").description("생성일").build(),
+            ResponseField.builder().path("updateDate").description("수정일").build(),
+            ResponseField.builder().path("type").description("종류").build(),
+            ResponseField.builder().path("reason").description("사유").build(),
+            ResponseField.builder().path("comment").description("신고 댓글").build()
+    );
 
-        postReportMap.put("id", "아이디");
-        postReportMap.put("createDate", "생성일");
-        postReportMap.put("updateDate", "수정일");
-        postReportMap.put("type", "종류");
-        postReportMap.put("reason", "사유");
-        postReportMap.put("post", "신고 게시물");
+    private static final List<ResponseField> postBanResponseFieldList = Arrays.asList(
+            ResponseField.builder().path("id").description("아이디").build(),
+            ResponseField.builder().path("createDate").description("생성일").build(),
+            ResponseField.builder().path("updateDate").description("수정일").build(),
+            ResponseField.builder().path("reason").description("사유").build(),
+            ResponseField.builder().path("enabled").description("활성화 여부").build()
+    );
 
-        commentReportMap.put("id", "아이디");
-        commentReportMap.put("createDate", "생성일");
-        commentReportMap.put("updateDate", "수정일");
-        commentReportMap.put("type", "종류");
-        commentReportMap.put("reason", "사유");
-        commentReportMap.put("comment", "신고 댓글");
+    private static final List<ResponseField> accountGroupResponseFieldList = Arrays.asList(
+            ResponseField.builder().path("id").description("아이디").build(),
+            ResponseField.builder().path("title").description("제목").build(),
+            ResponseField.builder().path("description").description("설명").build(),
+            ResponseField.builder().path("boards").description("게시판 목록").build(),
+            ResponseField.builder().path("accounts").description("사용자 목록").build()
+    );
 
-        postBanMap.put("id", "아이디");
-        postBanMap.put("createDate", "생성일");
-        postBanMap.put("updateDate", "수정일");
-        postBanMap.put("reason", "사유");
-        postBanMap.put("enabled", "활성화 여부");
-
-        accountGroupMap.put("id", "아이디");
-        accountGroupMap.put("title", "제목");
-        accountGroupMap.put("description", "설명");
-        accountGroupMap.put("boards", "게시판 목록");
-        accountGroupMap.put("accounts", "계정 목록");
-    }
+    private static final List<ResponseField> searchListResponseFieldList = Arrays.asList(
+        ResponseField.builder().path("total").description("모든 결과 수").build(),
+        ResponseField.builder().path("skip").description("건너 뛸 결과 수").build(),
+        ResponseField.builder().path("limit").description("조회 할 최대 결과 수").build()
+    );
 
     private IricomFieldsSnippet() {
     }
@@ -106,56 +114,50 @@ public class IricomFieldsSnippet {
                 .collect(Collectors.toList());
     }
 
-    private static Map<String, String> getKeyDescriptionMap(Map<String, String> sourceMap, String keyPrefix) {
-        Map<String, String> resultMap = new LinkedHashMap<>();
-        Set<String> keySet = sourceMap.keySet();
-        for (String key : keySet) {
-            resultMap.put(keyPrefix + key, sourceMap.get(key));
-        }
-        return resultMap;
+    private static List<FieldDescriptor> getFieldDescriptors(List<ResponseField> responseFieldList, String keyPrefix) {
+        return responseFieldList.stream()
+                .map(item -> {
+                    FieldDescriptor fieldDescriptor = fieldWithPath(keyPrefix + item.getPath()).description(item.getDescription());
+                    if (item.isOptional()) {
+                        fieldDescriptor.optional().type(item.getType());
+                    }
+                    return fieldDescriptor;
+                }).collect(Collectors.toList());
     }
 
     public static List<FieldDescriptor> getSearchList(String keyPrefix) {
-        return getFieldDescriptors(searchListMap, keyPrefix);
+        return getFieldDescriptors(searchListResponseFieldList, keyPrefix);
     }
 
     public static List<FieldDescriptor> getAccount(String keyPrefix) {
-        return getFieldDescriptors(accountMap, keyPrefix);
+        return getFieldDescriptors(accountResponseFieldList, keyPrefix);
     }
 
     public static List<FieldDescriptor> getBoard(String keyPrefix) {
-        return getFieldDescriptors(boardMap, keyPrefix);
+        return getFieldDescriptors(boardResponseFieldList, keyPrefix);
     }
 
-    public static List<FieldDescriptor> getPost(String keyPrefix, boolean hasContent) {
-        Map<String, String> resultMap = new LinkedHashMap<>(postMap);
-        if (!hasContent) {
-            resultMap.remove("content");
-        }
-        return getFieldDescriptors(resultMap, keyPrefix);
+    public static List<FieldDescriptor> getPost(String keyPrefix) {
+        return getFieldDescriptors(postResponseFieldList, keyPrefix);
     }
 
-    public static List<FieldDescriptor> getComment(String keyPrefix, boolean hasContent) {
-        Map<String, String> resultMap = new LinkedHashMap<>(commentMap);
-        if (!hasContent) {
-            resultMap.remove("content");
-        }
-        return getFieldDescriptors(resultMap, keyPrefix);
+    public static List<FieldDescriptor> getComment(String keyPrefix) {
+        return getFieldDescriptors(commentResponseFieldList, keyPrefix);
     }
 
     public static List<FieldDescriptor> getPostReport(String keyPrefix) {
-        return getFieldDescriptors(postReportMap, keyPrefix);
+        return getFieldDescriptors(postReportResponseFieldList, keyPrefix);
     }
 
     public static List<FieldDescriptor> getCommentReport(String keyPrefix) {
-        return getFieldDescriptors(commentReportMap, keyPrefix);
+        return getFieldDescriptors(commentReportResponseFieldList, keyPrefix);
     }
 
     public static List<FieldDescriptor> getPostBan(String keyPrefix) {
-        return getFieldDescriptors(postBanMap, keyPrefix);
+        return getFieldDescriptors(postBanResponseFieldList, keyPrefix);
     }
 
     public static List<FieldDescriptor> getAccountGroup(String keyPrefix) {
-        return getFieldDescriptors(accountGroupMap, keyPrefix);
+        return getFieldDescriptors(accountGroupResponseFieldList, keyPrefix);
     }
 }

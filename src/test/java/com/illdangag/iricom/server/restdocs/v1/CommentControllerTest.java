@@ -12,6 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 import org.springframework.http.MediaType;
 import org.springframework.restdocs.payload.FieldDescriptor;
+import org.springframework.restdocs.payload.JsonFieldType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilder;
 
@@ -57,7 +58,7 @@ public class CommentControllerTest extends IricomTestSuite {
         setAuthToken(requestBuilder, common01);
 
         List<FieldDescriptor> fieldDescriptorList = new LinkedList<>();
-        fieldDescriptorList.addAll(IricomFieldsSnippet.getComment("", true));
+        fieldDescriptorList.addAll(IricomFieldsSnippet.getComment(""));
         fieldDescriptorList.addAll(IricomFieldsSnippet.getAccount("account."));
 
         mockMvc.perform(requestBuilder)
@@ -95,7 +96,7 @@ public class CommentControllerTest extends IricomTestSuite {
 
         MockHttpServletRequestBuilder requestBuilder = get("/v1/boards/{boardId}/posts/{postId}/comments", board.getId(), post.getId())
                 .param("skip", "0")
-                .param("limit", "1")
+                .param("limit", "5")
                 .param("keyword", "")
                 .param("includeComment", "true")
                 .param("referenceCommentId", "" + comment.getId())
@@ -104,9 +105,9 @@ public class CommentControllerTest extends IricomTestSuite {
 
         List<FieldDescriptor> fieldDescriptorList = new LinkedList<>();
         fieldDescriptorList.addAll(IricomFieldsSnippet.getSearchList(""));
-        fieldDescriptorList.addAll(IricomFieldsSnippet.getComment("comments.[].", true));
+        fieldDescriptorList.addAll(IricomFieldsSnippet.getComment("comments.[]."));
         fieldDescriptorList.addAll(IricomFieldsSnippet.getAccount("comments.[].account."));
-        fieldDescriptorList.addAll(IricomFieldsSnippet.getComment("comments.[].nestedComments.[].", true));
+        fieldDescriptorList.addAll(IricomFieldsSnippet.getComment("comments.[].nestedComments.[]."));
         fieldDescriptorList.addAll(IricomFieldsSnippet.getAccount("comments.[].nestedComments.[].account."));
 
         mockMvc.perform(requestBuilder)
@@ -151,7 +152,7 @@ public class CommentControllerTest extends IricomTestSuite {
         setAuthToken(requestBuilder, common00);
 
         List<FieldDescriptor> fieldDescriptorList = new LinkedList<>();
-        fieldDescriptorList.addAll(IricomFieldsSnippet.getComment("", true));
+        fieldDescriptorList.addAll(IricomFieldsSnippet.getComment(""));
         fieldDescriptorList.addAll(IricomFieldsSnippet.getAccount("account."));
 
         mockMvc.perform(requestBuilder)
@@ -194,7 +195,7 @@ public class CommentControllerTest extends IricomTestSuite {
         setAuthToken(requestBuilder, common00);
 
         List<FieldDescriptor> fieldDescriptorList = new LinkedList<>();
-        fieldDescriptorList.addAll(IricomFieldsSnippet.getComment("", true));
+        fieldDescriptorList.addAll(IricomFieldsSnippet.getComment(""));
         fieldDescriptorList.addAll(IricomFieldsSnippet.getAccount("account."));
 
         mockMvc.perform(requestBuilder)
@@ -235,7 +236,7 @@ public class CommentControllerTest extends IricomTestSuite {
         setAuthToken(requestBuilder, common00);
 
         List<FieldDescriptor> fieldDescriptorList = new LinkedList<>();
-        fieldDescriptorList.addAll(IricomFieldsSnippet.getComment("", false));
+        fieldDescriptorList.addAll(IricomFieldsSnippet.getComment(""));
 
         mockMvc.perform(requestBuilder)
                 .andExpect(status().is(200))
@@ -277,7 +278,7 @@ public class CommentControllerTest extends IricomTestSuite {
         setAuthToken(requestBuilder, common00);
 
         List<FieldDescriptor> fieldDescriptorList = new LinkedList<>();
-        fieldDescriptorList.addAll(IricomFieldsSnippet.getComment("", true));
+        fieldDescriptorList.addAll(IricomFieldsSnippet.getComment(""));
         fieldDescriptorList.addAll(IricomFieldsSnippet.getAccount("account."));
 
         mockMvc.perform(requestBuilder)

@@ -84,7 +84,7 @@ public class BoardControllerTest extends IricomTestSuite {
     public void bd002() throws Exception {
         MockHttpServletRequestBuilder requestBuilder = get("/v1/boards")
                 .param("skip", "0")
-                .param("limit", "20")
+                .param("limit", "5")
                 .param("keyword", "Board");
         setAuthToken(requestBuilder, common00);
 

@@ -37,7 +37,7 @@ public class InformationControllerTest extends IricomTestSuite {
     @Test
     @Order(0)
     @DisplayName("정보 조회")
-    public void testCase00() throws Exception {
+    public void if001() throws Exception {
         MockHttpServletRequestBuilder requestBuilder = get("/v1/infos");
         setAuthToken(requestBuilder, common00);
 
@@ -65,7 +65,7 @@ public class InformationControllerTest extends IricomTestSuite {
     @Test
     @Order(1)
     @DisplayName("작성한 게시물 조회")
-    public void testCase01() throws Exception {
+    public void if002() throws Exception {
         MockHttpServletRequestBuilder requestBuilder = get("/v1/infos/posts")
                 .param("skip", "0")
                 .param("limit", "2");
@@ -73,7 +73,7 @@ public class InformationControllerTest extends IricomTestSuite {
 
         List<FieldDescriptor> fieldDescriptorList = new LinkedList<>();
         fieldDescriptorList.addAll(IricomFieldsSnippet.getSearchList(""));
-        fieldDescriptorList.addAll(IricomFieldsSnippet.getPost("posts.[].", false));
+        fieldDescriptorList.addAll(IricomFieldsSnippet.getPost("posts.[]."));
         fieldDescriptorList.addAll(IricomFieldsSnippet.getAccount("posts.[].account."));
 
         mockMvc.perform(requestBuilder)

@@ -99,7 +99,7 @@ public class BanControllerTest extends IricomTestSuite {
 
         List<FieldDescriptor> fieldDescriptorList = new LinkedList<>();
         fieldDescriptorList.addAll(IricomFieldsSnippet.getPostBan(""));
-        fieldDescriptorList.addAll(IricomFieldsSnippet.getPost("post.", false));
+        fieldDescriptorList.addAll(IricomFieldsSnippet.getPost("post."));
         fieldDescriptorList.addAll(IricomFieldsSnippet.getAccount("post.account."));
 
         mockMvc.perform(requestBuilder)
@@ -133,14 +133,14 @@ public class BanControllerTest extends IricomTestSuite {
     public void bp002() throws Exception {
         MockHttpServletRequestBuilder requestBuilder = get("/v1/ban/post/boards")
                 .param("skip", "0")
-                .param("limit", "20")
+                .param("limit", "5")
                 .param("reason", "already");
         setAuthToken(requestBuilder, systemAdmin);
 
         List<FieldDescriptor> fieldDescriptorList = new LinkedList<>();
         fieldDescriptorList.addAll(IricomFieldsSnippet.getSearchList(""));
         fieldDescriptorList.addAll(IricomFieldsSnippet.getPostBan("bans.[]."));
-        fieldDescriptorList.addAll(IricomFieldsSnippet.getPost("bans.[].post.", false));
+        fieldDescriptorList.addAll(IricomFieldsSnippet.getPost("bans.[].post."));
         fieldDescriptorList.addAll(IricomFieldsSnippet.getAccount("bans.[].post.account."));
 
         mockMvc.perform(requestBuilder)
@@ -181,7 +181,7 @@ public class BanControllerTest extends IricomTestSuite {
         List<FieldDescriptor> fieldDescriptorList = new LinkedList<>();
         fieldDescriptorList.addAll(IricomFieldsSnippet.getSearchList(""));
         fieldDescriptorList.addAll(IricomFieldsSnippet.getPostBan("bans.[]."));
-        fieldDescriptorList.addAll(IricomFieldsSnippet.getPost("bans.[].post.", false));
+        fieldDescriptorList.addAll(IricomFieldsSnippet.getPost("bans.[].post."));
         fieldDescriptorList.addAll(IricomFieldsSnippet.getAccount("bans.[].post.account."));
 
         mockMvc.perform(requestBuilder)
@@ -222,7 +222,7 @@ public class BanControllerTest extends IricomTestSuite {
 
         List<FieldDescriptor> fieldDescriptorList = new LinkedList<>();
         fieldDescriptorList.addAll(IricomFieldsSnippet.getPostBan(""));
-        fieldDescriptorList.addAll(IricomFieldsSnippet.getPost("post.", false));
+        fieldDescriptorList.addAll(IricomFieldsSnippet.getPost("post."));
         fieldDescriptorList.addAll(IricomFieldsSnippet.getAccount("post.account."));
 
         mockMvc.perform(requestBuilder)
@@ -264,7 +264,7 @@ public class BanControllerTest extends IricomTestSuite {
 
         List<FieldDescriptor> fieldDescriptorList = new LinkedList<>();
         fieldDescriptorList.addAll(IricomFieldsSnippet.getPostBan(""));
-        fieldDescriptorList.addAll(IricomFieldsSnippet.getPost("post.", false));
+        fieldDescriptorList.addAll(IricomFieldsSnippet.getPost("post."));
         fieldDescriptorList.addAll(IricomFieldsSnippet.getAccount("post.account."));
 
         mockMvc.perform(requestBuilder)
@@ -304,7 +304,7 @@ public class BanControllerTest extends IricomTestSuite {
 
         List<FieldDescriptor> fieldDescriptorList = new LinkedList<>();
         fieldDescriptorList.addAll(IricomFieldsSnippet.getPostBan(""));
-        fieldDescriptorList.addAll(IricomFieldsSnippet.getPost("post.", false));
+        fieldDescriptorList.addAll(IricomFieldsSnippet.getPost("post."));
         fieldDescriptorList.addAll(IricomFieldsSnippet.getAccount("post.account."));
 
         mockMvc.perform(requestBuilder)

@@ -83,7 +83,7 @@ public class BoardAuthorizationControllerTest extends IricomTestSuite {
     public void at002() throws Exception {
         MockHttpServletRequestBuilder requestBuilder = get("/v1/auth/boards")
                 .param("skip", "0")
-                .param("limit", "20")
+                .param("limit", "5")
                 .param("keyword", "createBoard")
                 .param("enabled", "true");
         setAuthToken(requestBuilder, systemAdmin);

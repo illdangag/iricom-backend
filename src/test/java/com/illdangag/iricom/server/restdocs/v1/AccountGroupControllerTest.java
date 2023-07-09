@@ -114,7 +114,7 @@ public class AccountGroupControllerTest extends IricomTestSuite {
     public void ag002() throws Exception {
         MockHttpServletRequestBuilder requestBuilder = get("/v1/group/account")
                 .param("skip", "0")
-                .param("limit", "20");
+                .param("limit", "5");
         setAuthToken(requestBuilder, systemAdmin);
 
         List<FieldDescriptor> fieldDescriptorList = new LinkedList<>();
