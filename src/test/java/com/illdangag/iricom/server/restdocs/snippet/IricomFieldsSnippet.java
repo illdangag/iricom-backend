@@ -99,9 +99,9 @@ public class IricomFieldsSnippet {
     );
 
     private static final List<ResponseField> searchListResponseFieldList = Arrays.asList(
-        ResponseField.builder().path("total").description("모든 결과 수").build(),
-        ResponseField.builder().path("skip").description("건너 뛸 결과 수").build(),
-        ResponseField.builder().path("limit").description("조회 할 최대 결과 수").build()
+            ResponseField.builder().path("total").description("모든 결과 수").build(),
+            ResponseField.builder().path("skip").description("건너 뛸 결과 수").build(),
+            ResponseField.builder().path("limit").description("조회 할 최대 결과 수").build()
     );
 
     private IricomFieldsSnippet() {
