@@ -35,14 +35,17 @@ public class Board {
     @UpdateTimestamp
     private LocalDateTime updateDate = LocalDateTime.now();
 
-    @Builder.Default
-    private Boolean enabled = true;
-
     @Size(min = 1, max = 50)
     private String title;
 
     @Size(max = 100)
     private String description;
+
+    @Builder.Default
+    private Boolean enabled = true;
+
+    @Builder.Default
+    private Boolean notificationOnly = false;
 
     @Builder.Default
     private Boolean undisclosed = false; // 공개되지 않은 게시판

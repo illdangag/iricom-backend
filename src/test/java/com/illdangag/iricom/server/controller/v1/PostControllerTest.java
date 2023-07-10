@@ -3,7 +3,11 @@ package com.illdangag.iricom.server.controller.v1;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.illdangag.iricom.server.data.entity.Board;
 import com.illdangag.iricom.server.data.entity.Post;
+import com.illdangag.iricom.server.data.entity.PostState;
+import com.illdangag.iricom.server.data.entity.PostType;
 import com.illdangag.iricom.server.test.IricomTestSuite;
+import com.illdangag.iricom.server.test.data.wrapper.TestBoardInfo;
+import com.illdangag.iricom.server.test.data.wrapper.TestPostInfo;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
@@ -15,8 +19,7 @@ import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilder;
 
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import static org.hamcrest.Matchers.hasSize;
@@ -31,9 +34,40 @@ public class PostControllerTest extends IricomTestSuite {
     @Autowired
     MockMvc mockMvc;
 
+    private static final TestBoardInfo enableBoard = TestBoardInfo.builder()
+            .title("enableBoard").isEnabled(true)
+            .adminList(Collections.singletonList(allBoardAdmin)).build();
+    private static final TestBoardInfo disableBoard = TestBoardInfo.builder()
+            .title("disableBoard").isEnabled(false).adminList(Arrays.asList(allBoardAdmin, disableBoardAdmin)).build();
+
+    private static final TestPostInfo enableBoardPost00 = TestPostInfo.builder()
+            .title("enableBoardPost00").content("enableBoardPost00").isAllowComment(true)
+            .postType(PostType.POST).postState(PostState.PUBLISH)
+            .creator(allBoardAdmin).board(enableBoard).build();
+    private static final TestPostInfo disableBoardPost00 = TestPostInfo.builder()
+            .title("disableBoardPost00").content("content").isAllowComment(true)
+            .postType(PostType.POST).postState(PostState.PUBLISH)
+            .creator(common00).board(disableBoard).build();
+    protected static final TestPostInfo disableBoardNotification00 = TestPostInfo.builder()
+            .title("disableBoardNotification00").content("disableBoardNotification00").isAllowComment(true)
+            .postType(PostType.NOTIFICATION).postState(PostState.TEMPORARY)
+            .creator(allBoardAdmin).board(disableBoard).build();
+    protected static final TestPostInfo enableBoardPost03 = TestPostInfo.builder()
+            .title("enableBoardPost03").content("enableBoardPost03").isAllowComment(true)
+            .postType(PostType.POST).postState(PostState.TEMPORARY)
+            .creator(allBoardAdmin).board(enableBoard).build();
+
     @Autowired
     public PostControllerTest(ApplicationContext context) {
         super(context);
+
+        List<TestBoardInfo> testBoardInfoList = Arrays.asList(enableBoard, disableBoard);
+        List<TestPostInfo> testPostInfoList = Arrays.asList(enableBoardPost00, disableBoardPost00, disableBoardNotification00, enableBoardPost03);
+
+        super.setBoard(testBoardInfoList);
+        super.setPost(testPostInfoList);
+
+        super.setDisabledBoard(testBoardInfoList);
     }
 
     @Nested
@@ -48,7 +82,7 @@ public class PostControllerTest extends IricomTestSuite {
             @Order(0)
             @DisplayName("제목, 내용, 댓글 허용 여부")
             public void testCase00() throws Exception {
-                Board board = getBoard(createBoard);
+                Board board = getBoard(enableBoard);
 
                 Map<String, Object> requestBody = new HashMap<>();
                 requestBody.put("title", "new_title");
@@ -74,7 +108,7 @@ public class PostControllerTest extends IricomTestSuite {
             @Order(1)
             @DisplayName("제목")
             public void testCase01() throws Exception {
-                Board board = getBoard(createBoard);
+                Board board = getBoard(enableBoard);
 
                 Map<String, Object> requestBody = new HashMap<>();
                 requestBody.put("title", "only_title");
@@ -98,7 +132,7 @@ public class PostControllerTest extends IricomTestSuite {
             @Order(2)
             @DisplayName("내용")
             public void testCase02() throws Exception {
-                Board board = getBoard(createBoard);
+                Board board = getBoard(enableBoard);
 
                 Map<String, Object> requestBody = new HashMap<>();
                 requestBody.put("type", "post");
@@ -488,17 +522,13 @@ public class PostControllerTest extends IricomTestSuite {
 
                 mockMvc.perform(requestBuilder)
                         .andExpect(status().is(200))
-                        .andExpect(jsonPath("$.total").value(3))
+                        .andExpect(jsonPath("$.total").value(1))
                         .andExpect(jsonPath("$.skip").value(0))
                         .andExpect(jsonPath("$.limit").value(20))
                         .andExpect(jsonPath("$.posts").isArray())
-                        .andExpect(jsonPath("$.posts", hasSize(3)))
-                        .andExpect(jsonPath("$.posts[0].title").value("enableBoardPost02"))
+                        .andExpect(jsonPath("$.posts", hasSize(1)))
+                        .andExpect(jsonPath("$.posts[0].title").value("enableBoardPost00"))
                         .andExpect(jsonPath("$.posts[0].content").doesNotExist())
-                        .andExpect(jsonPath("$.posts[1].title").value("enableBoardPost01"))
-                        .andExpect(jsonPath("$.posts[1].content").doesNotExist())
-                        .andExpect(jsonPath("$.posts[2].title").value("enableBoardPost00"))
-                        .andExpect(jsonPath("$.posts[2].content").doesNotExist())
                         .andDo(print());
             }
 
@@ -514,15 +544,11 @@ public class PostControllerTest extends IricomTestSuite {
 
                 mockMvc.perform(requestBuilder)
                         .andExpect(status().is(200))
-                        .andExpect(jsonPath("$.total").value(3))
+                        .andExpect(jsonPath("$.total").value(1))
                         .andExpect(jsonPath("$.skip").value(1))
                         .andExpect(jsonPath("$.limit").value(20))
                         .andExpect(jsonPath("$.posts").isArray())
-                        .andExpect(jsonPath("$.posts", hasSize(2)))
-                        .andExpect(jsonPath("$.posts[0].title").value("enableBoardPost01"))
-                        .andExpect(jsonPath("$.posts[0].content").doesNotExist())
-                        .andExpect(jsonPath("$.posts[1].title").value("enableBoardPost00"))
-                        .andExpect(jsonPath("$.posts[1].content").doesNotExist())
+                        .andExpect(jsonPath("$.posts", hasSize(0)))
                         .andDo(print());
             }
 
@@ -538,12 +564,12 @@ public class PostControllerTest extends IricomTestSuite {
 
                 mockMvc.perform(requestBuilder)
                         .andExpect(status().is(200))
-                        .andExpect(jsonPath("$.total").value(3))
+                        .andExpect(jsonPath("$.total").value(1))
                         .andExpect(jsonPath("$.skip").value(0))
                         .andExpect(jsonPath("$.limit").value(1))
                         .andExpect(jsonPath("$.posts").isArray())
                         .andExpect(jsonPath("$.posts", hasSize(1)))
-                        .andExpect(jsonPath("$.posts[0].title").value("enableBoardPost02"))
+                        .andExpect(jsonPath("$.posts[0].title").value("enableBoardPost00"))
                         .andExpect(jsonPath("$.posts[0].content").doesNotExist())
                         .andDo(print());
             }
@@ -582,13 +608,8 @@ public class PostControllerTest extends IricomTestSuite {
 
                 mockMvc.perform(requestBuilder)
                         .andExpect(status().is(200))
-                        .andExpect(jsonPath("$.total").value(1))
+                        .andExpect(jsonPath("$.total").value(0))
                         .andExpect(jsonPath("$.skip").value(0))
-                        .andExpect(jsonPath("$.limit").value(20))
-                        .andExpect(jsonPath("$.posts").isArray())
-                        .andExpect(jsonPath("$.posts", hasSize(1)))
-                        .andExpect(jsonPath("$.posts[0].title").value("enableBoardNotification00"))
-                        .andExpect(jsonPath("$.posts[0].content").doesNotExist())
                         .andDo(print());
             }
         }

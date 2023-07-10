@@ -12,9 +12,9 @@ public class BoardInfoUpdate {
     private String title;
 
     @Size(max = 100, message = "The description must be less than 100 characters.")
-    @Builder.Default
-    private String description = "";
+    private String description;
 
-    @Builder.Default
-    private Boolean enabled = true;
+    private Boolean enabled;
+
+    private Boolean notificationOnly;
 }

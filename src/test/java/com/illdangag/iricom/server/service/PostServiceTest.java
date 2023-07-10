@@ -145,7 +145,7 @@ public class PostServiceTest extends IricomTestSuite {
         @DisplayName("닉네임이 등록되지 않은 사용자")
         public void postUnregisteredAccount() throws Exception {
             Account account = getAccount(unknown00);
-            Board board = getBoard(createBoard);
+            Board board = getBoard(boardInfo00);
 
             PostInfoCreate postInfoCreate = PostInfoCreate.builder()
                     .title("Unregistered account post title")

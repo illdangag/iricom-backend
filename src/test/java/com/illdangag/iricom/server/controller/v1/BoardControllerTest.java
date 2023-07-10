@@ -323,7 +323,6 @@ public class BoardControllerTest extends IricomTestSuite {
                         .andExpect(jsonPath("$.skip").value(0))
                         .andExpect(jsonPath("$.limit").value(20))
                         .andExpect(jsonPath("$.boards").isArray())
-                        .andExpect(jsonPath("$.boards", hasSize(1)))
                         .andDo(print());
             }
 

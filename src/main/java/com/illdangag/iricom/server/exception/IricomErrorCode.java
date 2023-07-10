@@ -33,7 +33,7 @@ public enum IricomErrorCode {
     // account: 02XXXXXX
     NOT_EXIST_ACCOUNT("02000000", 404, "Not exist account."),
     NOT_EXIST_ACCOUNT_DETAIL_INFO("02000001", 404, "Not exist account detail info."),
-    MISSING_ACCOUNT_NICKNAME_FILED("02000002", 400, IricomErrorMessage.MESSING_REQUIRED_FIELDS + ": nickname"),
+    MISSING_ACCOUNT_NICKNAME_FILED("02000002", 400, "Missing required fields: nickname"),
     ALREADY_ACCOUNT_NICKNAME("02000002", 400, "Already exists nickname."),
 
     // board: 03XXXXXX
@@ -53,6 +53,7 @@ public enum IricomErrorCode {
     INVALID_AUTHORIZATION_TO_BAN_POST("04000009", 401, "Invalid authorization."),
     ALREADY_BAN_POST("04000010", 400, "Already ban post."),
     ALREADY_UNBAN_POST("04000011", 400, "Already unban post."),
+    INVALID_AUTHORIZATION_TO_POST_ONLY_NOTIFICATION_BOARD("04000012", 400, "Board is for notification only."),
 
     // comment: 05XXXXXX
     NOT_EXIST_COMMENT("05000000", 404, "Not exist comment."),
@@ -89,10 +90,5 @@ public enum IricomErrorCode {
     @Override
     public String toString() {
         return "[" + this.code + "](" + this.httpStatusCode + ") " + this.message;
-    }
-
-    static class IricomErrorMessage {
-        public static final String MESSING_REQUIRED_FIELDS = "Missing required fields";
-        public static final String INVALID_SEARCH_OPTION = "Invalid search option.";
     }
 }

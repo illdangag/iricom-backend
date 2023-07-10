@@ -172,13 +172,7 @@ public class AccountRepositoryImpl implements AccountRepository {
         TypedQuery<Long> query = entityManager.createQuery(jpql, Long.class)
                 .setParameter("accountIdSet", accountIdSet);
 
-        long result = query.getSingleResult();
-
-        if (accountIdSet.size() == result) {
-            return true;
-        } else {
-            return false;
-        }
+        return accountIdSet.size() == query.getSingleResult();
     }
 
     @Override

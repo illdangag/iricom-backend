@@ -31,16 +31,14 @@ public class BoardAuthorizationServiceImpl implements BoardAuthorizationService 
     private final BoardRepository boardRepository;
     private final BoardAdminRepository boardAdminRepository;
     private final AccountRepository accountRepository;
-
     private final AccountService accountService;
 
     @Autowired
-    public BoardAuthorizationServiceImpl(BoardAdminRepository boardAdminRepository, BoardRepository boardRepository, AccountRepository accountRepository,
-                                         AccountService accountService) {
+    public BoardAuthorizationServiceImpl(BoardAdminRepository boardAdminRepository, BoardRepository boardRepository,
+                                         AccountRepository accountRepository, AccountService accountService) {
         this.boardAdminRepository = boardAdminRepository;
         this.boardRepository = boardRepository;
         this.accountRepository = accountRepository;
-
         this.accountService = accountService;
     }
 

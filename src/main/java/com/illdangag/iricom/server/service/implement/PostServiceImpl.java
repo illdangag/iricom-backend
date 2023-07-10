@@ -73,6 +73,10 @@ public class PostServiceImpl implements PostService {
             }
         }
 
+        if (postInfoCreate.getType() == PostType.POST && board.getNotificationOnly()) {
+            throw new IricomException(IricomErrorCode.INVALID_AUTHORIZATION_TO_POST_ONLY_NOTIFICATION_BOARD);
+        }
+
         Post post = Post.builder()
                 .account(account)
                 .board(board)

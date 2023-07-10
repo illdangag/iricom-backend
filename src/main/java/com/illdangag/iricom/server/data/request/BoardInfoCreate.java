@@ -26,4 +26,7 @@ public class BoardInfoCreate {
 
     @Builder.Default
     private Boolean undisclosed = Boolean.FALSE;
+
+    @Builder.Default
+    private Boolean notificationOnly = Boolean.FALSE;
 }

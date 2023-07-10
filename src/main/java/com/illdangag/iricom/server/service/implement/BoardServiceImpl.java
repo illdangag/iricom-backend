@@ -37,6 +37,7 @@ public class BoardServiceImpl implements BoardService {
                 .title(boardInfoCreate.getTitle())
                 .description(boardInfoCreate.getDescription())
                 .undisclosed(boardInfoCreate.getUndisclosed())
+                .notificationOnly(boardInfoCreate.getNotificationOnly())
                 .build();
         this.boardRepository.save(board);
         return new BoardInfo(board);
@@ -66,6 +67,7 @@ public class BoardServiceImpl implements BoardService {
             boardList = this.boardRepository.getBoardList(boardInfoSearch.getKeyword(), boardInfoSearch.getSkip(), boardInfoSearch.getLimit());
             totalBoardCount = this.boardRepository.getBoardCount(boardInfoSearch.getKeyword());
         }
+
         List<BoardInfo> boardInfoList = boardList.stream().map(BoardInfo::new).collect(Collectors.toList());
 
         return BoardInfoList.builder()
@@ -88,6 +90,7 @@ public class BoardServiceImpl implements BoardService {
             boardList = this.boardRepository.getBoardList(account, boardInfoSearch.getKeyword(), boardInfoSearch.getSkip(), boardInfoSearch.getLimit());
             totalBoardCount = this.boardRepository.getBoardCount(account, boardInfoSearch.getKeyword());
         }
+
         List<BoardInfo> boardInfoList = boardList.stream().map(BoardInfo::new).collect(Collectors.toList());
 
         return BoardInfoList.builder()
@@ -109,11 +112,17 @@ public class BoardServiceImpl implements BoardService {
         if (boardInfoUpdate.getTitle() != null) {
             board.setTitle(boardInfoUpdate.getTitle());
         }
+
         if (boardInfoUpdate.getDescription() != null) {
             board.setDescription(boardInfoUpdate.getDescription());
         }
+
         if (boardInfoUpdate.getEnabled() != null) {
             board.setEnabled(boardInfoUpdate.getEnabled());
+        }
+
+        if (boardInfoUpdate.getNotificationOnly() != null) {
+            board.setNotificationOnly(boardInfoUpdate.getNotificationOnly());
         }
 
         this.boardRepository.save(board);

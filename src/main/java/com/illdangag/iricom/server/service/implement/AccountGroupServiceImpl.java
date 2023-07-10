@@ -35,12 +35,16 @@ public class AccountGroupServiceImpl implements AccountGroupService {
         this.accountGroupRepository = accountGroupRepository;
     }
 
+    /**
+     * 계정 그룹 생성
+     */
     @Override
     public AccountGroupInfo createAccountGroupInfo(AccountGroupInfoCreate accountGroupInfoCreate) {
         List<String> accountIdList = accountGroupInfoCreate.getAccountIdList().stream().distinct().collect(Collectors.toList());
         List<String> boardIdList = accountGroupInfoCreate.getBoardIdList().stream().distinct().collect(Collectors.toList());
 
         if (!accountIdList.isEmpty() && !this.validateAccount(accountIdList)) {
+            // 계정 ID 목록이 존재하는 경우 포함된 ID가 모두 유효한지 확인
             throw new IricomException(IricomErrorCode.INVALID_ACCOUNT_LIST);
         }
 
@@ -214,6 +218,9 @@ public class AccountGroupServiceImpl implements AccountGroupService {
         return new AccountGroupInfo(accountGroup, accountList, boardList);
     }
 
+    /**
+     * 게시판이 모두 존재하는지 확인
+     */
     private boolean validateBoard(List<String> idList) {
         List<Long> boardIdList;
         try {
@@ -225,6 +232,9 @@ public class AccountGroupServiceImpl implements AccountGroupService {
         return this.boardRepository.existBoard(boardIdList);
     }
 
+    /**
+     * id 목록이 모두 존재하는지 확인
+     */
     private boolean validateAccount(List<String> idList) {
         List<Long> accountIdList;
         try {
