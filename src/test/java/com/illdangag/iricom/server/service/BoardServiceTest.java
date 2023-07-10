@@ -17,9 +17,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Slf4j
@@ -179,18 +177,26 @@ public class BoardServiceTest extends IricomTestSuite {
             String accessibleBoardId = String.valueOf(getBoard(undisclosedBoard02).getId());
             String inaccessibleBoardId = String.valueOf(getBoard(undisclosedBoard01).getId());
 
-            BoardInfoSearch boardInfoSearch = BoardInfoSearch.builder()
-                    .skip(0).limit(200)
-                    .build();
+            Set<String> accessibleBoardSet = new HashSet<>();
+            BoardInfoList boardInfoList = null;
+            int skip = 0;
+            do {
+                BoardInfoSearch boardInfoSearch = BoardInfoSearch.builder()
+                        .skip(skip).limit(100)
+                        .build();
 
-            BoardInfoList boardInfoList = boardService.getBoardInfoList(account, boardInfoSearch);
+                boardInfoList = boardService.getBoardInfoList(account, boardInfoSearch);
 
-            List<String> boardInfoIdList = boardInfoList.getBoardInfoList().stream()
-                    .map(BoardInfo::getId)
-                    .collect(Collectors.toList());
+                List<String> boardInfoIdList = boardInfoList.getBoardInfoList().stream()
+                        .map(BoardInfo::getId)
+                        .collect(Collectors.toList());
 
-            Assertions.assertTrue(boardInfoIdList.contains(accessibleBoardId));
-            Assertions.assertFalse(boardInfoIdList.contains(inaccessibleBoardId));
+                accessibleBoardSet.addAll(boardInfoIdList);
+                skip += 100;
+            } while (boardInfoList.getSkip() < boardInfoList.getTotal());
+
+            Assertions.assertTrue(accessibleBoardSet.contains(accessibleBoardId));
+            Assertions.assertFalse(accessibleBoardSet.contains(inaccessibleBoardId));
         }
 
         @Test
