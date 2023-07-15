@@ -33,7 +33,7 @@ public class BoardAuthorizationControllerTest extends IricomTestSuite {
     }
 
     @Nested
-    @DisplayName("계시판 관리자")
+    @DisplayName("게시판 관리자")
     class BoardAdminTest {
 
         @Nested

@@ -53,7 +53,7 @@ public class IricomFieldsSnippet {
     private static final List<ResponseField> commentResponseFieldList = Arrays.asList(
             ResponseField.builder().path("id").description("아이디").build(),
             ResponseField.builder().path("content").description("내용").isOptional(true).type(JsonFieldType.STRING).build(),
-            ResponseField.builder().path("referenceCommentId").description("상위 댓글 아이디").build(),
+            ResponseField.builder().path("referenceCommentId").description("상위 댓글 아이디").isOptional(true).type(JsonFieldType.STRING).build(),
             ResponseField.builder().path("createDate").description("작성일").build(),
             ResponseField.builder().path("updateDate").description("수정일").build(),
             ResponseField.builder().path("upvote").description("좋아요").build(),

@@ -306,11 +306,6 @@ public abstract class IricomTestSuite {
             .postType(PostType.POST).postState(PostState.PUBLISH)
             .creator(common00).board(reportBoard).build();
 
-    protected static final TestPostInfo reportPost02 = TestPostInfo.builder()
-            .title("reportPost02").content("report contents").isAllowComment(true)
-            .postType(PostType.POST).postState(PostState.PUBLISH)
-            .creator(common00).board(reportBoard).build();
-
     protected static final TestPostInfo reportPost03 = TestPostInfo.builder()
             .title("reportPost03").content("report contents").isAllowComment(true)
             .postType(PostType.POST).postState(PostState.PUBLISH)
@@ -373,7 +368,7 @@ public abstract class IricomTestSuite {
             voteCommentPost00, voteCommentPost01,
 
             // 게시물 신고
-            reportPost00, reportPost01, reportPost02, reportPost03, reportPost04, reportPost05,
+            reportPost00, reportPost01, reportPost03, reportPost04, reportPost05,
             reportPost06, reportPost07,
             reportedSearchPost00, reportedSearchPost01,
 
@@ -1250,31 +1245,31 @@ public abstract class IricomTestSuite {
 
     protected List<TestPostReportInfo> createTestPostReportInfo(TestPostInfo testPostInfo) {
         return Arrays.asList(
-                TestPostReportInfo.builder().type(ReportType.HATE).reason("hate").reportAccount(common00).post(testPostInfo).build(),
-                TestPostReportInfo.builder().type(ReportType.HATE).reason("hate").reportAccount(common01).post(testPostInfo).build(),
-                TestPostReportInfo.builder().type(ReportType.POLITICAL).reason("political").reportAccount(common02).post(testPostInfo).build(),
-                TestPostReportInfo.builder().type(ReportType.POLITICAL).reason("political").reportAccount(common03).post(testPostInfo).build(),
-                TestPostReportInfo.builder().type(ReportType.PORNOGRAPHY).reason("pornography").reportAccount(common04).post(testPostInfo).build(),
-                TestPostReportInfo.builder().type(ReportType.PORNOGRAPHY).reason("pornography").reportAccount(common05).post(testPostInfo).build(),
-                TestPostReportInfo.builder().type(ReportType.ETC).reason("etc").reportAccount(common06).post(testPostInfo).build(),
-                TestPostReportInfo.builder().type(ReportType.ETC).reason("etc").reportAccount(common07).post(testPostInfo).build(),
-                TestPostReportInfo.builder().type(ReportType.ETC).reason("etc").reportAccount(common08).post(testPostInfo).build(),
-                TestPostReportInfo.builder().type(ReportType.ETC).reason("etc").reportAccount(common09).post(testPostInfo).build()
+                TestPostReportInfo.builder().type(ReportType.HATE).reason("hate report").reportAccount(common00).post(testPostInfo).build(),
+                TestPostReportInfo.builder().type(ReportType.HATE).reason("hate report").reportAccount(common01).post(testPostInfo).build(),
+                TestPostReportInfo.builder().type(ReportType.POLITICAL).reason("political report").reportAccount(common02).post(testPostInfo).build(),
+                TestPostReportInfo.builder().type(ReportType.POLITICAL).reason("political report").reportAccount(common03).post(testPostInfo).build(),
+                TestPostReportInfo.builder().type(ReportType.PORNOGRAPHY).reason("pornography report").reportAccount(common04).post(testPostInfo).build(),
+                TestPostReportInfo.builder().type(ReportType.PORNOGRAPHY).reason("pornography report").reportAccount(common05).post(testPostInfo).build(),
+                TestPostReportInfo.builder().type(ReportType.ETC).reason("etc report").reportAccount(common06).post(testPostInfo).build(),
+                TestPostReportInfo.builder().type(ReportType.ETC).reason("etc report").reportAccount(common07).post(testPostInfo).build(),
+                TestPostReportInfo.builder().type(ReportType.ETC).reason("etc report").reportAccount(common08).post(testPostInfo).build(),
+                TestPostReportInfo.builder().type(ReportType.ETC).reason("etc report").reportAccount(common09).post(testPostInfo).build()
         );
     }
 
     protected List<TestCommentReportInfo> createTestCommentReportInfo(TestCommentInfo testCommentInfo) {
         return Arrays.asList(
-                TestCommentReportInfo.builder().type(ReportType.HATE).reason("hate").reportAccount(common00).comment(testCommentInfo).build(),
+                TestCommentReportInfo.builder().type(ReportType.HATE).reason("hate report").reportAccount(common00).comment(testCommentInfo).build(),
                 TestCommentReportInfo.builder().type(ReportType.HATE).reason("hate").reportAccount(common01).comment(testCommentInfo).build(),
-                TestCommentReportInfo.builder().type(ReportType.POLITICAL).reason("political").reportAccount(common02).comment(testCommentInfo).build(),
-                TestCommentReportInfo.builder().type(ReportType.POLITICAL).reason("political").reportAccount(common03).comment(testCommentInfo).build(),
-                TestCommentReportInfo.builder().type(ReportType.PORNOGRAPHY).reason("pornography").reportAccount(common04).comment(testCommentInfo).build(),
-                TestCommentReportInfo.builder().type(ReportType.PORNOGRAPHY).reason("pornography").reportAccount(common05).comment(testCommentInfo).build(),
-                TestCommentReportInfo.builder().type(ReportType.ETC).reason("etc").reportAccount(common06).comment(testCommentInfo).build(),
-                TestCommentReportInfo.builder().type(ReportType.ETC).reason("etc").reportAccount(common07).comment(testCommentInfo).build(),
-                TestCommentReportInfo.builder().type(ReportType.ETC).reason("etc").reportAccount(common08).comment(testCommentInfo).build(),
-                TestCommentReportInfo.builder().type(ReportType.ETC).reason("etc").reportAccount(common09).comment(testCommentInfo).build()
+                TestCommentReportInfo.builder().type(ReportType.POLITICAL).reason("political report").reportAccount(common02).comment(testCommentInfo).build(),
+                TestCommentReportInfo.builder().type(ReportType.POLITICAL).reason("political report").reportAccount(common03).comment(testCommentInfo).build(),
+                TestCommentReportInfo.builder().type(ReportType.PORNOGRAPHY).reason("pornography report").reportAccount(common04).comment(testCommentInfo).build(),
+                TestCommentReportInfo.builder().type(ReportType.PORNOGRAPHY).reason("pornography report").reportAccount(common05).comment(testCommentInfo).build(),
+                TestCommentReportInfo.builder().type(ReportType.ETC).reason("etc report").reportAccount(common06).comment(testCommentInfo).build(),
+                TestCommentReportInfo.builder().type(ReportType.ETC).reason("etc report").reportAccount(common07).comment(testCommentInfo).build(),
+                TestCommentReportInfo.builder().type(ReportType.ETC).reason("etc report").reportAccount(common08).comment(testCommentInfo).build(),
+                TestCommentReportInfo.builder().type(ReportType.ETC).reason("etc report").reportAccount(common09).comment(testCommentInfo).build()
         );
     }
 }
