@@ -5,7 +5,6 @@ import com.illdangag.iricom.server.data.entity.Account;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
-import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
@@ -43,9 +42,8 @@ public class AccountControllerTest extends IricomTestSuite {
         class AccountGetTest {
 
             @Test
-            @Order(0)
             @DisplayName("시스템 관리자의 본인 계정 정보 조회")
-            public void testCase00() throws Exception {
+            public void getSystemAccountInfo() throws Exception {
                 Account account = getAccount(systemAdmin);
 
                 MockHttpServletRequestBuilder requestBuilder = get("/v1/accounts/" + account.getId());
@@ -59,9 +57,8 @@ public class AccountControllerTest extends IricomTestSuite {
             }
 
             @Test
-            @Order(1)
             @DisplayName("게시판 관리자의 본인 계정 정보 조회")
-            public void testCase01() throws Exception {
+            public void getBoardAccountInfo() throws Exception {
                 Account account = getAccount(allBoardAdmin);
 
                 MockHttpServletRequestBuilder requestBuilder = get("/v1/accounts/" + account.getId());
@@ -75,9 +72,8 @@ public class AccountControllerTest extends IricomTestSuite {
             }
 
             @Test
-            @Order(2)
             @DisplayName("일반 계정의 본인 계정 정보 조회")
-            public void testCase02() throws Exception {
+            public void getAccountInfo() throws Exception {
                 Account account = getAccount(common00);
 
                 MockHttpServletRequestBuilder requestBuilder = get("/v1/accounts/" + account.getId());
@@ -96,9 +92,8 @@ public class AccountControllerTest extends IricomTestSuite {
         class GetListTest {
 
             @Test
-            @Order(0)
             @DisplayName("기본")
-            public void testCase00() throws Exception {
+            public void getAccountInfoList() throws Exception {
                 MockHttpServletRequestBuilder requestBuilder = get("/v1/accounts/");
                 setAuthToken(requestBuilder, common00);
 
@@ -111,9 +106,8 @@ public class AccountControllerTest extends IricomTestSuite {
             }
 
             @Test
-            @Order(1)
             @DisplayName("skip")
-            public void testCase01() throws Exception {
+            public void useSkip() throws Exception {
                 MockHttpServletRequestBuilder requestBuilder = get("/v1/accounts/")
                         .param("skip", "2");
                 setAuthToken(requestBuilder, common00);
@@ -127,9 +121,8 @@ public class AccountControllerTest extends IricomTestSuite {
             }
 
             @Test
-            @Order(2)
             @DisplayName("limit")
-            public void testCase02() throws Exception {
+            public void useLimit() throws Exception {
                 MockHttpServletRequestBuilder requestBuilder = get("/v1/accounts/")
                         .param("limit", "2");
                 setAuthToken(requestBuilder, common00);
@@ -144,9 +137,8 @@ public class AccountControllerTest extends IricomTestSuite {
             }
 
             @Test
-            @Order(3)
             @DisplayName("keyword, email")
-            public void testCase03() throws Exception {
+            public void useEmailKeyword() throws Exception {
                 MockHttpServletRequestBuilder requestBuilder = get("/v1/accounts/")
                         .param("keyword", common00.getEmail());
                 setAuthToken(requestBuilder, common00);
@@ -161,9 +153,8 @@ public class AccountControllerTest extends IricomTestSuite {
             }
 
             @Test
-            @Order(4)
             @DisplayName("keyword, 존재하지 않는 email")
-            public void testCase04() throws Exception {
+            public void useNotExistEmailKeyword() throws Exception {
                 MockHttpServletRequestBuilder requestBuilder = get("/v1/accounts/")
                         .param("keyword", "NOT_EXIST");
                 setAuthToken(requestBuilder, common00);
@@ -188,9 +179,8 @@ public class AccountControllerTest extends IricomTestSuite {
         class SelfUpdateTest {
 
             @Test
-            @Order(0)
             @DisplayName("닉네임, 설명")
-            public void testCase00() throws Exception {
+            public void nicknameAndDescription() throws Exception {
                 Map<String, Object> requestBody = new HashMap<>();
                 requestBody.put("nickname", "common00_00");
                 requestBody.put("description", "update_description");
@@ -208,9 +198,8 @@ public class AccountControllerTest extends IricomTestSuite {
             }
 
             @Test
-            @Order(1)
             @DisplayName("닉네임")
-            public void testCase01() throws Exception {
+            public void nickname() throws Exception {
                 Map<String, Object> requestBody = new HashMap<>();
                 requestBody.put("nickname", "common00_01");
 
@@ -226,9 +215,8 @@ public class AccountControllerTest extends IricomTestSuite {
             }
 
             @Test
-            @Order(2)
             @DisplayName("설명")
-            public void testCase02() throws Exception {
+            public void description() throws Exception {
                 Map<String, Object> requestBody = new HashMap<>();
                 requestBody.put("description", "only_description");
 
@@ -244,9 +232,8 @@ public class AccountControllerTest extends IricomTestSuite {
             }
 
             @Test
-            @Order(3)
             @DisplayName("닉네임 빈 문자열")
-            public void testCase03() throws Exception {
+            public void emptyNickname() throws Exception {
                 Map<String, Object> requestBody = new HashMap<>();
                 requestBody.put("description", "");
 
@@ -262,9 +249,8 @@ public class AccountControllerTest extends IricomTestSuite {
             }
 
             @Test
-            @Order(4)
             @DisplayName("닉네임 문자열의 길이 초과")
-            public void testCase04() throws Exception {
+            public void overflowNickname() throws Exception {
                 Map<String, Object> requestBody = new HashMap<>();
                 requestBody.put("nickname", "012345678901234567890");
 
@@ -280,9 +266,8 @@ public class AccountControllerTest extends IricomTestSuite {
             }
 
             @Test
-            @Order(5)
             @DisplayName("설명 문자열을 빈 문자열")
-            public void testCase05() throws Exception {
+            public void emptyDescription() throws Exception {
                 Map<String, Object> requestBody = new HashMap<>();
                 requestBody.put("nickname", "012345678901234567890");
 
@@ -298,9 +283,8 @@ public class AccountControllerTest extends IricomTestSuite {
             }
 
             @Test
-            @Order(6)
             @DisplayName("설명 문자열의 길이 초과")
-            public void testCase06() throws Exception {
+            public void overflowDescription() throws Exception {
                 Map<String, Object> requestBody = new HashMap<>();
                 requestBody.put("description", "01234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890");
 
@@ -316,9 +300,8 @@ public class AccountControllerTest extends IricomTestSuite {
             }
 
             @Test
-            @Order(7)
             @DisplayName("닉네임 중복")
-            public void testCase07() throws Exception {
+            public void duplicateNickname() throws Exception {
                 Map<String, Object> requestBody = new HashMap<>();
                 requestBody.put("nickname", "admin");
 
@@ -339,9 +322,8 @@ public class AccountControllerTest extends IricomTestSuite {
         class UnknownUpdateTest {
 
             @Test
-            @Order(0)
             @DisplayName("닉네임과 설명 수정")
-            public void testCase00() throws Exception {
+            public void nicknameAndDescription() throws Exception {
                 Map<String, Object> requestBody = new HashMap<>();
                 requestBody.put("nickname", "update_unknown01");
                 requestBody.put("description", "update_description");
@@ -359,9 +341,8 @@ public class AccountControllerTest extends IricomTestSuite {
             }
 
             @Test
-            @Order(1)
             @DisplayName("닉네임 수정")
-            public void testCase01() throws Exception {
+            public void nickname() throws Exception {
                 Map<String, Object> requestBody = new HashMap<>();
                 requestBody.put("nickname", "update_unknown02");
 
@@ -377,9 +358,8 @@ public class AccountControllerTest extends IricomTestSuite {
             }
 
             @Test
-            @Order(2)
             @DisplayName("닉네임을 빈 문자열로 수정")
-            public void testCase02() throws Exception {
+            public void emptyNickname() throws Exception {
                 Map<String, Object> requestBody = new HashMap<>();
                 requestBody.put("nickname", "");
 
@@ -395,9 +375,8 @@ public class AccountControllerTest extends IricomTestSuite {
             }
 
             @Test
-            @Order(3)
             @DisplayName("설명 수정")
-            public void testCase03() throws Exception {
+            public void description() throws Exception {
                 Map<String, Object> requestBody = new HashMap<>();
                 requestBody.put("description", "update_description");
 
@@ -413,9 +392,8 @@ public class AccountControllerTest extends IricomTestSuite {
             }
 
             @Test
-            @Order(4)
             @DisplayName("빈 문자열로 설명 수정")
-            public void updateDescriptionEmptyString() throws Exception {
+            public void emptyDescription() throws Exception {
                 Map<String, Object> requestBody = new HashMap<>();
                 requestBody.put("description", "");
 
@@ -436,9 +414,8 @@ public class AccountControllerTest extends IricomTestSuite {
         class OtherUpdateTest {
 
             @Test
-            @Order(0)
             @DisplayName("시스템 관리자가 다른 계정 정보 수정")
-            public void testCase00() throws Exception {
+            public void updateOtherAccountBySystemAdmin() throws Exception {
                 Account account = getAccount(common00);
 
                 Map<String, Object> requestBody = new HashMap<>();
@@ -458,9 +435,8 @@ public class AccountControllerTest extends IricomTestSuite {
             }
 
             @Test
-            @Order(1)
             @DisplayName("게시판 관리자가 다른 계정 정보 수정")
-            public void testCase01() throws Exception {
+            public void updateOtherAccountByBoardAdmin() throws Exception {
                 Account account = getAccount(common00);
 
                 Map<String, Object> requestBody = new HashMap<>();
@@ -479,9 +455,8 @@ public class AccountControllerTest extends IricomTestSuite {
             }
 
             @Test
-            @Order(2)
             @DisplayName("일반 계정이 다른 계정 정보 수정")
-            public void testCase02() throws Exception {
+            public void updateOtherAccountByAccount() throws Exception {
                 Account account = getAccount(common00);
 
                 Map<String, Object> requestBody = new HashMap<>();
@@ -500,9 +475,8 @@ public class AccountControllerTest extends IricomTestSuite {
             }
 
             @Test
-            @Order(3)
             @DisplayName("일반 계정이 본인 계정을 수정")
-            public void testCase03() throws Exception {
+            public void updateAccount() throws Exception {
                 Account account = getAccount(common00);
 
                 Map<String, Object> requestBody = new HashMap<>();

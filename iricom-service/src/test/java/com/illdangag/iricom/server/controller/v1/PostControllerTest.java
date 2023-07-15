@@ -5,13 +5,13 @@ import com.illdangag.iricom.server.data.entity.Board;
 import com.illdangag.iricom.server.data.entity.Post;
 import com.illdangag.iricom.server.data.entity.PostState;
 import com.illdangag.iricom.server.data.entity.PostType;
+import com.illdangag.iricom.server.data.response.PostInfo;
 import com.illdangag.iricom.server.test.IricomTestSuite;
 import com.illdangag.iricom.server.test.data.wrapper.TestBoardInfo;
 import com.illdangag.iricom.server.test.data.wrapper.TestPostInfo;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
-import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
@@ -20,7 +20,7 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilder;
 
 import java.util.*;
-import java.util.concurrent.atomic.AtomicInteger;
+import java.util.concurrent.atomic.AtomicLong;
 
 import static org.hamcrest.Matchers.hasSize;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
@@ -79,7 +79,6 @@ public class PostControllerTest extends IricomTestSuite {
         class PostTest {
 
             @Test
-            @Order(0)
             @DisplayName("제목, 내용, 댓글 허용 여부")
             public void testCase00() throws Exception {
                 Board board = getBoard(enableBoard);
@@ -105,7 +104,6 @@ public class PostControllerTest extends IricomTestSuite {
             }
 
             @Test
-            @Order(1)
             @DisplayName("제목")
             public void testCase01() throws Exception {
                 Board board = getBoard(enableBoard);
@@ -129,7 +127,6 @@ public class PostControllerTest extends IricomTestSuite {
             }
 
             @Test
-            @Order(2)
             @DisplayName("내용")
             public void testCase02() throws Exception {
                 Board board = getBoard(enableBoard);
@@ -150,7 +147,6 @@ public class PostControllerTest extends IricomTestSuite {
             }
 
             @Test
-            @Order(3)
             @DisplayName("댓글 허용 여부")
             public void testCase03() throws Exception {
                 Board board = getBoard(createBoard);
@@ -171,7 +167,6 @@ public class PostControllerTest extends IricomTestSuite {
             }
 
             @Test
-            @Order(4)
             @DisplayName("비활성화 게시판에 생성")
             public void testCase04() throws Exception {
                 Board board = getBoard(disableBoard);
@@ -200,7 +195,6 @@ public class PostControllerTest extends IricomTestSuite {
         class NotificationTest {
 
             @Test
-            @Order(0)
             @DisplayName("제목, 내용, 댓글 허용 여부")
             public void testCase00() throws Exception {
                 Board board = getBoard(createBoard);
@@ -226,7 +220,6 @@ public class PostControllerTest extends IricomTestSuite {
             }
 
             @Test
-            @Order(1)
             @DisplayName("제목")
             public void testCase01() throws Exception {
                 Board board = getBoard(createBoard);
@@ -250,7 +243,6 @@ public class PostControllerTest extends IricomTestSuite {
             }
 
             @Test
-            @Order(2)
             @DisplayName("내용")
             public void testCase02() throws Exception {
                 Board board = getBoard(createBoard);
@@ -271,7 +263,6 @@ public class PostControllerTest extends IricomTestSuite {
             }
 
             @Test
-            @Order(3)
             @DisplayName("댓글 허용 여부")
             public void testCase03() throws Exception {
                 Board board = getBoard(createBoard);
@@ -292,7 +283,6 @@ public class PostControllerTest extends IricomTestSuite {
             }
 
             @Test
-            @Order(4)
             @DisplayName("비활성화 게시판에 생성")
             public void testCase04() throws Exception {
                 Board board = getBoard(disableBoard);
@@ -320,7 +310,6 @@ public class PostControllerTest extends IricomTestSuite {
             class AuthTest {
 
                 @Test
-                @Order(0)
                 @DisplayName("게시판 관리자")
                 public void testCase00() throws Exception {
                     Board board = getBoard(createBoard);
@@ -345,7 +334,6 @@ public class PostControllerTest extends IricomTestSuite {
                 }
 
                 @Test
-                @Order(1)
                 @DisplayName("일반 계정")
                 public void testCase01() throws Exception {
                     Board board = getBoard(createBoard);
@@ -379,7 +367,6 @@ public class PostControllerTest extends IricomTestSuite {
         class InfoTest {
 
             @Test
-            @Order(0)
             @DisplayName("기본")
             public void testCase00() throws Exception {
                 Board board = getBoard(enableBoard);
@@ -394,7 +381,6 @@ public class PostControllerTest extends IricomTestSuite {
             }
 
             @Test
-            @Order(1)
             @DisplayName("임시 저장")
             public void testCase01() throws Exception {
                 Board board = getBoard(enableBoard);
@@ -411,7 +397,6 @@ public class PostControllerTest extends IricomTestSuite {
             }
 
             @Test
-            @Order(2)
             @DisplayName("임시 저장 하지 않은 게시물")
             public void testCase02() throws Exception {
                 Board board = getBoard(enableBoard);
@@ -428,7 +413,6 @@ public class PostControllerTest extends IricomTestSuite {
             }
 
             @Test
-            @Order(3)
             @DisplayName("발행 하지 않은 게시물")
             public void testCase03() throws Exception {
                 Board board = getBoard(enableBoard);
@@ -445,7 +429,6 @@ public class PostControllerTest extends IricomTestSuite {
             }
 
             @Test
-            @Order(4)
             @DisplayName("존재하지 않는 게시판")
             public void testCase04() throws Exception {
                 Post post = getPost(enableBoardPost03);
@@ -461,7 +444,6 @@ public class PostControllerTest extends IricomTestSuite {
             }
 
             @Test
-            @Order(5)
             @DisplayName("존재하지 않는 게시물")
             public void testCase05() throws Exception {
                 Board board = getBoard(enableBoard);
@@ -478,7 +460,6 @@ public class PostControllerTest extends IricomTestSuite {
             }
 
             @Test
-            @Order(6)
             @DisplayName("조회수")
             public void testCase06() throws Exception {
                 Board board = getBoard(enableBoard);
@@ -487,14 +468,14 @@ public class PostControllerTest extends IricomTestSuite {
                 MockHttpServletRequestBuilder requestBuilder = get("/v1/boards/" + board.getId() + "/posts/" + post.getId());
                 setAuthToken(requestBuilder, common00);
 
-                AtomicInteger viewCount = new AtomicInteger();
+                AtomicLong viewCount = new AtomicLong();
                 mockMvc.perform(requestBuilder)
                         .andExpect(status().is(200))
                         .andDo(mvnResult -> {
                             String responseBody = mvnResult.getResponse().getContentAsString();
                             ObjectMapper mapper = new ObjectMapper();
-                            Map<String, Object> map = mapper.readValue(responseBody, Map.class);
-                            viewCount.set((Integer) map.get("viewCount"));
+                            PostInfo postInfo = mapper.readValue(responseBody, PostInfo.class);
+                            viewCount.set(postInfo.getViewCount());
                         });
 
                 requestBuilder = get("/v1/boards/" + board.getId() + "/posts/" + post.getId());
@@ -512,7 +493,6 @@ public class PostControllerTest extends IricomTestSuite {
         class ListTest {
 
             @Test
-            @Order(0)
             @DisplayName("기본")
             public void testCase00() throws Exception {
                 Board board = getBoard(enableBoard);
@@ -533,7 +513,6 @@ public class PostControllerTest extends IricomTestSuite {
             }
 
             @Test
-            @Order(1)
             @DisplayName("skip")
             public void testCase01() throws Exception {
                 Board board = getBoard(enableBoard);
@@ -553,7 +532,6 @@ public class PostControllerTest extends IricomTestSuite {
             }
 
             @Test
-            @Order(2)
             @DisplayName("limit")
             public void testCase02() throws Exception {
                 Board board = getBoard(enableBoard);
@@ -575,7 +553,6 @@ public class PostControllerTest extends IricomTestSuite {
             }
 
             @Test
-            @Order(3)
             @DisplayName("title")
             public void testCase03() throws Exception {
                 Board board = getBoard(enableBoard);
@@ -597,7 +574,6 @@ public class PostControllerTest extends IricomTestSuite {
             }
 
             @Test
-            @Order(4)
             @DisplayName("공지 사항")
             public void testCase04() throws Exception {
                 Board board = getBoard(enableBoard);
@@ -620,7 +596,6 @@ public class PostControllerTest extends IricomTestSuite {
     class PublishTest {
 
         @Test
-        @Order(0)
         @DisplayName("발행")
         public void testCase00() throws Exception {
             Board board = getBoard(updateBoard);
@@ -636,7 +611,6 @@ public class PostControllerTest extends IricomTestSuite {
         }
 
         @Test
-        @Order(1)
         @DisplayName("발행한 게시물 다시 발행")
         public void testCase01() throws Exception {
             Board board = getBoard(updateBoard);
@@ -652,7 +626,6 @@ public class PostControllerTest extends IricomTestSuite {
         }
 
         @Test
-        @Order(2)
         @DisplayName("다른 계정이 생성한 게시물 발행")
         public void testCase02() throws Exception {
             Board board = getBoard(updateBoard);
@@ -668,7 +641,6 @@ public class PostControllerTest extends IricomTestSuite {
         }
 
         @Test
-        @Order(3)
         @DisplayName("공지 사항 발행")
         public void testCase03() throws Exception {
             Board board = getBoard(updateBoard);
@@ -684,7 +656,6 @@ public class PostControllerTest extends IricomTestSuite {
         }
 
         @Test
-        @Order(4)
         @DisplayName("비활성화 게시판의 게시물 발행")
         public void testCase04() throws Exception {
             Board board = getBoard(disableBoard);
@@ -701,7 +672,6 @@ public class PostControllerTest extends IricomTestSuite {
         }
 
         @Test
-        @Order(5)
         @DisplayName("존재하지 않는 게시물 발행")
         public void testCase05() throws Exception {
             Board board = getBoard(updateBoard);
@@ -722,7 +692,6 @@ public class PostControllerTest extends IricomTestSuite {
     class UpdateTest {
 
         @Test
-        @Order(0)
         @DisplayName("제목, 내용, 댓글 허용 여부")
         public void testCase00() throws Exception {
             Board board = getBoard(updateBoard);
@@ -747,7 +716,6 @@ public class PostControllerTest extends IricomTestSuite {
         }
 
         @Test
-        @Order(1)
         @DisplayName("제목")
         public void testCase01() throws Exception {
             Board board = getBoard(updateBoard);
@@ -768,7 +736,6 @@ public class PostControllerTest extends IricomTestSuite {
         }
 
         @Test
-        @Order(2)
         @DisplayName("내용")
         public void testCase02() throws Exception {
             Board board = getBoard(updateBoard);
@@ -789,7 +756,6 @@ public class PostControllerTest extends IricomTestSuite {
         }
 
         @Test
-        @Order(3)
         @DisplayName("댓글 허용 여부")
         public void testCase03() throws Exception {
             Board board = getBoard(updateBoard);
@@ -810,7 +776,6 @@ public class PostControllerTest extends IricomTestSuite {
         }
 
         @Test
-        @Order(4)
         @DisplayName("게시물을 공지사항으로 수정")
         public void testCase04() throws Exception {
             Board board = getBoard(updateBoard);
@@ -831,7 +796,6 @@ public class PostControllerTest extends IricomTestSuite {
         }
 
         @Test
-        @Order(5)
         @DisplayName("발행한 게시물 수정")
         public void testCase05() throws Exception {
             Board board = getBoard(updateBoard);
@@ -856,7 +820,6 @@ public class PostControllerTest extends IricomTestSuite {
         class AuthTest {
 
             @Test
-            @Order(0)
             @DisplayName("일반 계정이 게시물을 공지사항으로 수정")
             public void testCase00() throws Exception {
                 Board board = getBoard(updateBoard);
@@ -877,7 +840,6 @@ public class PostControllerTest extends IricomTestSuite {
             }
 
             @Test
-            @Order(1)
             @DisplayName("다른 게시판 관리자가 게시물을 공지사항으로 수정")
             public void testCase01() throws Exception {
                 Board board = getBoard(updateBoard);
@@ -904,7 +866,6 @@ public class PostControllerTest extends IricomTestSuite {
     class DeleteTest {
 
         @Test
-        @Order(0)
         @DisplayName("임시 게시물 삭제")
         public void testCase00() throws Exception {
             Board board = getBoard(updateBoard);
@@ -919,7 +880,6 @@ public class PostControllerTest extends IricomTestSuite {
         }
 
         @Test
-        @Order(1)
         @DisplayName("발행한 게시물 삭제")
         public void testCase01() throws Exception {
             Board board = getBoard(updateBoard);
@@ -934,7 +894,6 @@ public class PostControllerTest extends IricomTestSuite {
         }
 
         @Test
-        @Order(2)
         @DisplayName("다른 계정의 게시물 삭제")
         public void testCase02() throws Exception {
             Board board = getBoard(updateBoard);
@@ -950,7 +909,6 @@ public class PostControllerTest extends IricomTestSuite {
         }
 
         @Test
-        @Order(3)
         @DisplayName("비활성화 게시판의 게시물 삭제")
         public void testCase03() throws Exception {
             Board board = getBoard(disableBoard);
@@ -967,7 +925,6 @@ public class PostControllerTest extends IricomTestSuite {
         }
 
         @Test
-        @Order(4)
         @DisplayName("존재하지 않는 게시물 삭제")
         public void testCase04() throws Exception {
             Board board = getBoard(updateBoard);
@@ -988,7 +945,6 @@ public class PostControllerTest extends IricomTestSuite {
     class VoteTest {
 
         @Test
-        @Order(0)
         @DisplayName("좋아요")
         public void testCase00() throws Exception {
             Board board = getBoard(voteBoard);
@@ -1009,7 +965,6 @@ public class PostControllerTest extends IricomTestSuite {
         }
 
         @Test
-        @Order(1)
         @DisplayName("싫어요")
         public void testCase01() throws Exception {
             Board board = getBoard(voteBoard);
@@ -1030,7 +985,6 @@ public class PostControllerTest extends IricomTestSuite {
         }
 
         @Test
-        @Order(2)
         @DisplayName("중복 좋아요")
         public void testCase02() throws Exception {
             Board board = getBoard(voteBoard);
@@ -1056,7 +1010,6 @@ public class PostControllerTest extends IricomTestSuite {
         }
 
         @Test
-        @Order(3)
         @DisplayName("중복 싫어요")
         public void testCase03() throws Exception {
             Board board = getBoard(voteBoard);
@@ -1082,7 +1035,6 @@ public class PostControllerTest extends IricomTestSuite {
         }
 
         @Test
-        @Order(4)
         @DisplayName("발행되지 않은 게시물")
         public void testCase04() throws Exception {
             Board board = getBoard(voteBoard);
@@ -1103,7 +1055,6 @@ public class PostControllerTest extends IricomTestSuite {
         }
 
         @Test
-        @Order(5)
         @DisplayName("다른 게시판의 게시물")
         public void testCase05() throws Exception {
             Board board = getBoard(enableBoard);
@@ -1125,7 +1076,6 @@ public class PostControllerTest extends IricomTestSuite {
         }
 
         @Test
-        @Order(6)
         @DisplayName("비활성화 게시판")
         public void testCase06() throws Exception {
             Board board = getBoard(disableBoard);
@@ -1147,7 +1097,6 @@ public class PostControllerTest extends IricomTestSuite {
         }
 
         @Test
-        @Order(7)
         @DisplayName("올바르지 않은 요청")
         public void testCase07() throws Exception {
             Board board = getBoard(voteBoard);
@@ -1168,7 +1117,6 @@ public class PostControllerTest extends IricomTestSuite {
         }
 
         @Test
-        @Order(8)
         @DisplayName("타입을 포함하지 않은 요청")
         public void testCase08() throws Exception {
             Board board = getBoard(voteBoard);
@@ -1188,7 +1136,6 @@ public class PostControllerTest extends IricomTestSuite {
     @DisplayName("신고된 게시물")
     class ReportTest {
         @Test
-        @Order(0)
         @DisplayName("신고된 게시물 조회")
         public void testCase00() throws Exception {
             Post post = getPost(reportedPost00);

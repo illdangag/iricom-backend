@@ -6,7 +6,6 @@ import com.illdangag.iricom.server.data.entity.Post;
 import com.illdangag.iricom.server.test.IricomTestSuite;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
-import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
@@ -38,7 +37,6 @@ public class CommentControllerTest extends IricomTestSuite {
     class CreateTest {
 
         @Test
-        @Order(0)
         @DisplayName("기본")
         public void testCase00() throws Exception {
             Board board = getBoard(commentBoard);
@@ -61,7 +59,6 @@ public class CommentControllerTest extends IricomTestSuite {
         }
 
         @Test
-        @Order(1)
         @DisplayName("대댓글")
         public void testCase01() throws Exception {
             Board board = getBoard(commentBoard);
@@ -86,7 +83,6 @@ public class CommentControllerTest extends IricomTestSuite {
         }
 
         @Test
-        @Order(2)
         @DisplayName("발행되지 않은 게시물에 댓글")
         public void testCase02() throws Exception {
             Board board = getBoard(commentBoard);
@@ -107,7 +103,6 @@ public class CommentControllerTest extends IricomTestSuite {
         }
 
         @Test
-        @Order(3)
         @DisplayName("댓글을 허용하지 않는 게시물에 댓글")
         public void testCase03() throws Exception {
             Board board = getBoard(commentBoard);
@@ -128,7 +123,6 @@ public class CommentControllerTest extends IricomTestSuite {
         }
 
         @Test
-        @Order(4)
         @DisplayName("비활성화 게시판의 게시물에 댓글")
         public void testCase04() throws Exception {
             Board board = getBoard(disableBoard);
@@ -150,7 +144,6 @@ public class CommentControllerTest extends IricomTestSuite {
         }
 
         @Test
-        @Order(5)
         @DisplayName("다른 게시판에 존재하는 게시물의 댓글")
         public void testCase05() throws Exception {
             Board board = getBoard(enableBoard);
@@ -177,7 +170,6 @@ public class CommentControllerTest extends IricomTestSuite {
     class UpdateTest {
 
         @Test
-        @Order(0)
         @DisplayName("기본")
         public void testCase00() throws Exception {
             Board board = getBoard(commentBoard);
@@ -199,7 +191,6 @@ public class CommentControllerTest extends IricomTestSuite {
         }
 
         @Test
-        @Order(1)
         @DisplayName("존재하지 않는 댓글")
         public void testCase01() throws Exception {
             Board board = getBoard(commentBoard);
@@ -220,7 +211,6 @@ public class CommentControllerTest extends IricomTestSuite {
         }
 
         @Test
-        @Order(2)
         @DisplayName("비활성화 게시판의 게시물에 댓글")
         public void testCase02() throws Exception {
             Board board = getBoard(disableBoard);
@@ -243,7 +233,6 @@ public class CommentControllerTest extends IricomTestSuite {
         }
 
         @Test
-        @Order(3)
         @DisplayName("다른 사람의 댓글 수정")
         public void testCase03() throws Exception {
             Board board = getBoard(commentBoard);
@@ -266,7 +255,6 @@ public class CommentControllerTest extends IricomTestSuite {
         }
 
         @Test
-        @Order(4)
         @DisplayName("다른 게시판에 존재하는 게시물의 댓글")
         public void testCase04() throws Exception {
             Board board = getBoard(enableBoard);
@@ -294,7 +282,6 @@ public class CommentControllerTest extends IricomTestSuite {
     class GetTest {
 
         @Test
-        @Order(0)
         @DisplayName("목록 조회")
         public void testCase00() throws Exception {
             Board board = getBoard(commentBoard);
@@ -314,7 +301,6 @@ public class CommentControllerTest extends IricomTestSuite {
         }
 
         @Test
-        @Order(1)
         @DisplayName("대댓글 포함 조회")
         public void testCase01() throws Exception {
             Board board = getBoard(commentBoard);
@@ -337,7 +323,6 @@ public class CommentControllerTest extends IricomTestSuite {
         }
 
         @Test
-        @Order(2)
         @DisplayName("skip")
         public void testCase02() throws Exception {
             Board board = getBoard(commentBoard);
@@ -358,7 +343,6 @@ public class CommentControllerTest extends IricomTestSuite {
         }
 
         @Test
-        @Order(3)
         @DisplayName("limit")
         public void testCase03() throws Exception {
             Board board = getBoard(commentBoard);
@@ -379,7 +363,6 @@ public class CommentControllerTest extends IricomTestSuite {
         }
 
         @Test
-        @Order(4)
         @DisplayName("대댓글 기준")
         public void testCase04() throws Exception {
             Board board = getBoard(commentBoard);
@@ -406,7 +389,6 @@ public class CommentControllerTest extends IricomTestSuite {
     class DeleteTest {
 
         @Test
-        @Order(0)
         @DisplayName("기본")
         public void testCase00() throws Exception {
             Board board = getBoard(commentBoard);
@@ -423,7 +405,6 @@ public class CommentControllerTest extends IricomTestSuite {
         }
 
         @Test
-        @Order(1)
         @DisplayName("대댓글")
         public void testCase01() throws Exception {
             Board board = getBoard(commentBoard);
@@ -440,7 +421,6 @@ public class CommentControllerTest extends IricomTestSuite {
         }
 
         @Test
-        @Order(2)
         @DisplayName("삭제한 댓글")
         public void testCase02() throws Exception {
             Board board = getBoard(commentBoard);
@@ -457,7 +437,6 @@ public class CommentControllerTest extends IricomTestSuite {
         }
 
         @Test
-        @Order(3)
         @DisplayName("다른 사람이 작성한 댓글 삭제")
         public void testCase03() throws Exception {
             Board board = getBoard(commentBoard);
@@ -479,7 +458,6 @@ public class CommentControllerTest extends IricomTestSuite {
     @DisplayName("댓글 투표")
     class VoteTest {
         @Test
-        @Order(0)
         @DisplayName("좋아요")
         public void testCase00() throws Exception {
             Board board = getBoard(voteBoard);
@@ -501,7 +479,6 @@ public class CommentControllerTest extends IricomTestSuite {
         }
 
         @Test
-        @Order(1)
         @DisplayName("싫어요")
         public void testCase01() throws Exception {
             Board board = getBoard(voteBoard);
@@ -523,7 +500,6 @@ public class CommentControllerTest extends IricomTestSuite {
         }
 
         @Test
-        @Order(2)
         @DisplayName("대댓글에 좋아요")
         public void testCase02() throws Exception {
             Board board = getBoard(voteBoard);
@@ -545,7 +521,6 @@ public class CommentControllerTest extends IricomTestSuite {
         }
 
         @Test
-        @Order(3)
         @DisplayName("대댓글에 싫어요")
         public void testCase03() throws Exception {
             Board board = getBoard(voteBoard);
@@ -567,7 +542,6 @@ public class CommentControllerTest extends IricomTestSuite {
         }
 
         @Test
-        @Order(4)
         @DisplayName("중복 좋아요")
         public void testCase04() throws Exception {
             Board board = getBoard(voteBoard);
@@ -596,7 +570,6 @@ public class CommentControllerTest extends IricomTestSuite {
         }
 
         @Test
-        @Order(5)
         @DisplayName("중복 싫어요")
         public void testCase05() throws Exception {
             Board board = getBoard(voteBoard);
@@ -625,7 +598,6 @@ public class CommentControllerTest extends IricomTestSuite {
         }
 
         @Test
-        @Order(6)
         @DisplayName("올바르지 않은 요청")
         public void testCase06() throws Exception {
             Board board = getBoard(voteBoard);
@@ -647,7 +619,6 @@ public class CommentControllerTest extends IricomTestSuite {
         }
 
         @Test
-        @Order(7)
         @DisplayName("댓글을 허용하지 않은 게시물")
         public void testCase07() throws Exception {
             Board board = getBoard(voteBoard);
@@ -669,7 +640,6 @@ public class CommentControllerTest extends IricomTestSuite {
         }
 
         @Test
-        @Order(8)
         @DisplayName("비활성화 게시판의 게시물의 댓글")
         public void testCase08() throws Exception {
             Board board = getBoard(disableBoard);
@@ -692,7 +662,6 @@ public class CommentControllerTest extends IricomTestSuite {
         }
 
         @Test
-        @Order(9)
         @DisplayName("해당 게시판에 존재하지 않는 게시물")
         public void testCase09() throws Exception {
             Board board = getBoard(enableBoard);
@@ -715,7 +684,6 @@ public class CommentControllerTest extends IricomTestSuite {
         }
 
         @Test
-        @Order(10)
         @DisplayName("다른 게시물의 댓글")
         public void testCase10() throws Exception {
             Board board = getBoard(voteBoard);
@@ -741,7 +709,6 @@ public class CommentControllerTest extends IricomTestSuite {
     @DisplayName("신고된 댓글")
     class ReportTest {
         @Test
-        @Order(0)
         @DisplayName("신고된 댓글 조회")
         public void testCase00() throws Exception {
             Post post = getPost(reportedPost00);

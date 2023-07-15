@@ -5,7 +5,6 @@ import com.illdangag.iricom.server.test.IricomTestSuite;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
-import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
@@ -38,7 +37,6 @@ public class BoardControllerTest extends IricomTestSuite {
     class CreateTest {
 
         @Test
-        @Order(0)
         @DisplayName("제목, 설명")
         public void testCase00() throws Exception {
             Map<String, Object> requestBody = new HashMap<>();
@@ -58,7 +56,6 @@ public class BoardControllerTest extends IricomTestSuite {
         }
 
         @Test
-        @Order(1)
         @DisplayName("제목")
         public void testCase01() throws Exception {
             Map<String, Object> requestBody = new HashMap<>();
@@ -76,7 +73,6 @@ public class BoardControllerTest extends IricomTestSuite {
         }
 
         @Test
-        @Order(2)
         @DisplayName("설명")
         public void testCase02() throws Exception {
             Map<String, Object> requestBody = new HashMap<>();
@@ -94,7 +90,6 @@ public class BoardControllerTest extends IricomTestSuite {
         }
 
         @Test
-        @Order(3)
         @DisplayName("제목 길이 초과")
         public void testCase03() throws Exception {
             Map<String, Object> requestBody = new HashMap<>();
@@ -112,7 +107,6 @@ public class BoardControllerTest extends IricomTestSuite {
         }
 
         @Test
-        @Order(4)
         @DisplayName("제목 빈 문자열")
         public void testCase04() throws Exception {
             Map<String, Object> requestBody = new HashMap<>();
@@ -130,7 +124,6 @@ public class BoardControllerTest extends IricomTestSuite {
         }
 
         @Test
-        @Order(5)
         @DisplayName("설명 빈 문자열")
         public void testCase05() throws Exception {
             Map<String, Object> requestBody = new HashMap<>();
@@ -150,7 +143,6 @@ public class BoardControllerTest extends IricomTestSuite {
         }
 
         @Test
-        @Order(6)
         @DisplayName("설명 길이 초과")
         public void testCase06() throws Exception {
             Map<String, Object> requestBody = new HashMap<>();
@@ -173,7 +165,6 @@ public class BoardControllerTest extends IricomTestSuite {
         class AuthTest {
 
             @Test
-            @Order(0)
             @DisplayName("게시판 관리자 권한으로 생성")
             public void testCase00() throws Exception {
                 Map<String, Object> requestBody = new HashMap<>();
@@ -192,7 +183,6 @@ public class BoardControllerTest extends IricomTestSuite {
             }
 
             @Test
-            @Order(1)
             @DisplayName("일반 계정으로 생성")
             public void testCase01() throws Exception {
                 Map<String, Object> requestBody = new HashMap<>();
@@ -221,7 +211,6 @@ public class BoardControllerTest extends IricomTestSuite {
         class GetInfoTest {
 
             @Test
-            @Order(0)
             @DisplayName("존재하는 게시판")
             public void testCase00() throws Exception {
                 Board board = getBoard(enableBoard);
@@ -239,7 +228,6 @@ public class BoardControllerTest extends IricomTestSuite {
             }
 
             @Test
-            @Order(1)
             @DisplayName("존재하지 않는 게시판")
             public void testCase01() throws Exception {
                 MockHttpServletRequestBuilder requestBuilder = get("/v1/boards/unknown");
@@ -257,7 +245,6 @@ public class BoardControllerTest extends IricomTestSuite {
         class GetInfoListTest {
 
             @Test
-            @Order(0)
             @DisplayName("기본 조건")
             public void testCase00() throws Exception {
                 MockHttpServletRequestBuilder requestBuilder = get("/v1/boards");
@@ -274,7 +261,6 @@ public class BoardControllerTest extends IricomTestSuite {
             }
 
             @Test
-            @Order(1)
             @DisplayName("skip")
             public void testCase01() throws Exception {
                 MockHttpServletRequestBuilder requestBuilder = get("/v1/boards")
@@ -292,7 +278,6 @@ public class BoardControllerTest extends IricomTestSuite {
             }
 
             @Test
-            @Order(2)
             @DisplayName("limit")
             public void testCase02() throws Exception {
                 MockHttpServletRequestBuilder requestBuilder = get("/v1/boards")
@@ -310,7 +295,6 @@ public class BoardControllerTest extends IricomTestSuite {
             }
 
             @Test
-            @Order(3)
             @DisplayName("keyword")
             public void testCase03() throws Exception {
                 MockHttpServletRequestBuilder requestBuilder = get("/v1/boards")
@@ -327,7 +311,6 @@ public class BoardControllerTest extends IricomTestSuite {
             }
 
             @Test
-            @Order(4)
             @DisplayName("enabled")
             public void testCase04() throws Exception {
                 MockHttpServletRequestBuilder requestBuilder = get("/v1/boards")
@@ -349,7 +332,6 @@ public class BoardControllerTest extends IricomTestSuite {
     class UpdateTest {
 
         @Test
-        @Order(0)
         @DisplayName("제목, 설명, 활성화 여부")
         public void testCase00() throws Exception {
             Board board = getBoard(updateBoard);
@@ -373,7 +355,6 @@ public class BoardControllerTest extends IricomTestSuite {
         }
 
         @Test
-        @Order(1)
         @DisplayName("제목")
         public void testCase01() throws Exception {
             Board board = getBoard(updateBoard);
@@ -393,7 +374,6 @@ public class BoardControllerTest extends IricomTestSuite {
         }
 
         @Test
-        @Order(2)
         @DisplayName("설명")
         public void testCase02() throws Exception {
             Board board = getBoard(updateBoard);
@@ -413,7 +393,6 @@ public class BoardControllerTest extends IricomTestSuite {
         }
 
         @Test
-        @Order(3)
         @DisplayName("활성화 여부")
         public void testCase03() throws Exception {
             Board board = getBoard(updateBoard);
@@ -433,7 +412,6 @@ public class BoardControllerTest extends IricomTestSuite {
         }
 
         @Test
-        @Order(4)
         @DisplayName("제목 빈 문자열")
         public void testCase04() throws Exception {
             Board board = getBoard(updateBoard);
@@ -453,7 +431,6 @@ public class BoardControllerTest extends IricomTestSuite {
         }
 
         @Test
-        @Order(5)
         @DisplayName("제목 길이 초과")
         public void testCase05() throws Exception {
             Board board = getBoard(updateBoard);
@@ -473,7 +450,6 @@ public class BoardControllerTest extends IricomTestSuite {
         }
 
         @Test
-        @Order(6)
         @DisplayName("설명 빈 문자열")
         public void testCase06() throws Exception {
             Board board = getBoard(updateBoard);
@@ -493,7 +469,6 @@ public class BoardControllerTest extends IricomTestSuite {
         }
 
         @Test
-        @Order(7)
         @DisplayName("설명 길이 초과")
         public void testCase07() throws Exception {
             Board board = getBoard(updateBoard);
@@ -517,7 +492,6 @@ public class BoardControllerTest extends IricomTestSuite {
         class UpdateAuthTest {
 
             @Test
-            @Order(0)
             @DisplayName("게시판 관리자")
             public void testCase00() throws Exception {
                 Board board = getBoard(updateBoard);
@@ -538,7 +512,6 @@ public class BoardControllerTest extends IricomTestSuite {
             }
 
             @Test
-            @Order(1)
             @DisplayName("일반 계정")
             public void testCase01() throws Exception {
                 Board board = getBoard(updateBoard);

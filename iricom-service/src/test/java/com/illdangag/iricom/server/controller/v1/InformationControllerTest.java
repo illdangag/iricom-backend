@@ -4,7 +4,6 @@ import com.illdangag.iricom.server.data.entity.Account;
 import com.illdangag.iricom.server.test.IricomTestSuite;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
-import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
@@ -31,7 +30,6 @@ public class InformationControllerTest extends IricomTestSuite {
     class DefaultInfoGet {
 
         @Test
-        @Order(0)
         @DisplayName("관리자 계정")
         public void testCase00() throws Exception {
             Account account = getAccount(systemAdmin);
@@ -47,7 +45,6 @@ public class InformationControllerTest extends IricomTestSuite {
         }
 
         @Test
-        @Order(1)
         @DisplayName("게시판 관리자 계정")
         public void testCase01() throws Exception {
             Account account = getAccount(allBoardAdmin);
@@ -63,7 +60,6 @@ public class InformationControllerTest extends IricomTestSuite {
         }
 
         @Test
-        @Order(2)
         @DisplayName("일반 계정")
         public void testCase02() throws Exception {
             Account account = getAccount(common00);
@@ -83,10 +79,7 @@ public class InformationControllerTest extends IricomTestSuite {
     @DisplayName("작성한 게시물 목록")
     class GetPostList {
         @Test
-        @Order(0)
         public void testCase00() throws Exception {
-            Account account = getAccount(common00);
-
             MockHttpServletRequestBuilder requestBuilder = get("/v1/infos/posts");
             setAuthToken(requestBuilder, common00);
 

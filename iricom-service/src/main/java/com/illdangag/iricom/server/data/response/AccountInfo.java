@@ -5,8 +5,10 @@ import com.illdangag.iricom.server.data.entity.Account;
 import com.illdangag.iricom.server.data.entity.AccountDetail;
 import com.illdangag.iricom.server.util.DateTimeUtils;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 @Getter
+@NoArgsConstructor
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class AccountInfo {
     private String id;

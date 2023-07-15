@@ -2,7 +2,6 @@ package com.illdangag.iricom.server.controller;
 
 import com.illdangag.iricom.server.test.IricomTestSuite;
 import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
@@ -25,7 +24,6 @@ public class MainControllerTest extends IricomTestSuite {
     }
 
     @Test
-    @Order(0)
     @DisplayName("기본 서버 정보")
     public void testCase00() throws Exception {
         MockHttpServletRequestBuilder requestBuilder = get("/");

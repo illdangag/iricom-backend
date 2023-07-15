@@ -6,7 +6,6 @@ import com.illdangag.iricom.server.test.IricomTestSuite;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
-import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
@@ -42,7 +41,6 @@ public class BoardAuthorizationControllerTest extends IricomTestSuite {
         class CreateTest {
 
             @Test
-            @Order(0)
             @DisplayName("생성")
             public void testCase00() throws Exception {
                 Account account = getAccount(toEnableBoardAdmin);
@@ -63,7 +61,6 @@ public class BoardAuthorizationControllerTest extends IricomTestSuite {
             }
 
             @Test
-            @Order(1)
             @DisplayName("존재하지 않는 게시판")
             public void testCase01() throws Exception {
                 Account account = getAccount(toEnableBoardAdmin);
@@ -84,7 +81,6 @@ public class BoardAuthorizationControllerTest extends IricomTestSuite {
             }
 
             @Test
-            @Order(2)
             @DisplayName("존재하지 않는 계정")
             public void testCase02() throws Exception {
                 Board board = getBoard(enableBoard);
@@ -109,7 +105,6 @@ public class BoardAuthorizationControllerTest extends IricomTestSuite {
             class AuthTest {
 
                 @Test
-                @Order(0)
                 @DisplayName("게시판 관리자 계정으로 생성")
                 public void testCase00() throws Exception {
                     Account account = getAccount(common00);
@@ -136,7 +131,6 @@ public class BoardAuthorizationControllerTest extends IricomTestSuite {
         class DeletedTest {
 
             @Test
-            @Order(0)
             @DisplayName("삭제")
             public void testCase00() throws Exception {
                 Account account = getAccount(toDisableBoardAdmin);
@@ -157,7 +151,6 @@ public class BoardAuthorizationControllerTest extends IricomTestSuite {
             }
 
             @Test
-            @Order(1)
             @DisplayName("존재하지 않는 게시판")
             public void testCase01() throws Exception {
                 Account account = getAccount(toDisableBoardAdmin);
@@ -178,7 +171,6 @@ public class BoardAuthorizationControllerTest extends IricomTestSuite {
             }
 
             @Test
-            @Order(2)
             @DisplayName("존재하지 않는 계정")
             public void testCase02() throws Exception {
                 Board board = getBoard(enableBoard);
@@ -203,7 +195,6 @@ public class BoardAuthorizationControllerTest extends IricomTestSuite {
             class AuthTest {
 
                 @Test
-                @Order(0)
                 @DisplayName("게시판 관리자 계정으로 생성")
                 public void testCase00() throws Exception {
                     Account account = getAccount(common00);
@@ -230,7 +221,6 @@ public class BoardAuthorizationControllerTest extends IricomTestSuite {
         class BoardAdminListGetTest {
 
             @Test
-            @Order(0)
             @DisplayName("목록 조회")
             public void testCase00() throws Exception {
                 MockHttpServletRequestBuilder requestBuilder = get("/v1/auth/boards");
@@ -246,7 +236,6 @@ public class BoardAuthorizationControllerTest extends IricomTestSuite {
             }
 
             @Test
-            @Order(1)
             @DisplayName("게시판 제목으로 조회")
             public void testCase01() throws Exception {
                 MockHttpServletRequestBuilder requestBuilder = get("/v1/auth/boards")
@@ -263,7 +252,6 @@ public class BoardAuthorizationControllerTest extends IricomTestSuite {
             }
 
             @Test
-            @Order(2)
             @DisplayName("게시판 관리자 계정으로 조회")
             public void testCase02() throws Exception {
                 MockHttpServletRequestBuilder requestBuilder = get("/v1/auth/boards");
@@ -276,7 +264,6 @@ public class BoardAuthorizationControllerTest extends IricomTestSuite {
             }
 
             @Test
-            @Order(3)
             @DisplayName("일반 계정으로 조회")
             public void testCase03() throws Exception {
                 MockHttpServletRequestBuilder requestBuilder = get("/v1/auth/boards");
@@ -294,7 +281,6 @@ public class BoardAuthorizationControllerTest extends IricomTestSuite {
         class BoardAdminGetTest {
 
             @Test
-            @Order(0)
             @DisplayName("조회")
             public void testCase00() throws Exception {
                 Board board = getBoard(enableBoard);

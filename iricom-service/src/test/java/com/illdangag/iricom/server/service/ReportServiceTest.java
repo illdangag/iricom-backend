@@ -60,7 +60,7 @@ public class ReportServiceTest extends IricomTestSuite {
     private static final TestCommentInfo comment00 = TestCommentInfo.builder()
             .content("comment00").creator(common00).post(post00)
             .build();
-    private static final TestCommentInfo comment01= TestCommentInfo.builder()
+    private static final TestCommentInfo comment01 = TestCommentInfo.builder()
             .content("comment01").creator(common00).post(post00)
             .build();
     private static final TestCommentInfo reportedComment00 = TestCommentInfo.builder()

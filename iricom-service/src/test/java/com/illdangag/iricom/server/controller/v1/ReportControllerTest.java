@@ -7,7 +7,6 @@ import com.illdangag.iricom.server.test.IricomTestSuite;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
-import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
@@ -43,7 +42,6 @@ public class ReportControllerTest extends IricomTestSuite {
         class ReportPost {
 
             @Test
-            @Order(0)
             @DisplayName("게시물 신고")
             public void testCase00() throws Exception {
                 Post post = getPost(reportPost03);
@@ -70,7 +68,6 @@ public class ReportControllerTest extends IricomTestSuite {
             }
 
             @Test
-            @Order(1)
             @DisplayName("게시물 중복 신고")
             public void testCase01() throws Exception {
                 Post post = getPost(reportPost04);
@@ -103,7 +100,6 @@ public class ReportControllerTest extends IricomTestSuite {
             }
 
             @Test
-            @Order(2)
             @DisplayName("게시물이 포함되지 않은 게시판")
             public void testCase02() throws Exception {
                 Post post = getPost(enableBoardPost00);
@@ -126,7 +122,6 @@ public class ReportControllerTest extends IricomTestSuite {
             }
 
             @Test
-            @Order(5)
             @DisplayName("존재하지 않는 게시물")
             public void testCase05() throws Exception {
                 Board board = getBoard(enableBoard);
@@ -148,7 +143,6 @@ public class ReportControllerTest extends IricomTestSuite {
             }
 
             @Test
-            @Order(6)
             @DisplayName("존재하지 않는 게시판")
             public void testCase06() throws Exception {
                 Post post = getPost(reportPost00);
@@ -174,7 +168,6 @@ public class ReportControllerTest extends IricomTestSuite {
         @DisplayName("댓글")
         class ReportComment {
             @Test
-            @Order(0)
             @DisplayName("댓글 신고")
             public void reportComment() throws Exception {
                 Comment comment = getComment(reportComment04);
@@ -196,7 +189,6 @@ public class ReportControllerTest extends IricomTestSuite {
             }
 
             @Test
-            @Order(1)
             @DisplayName("댓글 중복 신고")
             public void testCase01() throws Exception {
                 Comment comment = getComment(reportComment05);
@@ -224,7 +216,6 @@ public class ReportControllerTest extends IricomTestSuite {
             }
 
             @Test
-            @Order(2)
             @DisplayName("존재하지 않는 게시판")
             public void testCase02() throws Exception {
                 Comment comment = getComment(reportComment05);
@@ -247,7 +238,6 @@ public class ReportControllerTest extends IricomTestSuite {
             }
 
             @Test
-            @Order(3)
             @DisplayName("존재하지 않는 게시물")
             public void testCase03() throws Exception {
                 Comment comment = getComment(reportComment05);
@@ -271,7 +261,6 @@ public class ReportControllerTest extends IricomTestSuite {
             }
 
             @Test
-            @Order(4)
             @DisplayName("존재하지 않는 댓글")
             public void testCase04() throws Exception {
                 Comment comment = getComment(reportComment05);
@@ -295,7 +284,6 @@ public class ReportControllerTest extends IricomTestSuite {
             }
 
             @Test
-            @Order(5)
             @DisplayName("올바르지 않은 게시판")
             public void testCase05() throws Exception {
                 Comment comment = getComment(reportComment05);
@@ -319,7 +307,6 @@ public class ReportControllerTest extends IricomTestSuite {
             }
 
             @Test
-            @Order(6)
             @DisplayName("올바르지 않은 게시물")
             public void testCase06() throws Exception {
                 Comment comment = getComment(reportComment08);
@@ -344,7 +331,6 @@ public class ReportControllerTest extends IricomTestSuite {
             }
 
             @Test
-            @Order(7)
             @DisplayName("올바르지 않은 댓글")
             public void testCase07() throws Exception {
                 Comment comment = getComment(reportComment05);
@@ -369,7 +355,6 @@ public class ReportControllerTest extends IricomTestSuite {
             }
 
             @Test
-            @Order(8)
             @DisplayName("비활성화 게시판")
             public void testCase08() throws Exception {
                 Comment comment = getComment(reportComment06);
@@ -393,7 +378,6 @@ public class ReportControllerTest extends IricomTestSuite {
             }
 
             @Test
-            @Order(9)
             @DisplayName("댓글을 허용하지 않은 게시물")
             public void testCase09() throws Exception {
                 Comment comment = getComment(reportComment07);
