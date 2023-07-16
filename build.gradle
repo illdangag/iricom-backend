@@ -1,18 +1,8 @@
-plugins {
-    id 'org.springframework.boot' version '2.7.6'
-    id 'io.spring.dependency-management' version '1.0.15.RELEASE'
-}
-
-subprojects {
-    apply plugin: 'org.springframework.boot'
-    apply plugin: 'io.spring.dependency-management'
-
-    dependencies {
-    }
-}
-
 group = 'com.illdangag.iricom'
 
-repositories {
-    mavenCentral()
+buildscript {
+    ext {
+        springBootVersion = '2.7.6'
+        springDependencyManagementVersion = '1.0.15.RELEASE'
+    }
 }

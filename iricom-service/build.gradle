@@ -1,5 +1,7 @@
 plugins {
     id 'java'
+    id 'org.springframework.boot' version "${springBootVersion}"
+    id 'io.spring.dependency-management' version "${springDependencyManagementVersion}"
     id 'checkstyle' // code convention을 확인 하기 위함
     id 'com.gorylenko.gradle-git-properties' version '2.4.1' // git 정보
     id "org.asciidoctor.jvm.convert" version "3.3.2" // spring rest docs의 asciidoc을 지원 하기 위함
@@ -7,6 +9,10 @@ plugins {
 
 version = '0.8.1-SNAPSHOT'
 sourceCompatibility = '11'
+
+ext {
+    snippetsDir = file('build/generated-snippets') // restdocs에서 생성 될 파일의 경로
+}
 
 configurations {
     asciidoctorExtensions
@@ -24,7 +30,7 @@ dependencies {
     developmentOnly 'org.springframework.boot:spring-boot-devtools'
     // spring MVC를 위한 기본적인 종속, 내장 Tomcat 포함
     implementation 'org.springframework.boot:spring-boot-starter-web'
-    // 스프링에서 jpa를 사용
+    // spring jpa를 사용
     implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
     // annotation 기반의 데이터 검증 자동화
     implementation 'org.springframework.boot:spring-boot-starter-validation'
@@ -39,6 +45,7 @@ dependencies {
     // 계정의 인증
     implementation 'com.google.firebase:firebase-admin:9.1.1'
 
+    // restdocs
     asciidoctorExtensions 'org.springframework.restdocs:spring-restdocs-asciidoctor'
 
     // spring 테스트
@@ -55,7 +62,7 @@ dependencies {
     // 테스트 환경에서 사용 할 데이터베이스
     testImplementation 'com.h2database:h2:2.1.214'
 
-    // spring rest docs
+    // restdocs
     testImplementation 'org.springframework.restdocs:spring-restdocs-mockmvc'
 }
 
@@ -66,16 +73,8 @@ checkstyle {
     reportsDir = file("${buildDir}/checkstyle-output")
 }
 
-tasks.named('test') {
-    useJUnitPlatform()
-}
-
-// spring rest docs
-ext {
-    snippetsDir = file('build/generated-snippets')
-}
-
 test {
+    dependsOn checkstyleMain, checkstyleTest
     outputs.dir snippetsDir
     useJUnitPlatform()
 }
@@ -85,8 +84,8 @@ asciidoctor {
     configurations 'asciidoctorExtensions'
     inputs.dir snippetsDir
 
-    sources{
-        include("**/index.adoc","**/common/*.adoc")
+    sources {
+        include('**/index.adoc', '**/common/*.adoc')
     }
 
     baseDirFollowsSourceFile()
