@@ -316,7 +316,7 @@ public class ReportServiceTest extends IricomTestSuite {
                 @DisplayName("complex")
                 public void searchPostReportInfoListByComplex() throws Exception {
                     Account systemAdminAccount = getAccount(systemAdmin);
-                    Board board = getBoard(reportSearchBoard);
+                    Board board = getBoard(enableBoard00);
                     PostReportInfoSearch postReportInfoSearch = PostReportInfoSearch.builder()
                             .type(ReportType.HATE)
                             .skip(1)
@@ -326,7 +326,7 @@ public class ReportServiceTest extends IricomTestSuite {
                     PostReportInfoList postReportInfoList = reportService.getPostReportInfoList(systemAdminAccount, board, postReportInfoSearch);
                     Assertions.assertEquals(1, postReportInfoList.getSkip());
                     Assertions.assertEquals(1, postReportInfoList.getLimit());
-                    Assertions.assertEquals(2, postReportInfoList.getTotal());
+                    Assertions.assertEquals(3, postReportInfoList.getTotal());
                     Assertions.assertEquals(1, postReportInfoList.getPostReportInfoList().size());
                 }
             }

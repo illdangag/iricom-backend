@@ -1,9 +1,10 @@
 package com.illdangag.iricom.server.controller.v1;
 
-import com.illdangag.iricom.server.data.entity.Board;
-import com.illdangag.iricom.server.data.entity.Comment;
-import com.illdangag.iricom.server.data.entity.Post;
+import com.illdangag.iricom.server.data.entity.*;
 import com.illdangag.iricom.server.test.IricomTestSuite;
+import com.illdangag.iricom.server.test.data.wrapper.TestBoardInfo;
+import com.illdangag.iricom.server.test.data.wrapper.TestCommentInfo;
+import com.illdangag.iricom.server.test.data.wrapper.TestPostInfo;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
@@ -14,8 +15,7 @@ import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilder;
 
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 
 import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
@@ -28,9 +28,57 @@ public class ReportControllerTest extends IricomTestSuite {
     @Autowired
     MockMvc mockMvc;
 
+    private final TestBoardInfo testBoardInfo00 = TestBoardInfo.builder()
+            .title("testBoardInfo00").isEnabled(true).adminList(Collections.singletonList(allBoardAdmin)).build();
+    private final TestBoardInfo testBoardInfo01 = TestBoardInfo.builder()
+            .title("testBoardInfo01").isEnabled(true).adminList(Collections.singletonList(allBoardAdmin)).build();
+    private final TestBoardInfo testBoardInfo02 = TestBoardInfo.builder()
+            .title("testBoardInfo02").isEnabled(false).adminList(Collections.singletonList(allBoardAdmin)).build();
+
+    private final TestPostInfo testPostInfo00 = TestPostInfo.builder()
+            .title("testPostInfo00").content("testPostInfo00").isAllowComment(true)
+            .postType(PostType.POST).postState(PostState.PUBLISH)
+            .creator(allBoardAdmin).board(testBoardInfo00).build();
+    private final TestPostInfo testPostInfo01 = TestPostInfo.builder()
+            .title("testPostInfo01").content("testPostInfo01").isAllowComment(true)
+            .postType(PostType.POST).postState(PostState.PUBLISH)
+            .creator(allBoardAdmin).board(testBoardInfo00).build();
+    private final TestPostInfo testPostInfo02 = TestPostInfo.builder()
+            .title("testPostInfo02").content("testPostInfo02").isAllowComment(true)
+            .postType(PostType.POST).postState(PostState.PUBLISH)
+            .creator(allBoardAdmin).board(testBoardInfo02).build();
+    private final TestPostInfo testPostInfo03 = TestPostInfo.builder()
+            .title("testPostInfo04").content("testPostInfo04").isAllowComment(false)
+            .postType(PostType.POST).postState(PostState.PUBLISH)
+            .creator(allBoardAdmin).board(testBoardInfo00).build();
+
+    private final TestCommentInfo testCommentInfo00 = TestCommentInfo.builder()
+            .content("testCommentInfo00").creator(common00).post(testPostInfo00)
+            .build();
+    private final TestCommentInfo testCommentInfo01 = TestCommentInfo.builder()
+            .content("testCommentInfo01").creator(common00).post(testPostInfo00)
+            .build();
+    private final TestCommentInfo testCommentInfo02 = TestCommentInfo.builder()
+            .content("testCommentInfo02").creator(common00).post(testPostInfo02)
+            .build();
+    private final TestCommentInfo testCommentInfo03 = TestCommentInfo.builder()
+            .content("testCommentInfo02").creator(common00).post(testPostInfo03)
+            .build();
+
     @Autowired
     public ReportControllerTest(ApplicationContext context) {
         super(context);
+
+        List<TestBoardInfo> testBoardInfoList = Arrays.asList(testBoardInfo00, testBoardInfo01, testBoardInfo02);
+        List<TestPostInfo> testPostInfoList = Arrays.asList(testPostInfo00, testPostInfo01, testPostInfo02, testPostInfo03);
+        List<TestCommentInfo> testCommentInfoList = Arrays.asList(testCommentInfo00, testCommentInfo01, testCommentInfo02, testCommentInfo03);
+
+        super.setBoard(testBoardInfoList);
+        super.setPost(testPostInfoList);
+        super.setComment(testCommentInfoList);
+
+        super.setDisabledBoard(testBoardInfoList);
+        super.setDisabledCommentBoard(testPostInfoList);
     }
 
     @Nested
@@ -43,8 +91,8 @@ public class ReportControllerTest extends IricomTestSuite {
 
             @Test
             @DisplayName("게시물 신고")
-            public void testCase00() throws Exception {
-                Post post = getPost(reportPost03);
+            public void reportPost() throws Exception {
+                Post post = getPost(testPostInfo00);
                 Board board = post.getBoard();
 
                 Map<String, Object> requestBody = new HashMap<>();
@@ -69,8 +117,8 @@ public class ReportControllerTest extends IricomTestSuite {
 
             @Test
             @DisplayName("게시물 중복 신고")
-            public void testCase01() throws Exception {
-                Post post = getPost(reportPost04);
+            public void duplicateReportPost() throws Exception {
+                Post post = getPost(testPostInfo01);
                 Board board = post.getBoard();
 
                 Map<String, Object> requestBody = new HashMap<>();
@@ -101,9 +149,9 @@ public class ReportControllerTest extends IricomTestSuite {
 
             @Test
             @DisplayName("게시물이 포함되지 않은 게시판")
-            public void testCase02() throws Exception {
-                Post post = getPost(enableBoardPost00);
-                Board board = getBoard(disableBoard);
+            public void notMatchedBoardPost() throws Exception {
+                Post post = getPost(testPostInfo01);
+                Board board = getBoard(testBoardInfo01);
 
                 Map<String, Object> requestBody = new HashMap<>();
                 requestBody.put("type", "hate");
@@ -123,8 +171,8 @@ public class ReportControllerTest extends IricomTestSuite {
 
             @Test
             @DisplayName("존재하지 않는 게시물")
-            public void testCase05() throws Exception {
-                Board board = getBoard(enableBoard);
+            public void notExistPost() throws Exception {
+                Board board = getBoard(testBoardInfo00);
 
                 Map<String, Object> requestBody = new HashMap<>();
                 requestBody.put("type", "hate");
@@ -144,8 +192,8 @@ public class ReportControllerTest extends IricomTestSuite {
 
             @Test
             @DisplayName("존재하지 않는 게시판")
-            public void testCase06() throws Exception {
-                Post post = getPost(reportPost00);
+            public void notExistBoard() throws Exception {
+                Post post = getPost(testPostInfo00);
 
                 Map<String, Object> requestBody = new HashMap<>();
                 requestBody.put("type", "hate");
@@ -170,7 +218,7 @@ public class ReportControllerTest extends IricomTestSuite {
             @Test
             @DisplayName("댓글 신고")
             public void reportComment() throws Exception {
-                Comment comment = getComment(reportComment04);
+                Comment comment = getComment(testCommentInfo00);
                 Post post = comment.getPost();
                 Board board = post.getBoard();
 
@@ -191,7 +239,7 @@ public class ReportControllerTest extends IricomTestSuite {
             @Test
             @DisplayName("댓글 중복 신고")
             public void testCase01() throws Exception {
-                Comment comment = getComment(reportComment05);
+                Comment comment = getComment(testCommentInfo01);
                 Post post = comment.getPost();
                 Board board = post.getBoard();
 
@@ -218,7 +266,7 @@ public class ReportControllerTest extends IricomTestSuite {
             @Test
             @DisplayName("존재하지 않는 게시판")
             public void testCase02() throws Exception {
-                Comment comment = getComment(reportComment05);
+                Comment comment = getComment(testCommentInfo00);
                 Post post = comment.getPost();
 
                 Map<String, Object> requestBody = new HashMap<>();
@@ -240,7 +288,7 @@ public class ReportControllerTest extends IricomTestSuite {
             @Test
             @DisplayName("존재하지 않는 게시물")
             public void testCase03() throws Exception {
-                Comment comment = getComment(reportComment05);
+                Comment comment = getComment(testCommentInfo00);
                 Post post = comment.getPost();
                 Board board = post.getBoard();
 
@@ -263,7 +311,7 @@ public class ReportControllerTest extends IricomTestSuite {
             @Test
             @DisplayName("존재하지 않는 댓글")
             public void testCase04() throws Exception {
-                Comment comment = getComment(reportComment05);
+                Comment comment = getComment(testCommentInfo00);
                 Post post = comment.getPost();
                 Board board = post.getBoard();
 
@@ -286,9 +334,9 @@ public class ReportControllerTest extends IricomTestSuite {
             @Test
             @DisplayName("올바르지 않은 게시판")
             public void testCase05() throws Exception {
-                Comment comment = getComment(reportComment05);
+                Comment comment = getComment(testCommentInfo00);
                 Post post = comment.getPost();
-                Board board = getBoard(disableBoard);
+                Board board = getBoard(testBoardInfo01);
 
                 Map<String, Object> requestBody = new HashMap<>();
                 requestBody.put("type", "hate");
@@ -309,10 +357,10 @@ public class ReportControllerTest extends IricomTestSuite {
             @Test
             @DisplayName("올바르지 않은 게시물")
             public void testCase06() throws Exception {
-                Comment comment = getComment(reportComment08);
+                Comment comment = getComment(testCommentInfo00);
                 Post post = comment.getPost();
                 Board board = post.getBoard();
-                Post invalidPost = getPost(enableBoardPost01);
+                Post invalidPost = getPost(testPostInfo01);
 
                 Map<String, Object> requestBody = new HashMap<>();
                 requestBody.put("type", "hate");
@@ -333,10 +381,10 @@ public class ReportControllerTest extends IricomTestSuite {
             @Test
             @DisplayName("올바르지 않은 댓글")
             public void testCase07() throws Exception {
-                Comment comment = getComment(reportComment05);
+                Comment comment = getComment(testCommentInfo00);
                 Post post = comment.getPost();
                 Board board = post.getBoard();
-                Comment invalidComment = getComment(enableBoardComment00);
+                Comment invalidComment = getComment(testCommentInfo02);
 
                 Map<String, Object> requestBody = new HashMap<>();
                 requestBody.put("type", "hate");
@@ -357,7 +405,7 @@ public class ReportControllerTest extends IricomTestSuite {
             @Test
             @DisplayName("비활성화 게시판")
             public void testCase08() throws Exception {
-                Comment comment = getComment(reportComment06);
+                Comment comment = getComment(testCommentInfo02);
                 Post post = comment.getPost();
                 Board board = post.getBoard();
 
@@ -380,7 +428,7 @@ public class ReportControllerTest extends IricomTestSuite {
             @Test
             @DisplayName("댓글을 허용하지 않은 게시물")
             public void testCase09() throws Exception {
-                Comment comment = getComment(reportComment07);
+                Comment comment = getComment(testCommentInfo03);
                 Post post = comment.getPost();
                 Board board = post.getBoard();
 

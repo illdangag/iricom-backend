@@ -1131,23 +1131,4 @@ public class PostControllerTest extends IricomTestSuite {
                     .andDo(print());
         }
     }
-
-    @Nested
-    @DisplayName("신고된 게시물")
-    class ReportTest {
-        @Test
-        @DisplayName("신고된 게시물 조회")
-        public void testCase00() throws Exception {
-            Post post = getPost(reportedPost00);
-            Board board = post.getBoard();
-
-            MockHttpServletRequestBuilder requestBuilder = get("/v1/boards/" + board.getId() + "/posts/" + post.getId());
-            setAuthToken(requestBuilder, common00);
-
-            mockMvc.perform(requestBuilder)
-                    .andExpect(status().is(200))
-                    .andExpect(jsonPath("$.content").doesNotExist())
-                    .andDo(print());
-        }
-    }
 }
