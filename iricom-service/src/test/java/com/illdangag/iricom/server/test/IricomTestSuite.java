@@ -323,14 +323,6 @@ public abstract class IricomTestSuite {
     };
 
     // 댓글 설정
-    protected static final TestCommentInfo enableBoardComment00 = TestCommentInfo.builder()
-            .content("enableBoardComment00")
-            .creator(common00).post(enableBoardPost00)
-            .build();
-    protected static final TestCommentInfo disableBoardComment00 = TestCommentInfo.builder()
-            .content("disableBoardComment00")
-            .creator(common00).post(disableBoardPost00)
-            .build();
     protected static final TestCommentInfo commentGetComment00 = TestCommentInfo.builder()
             .content("commentGetComment00")
             .creator(common00).post(commentGetPost00)
@@ -338,26 +330,6 @@ public abstract class IricomTestSuite {
     protected static final TestCommentInfo commentGetComment04 = TestCommentInfo.builder()
             .content("commentGetComment04")
             .creator(common00).post(commentGetPost00).referenceComment(commentGetComment00)
-            .build();
-    protected static final TestCommentInfo commentGetComment05 = TestCommentInfo.builder()
-            .content("commentGetComment05")
-            .creator(common00).post(commentGetPost00).referenceComment(commentGetComment00)
-            .build();
-    protected static final TestCommentInfo commentGetComment06 = TestCommentInfo.builder()
-            .content("commentGetComment06")
-            .creator(common00).post(commentGetPost00).referenceComment(commentGetComment00)
-            .build();
-    protected static final TestCommentInfo commentGetComment07 = TestCommentInfo.builder()
-            .content("commentGetComment07")
-            .creator(common00).post(commentGetPost00).referenceComment(commentGetComment00)
-            .build();
-    protected static final TestCommentInfo commentGetComment08 = TestCommentInfo.builder()
-            .content("commentGetComment08")
-            .creator(common00).post(commentGetPost00).referenceComment(commentGetComment04)
-            .build();
-    protected static final TestCommentInfo commentGetComment09 = TestCommentInfo.builder()
-            .content("commentGetComment09")
-            .creator(common00).post(commentGetPost00).referenceComment(commentGetComment04)
             .build();
     protected static final TestCommentInfo commentUpdateComment00 = TestCommentInfo.builder()
             .content("commentUpdateComment00")
@@ -367,37 +339,9 @@ public abstract class IricomTestSuite {
             .content("commentDeleteComment00")
             .creator(common00).post(commentUpdatePost00).referenceComment(commentGetComment04)
             .build();
-    protected static final TestCommentInfo commentDeleteComment01 = TestCommentInfo.builder()
-            .content("commentDeleteComment01")
-            .creator(common00).post(commentUpdatePost00).referenceComment(commentDeleteComment00)
-            .build();
-    protected static final TestCommentInfo commentDeleteComment02 = TestCommentInfo.builder()
-            .content("commentDeleteComment02")
-            .creator(common00).post(commentUpdatePost00).referenceComment(commentDeleteComment00).deleted(true)
-            .build();
-    protected static final TestCommentInfo commentDeleteComment03 = TestCommentInfo.builder()
-            .content("commentDeleteComment03")
-            .creator(common00).post(commentUpdatePost00)
-            .build();
     protected static final TestCommentInfo voteComment00 = TestCommentInfo.builder()
             .content("voteComment00")
             .creator(common00).post(voteCommentPost00)
-            .build();
-    protected static final TestCommentInfo voteComment01 = TestCommentInfo.builder()
-            .content("voteComment01")
-            .creator(common00).post(voteCommentPost00).referenceComment(voteComment00)
-            .build();
-    protected static final TestCommentInfo voteComment02 = TestCommentInfo.builder()
-            .content("voteComment02")
-            .creator(common00).post(voteCommentPost00)
-            .build();
-    protected static final TestCommentInfo voteComment03 = TestCommentInfo.builder()
-            .content("voteComment03")
-            .creator(common00).post(voteCommentPost01)
-            .build();
-    protected static final TestCommentInfo voteComment04 = TestCommentInfo.builder()
-            .content("voteComment04")
-            .creator(common00).post(disableBoardPost00)
             .build();
     protected static final TestCommentInfo voteComment05 = TestCommentInfo.builder()
             .content("voteComment05")
@@ -405,15 +349,11 @@ public abstract class IricomTestSuite {
             .build();
 
     private static final TestCommentInfo[] testCommentInfos = {
-            enableBoardComment00,
-            disableBoardComment00,
-
-            commentGetComment00, commentGetComment04, commentGetComment05,
-            commentGetComment06, commentGetComment07, commentGetComment08, commentGetComment09,
+            commentGetComment00, commentGetComment04,
             commentUpdateComment00,
-            commentDeleteComment00, commentDeleteComment01, commentDeleteComment02, commentDeleteComment03,
+            commentDeleteComment00,
 
-            voteComment00, voteComment01, voteComment02, voteComment03, voteComment04, voteComment05,
+            voteComment00, voteComment05,
     };
 
     private static final TestPostReportInfo[] testPostReportInfos = {

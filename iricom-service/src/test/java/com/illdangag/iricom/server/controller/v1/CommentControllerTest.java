@@ -29,8 +29,16 @@ public class CommentControllerTest extends IricomTestSuite {
 
     private final TestBoardInfo testBoardInfo00 = TestBoardInfo.builder()
             .title("testBoardInfo00").isEnabled(true).build();
-    private final TestBoardInfo testBoardInfo01 = TestBoardInfo.builder()
-            .title("testBoardInfo00").isEnabled(false).build();
+    private final TestBoardInfo testDisableBoardInfo00 = TestBoardInfo.builder()
+            .title("testDisableBoardInfo00").isEnabled(false).build();
+    private final TestBoardInfo testVoteBoardInfo00 = TestBoardInfo.builder()
+            .title("testVoteBoardInfo00").isEnabled(true).build();
+    private final TestBoardInfo testVoteBoardInfo01 = TestBoardInfo.builder()
+            .title("testVoteBoardInfo01").isEnabled(false).build();
+    private final TestBoardInfo testVoteBoardInfo02 = TestBoardInfo.builder()
+            .title("testVoteBoardInfo02").isEnabled(true).build();
+    private final TestBoardInfo testReportBoardInfo00 = TestBoardInfo.builder()
+            .title("testReportBoardInfo00").isEnabled(true).build();
 
     private final TestPostInfo testPostInfo00 = TestPostInfo.builder()
             .title("testPostInfo00").content("testPostInfo00").isAllowComment(true)
@@ -47,7 +55,7 @@ public class CommentControllerTest extends IricomTestSuite {
     private final TestPostInfo testPostInfo03 = TestPostInfo.builder()
             .title("testPostInfo03").content("testPostInfo03").isAllowComment(true)
             .postType(PostType.POST).postState(PostState.PUBLISH)
-            .creator(common00).board(testBoardInfo01).build();
+            .creator(common00).board(testDisableBoardInfo00).build();
     private final TestPostInfo testPostInfo04 = TestPostInfo.builder()
             .title("testPostInfo04").content("testPostInfo04").isAllowComment(true)
             .postType(PostType.POST).postState(PostState.PUBLISH)
@@ -56,6 +64,22 @@ public class CommentControllerTest extends IricomTestSuite {
             .title("testPostInfo05").content("testPostInfo05").isAllowComment(true)
             .postType(PostType.POST).postState(PostState.PUBLISH)
             .creator(common00).board(testBoardInfo00).build();
+    private final TestPostInfo votePostInfo00 = TestPostInfo.builder()
+            .title("votePostInfo00").content("votePostInfo00").isAllowComment(true)
+            .postType(PostType.POST).postState(PostState.PUBLISH)
+            .creator(common00).board(testVoteBoardInfo00).build();
+    private final TestPostInfo votePostInfo01 = TestPostInfo.builder()
+            .title("votePostInfo01").content("votePostInfo00").isAllowComment(false)
+            .postType(PostType.POST).postState(PostState.PUBLISH)
+            .creator(common00).board(testVoteBoardInfo00).build();
+    private final TestPostInfo votePostInfo02 = TestPostInfo.builder()
+            .title("votePostInfo01").content("votePostInfo00").isAllowComment(false)
+            .postType(PostType.POST).postState(PostState.PUBLISH)
+            .creator(common00).board(testVoteBoardInfo01).build();
+    private final TestPostInfo reportPostInfo00 = TestPostInfo.builder()
+            .title("reportPostInfo00").content("reportPostInfo00").isAllowComment(false)
+            .postType(PostType.POST).postState(PostState.PUBLISH)
+            .creator(common00).board(testReportBoardInfo00).build();
 
     private final TestCommentInfo testCommentInfo00 = TestCommentInfo.builder()
             .content("testCommentInfo").creator(common00).post(testPostInfo00)
@@ -90,24 +114,51 @@ public class CommentControllerTest extends IricomTestSuite {
     private final TestCommentInfo deletedCommentInfo00 = TestCommentInfo.builder()
             .content("deleteCommentInfo03").creator(common00).post(deletePostInfo00)
             .deleted(true).build();
+    private final TestCommentInfo voteCommentInfo00 = TestCommentInfo.builder()
+            .content("voteCommentInfo00").creator(common00).post(votePostInfo00)
+            .build();
+    private final TestCommentInfo voteCommentInfo01 = TestCommentInfo.builder()
+            .content("voteCommentInfo01").creator(common00).post(votePostInfo00)
+            .referenceComment(voteCommentInfo00).build();
+    private final TestCommentInfo voteCommentInfo02 = TestCommentInfo.builder()
+            .content("voteCommentInfo02").creator(common00).post(votePostInfo00)
+            .build();
+    private final TestCommentInfo voteCommentInfo03 = TestCommentInfo.builder()
+            .content("voteCommentInfo03").creator(common00).post(votePostInfo00)
+            .build();
+    private final TestCommentInfo voteCommentInfo04 = TestCommentInfo.builder()
+            .content("voteCommentInfo04").creator(common00).post(votePostInfo01)
+            .build();
+    private final TestCommentInfo voteCommentInfo05 = TestCommentInfo.builder()
+            .content("voteCommentInfo05").creator(common00).post(votePostInfo02)
+            .build();
+    private final TestCommentInfo voteCommentInfo06 = TestCommentInfo.builder()
+            .content("voteCommentInfo06").creator(common00).post(votePostInfo00)
+            .build();
+    private final TestCommentInfo voteCommentInfo07 = TestCommentInfo.builder()
+            .content("voteCommentInfo07").creator(common00).post(votePostInfo00)
+            .build();
 
     @Autowired
     public CommentControllerTest(ApplicationContext context) {
         super(context);
 
-        List<TestBoardInfo> testBoardInfoList = Arrays.asList(testBoardInfo00, testBoardInfo01);
+        List<TestBoardInfo> testBoardInfoList = Arrays.asList(testBoardInfo00, testDisableBoardInfo00, testVoteBoardInfo00,
+                testVoteBoardInfo01, testVoteBoardInfo02, testReportBoardInfo00);
         List<TestPostInfo> testPostInfoList = Arrays.asList(testPostInfo00, testPostInfo01, testPostInfo02, testPostInfo03,
-                testPostInfo04, deletePostInfo00);
+                testPostInfo04, deletePostInfo00, votePostInfo00, votePostInfo01, votePostInfo02, reportPostInfo00);
         List<TestCommentInfo> testCommentInfoList = Arrays.asList(testCommentInfo00, testCommentInfo01, testCommentInfo02,
                 testCommentInfo03, testCommentInfo04, testCommentInfo05, deleteCommentInfo00, deleteCommentInfo01,
-                deleteCommentInfo02, deletedCommentInfo00, deleteCommentInfo03);
+                deleteCommentInfo02, deletedCommentInfo00, deleteCommentInfo03, voteCommentInfo00, voteCommentInfo01,
+                voteCommentInfo02, voteCommentInfo03, voteCommentInfo04, voteCommentInfo05, voteCommentInfo06,
+                voteCommentInfo07);
 
         super.setBoard(testBoardInfoList);
         super.setPost(testPostInfoList);
         super.setComment(testCommentInfoList);
 
-        super.setDisabledBoard(testBoardInfoList);
         super.setDisabledCommentBoard(testPostInfoList);
+        super.setDisabledBoard(testBoardInfoList);
 
         super.setDeletedComment(testCommentInfoList);
     }
@@ -339,7 +390,7 @@ public class CommentControllerTest extends IricomTestSuite {
         public void updateOtherPost() throws Exception {
             Comment comment = getComment(testCommentInfo03);
             Post post = comment.getPost();
-            Board board = getBoard(testBoardInfo01);
+            Board board = getBoard(testDisableBoardInfo00);
 
             Map<String, Object> requestBody = new HashMap<>();
             requestBody.put("content", "update_comment");
@@ -535,10 +586,10 @@ public class CommentControllerTest extends IricomTestSuite {
     class VoteTest {
         @Test
         @DisplayName("좋아요")
-        public void testCase00() throws Exception {
-            Board board = getBoard(voteBoard);
-            Post post = getPost(voteCommentPost00);
-            Comment comment = getComment(voteComment00);
+        public void upvote() throws Exception {
+            Comment comment = getComment(voteCommentInfo00);
+            Post post = comment.getPost();
+            Board board = post.getBoard();
 
             Map<String, Object> requestBody = new HashMap<>();
             requestBody.put("type", "upvote");
@@ -556,10 +607,10 @@ public class CommentControllerTest extends IricomTestSuite {
 
         @Test
         @DisplayName("싫어요")
-        public void testCase01() throws Exception {
-            Board board = getBoard(voteBoard);
-            Post post = getPost(voteCommentPost00);
-            Comment comment = getComment(voteComment00);
+        public void downvote() throws Exception {
+            Comment comment = getComment(voteCommentInfo00);
+            Post post = comment.getPost();
+            Board board = post.getBoard();
 
             Map<String, Object> requestBody = new HashMap<>();
             requestBody.put("type", "downvote");
@@ -577,10 +628,10 @@ public class CommentControllerTest extends IricomTestSuite {
 
         @Test
         @DisplayName("대댓글에 좋아요")
-        public void testCase02() throws Exception {
-            Board board = getBoard(voteBoard);
-            Post post = getPost(voteCommentPost00);
-            Comment comment = getComment(voteComment01);
+        public void upvoteReferenceComment() throws Exception {
+            Comment comment = getComment(voteCommentInfo01);
+            Post post = comment.getPost();
+            Board board = post.getBoard();
 
             Map<String, Object> requestBody = new HashMap<>();
             requestBody.put("type", "upvote");
@@ -598,10 +649,10 @@ public class CommentControllerTest extends IricomTestSuite {
 
         @Test
         @DisplayName("대댓글에 싫어요")
-        public void testCase03() throws Exception {
-            Board board = getBoard(voteBoard);
-            Post post = getPost(voteCommentPost00);
-            Comment comment = getComment(voteComment01);
+        public void downvoteReferenceComment() throws Exception {
+            Comment comment = getComment(voteCommentInfo01);
+            Post post = comment.getPost();
+            Board board = post.getBoard();
 
             Map<String, Object> requestBody = new HashMap<>();
             requestBody.put("type", "downvote");
@@ -619,10 +670,10 @@ public class CommentControllerTest extends IricomTestSuite {
 
         @Test
         @DisplayName("중복 좋아요")
-        public void testCase04() throws Exception {
-            Board board = getBoard(voteBoard);
-            Post post = getPost(voteCommentPost00);
-            Comment comment = getComment(voteComment02);
+        public void duplicateUpvote() throws Exception {
+            Comment comment = getComment(voteCommentInfo02);
+            Post post = comment.getPost();
+            Board board = post.getBoard();
 
             Map<String, Object> requestBody = new HashMap<>();
             requestBody.put("type", "upvote");
@@ -647,10 +698,10 @@ public class CommentControllerTest extends IricomTestSuite {
 
         @Test
         @DisplayName("중복 싫어요")
-        public void testCase05() throws Exception {
-            Board board = getBoard(voteBoard);
-            Post post = getPost(voteCommentPost00);
-            Comment comment = getComment(voteComment02);
+        public void duplicateDownvote() throws Exception {
+            Comment comment = getComment(voteCommentInfo02);
+            Post post = comment.getPost();
+            Board board = post.getBoard();
 
             Map<String, Object> requestBody = new HashMap<>();
             requestBody.put("type", "downvote");
@@ -675,10 +726,10 @@ public class CommentControllerTest extends IricomTestSuite {
 
         @Test
         @DisplayName("올바르지 않은 요청")
-        public void testCase06() throws Exception {
-            Board board = getBoard(voteBoard);
-            Post post = getPost(voteCommentPost00);
-            Comment comment = getComment(voteComment00);
+        public void invalidType() throws Exception {
+            Comment comment = getComment(voteCommentInfo03);
+            Post post = comment.getPost();
+            Board board = post.getBoard();
 
             Map<String, Object> requestBody = new HashMap<>();
             requestBody.put("type", "unknown");
@@ -696,10 +747,10 @@ public class CommentControllerTest extends IricomTestSuite {
 
         @Test
         @DisplayName("댓글을 허용하지 않은 게시물")
-        public void testCase07() throws Exception {
-            Board board = getBoard(voteBoard);
-            Post post = getPost(voteCommentPost01);
-            Comment comment = getComment(voteComment03);
+        public void notAllowCommentPost() throws Exception {
+            Comment comment = getComment(voteCommentInfo04);
+            Post post = comment.getPost();
+            Board board = post.getBoard();
 
             Map<String, Object> requestBody = new HashMap<>();
             requestBody.put("type", "upvote");
@@ -717,10 +768,10 @@ public class CommentControllerTest extends IricomTestSuite {
 
         @Test
         @DisplayName("비활성화 게시판의 게시물의 댓글")
-        public void testCase08() throws Exception {
-            Board board = getBoard(disableBoard);
-            Post post = getPost(disableBoardPost00);
-            Comment comment = getComment(voteComment04);
+        public void disabledBoard() throws Exception {
+            Comment comment = getComment(voteCommentInfo05);
+            Post post = comment.getPost();
+            Board board = post.getBoard();
 
             Map<String, Object> requestBody = new HashMap<>();
             requestBody.put("type", "upvote");
@@ -739,10 +790,10 @@ public class CommentControllerTest extends IricomTestSuite {
 
         @Test
         @DisplayName("해당 게시판에 존재하지 않는 게시물")
-        public void testCase09() throws Exception {
-            Board board = getBoard(enableBoard);
-            Post post = getPost(voteCommentPost00);
-            Comment comment = getComment(voteComment01);
+        public void notExistPost() throws Exception {
+            Comment comment = getComment(voteCommentInfo06);
+            Post post = comment.getPost();
+            Board board = getBoard(testVoteBoardInfo02);
 
             Map<String, Object> requestBody = new HashMap<>();
             requestBody.put("type", "upvote");
@@ -761,10 +812,10 @@ public class CommentControllerTest extends IricomTestSuite {
 
         @Test
         @DisplayName("다른 게시물의 댓글")
-        public void testCase10() throws Exception {
-            Board board = getBoard(voteBoard);
-            Post post = getPost(voteCommentPost00);
-            Comment comment = getComment(voteComment03);
+        public void otherPostComment() throws Exception {
+            Comment comment = getComment(voteCommentInfo07);
+            Post post = getPost(votePostInfo02);
+            Board board = post.getBoard();
 
             Map<String, Object> requestBody = new HashMap<>();
             requestBody.put("type", "upvote");
@@ -787,7 +838,7 @@ public class CommentControllerTest extends IricomTestSuite {
         @Test
         @DisplayName("신고된 댓글 조회")
         public void testCase00() throws Exception {
-            Post post = getPost(reportedPost00);
+            Post post = getPost(reportPostInfo00);
             Board board = post.getBoard();
 
             MockHttpServletRequestBuilder requestBuilder = get("/v1/boards/" + board.getId() + "/posts/" + post.getId() + "/comments");

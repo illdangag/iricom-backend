@@ -98,7 +98,7 @@ public class CommentControllerTest extends IricomTestSuite {
                 .param("limit", "5")
                 .param("keyword", "")
                 .param("includeComment", "true")
-                .param("referenceCommentId", "" + comment.getId())
+                .param("referenceCommentId", String.valueOf(comment.getId()))
                 .param("includeCommentLimit", "5");
         setAuthToken(requestBuilder, common00);
 

@@ -13,13 +13,13 @@ import static org.springframework.restdocs.payload.PayloadDocumentation.fieldWit
 
 public class IricomFieldsSnippet {
     private static final List<ResponseField> accountResponseFieldList = Arrays.asList(
-            ResponseField.builder().path("id").description("아이디").build(),
-            ResponseField.builder().path("email").description("이메일").build(),
-            ResponseField.builder().path("createDate").description("생성일").build(),
-            ResponseField.builder().path("lastActivityDate").description("최근 활동일").build(),
-            ResponseField.builder().path("nickname").description("닉네임").build(),
-            ResponseField.builder().path("description").description("설명").build(),
-            ResponseField.builder().path("auth").description("권한").build()
+            ResponseField.builder().path("id").description("아이디").type(JsonFieldType.STRING).build(),
+            ResponseField.builder().path("email").description("이메일").type(JsonFieldType.STRING).build(),
+            ResponseField.builder().path("createDate").description("생성일").type(JsonFieldType.NUMBER).build(),
+            ResponseField.builder().path("lastActivityDate").description("최근 활동일").type(JsonFieldType.NUMBER).build(),
+            ResponseField.builder().path("nickname").description("닉네임").type(JsonFieldType.STRING).build(),
+            ResponseField.builder().path("description").description("설명").type(JsonFieldType.STRING).build(),
+            ResponseField.builder().path("auth").description("권한").type(JsonFieldType.STRING).build()
     );
 
     private static final List<ResponseField> boardResponseFieldList = Arrays.asList(
@@ -51,16 +51,16 @@ public class IricomFieldsSnippet {
     );
 
     private static final List<ResponseField> commentResponseFieldList = Arrays.asList(
-            ResponseField.builder().path("id").description("아이디").build(),
+            ResponseField.builder().path("id").description("아이디").type(JsonFieldType.STRING).build(),
             ResponseField.builder().path("content").description("내용").isOptional(true).type(JsonFieldType.STRING).build(),
             ResponseField.builder().path("referenceCommentId").description("상위 댓글 아이디").isOptional(true).type(JsonFieldType.STRING).build(),
-            ResponseField.builder().path("createDate").description("작성일").build(),
-            ResponseField.builder().path("updateDate").description("수정일").build(),
-            ResponseField.builder().path("upvote").description("좋아요").build(),
-            ResponseField.builder().path("downvote").description("싫어요").build(),
-            ResponseField.builder().path("hasNestedComment").description("하위 댓글 여부").build(),
-            ResponseField.builder().path("isDeleted").description("삭제 여부").build(),
-            ResponseField.builder().path("isReport").description("신고 여부").build(),
+            ResponseField.builder().path("createDate").description("작성일").type(JsonFieldType.NUMBER).build(),
+            ResponseField.builder().path("updateDate").description("수정일").type(JsonFieldType.NUMBER).build(),
+            ResponseField.builder().path("upvote").description("좋아요").type(JsonFieldType.NUMBER).build(),
+            ResponseField.builder().path("downvote").description("싫어요").type(JsonFieldType.NUMBER).build(),
+            ResponseField.builder().path("hasNestedComment").description("하위 댓글 여부").type(JsonFieldType.BOOLEAN).build(),
+            ResponseField.builder().path("isDeleted").description("삭제 여부").type(JsonFieldType.BOOLEAN).build(),
+            ResponseField.builder().path("isReport").description("신고 여부").type(JsonFieldType.BOOLEAN).build(),
             ResponseField.builder().path("nestedComments").description("대댓글 목록").isOptional(true).type(JsonFieldType.ARRAY).build()
     );
 
@@ -119,7 +119,10 @@ public class IricomFieldsSnippet {
                 .map(item -> {
                     FieldDescriptor fieldDescriptor = fieldWithPath(keyPrefix + item.getPath()).description(item.getDescription());
                     if (item.isOptional()) {
-                        fieldDescriptor.optional().type(item.getType());
+                        fieldDescriptor.optional();
+                    }
+                    if (item.getType() != null) {
+                        fieldDescriptor.type(item.getType());
                     }
                     return fieldDescriptor;
                 }).collect(Collectors.toList());
