@@ -2,6 +2,8 @@ package com.illdangag.iricom.server.controller.v1;
 
 import com.illdangag.iricom.server.data.entity.Board;
 import com.illdangag.iricom.server.test.IricomTestSuite;
+import com.illdangag.iricom.server.test.data.wrapper.TestBoardInfo;
+import com.illdangag.iricom.server.test.data.wrapper.TestPostInfo;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
@@ -12,7 +14,9 @@ import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilder;
 
+import java.util.Arrays;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import static org.hamcrest.Matchers.hasSize;
@@ -27,9 +31,18 @@ public class BoardControllerTest extends IricomTestSuite {
     @Autowired
     MockMvc mockMvc;
 
+    private final TestBoardInfo testBoardInfo00 = TestBoardInfo.builder()
+            .title("testBoardInfo00").isEnabled(true).build();
+    private final TestBoardInfo testBoardInfo01 = TestBoardInfo.builder()
+            .title("testBoardInfo01").isEnabled(true).build();
+
     @Autowired
     public BoardControllerTest(ApplicationContext context) {
         super(context);
+
+        List<TestBoardInfo> testBoardInfoList = Arrays.asList(testBoardInfo00, testBoardInfo01);
+
+        super.setBoard(testBoardInfoList);
     }
 
     @Nested
@@ -38,7 +51,7 @@ public class BoardControllerTest extends IricomTestSuite {
 
         @Test
         @DisplayName("제목, 설명")
-        public void testCase00() throws Exception {
+        public void titleDescription() throws Exception {
             Map<String, Object> requestBody = new HashMap<>();
             requestBody.put("title", "new_board");
             requestBody.put("description", "new_board_description");
@@ -57,7 +70,7 @@ public class BoardControllerTest extends IricomTestSuite {
 
         @Test
         @DisplayName("제목")
-        public void testCase01() throws Exception {
+        public void title() throws Exception {
             Map<String, Object> requestBody = new HashMap<>();
             requestBody.put("title", "only_title");
 
@@ -74,7 +87,7 @@ public class BoardControllerTest extends IricomTestSuite {
 
         @Test
         @DisplayName("설명")
-        public void testCase02() throws Exception {
+        public void description() throws Exception {
             Map<String, Object> requestBody = new HashMap<>();
             requestBody.put("description", "only_description");
 
@@ -91,7 +104,7 @@ public class BoardControllerTest extends IricomTestSuite {
 
         @Test
         @DisplayName("제목 길이 초과")
-        public void testCase03() throws Exception {
+        public void overflowTitle() throws Exception {
             Map<String, Object> requestBody = new HashMap<>();
             requestBody.put("title", "012345678901234567890123456789012345678901234567890");
 
@@ -108,7 +121,7 @@ public class BoardControllerTest extends IricomTestSuite {
 
         @Test
         @DisplayName("제목 빈 문자열")
-        public void testCase04() throws Exception {
+        public void emptyStringTitle() throws Exception {
             Map<String, Object> requestBody = new HashMap<>();
             requestBody.put("title", "");
 
@@ -125,7 +138,7 @@ public class BoardControllerTest extends IricomTestSuite {
 
         @Test
         @DisplayName("설명 빈 문자열")
-        public void testCase05() throws Exception {
+        public void emptyDescription() throws Exception {
             Map<String, Object> requestBody = new HashMap<>();
             requestBody.put("title", "empty_string");
             requestBody.put("description", "");
@@ -144,7 +157,7 @@ public class BoardControllerTest extends IricomTestSuite {
 
         @Test
         @DisplayName("설명 길이 초과")
-        public void testCase06() throws Exception {
+        public void overflowDescription() throws Exception {
             Map<String, Object> requestBody = new HashMap<>();
             requestBody.put("title", "over");
             requestBody.put("description", "01234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890");
@@ -166,7 +179,7 @@ public class BoardControllerTest extends IricomTestSuite {
 
             @Test
             @DisplayName("게시판 관리자 권한으로 생성")
-            public void testCase00() throws Exception {
+            public void boardAdminAuth() throws Exception {
                 Map<String, Object> requestBody = new HashMap<>();
                 requestBody.put("title", "new board");
                 requestBody.put("description", "new board description");
@@ -184,7 +197,7 @@ public class BoardControllerTest extends IricomTestSuite {
 
             @Test
             @DisplayName("일반 계정으로 생성")
-            public void testCase01() throws Exception {
+            public void accountAuth() throws Exception {
                 Map<String, Object> requestBody = new HashMap<>();
                 requestBody.put("title", "new board");
                 requestBody.put("description", "new board description");
@@ -212,8 +225,8 @@ public class BoardControllerTest extends IricomTestSuite {
 
             @Test
             @DisplayName("존재하는 게시판")
-            public void testCase00() throws Exception {
-                Board board = getBoard(enableBoard);
+            public void existBoard() throws Exception {
+                Board board = getBoard(testBoardInfo00);
 
                 MockHttpServletRequestBuilder requestBuilder = get("/v1/boards/" + board.getId());
                 setAuthToken(requestBuilder, common00);
@@ -229,7 +242,7 @@ public class BoardControllerTest extends IricomTestSuite {
 
             @Test
             @DisplayName("존재하지 않는 게시판")
-            public void testCase01() throws Exception {
+            public void notExistBoard() throws Exception {
                 MockHttpServletRequestBuilder requestBuilder = get("/v1/boards/unknown");
                 setAuthToken(requestBuilder, common00);
 
@@ -246,7 +259,7 @@ public class BoardControllerTest extends IricomTestSuite {
 
             @Test
             @DisplayName("기본 조건")
-            public void testCase00() throws Exception {
+            public void boardList() throws Exception {
                 MockHttpServletRequestBuilder requestBuilder = get("/v1/boards");
                 setAuthToken(requestBuilder, common00);
 
@@ -262,7 +275,7 @@ public class BoardControllerTest extends IricomTestSuite {
 
             @Test
             @DisplayName("skip")
-            public void testCase01() throws Exception {
+            public void skip() throws Exception {
                 MockHttpServletRequestBuilder requestBuilder = get("/v1/boards")
                         .param("skip", "1");
                 setAuthToken(requestBuilder, common00);
@@ -279,7 +292,7 @@ public class BoardControllerTest extends IricomTestSuite {
 
             @Test
             @DisplayName("limit")
-            public void testCase02() throws Exception {
+            public void limit() throws Exception {
                 MockHttpServletRequestBuilder requestBuilder = get("/v1/boards")
                         .param("limit", "1");
                 setAuthToken(requestBuilder, common00);
@@ -296,7 +309,7 @@ public class BoardControllerTest extends IricomTestSuite {
 
             @Test
             @DisplayName("keyword")
-            public void testCase03() throws Exception {
+            public void keyword() throws Exception {
                 MockHttpServletRequestBuilder requestBuilder = get("/v1/boards")
                         .param("keyword", enableBoard.getTitle());
                 setAuthToken(requestBuilder, common00);
@@ -312,7 +325,7 @@ public class BoardControllerTest extends IricomTestSuite {
 
             @Test
             @DisplayName("enabled")
-            public void testCase04() throws Exception {
+            public void enabled() throws Exception {
                 MockHttpServletRequestBuilder requestBuilder = get("/v1/boards")
                         .param("enabled", "true");
                 setAuthToken(requestBuilder, common00);
@@ -333,8 +346,8 @@ public class BoardControllerTest extends IricomTestSuite {
 
         @Test
         @DisplayName("제목, 설명, 활성화 여부")
-        public void testCase00() throws Exception {
-            Board board = getBoard(updateBoard);
+        public void titleDescriptionEnabled() throws Exception {
+            Board board = getBoard(testBoardInfo01);
 
             Map<String, Object> requestBody = new HashMap<>();
             requestBody.put("title", "update_title");
@@ -356,8 +369,8 @@ public class BoardControllerTest extends IricomTestSuite {
 
         @Test
         @DisplayName("제목")
-        public void testCase01() throws Exception {
-            Board board = getBoard(updateBoard);
+        public void title() throws Exception {
+            Board board = getBoard(testBoardInfo01);
 
             Map<String, Object> requestBody = new HashMap<>();
             requestBody.put("title", "only_title");
@@ -375,8 +388,8 @@ public class BoardControllerTest extends IricomTestSuite {
 
         @Test
         @DisplayName("설명")
-        public void testCase02() throws Exception {
-            Board board = getBoard(updateBoard);
+        public void description() throws Exception {
+            Board board = getBoard(testBoardInfo01);
 
             Map<String, Object> requestBody = new HashMap<>();
             requestBody.put("description", "only_description");
@@ -394,8 +407,8 @@ public class BoardControllerTest extends IricomTestSuite {
 
         @Test
         @DisplayName("활성화 여부")
-        public void testCase03() throws Exception {
-            Board board = getBoard(updateBoard);
+        public void enabled() throws Exception {
+            Board board = getBoard(testBoardInfo01);
 
             Map<String, Object> requestBody = new HashMap<>();
             requestBody.put("enabled", true);
@@ -413,8 +426,8 @@ public class BoardControllerTest extends IricomTestSuite {
 
         @Test
         @DisplayName("제목 빈 문자열")
-        public void testCase04() throws Exception {
-            Board board = getBoard(updateBoard);
+        public void emptyStringTitle() throws Exception {
+            Board board = getBoard(testBoardInfo01);
 
             Map<String, Object> requestBody = new HashMap<>();
             requestBody.put("title", "");
@@ -432,8 +445,8 @@ public class BoardControllerTest extends IricomTestSuite {
 
         @Test
         @DisplayName("제목 길이 초과")
-        public void testCase05() throws Exception {
-            Board board = getBoard(updateBoard);
+        public void overflowTitle() throws Exception {
+            Board board = getBoard(testBoardInfo01);
 
             Map<String, Object> requestBody = new HashMap<>();
             requestBody.put("title", "012345678901234567890");
@@ -451,8 +464,8 @@ public class BoardControllerTest extends IricomTestSuite {
 
         @Test
         @DisplayName("설명 빈 문자열")
-        public void testCase06() throws Exception {
-            Board board = getBoard(updateBoard);
+        public void emptyStringDescription() throws Exception {
+            Board board = getBoard(testBoardInfo01);
 
             Map<String, Object> requestBody = new HashMap<>();
             requestBody.put("description", "");
@@ -470,8 +483,8 @@ public class BoardControllerTest extends IricomTestSuite {
 
         @Test
         @DisplayName("설명 길이 초과")
-        public void testCase07() throws Exception {
-            Board board = getBoard(updateBoard);
+        public void overflowDescription() throws Exception {
+            Board board = getBoard(testBoardInfo01);
 
             Map<String, Object> requestBody = new HashMap<>();
             requestBody.put("description", "01234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890");
@@ -493,8 +506,8 @@ public class BoardControllerTest extends IricomTestSuite {
 
             @Test
             @DisplayName("게시판 관리자")
-            public void testCase00() throws Exception {
-                Board board = getBoard(updateBoard);
+            public void boardAdmin() throws Exception {
+                Board board = getBoard(testBoardInfo01);
 
                 Map<String, Object> requestBody = new HashMap<>();
                 requestBody.put("title", "update_title");
@@ -513,8 +526,8 @@ public class BoardControllerTest extends IricomTestSuite {
 
             @Test
             @DisplayName("일반 계정")
-            public void testCase01() throws Exception {
-                Board board = getBoard(updateBoard);
+            public void account() throws Exception {
+                Board board = getBoard(testBoardInfo01);
 
                 Map<String, Object> requestBody = new HashMap<>();
                 requestBody.put("title", "update_title");
