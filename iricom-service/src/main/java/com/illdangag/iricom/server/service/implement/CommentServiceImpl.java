@@ -253,6 +253,10 @@ public class CommentServiceImpl implements CommentService {
             throw new IricomException(IricomErrorCode.NOT_ALLOW_COMMENT);
         }
 
+        if (comment.getDeleted()) {
+            throw new IricomException(IricomErrorCode.NOT_EXIST_COMMENT);
+        }
+
         Optional<CommentVote> commentVoteOptional = this.commentVoteRepository.getCommentVote(account, comment, voteType);
         if (commentVoteOptional.isPresent()) {
             throw new IricomException(IricomErrorCode.ALREADY_VOTE_COMMENT);
