@@ -2,6 +2,7 @@ package com.illdangag.iricom.server.controller.v1;
 
 import com.illdangag.iricom.server.test.IricomTestSuite;
 import com.illdangag.iricom.server.data.entity.Account;
+import com.illdangag.iricom.server.test.data.wrapper.TestBoardInfo;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
@@ -12,8 +13,7 @@ import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilder;
 
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 
 import static org.hamcrest.Matchers.hasSize;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
@@ -28,9 +28,16 @@ public class AccountControllerTest extends IricomTestSuite {
     @Autowired
     MockMvc mockMvc;
 
+    private static final TestBoardInfo testBoardInfo00 = TestBoardInfo.builder()
+            .title("testBoardInfo00").isEnabled(true).adminList(Collections.singletonList(allBoardAdmin)).build();
+
     @Autowired
     public AccountControllerTest(ApplicationContext context) {
         super(context);
+
+        List<TestBoardInfo> testBoardInfoList = Arrays.asList(testBoardInfo00);
+
+        super.setBoard(testBoardInfoList);
     }
 
     @Nested

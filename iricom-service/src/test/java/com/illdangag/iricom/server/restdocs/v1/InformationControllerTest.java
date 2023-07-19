@@ -3,7 +3,6 @@ package com.illdangag.iricom.server.restdocs.v1;
 import com.illdangag.iricom.server.restdocs.snippet.IricomFieldsSnippet;
 import com.illdangag.iricom.server.test.IricomTestSuite;
 import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
@@ -35,7 +34,6 @@ public class InformationControllerTest extends IricomTestSuite {
     }
 
     @Test
-    @Order(0)
     @DisplayName("정보 조회")
     public void if001() throws Exception {
         MockHttpServletRequestBuilder requestBuilder = get("/v1/infos");
@@ -63,7 +61,6 @@ public class InformationControllerTest extends IricomTestSuite {
     }
 
     @Test
-    @Order(1)
     @DisplayName("작성한 게시물 조회")
     public void if002() throws Exception {
         MockHttpServletRequestBuilder requestBuilder = get("/v1/infos/posts")

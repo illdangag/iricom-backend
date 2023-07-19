@@ -32,18 +32,18 @@ public class AccountGroupControllerTest extends IricomTestSuite {
     @Autowired
     MockMvc mockMvc;
 
-    private TestBoardInfo testBoardInfo00 = TestBoardInfo.builder()
+    private static final TestBoardInfo testBoardInfo00 = TestBoardInfo.builder()
             .title("testBoardInfo00").isEnabled(true).adminList(Collections.singletonList(allBoardAdmin)).build();
 
-    private TestAccountGroupInfo testAccountGroupInfo00 = TestAccountGroupInfo.builder()
+    private static final TestAccountGroupInfo testAccountGroupInfo00 = TestAccountGroupInfo.builder()
             .title("testAccountGroupInfo00").description("description")
             .accountList(Arrays.asList(common00)).boardList(Arrays.asList(testBoardInfo00))
             .build();
-    private TestAccountGroupInfo testAccountGroupInfo01 = TestAccountGroupInfo.builder()
+    private static final TestAccountGroupInfo testAccountGroupInfo01 = TestAccountGroupInfo.builder()
             .title("testAccountGroupInfo01").description("description")
             .accountList(Arrays.asList(common00)).boardList(Arrays.asList(testBoardInfo00))
             .build();
-    private TestAccountGroupInfo testAccountGroupInfo02 = TestAccountGroupInfo.builder()
+    private static final TestAccountGroupInfo testAccountGroupInfo02 = TestAccountGroupInfo.builder()
             .title("testAccountGroupInfo02").description("description")
             .accountList(Arrays.asList(common00)).boardList(Arrays.asList(testBoardInfo00))
             .build();

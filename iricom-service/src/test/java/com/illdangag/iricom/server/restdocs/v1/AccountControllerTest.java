@@ -4,7 +4,6 @@ import com.illdangag.iricom.server.data.entity.Account;
 import com.illdangag.iricom.server.restdocs.snippet.IricomFieldsSnippet;
 import com.illdangag.iricom.server.test.IricomTestSuite;
 import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
@@ -40,7 +39,6 @@ public class AccountControllerTest extends IricomTestSuite {
 
     @Test
     @DisplayName("목록 조회")
-    @Order(0)
     public void ac001() throws Exception {
         MockHttpServletRequestBuilder requestBuilder = get("/v1/accounts/")
                 .param("skip", "0")
@@ -78,7 +76,6 @@ public class AccountControllerTest extends IricomTestSuite {
 
     @Test
     @DisplayName("정보 조회")
-    @Order(1)
     public void ac002() throws Exception {
         Account account = getAccount(systemAdmin);
 
@@ -112,7 +109,6 @@ public class AccountControllerTest extends IricomTestSuite {
 
     @Test
     @DisplayName("수정")
-    @Order(2)
     public void ac003() throws Exception {
         Map<String, Object> requestBody = new HashMap<>();
         requestBody.put("nickname", "common00_00");
@@ -150,7 +146,6 @@ public class AccountControllerTest extends IricomTestSuite {
 
     @Test
     @DisplayName("수정")
-    @Order(3)
     public void ac004() throws Exception {
         Account account = getAccount(common00);
 

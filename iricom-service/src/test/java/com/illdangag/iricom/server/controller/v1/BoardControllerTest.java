@@ -3,7 +3,6 @@ package com.illdangag.iricom.server.controller.v1;
 import com.illdangag.iricom.server.data.entity.Board;
 import com.illdangag.iricom.server.test.IricomTestSuite;
 import com.illdangag.iricom.server.test.data.wrapper.TestBoardInfo;
-import com.illdangag.iricom.server.test.data.wrapper.TestPostInfo;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
@@ -311,7 +310,7 @@ public class BoardControllerTest extends IricomTestSuite {
             @DisplayName("keyword")
             public void keyword() throws Exception {
                 MockHttpServletRequestBuilder requestBuilder = get("/v1/boards")
-                        .param("keyword", enableBoard.getTitle());
+                        .param("keyword", testBoardInfo00.getTitle());
                 setAuthToken(requestBuilder, common00);
 
                 mockMvc.perform(requestBuilder)

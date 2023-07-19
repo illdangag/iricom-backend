@@ -1,12 +1,12 @@
 package com.illdangag.iricom.server.restdocs.v1;
 
-import com.illdangag.iricom.server.data.entity.Board;
-import com.illdangag.iricom.server.data.entity.Comment;
-import com.illdangag.iricom.server.data.entity.Post;
+import com.illdangag.iricom.server.data.entity.*;
 import com.illdangag.iricom.server.restdocs.snippet.IricomFieldsSnippet;
 import com.illdangag.iricom.server.test.IricomTestSuite;
+import com.illdangag.iricom.server.test.data.wrapper.TestBoardInfo;
+import com.illdangag.iricom.server.test.data.wrapper.TestCommentInfo;
+import com.illdangag.iricom.server.test.data.wrapper.TestPostInfo;
 import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
@@ -15,10 +15,7 @@ import org.springframework.restdocs.payload.FieldDescriptor;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilder;
 
-import java.util.HashMap;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 import static org.springframework.restdocs.headers.HeaderDocumentation.requestHeaders;
 import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document;
@@ -34,18 +31,47 @@ public class CommentControllerTest extends IricomTestSuite {
     @Autowired
     MockMvc mockMvc;
 
+    private static final TestBoardInfo testBoardInfo00 = TestBoardInfo.builder()
+            .title("testBoardInfo00").isEnabled(true).adminList(Collections.singletonList(allBoardAdmin)).build();
+
+    private static final TestPostInfo testPostInfo00 = TestPostInfo.builder()
+            .title("testPostInfo00").content("content").isAllowComment(true)
+            .postType(PostType.POST).postState(PostState.PUBLISH)
+            .creator(common00).board(testBoardInfo00).build();
+
+    private static final TestCommentInfo testCommentInfo00 = TestCommentInfo.builder()
+            .content("testCommentInfo00").creator(common00).post(testPostInfo00)
+            .build();
+    private static final TestCommentInfo testCommentInfo01 = TestCommentInfo.builder()
+            .content("testCommentInfo01").creator(common00).post(testPostInfo00)
+            .build();
+    private static final TestCommentInfo testCommentInfo02 = TestCommentInfo.builder()
+            .content("testCommentInfo02").creator(common00).post(testPostInfo00)
+            .build();
+    private static final TestCommentInfo testCommentInfo03 = TestCommentInfo.builder()
+            .content("testCommentInfo03").creator(common00).post(testPostInfo00)
+            .referenceComment(testCommentInfo00).build();
+
     @Autowired
     public CommentControllerTest(ApplicationContext context) {
         super(context);
+
+        List<TestBoardInfo> testBoardInfoList = Arrays.asList(testBoardInfo00);
+        List<TestPostInfo> testPostInfoList = Arrays.asList(testPostInfo00);
+        List<TestCommentInfo> testCommentInfoList = Arrays.asList(testCommentInfo00, testCommentInfo01,
+                testCommentInfo02, testCommentInfo03);
+
+        super.setBoard(testBoardInfoList);
+        super.setPost(testPostInfoList);
+        super.setComment(testCommentInfoList);
     }
 
     @Test
     @DisplayName("생성")
-    @Order(0)
     public void cm001() throws Exception {
-        Board board = getBoard(commentBoard);
-        Post post = getPost(commentUpdatePost00);
-        Comment comment = getComment(commentUpdateComment00);
+        Comment comment = getComment(testCommentInfo00);
+        Post post = comment.getPost();
+        Board board = post.getBoard();
 
         Map<String, Object> requestBody = new HashMap<>();
         requestBody.put("content", "this is content.");
@@ -87,11 +113,10 @@ public class CommentControllerTest extends IricomTestSuite {
 
     @Test
     @DisplayName("목록 조회")
-    @Order(1)
     public void cm002() throws Exception {
-        Board board = getBoard(commentBoard);
-        Post post = getPost(commentGetPost00);
-        Comment comment = getComment(commentGetComment00);
+        Comment comment = getComment(testCommentInfo00);
+        Post post = comment.getPost();
+        Board board = post.getBoard();
 
         MockHttpServletRequestBuilder requestBuilder = get("/v1/boards/{boardId}/posts/{postId}/comments", board.getId(), post.getId())
                 .param("skip", "0")
@@ -141,11 +166,10 @@ public class CommentControllerTest extends IricomTestSuite {
 
     @Test
     @DisplayName("정보 조회")
-    @Order(1)
     public void cm003() throws Exception {
-        Board board = getBoard(commentBoard);
-        Post post = getPost(commentGetPost00);
-        Comment comment = getComment(commentGetComment04);
+        Comment comment = getComment(testCommentInfo00);
+        Post post = comment.getPost();
+        Board board = post.getBoard();
 
         MockHttpServletRequestBuilder requestBuilder = get("/v1/boards/{boardId}/posts/{postId}/comments/{commentId}", board.getId(), post.getId(), comment.getId());
         setAuthToken(requestBuilder, common00);
@@ -179,11 +203,10 @@ public class CommentControllerTest extends IricomTestSuite {
 
     @Test
     @DisplayName("수정")
-    @Order(2)
     public void cm004() throws Exception {
-        Board board = getBoard(commentBoard);
-        Post post = getPost(commentUpdatePost00);
-        Comment comment = getComment(commentUpdateComment00);
+        Comment comment = getComment(testCommentInfo00);
+        Post post = comment.getPost();
+        Board board = post.getBoard();
 
         Map<String, Object> requestBody = new HashMap<>();
         requestBody.put("content", "update_comment");
@@ -225,11 +248,10 @@ public class CommentControllerTest extends IricomTestSuite {
 
     @Test
     @DisplayName("삭제")
-    @Order(3)
     public void cm005() throws Exception {
-        Board board = getBoard(commentBoard);
-        Post post = getPost(commentUpdatePost00);
-        Comment comment = getComment(commentDeleteComment00);
+        Comment comment = getComment(testCommentInfo01);
+        Post post = comment.getPost();
+        Board board = post.getBoard();
 
         MockHttpServletRequestBuilder requestBuilder = delete("/v1/boards/{boardId}/posts/{postId}/comments/{commentId}", board.getId(), post.getId(), comment.getId());
         setAuthToken(requestBuilder, common00);
@@ -262,11 +284,10 @@ public class CommentControllerTest extends IricomTestSuite {
 
     @Test
     @DisplayName("좋아요 싫어요")
-    @Order(4)
     public void cm006() throws Exception {
-        Board board = getBoard(voteBoard);
-        Post post = getPost(voteCommentPost00);
-        Comment comment = getComment(voteComment05);
+        Comment comment = getComment(testCommentInfo02);
+        Post post = comment.getPost();
+        Board board = post.getBoard();
 
         Map<String, Object> requestBody = new HashMap<>();
         requestBody.put("type", "upvote");

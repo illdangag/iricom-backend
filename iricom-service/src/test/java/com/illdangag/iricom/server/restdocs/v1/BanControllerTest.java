@@ -7,7 +7,6 @@ import com.illdangag.iricom.server.test.data.wrapper.TestBoardInfo;
 import com.illdangag.iricom.server.test.data.wrapper.TestPostBanInfo;
 import com.illdangag.iricom.server.test.data.wrapper.TestPostInfo;
 import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
@@ -84,7 +83,6 @@ public class BanControllerTest extends IricomTestSuite {
 
     @Test
     @DisplayName("게시물 차단")
-    @Order(0)
     public void bp001() throws Exception {
         Post post = getPost(testPostInfo00);
         Board board = post.getBoard();
@@ -129,7 +127,6 @@ public class BanControllerTest extends IricomTestSuite {
 
     @Test
     @DisplayName("게시물 목록 조회")
-    @Order(1)
     public void bp002() throws Exception {
         MockHttpServletRequestBuilder requestBuilder = get("/v1/ban/post/boards")
                 .param("skip", "0")
@@ -168,7 +165,6 @@ public class BanControllerTest extends IricomTestSuite {
 
     @Test
     @DisplayName("게시물 목록 조회: 게시판")
-    @Order(2)
     public void bp003() throws Exception {
         Board board = getBoard(boardInfo00);
 
@@ -212,7 +208,6 @@ public class BanControllerTest extends IricomTestSuite {
 
     @Test
     @DisplayName("게시물 정보 조회")
-    @Order(3)
     public void bp004() throws Exception {
         Post post = getPost(alreadyPostInfo00);
         Board board = post.getBoard();
@@ -249,7 +244,6 @@ public class BanControllerTest extends IricomTestSuite {
 
     @Test
     @DisplayName("게시물 차단")
-    @Order(4)
     public void bp005() throws Exception {
         Post post = getPost(alreadyPostInfo01);
         Board board = post.getBoard();
@@ -294,7 +288,6 @@ public class BanControllerTest extends IricomTestSuite {
 
     @Test
     @DisplayName("게시물 차단 해제")
-    @Order(5)
     public void bp006() throws Exception {
         Post post = getPost(alreadyPostInfo01);
         Board board = post.getBoard();

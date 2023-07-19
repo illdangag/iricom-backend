@@ -4,8 +4,8 @@ import com.illdangag.iricom.server.data.entity.Account;
 import com.illdangag.iricom.server.data.entity.Board;
 import com.illdangag.iricom.server.restdocs.snippet.IricomFieldsSnippet;
 import com.illdangag.iricom.server.test.IricomTestSuite;
+import com.illdangag.iricom.server.test.data.wrapper.TestBoardInfo;
 import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
@@ -14,10 +14,7 @@ import org.springframework.restdocs.payload.FieldDescriptor;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilder;
 
-import java.util.HashMap;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 import static org.springframework.restdocs.headers.HeaderDocumentation.requestHeaders;
 import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document;
@@ -35,17 +32,24 @@ public class BoardAuthorizationControllerTest extends IricomTestSuite {
     @Autowired
     MockMvc mockMvc;
 
+    private static final TestBoardInfo boardAdminBoard00 = TestBoardInfo.builder()
+            .title("boardAdminBoard00").description("boardAdminBoard00").isEnabled(true)
+            .adminList(Collections.singletonList(allBoardAdmin)).build();
+
     @Autowired
     public BoardAuthorizationControllerTest(ApplicationContext context) {
         super(context);
+
+        List<TestBoardInfo> testBoardInfoList = Arrays.asList(boardAdminBoard00);
+
+        super.setBoard(testBoardInfoList);
     }
 
     @Test
     @DisplayName("게시판 관리자 추가")
-    @Order(0)
     public void at001() throws Exception {
         Account account = getAccount(toEnableBoardAdmin);
-        Board board = getBoard(enableBoard);
+        Board board = getBoard(boardAdminBoard00);
 
         Map<String, Object> requestBody = new HashMap<>();
         requestBody.put("accountId", account.getId());
@@ -79,12 +83,11 @@ public class BoardAuthorizationControllerTest extends IricomTestSuite {
 
     @Test
     @DisplayName("게시판 관리자 조회")
-    @Order(1)
     public void at002() throws Exception {
         MockHttpServletRequestBuilder requestBuilder = get("/v1/auth/boards")
                 .param("skip", "0")
                 .param("limit", "5")
-                .param("keyword", "createBoard")
+                .param("keyword", "boardAdminBoard00")
                 .param("enabled", "true");
         setAuthToken(requestBuilder, systemAdmin);
 
@@ -122,9 +125,8 @@ public class BoardAuthorizationControllerTest extends IricomTestSuite {
 
     @Test
     @DisplayName("게시판 관리자 조회")
-    @Order(2)
     public void at003() throws Exception {
-        Board board = getBoard(enableBoard);
+        Board board = getBoard(boardAdminBoard00);
         MockHttpServletRequestBuilder requestBuilder = get("/v1/auth/boards/{id}", board.getId());
         setAuthToken(requestBuilder, systemAdmin);
 
@@ -158,10 +160,9 @@ public class BoardAuthorizationControllerTest extends IricomTestSuite {
 
     @Test
     @DisplayName("게시판 관리자 삭제")
-    @Order(3)
     public void at004() throws Exception {
         Account account = getAccount(toDisableBoardAdmin);
-        Board board = getBoard(enableBoard);
+        Board board = getBoard(boardAdminBoard00);
 
         Map<String, Object> requestBody = new HashMap<>();
         requestBody.put("accountId", account.getId());

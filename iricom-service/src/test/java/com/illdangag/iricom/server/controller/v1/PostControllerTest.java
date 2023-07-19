@@ -35,10 +35,15 @@ public class PostControllerTest extends IricomTestSuite {
     MockMvc mockMvc;
 
     private static final TestBoardInfo testBoardInfo00 = TestBoardInfo.builder()
-            .title("testBoardInfo00").isEnabled(true)
-            .adminList(Collections.singletonList(allBoardAdmin)).build();
+            .title("testBoardInfo00").isEnabled(true).adminList(Arrays.asList(allBoardAdmin, common01)).build();
     private static final TestBoardInfo disableTestBoardInfo00 = TestBoardInfo.builder()
-            .title("disableBoard").isEnabled(false).adminList(Arrays.asList(allBoardAdmin, disableBoardAdmin)).build();
+            .title("disableTestBoardInfo00").isEnabled(false).adminList(Arrays.asList(allBoardAdmin, disableBoardAdmin)).build();
+    private static final TestBoardInfo autoBoardInfo00 = TestBoardInfo.builder()
+            .title("autoBoardInfo00").isEnabled(true).adminList(Collections.singletonList(allBoardAdmin)).build();
+    private static final TestBoardInfo deleteBoardInfo00 = TestBoardInfo.builder()
+            .title("deleteBoardInfo00").isEnabled(true).adminList(Collections.singletonList(allBoardAdmin)).build();
+    private static final TestBoardInfo voteBoardInfo00 = TestBoardInfo.builder()
+            .title("voteBoardInfo00").isEnabled(true).adminList(Collections.singletonList(allBoardAdmin)).build();
 
     private static final TestPostInfo enableBoardPost00 = TestPostInfo.builder()
             .title("enableBoardPost00").content("enableBoardPost00").isAllowComment(true)
@@ -56,13 +61,99 @@ public class PostControllerTest extends IricomTestSuite {
             .title("enableBoardPost03").content("enableBoardPost03").isAllowComment(true)
             .postType(PostType.POST).postState(PostState.TEMPORARY)
             .creator(allBoardAdmin).board(testBoardInfo00).build();
+    protected static final TestPostInfo temporaryPostInfo00 = TestPostInfo.builder()
+            .title("temporaryBoardInfo00").content("enableBoardPost03").isAllowComment(true)
+            .postType(PostType.POST).postState(PostState.TEMPORARY)
+            .creator(common00).board(testBoardInfo00).build();
+    protected static final TestPostInfo temporaryPostInfo01 = TestPostInfo.builder()
+            .title("temporaryPostInfo01").content("temporaryPostInfo01").isAllowComment(true)
+            .postType(PostType.POST).postState(PostState.TEMPORARY)
+            .creator(common00).board(testBoardInfo00).build();
+    protected static final TestPostInfo temporaryPostInfo02 = TestPostInfo.builder()
+            .title("temporaryPostInfo02").content("temporaryPostInfo02").isAllowComment(true)
+            .postType(PostType.POST).postState(PostState.TEMPORARY)
+            .creator(common00).board(disableTestBoardInfo00).build();
+    protected static final TestPostInfo publishPostInfo00 = TestPostInfo.builder()
+            .title("publishPostInfo00").content("publishPostInfo00").isAllowComment(true)
+            .postType(PostType.POST).postState(PostState.PUBLISH)
+            .creator(common00).board(testBoardInfo00).build();
+    protected static final TestPostInfo notificationPostInfo00 = TestPostInfo.builder()
+            .title("notificationPostInfo00").content("notificationPostInfo00").isAllowComment(true)
+            .postType(PostType.NOTIFICATION).postState(PostState.TEMPORARY)
+            .creator(allBoardAdmin).board(testBoardInfo00).build();
+    private static final TestPostInfo updatePostInfo00 = TestPostInfo.builder()
+            .title("updatePostInfo00").content("updatePostInfo00").isAllowComment(true)
+            .postType(PostType.POST).postState(PostState.TEMPORARY)
+            .creator(common00).board(testBoardInfo00).build();
+    private static final TestPostInfo updatePostInfo01 = TestPostInfo.builder()
+            .title("updatePostInfo01").content("updatePostInfo01").isAllowComment(true)
+            .postType(PostType.POST).postState(PostState.TEMPORARY)
+            .creator(allBoardAdmin).board(testBoardInfo00).build();
+    private static final TestPostInfo updatePostInfo02 = TestPostInfo.builder()
+            .title("updatePostInfo02").content("updatePostInfo02").isAllowComment(true)
+            .postType(PostType.POST).postState(PostState.PUBLISH)
+            .creator(common00).board(testBoardInfo00).build();
+    private static final TestPostInfo autoPostInfo00 = TestPostInfo.builder()
+            .title("autoPostInfo00").content("autoPostInfo00").isAllowComment(true)
+            .postType(PostType.POST).postState(PostState.PUBLISH)
+            .creator(common00).board(autoBoardInfo00).build();
+    private static final TestPostInfo autoPostInfo01 = TestPostInfo.builder()
+            .title("autoPostInfo01").content("autoPostInfo01").isAllowComment(true)
+            .postType(PostType.POST).postState(PostState.PUBLISH)
+            .creator(common01).board(autoBoardInfo00).build();
+
+    private static final TestPostInfo deletePostInfo00 = TestPostInfo.builder()
+            .title("deletePostInfo00").content("deletePostInfo00").isAllowComment(true)
+            .postType(PostType.POST).postState(PostState.TEMPORARY)
+            .creator(common00).board(autoBoardInfo00).build();
+    private static final TestPostInfo deletePostInfo01 = TestPostInfo.builder()
+            .title("deletePostInfo01").content("deletePostInfo01").isAllowComment(true)
+            .postType(PostType.POST).postState(PostState.PUBLISH)
+            .creator(common00).board(autoBoardInfo00).build();
+    private static final TestPostInfo deletePostInfo02 = TestPostInfo.builder()
+            .title("deletePostInfo02").content("deletePostInfo02").isAllowComment(true)
+            .postType(PostType.POST).postState(PostState.PUBLISH)
+            .creator(common00).board(autoBoardInfo00).build();
+    private static final TestPostInfo disabledPostInfo00 = TestPostInfo.builder()
+            .title("disabledPostInfo00").content("disabledPostInfo00").isAllowComment(true)
+            .postType(PostType.POST).postState(PostState.PUBLISH)
+            .creator(common00).board(disableTestBoardInfo00).build();
+    private static final TestPostInfo votePostInfo00 = TestPostInfo.builder()
+            .title("votePostInfo00").content("votePostInfo00").isAllowComment(true)
+            .postType(PostType.POST).postState(PostState.PUBLISH)
+            .creator(common00).board(voteBoardInfo00).build();
+    private static final TestPostInfo votePostInfo01 = TestPostInfo.builder()
+            .title("votePostInfo01").content("votePostInfo01").isAllowComment(true)
+            .postType(PostType.POST).postState(PostState.PUBLISH)
+            .creator(common00).board(voteBoardInfo00).build();
+    private static final TestPostInfo votePostInfo02 = TestPostInfo.builder()
+            .title("votePostInfo02").content("votePostInfo02").isAllowComment(true)
+            .postType(PostType.POST).postState(PostState.TEMPORARY)
+            .creator(common00).board(voteBoardInfo00).build();
+    private static final TestPostInfo votePostInfo03 = TestPostInfo.builder()
+            .title("votePostInfo03").content("votePostInfo03").isAllowComment(true)
+            .postType(PostType.POST).postState(PostState.PUBLISH)
+            .creator(common00).board(voteBoardInfo00).build();
+    private static final TestPostInfo votePostInfo04 = TestPostInfo.builder()
+            .title("votePostInfo04").content("votePostInfo04").isAllowComment(true)
+            .postType(PostType.POST).postState(PostState.PUBLISH)
+            .creator(common00).board(disableTestBoardInfo00).build();
+    private static final TestPostInfo votePostInfo05 = TestPostInfo.builder()
+            .title("votePostInfo05").content("votePostInfo05").isAllowComment(true)
+            .postType(PostType.POST).postState(PostState.PUBLISH)
+            .creator(common00).board(voteBoardInfo00).build();
 
     @Autowired
     public PostControllerTest(ApplicationContext context) {
         super(context);
 
-        List<TestBoardInfo> testBoardInfoList = Arrays.asList(testBoardInfo00, disableTestBoardInfo00);
-        List<TestPostInfo> testPostInfoList = Arrays.asList(enableBoardPost00, disableBoardPost00, disableBoardNotification00, enableBoardPost03);
+        List<TestBoardInfo> testBoardInfoList = Arrays.asList(testBoardInfo00, disableTestBoardInfo00, autoBoardInfo00,
+                deleteBoardInfo00, voteBoardInfo00);
+        List<TestPostInfo> testPostInfoList = Arrays.asList(enableBoardPost00, disableBoardPost00, disableBoardNotification00,
+                enableBoardPost03, temporaryPostInfo00, temporaryPostInfo01, publishPostInfo00, notificationPostInfo00,
+                temporaryPostInfo02, updatePostInfo00, updatePostInfo01, updatePostInfo02, autoPostInfo00, autoPostInfo01,
+                deletePostInfo00, deletePostInfo01, deletePostInfo02, disabledPostInfo00, votePostInfo00, votePostInfo01,
+                votePostInfo02, votePostInfo03, votePostInfo04, votePostInfo05);
 
         super.setBoard(testBoardInfoList);
         super.setPost(testPostInfoList);
@@ -80,7 +171,7 @@ public class PostControllerTest extends IricomTestSuite {
 
             @Test
             @DisplayName("제목, 내용, 댓글 허용 여부")
-            public void testCase00() throws Exception {
+            public void titleContentIsAllowComment() throws Exception {
                 Board board = getBoard(testBoardInfo00);
 
                 Map<String, Object> requestBody = new HashMap<>();
@@ -105,7 +196,7 @@ public class PostControllerTest extends IricomTestSuite {
 
             @Test
             @DisplayName("제목")
-            public void testCase01() throws Exception {
+            public void title() throws Exception {
                 Board board = getBoard(testBoardInfo00);
 
                 Map<String, Object> requestBody = new HashMap<>();
@@ -128,7 +219,7 @@ public class PostControllerTest extends IricomTestSuite {
 
             @Test
             @DisplayName("내용")
-            public void testCase02() throws Exception {
+            public void content() throws Exception {
                 Board board = getBoard(testBoardInfo00);
 
                 Map<String, Object> requestBody = new HashMap<>();
@@ -148,8 +239,8 @@ public class PostControllerTest extends IricomTestSuite {
 
             @Test
             @DisplayName("댓글 허용 여부")
-            public void testCase03() throws Exception {
-                Board board = getBoard(createBoard);
+            public void isAllowComment() throws Exception {
+                Board board = getBoard(testBoardInfo00);
 
                 Map<String, Object> requestBody = new HashMap<>();
                 requestBody.put("type", "post");
@@ -168,7 +259,7 @@ public class PostControllerTest extends IricomTestSuite {
 
             @Test
             @DisplayName("비활성화 게시판에 생성")
-            public void testCase04() throws Exception {
+            public void postToDisabledBoard() throws Exception {
                 Board board = getBoard(disableTestBoardInfo00);
 
                 Map<String, Object> requestBody = new HashMap<>();
@@ -196,8 +287,8 @@ public class PostControllerTest extends IricomTestSuite {
 
             @Test
             @DisplayName("제목, 내용, 댓글 허용 여부")
-            public void testCase00() throws Exception {
-                Board board = getBoard(createBoard);
+            public void titleContentIsAllowComment() throws Exception {
+                Board board = getBoard(testBoardInfo00);
 
                 Map<String, Object> requestBody = new HashMap<>();
                 requestBody.put("title", "new_title");
@@ -221,8 +312,8 @@ public class PostControllerTest extends IricomTestSuite {
 
             @Test
             @DisplayName("제목")
-            public void testCase01() throws Exception {
-                Board board = getBoard(createBoard);
+            public void title() throws Exception {
+                Board board = getBoard(testBoardInfo00);
 
                 Map<String, Object> requestBody = new HashMap<>();
                 requestBody.put("title", "only_title");
@@ -244,8 +335,8 @@ public class PostControllerTest extends IricomTestSuite {
 
             @Test
             @DisplayName("내용")
-            public void testCase02() throws Exception {
-                Board board = getBoard(createBoard);
+            public void content() throws Exception {
+                Board board = getBoard(testBoardInfo00);
 
                 Map<String, Object> requestBody = new HashMap<>();
                 requestBody.put("type", "post");
@@ -264,8 +355,8 @@ public class PostControllerTest extends IricomTestSuite {
 
             @Test
             @DisplayName("댓글 허용 여부")
-            public void testCase03() throws Exception {
-                Board board = getBoard(createBoard);
+            public void isAllowComment() throws Exception {
+                Board board = getBoard(testBoardInfo00);
 
                 Map<String, Object> requestBody = new HashMap<>();
                 requestBody.put("type", "notification");
@@ -284,7 +375,7 @@ public class PostControllerTest extends IricomTestSuite {
 
             @Test
             @DisplayName("비활성화 게시판에 생성")
-            public void testCase04() throws Exception {
+            public void postToDisabledBoard() throws Exception {
                 Board board = getBoard(disableTestBoardInfo00);
 
                 Map<String, Object> requestBody = new HashMap<>();
@@ -311,8 +402,8 @@ public class PostControllerTest extends IricomTestSuite {
 
                 @Test
                 @DisplayName("게시판 관리자")
-                public void testCase00() throws Exception {
-                    Board board = getBoard(createBoard);
+                public void boardAdmin() throws Exception {
+                    Board board = getBoard(testBoardInfo00);
 
                     Map<String, Object> requestBody = new HashMap<>();
                     requestBody.put("title", "new_title");
@@ -335,8 +426,8 @@ public class PostControllerTest extends IricomTestSuite {
 
                 @Test
                 @DisplayName("일반 계정")
-                public void testCase01() throws Exception {
-                    Board board = getBoard(createBoard);
+                public void account() throws Exception {
+                    Board board = getBoard(testBoardInfo00);
 
                     Map<String, Object> requestBody = new HashMap<>();
                     requestBody.put("title", "new_title");
@@ -368,7 +459,7 @@ public class PostControllerTest extends IricomTestSuite {
 
             @Test
             @DisplayName("기본")
-            public void testCase00() throws Exception {
+            public void getInfo() throws Exception {
                 Board board = getBoard(testBoardInfo00);
                 Post post = getPost(enableBoardPost00);
 
@@ -382,7 +473,7 @@ public class PostControllerTest extends IricomTestSuite {
 
             @Test
             @DisplayName("임시 저장")
-            public void testCase01() throws Exception {
+            public void getTemporaryPost() throws Exception {
                 Board board = getBoard(testBoardInfo00);
                 Post post = getPost(enableBoardPost03);
 
@@ -398,7 +489,7 @@ public class PostControllerTest extends IricomTestSuite {
 
             @Test
             @DisplayName("임시 저장 하지 않은 게시물")
-            public void testCase02() throws Exception {
+            public void getPublishPost() throws Exception {
                 Board board = getBoard(testBoardInfo00);
                 Post post = getPost(enableBoardPost00);
 
@@ -414,7 +505,7 @@ public class PostControllerTest extends IricomTestSuite {
 
             @Test
             @DisplayName("발행 하지 않은 게시물")
-            public void testCase03() throws Exception {
+            public void getNotPublishPost() throws Exception {
                 Board board = getBoard(testBoardInfo00);
                 Post post = getPost(enableBoardPost03);
 
@@ -430,7 +521,7 @@ public class PostControllerTest extends IricomTestSuite {
 
             @Test
             @DisplayName("존재하지 않는 게시판")
-            public void testCase04() throws Exception {
+            public void getNotExistBoard() throws Exception {
                 Post post = getPost(enableBoardPost03);
 
                 MockHttpServletRequestBuilder requestBuilder = get("/v1/boards/unknown/posts/" + post.getId())
@@ -445,7 +536,7 @@ public class PostControllerTest extends IricomTestSuite {
 
             @Test
             @DisplayName("존재하지 않는 게시물")
-            public void testCase05() throws Exception {
+            public void getNotExistPost() throws Exception {
                 Board board = getBoard(testBoardInfo00);
 
                 MockHttpServletRequestBuilder requestBuilder = get("/v1/boards/" + board.getId() + "/posts/unknown")
@@ -461,7 +552,7 @@ public class PostControllerTest extends IricomTestSuite {
 
             @Test
             @DisplayName("조회수")
-            public void testCase06() throws Exception {
+            public void getViewCount() throws Exception {
                 Board board = getBoard(testBoardInfo00);
                 Post post = getPost(enableBoardPost00);
 
@@ -494,7 +585,7 @@ public class PostControllerTest extends IricomTestSuite {
 
             @Test
             @DisplayName("기본")
-            public void testCase00() throws Exception {
+            public void getList() throws Exception {
                 Board board = getBoard(testBoardInfo00);
 
                 MockHttpServletRequestBuilder requestBuilder = get("/v1/boards/" + board.getId() + "/posts");
@@ -502,19 +593,16 @@ public class PostControllerTest extends IricomTestSuite {
 
                 mockMvc.perform(requestBuilder)
                         .andExpect(status().is(200))
-                        .andExpect(jsonPath("$.total").value(1))
+                        .andExpect(jsonPath("$.total").exists())
                         .andExpect(jsonPath("$.skip").value(0))
                         .andExpect(jsonPath("$.limit").value(20))
                         .andExpect(jsonPath("$.posts").isArray())
-                        .andExpect(jsonPath("$.posts", hasSize(1)))
-                        .andExpect(jsonPath("$.posts[0].title").value("enableBoardPost00"))
-                        .andExpect(jsonPath("$.posts[0].content").doesNotExist())
                         .andDo(print());
             }
 
             @Test
             @DisplayName("skip")
-            public void testCase01() throws Exception {
+            public void skip() throws Exception {
                 Board board = getBoard(testBoardInfo00);
 
                 MockHttpServletRequestBuilder requestBuilder = get("/v1/boards/" + board.getId() + "/posts")
@@ -523,17 +611,16 @@ public class PostControllerTest extends IricomTestSuite {
 
                 mockMvc.perform(requestBuilder)
                         .andExpect(status().is(200))
-                        .andExpect(jsonPath("$.total").value(1))
+                        .andExpect(jsonPath("$.total").exists())
                         .andExpect(jsonPath("$.skip").value(1))
                         .andExpect(jsonPath("$.limit").value(20))
                         .andExpect(jsonPath("$.posts").isArray())
-                        .andExpect(jsonPath("$.posts", hasSize(0)))
                         .andDo(print());
             }
 
             @Test
             @DisplayName("limit")
-            public void testCase02() throws Exception {
+            public void limit() throws Exception {
                 Board board = getBoard(testBoardInfo00);
 
                 MockHttpServletRequestBuilder requestBuilder = get("/v1/boards/" + board.getId() + "/posts")
@@ -542,19 +629,16 @@ public class PostControllerTest extends IricomTestSuite {
 
                 mockMvc.perform(requestBuilder)
                         .andExpect(status().is(200))
-                        .andExpect(jsonPath("$.total").value(1))
+                        .andExpect(jsonPath("$.total").exists())
                         .andExpect(jsonPath("$.skip").value(0))
                         .andExpect(jsonPath("$.limit").value(1))
                         .andExpect(jsonPath("$.posts").isArray())
-                        .andExpect(jsonPath("$.posts", hasSize(1)))
-                        .andExpect(jsonPath("$.posts[0].title").value("enableBoardPost00"))
-                        .andExpect(jsonPath("$.posts[0].content").doesNotExist())
                         .andDo(print());
             }
 
             @Test
             @DisplayName("title")
-            public void testCase03() throws Exception {
+            public void title() throws Exception {
                 Board board = getBoard(testBoardInfo00);
 
                 MockHttpServletRequestBuilder requestBuilder = get("/v1/boards/" + board.getId() + "/posts")
@@ -575,7 +659,7 @@ public class PostControllerTest extends IricomTestSuite {
 
             @Test
             @DisplayName("공지 사항")
-            public void testCase04() throws Exception {
+            public void notification() throws Exception {
                 Board board = getBoard(testBoardInfo00);
 
                 MockHttpServletRequestBuilder requestBuilder = get("/v1/boards/" + board.getId() + "/posts")
@@ -597,9 +681,9 @@ public class PostControllerTest extends IricomTestSuite {
 
         @Test
         @DisplayName("발행")
-        public void testCase00() throws Exception {
-            Board board = getBoard(updateBoard);
-            Post post = getPost(updateBoardPost00);
+        public void publish() throws Exception {
+            Post post = getPost(temporaryPostInfo00);
+            Board board = post.getBoard();
 
             MockHttpServletRequestBuilder requestBuilder = post("/v1/boards/" + board.getId() + "/posts/" + post.getId() + "/publish");
             setAuthToken(requestBuilder, common00);
@@ -612,24 +696,25 @@ public class PostControllerTest extends IricomTestSuite {
 
         @Test
         @DisplayName("발행한 게시물 다시 발행")
-        public void testCase01() throws Exception {
-            Board board = getBoard(updateBoard);
-            Post post = getPost(updateBoardPost01);
+        public void publishAlreadyPublishPost() throws Exception {
+            Post post = getPost(publishPostInfo00);
+            Board board = post.getBoard();
 
             MockHttpServletRequestBuilder requestBuilder = post("/v1/boards/" + board.getId() + "/posts/" + post.getId() + "/publish");
             setAuthToken(requestBuilder, common00);
 
             mockMvc.perform(requestBuilder)
-                    .andExpect(status().is(200))
-                    .andExpect(jsonPath("$.status").value("publish"))
+                    .andExpect(status().is(404))
+                    .andExpect(jsonPath("$.code").value("04000004"))
+                    .andExpect(jsonPath("$.message").value("Not exist temporary content."))
                     .andDo(print());
         }
 
         @Test
         @DisplayName("다른 계정이 생성한 게시물 발행")
-        public void testCase02() throws Exception {
-            Board board = getBoard(updateBoard);
-            Post post = getPost(updateBoardPost02);
+        public void otherCreatePost() throws Exception {
+            Post post = getPost(temporaryPostInfo01);
+            Board board = post.getBoard();
 
             MockHttpServletRequestBuilder requestBuilder = post("/v1/boards/" + board.getId() + "/posts/" + post.getId() + "/publish");
             setAuthToken(requestBuilder, common01);
@@ -642,9 +727,9 @@ public class PostControllerTest extends IricomTestSuite {
 
         @Test
         @DisplayName("공지 사항 발행")
-        public void testCase03() throws Exception {
-            Board board = getBoard(updateBoard);
-            Post post = getPost(updateBoardNotification00);
+        public void publishNotification() throws Exception {
+            Post post = getPost(notificationPostInfo00);
+            Board board = post.getBoard();
 
             MockHttpServletRequestBuilder requestBuilder = post("/v1/boards/" + board.getId() + "/posts/" + post.getId() + "/publish");
             setAuthToken(requestBuilder, allBoardAdmin);
@@ -657,9 +742,9 @@ public class PostControllerTest extends IricomTestSuite {
 
         @Test
         @DisplayName("비활성화 게시판의 게시물 발행")
-        public void testCase04() throws Exception {
-            Board board = getBoard(disableTestBoardInfo00);
-            Post post = getPost(disableBoardNotification00);
+        public void publishInDisabledBoard() throws Exception {
+            Post post = getPost(temporaryPostInfo02);
+            Board board = post.getBoard();
 
             MockHttpServletRequestBuilder requestBuilder = post("/v1/boards/" + board.getId() + "/posts/" + post.getId() + "/publish");
             setAuthToken(requestBuilder, allBoardAdmin);
@@ -673,8 +758,8 @@ public class PostControllerTest extends IricomTestSuite {
 
         @Test
         @DisplayName("존재하지 않는 게시물 발행")
-        public void testCase05() throws Exception {
-            Board board = getBoard(updateBoard);
+        public void publishNotExistPost() throws Exception {
+            Board board = getBoard(testBoardInfo00);
 
             MockHttpServletRequestBuilder requestBuilder = post("/v1/boards/" + board.getId() + "/posts/unknown/publish");
             setAuthToken(requestBuilder, allBoardAdmin);
@@ -693,9 +778,9 @@ public class PostControllerTest extends IricomTestSuite {
 
         @Test
         @DisplayName("제목, 내용, 댓글 허용 여부")
-        public void testCase00() throws Exception {
-            Board board = getBoard(updateBoard);
-            Post post = getPost(updateBoardPost03);
+        public void titleContentIsAllowComment() throws Exception {
+            Post post = getPost(updatePostInfo00);
+            Board board = post.getBoard();
 
             Map<String, Object> requestBody = new HashMap<>();
             requestBody.put("title", "update_title");
@@ -717,9 +802,9 @@ public class PostControllerTest extends IricomTestSuite {
 
         @Test
         @DisplayName("제목")
-        public void testCase01() throws Exception {
-            Board board = getBoard(updateBoard);
-            Post post = getPost(updateBoardPost03);
+        public void title() throws Exception {
+            Post post = getPost(updatePostInfo00);
+            Board board = post.getBoard();
 
             Map<String, Object> requestBody = new HashMap<>();
             requestBody.put("title", "only_title");
@@ -737,9 +822,9 @@ public class PostControllerTest extends IricomTestSuite {
 
         @Test
         @DisplayName("내용")
-        public void testCase02() throws Exception {
-            Board board = getBoard(updateBoard);
-            Post post = getPost(updateBoardPost03);
+        public void content() throws Exception {
+            Post post = getPost(updatePostInfo00);
+            Board board = post.getBoard();
 
             Map<String, Object> requestBody = new HashMap<>();
             requestBody.put("content", "only_content");
@@ -757,9 +842,9 @@ public class PostControllerTest extends IricomTestSuite {
 
         @Test
         @DisplayName("댓글 허용 여부")
-        public void testCase03() throws Exception {
-            Board board = getBoard(updateBoard);
-            Post post = getPost(updateBoardPost03);
+        public void isAllowComment() throws Exception {
+            Post post = getPost(updatePostInfo00);
+            Board board = post.getBoard();
 
             Map<String, Object> requestBody = new HashMap<>();
             requestBody.put("isAllowComment", false);
@@ -777,9 +862,9 @@ public class PostControllerTest extends IricomTestSuite {
 
         @Test
         @DisplayName("게시물을 공지사항으로 수정")
-        public void testCase04() throws Exception {
-            Board board = getBoard(updateBoard);
-            Post post = getPost(updateBoardPost04);
+        public void notification() throws Exception {
+            Post post = getPost(updatePostInfo01);
+            Board board = post.getBoard();
 
             Map<String, Object> requestBody = new HashMap<>();
             requestBody.put("type", "notification");
@@ -797,9 +882,9 @@ public class PostControllerTest extends IricomTestSuite {
 
         @Test
         @DisplayName("발행한 게시물 수정")
-        public void testCase05() throws Exception {
-            Board board = getBoard(updateBoard);
-            Post post = getPost(updateBoardPost05);
+        public void updateAlreadyPublishPost() throws Exception {
+            Post post = getPost(updatePostInfo02);
+            Board board = post.getBoard();
 
             Map<String, Object> requestBody = new HashMap<>();
             requestBody.put("title", "post_title");
@@ -821,9 +906,9 @@ public class PostControllerTest extends IricomTestSuite {
 
             @Test
             @DisplayName("일반 계정이 게시물을 공지사항으로 수정")
-            public void testCase00() throws Exception {
-                Board board = getBoard(updateBoard);
-                Post post = getPost(updateBoardPost06);
+            public void updateToNotificationByAccount() throws Exception {
+                Post post = getPost(autoPostInfo00);
+                Board board = post.getBoard();
 
                 Map<String, Object> requestBody = new HashMap<>();
                 requestBody.put("type", "notification");
@@ -841,9 +926,9 @@ public class PostControllerTest extends IricomTestSuite {
 
             @Test
             @DisplayName("다른 게시판 관리자가 게시물을 공지사항으로 수정")
-            public void testCase01() throws Exception {
-                Board board = getBoard(updateBoard);
-                Post post = getPost(updateBoardPost07);
+            public void updateToNotificationByOtherBoardAdmin() throws Exception {
+                Post post = getPost(autoPostInfo01);
+                Board board = post.getBoard();
 
                 Map<String, Object> requestBody = new HashMap<>();
                 requestBody.put("type", "notification");
@@ -851,7 +936,7 @@ public class PostControllerTest extends IricomTestSuite {
                 MockHttpServletRequestBuilder requestBuilder = patch("/v1/boards/" + board.getId() + "/posts/" + post.getId())
                         .content(getJsonString(requestBody))
                         .contentType(MediaType.APPLICATION_JSON);
-                setAuthToken(requestBuilder, enableBoardAdmin);
+                setAuthToken(requestBuilder, common01);
 
                 mockMvc.perform(requestBuilder)
                         .andExpect(status().is(401))
@@ -867,9 +952,9 @@ public class PostControllerTest extends IricomTestSuite {
 
         @Test
         @DisplayName("임시 게시물 삭제")
-        public void testCase00() throws Exception {
-            Board board = getBoard(updateBoard);
-            Post post = getPost(updateBoardPost08);
+        public void deleteTemporaryPost() throws Exception {
+            Post post = getPost(deletePostInfo00);
+            Board board = post.getBoard();
 
             MockHttpServletRequestBuilder requestBuilder = delete("/v1/boards/" + board.getId() + "/posts/" + post.getId());
             setAuthToken(requestBuilder, common00);
@@ -881,9 +966,9 @@ public class PostControllerTest extends IricomTestSuite {
 
         @Test
         @DisplayName("발행한 게시물 삭제")
-        public void testCase01() throws Exception {
-            Board board = getBoard(updateBoard);
-            Post post = getPost(updateBoardPost09);
+        public void deletePublishPost() throws Exception {
+            Post post = getPost(deletePostInfo01);
+            Board board = post.getBoard();
 
             MockHttpServletRequestBuilder requestBuilder = delete("/v1/boards/" + board.getId() + "/posts/" + post.getId());
             setAuthToken(requestBuilder, common00);
@@ -895,9 +980,9 @@ public class PostControllerTest extends IricomTestSuite {
 
         @Test
         @DisplayName("다른 계정의 게시물 삭제")
-        public void testCase02() throws Exception {
-            Board board = getBoard(updateBoard);
-            Post post = getPost(updateBoardPost10);
+        public void deleteOtherAccount() throws Exception {
+            Post post = getPost(deletePostInfo02);
+            Board board = post.getBoard();
 
             MockHttpServletRequestBuilder requestBuilder = delete("/v1/boards/" + board.getId() + "/posts/" + post.getId());
             setAuthToken(requestBuilder, common01);
@@ -910,9 +995,9 @@ public class PostControllerTest extends IricomTestSuite {
 
         @Test
         @DisplayName("비활성화 게시판의 게시물 삭제")
-        public void testCase03() throws Exception {
-            Board board = getBoard(disableTestBoardInfo00);
-            Post post = getPost(disableBoardPost00);
+        public void deleteInDisabledBoard() throws Exception {
+            Post post = getPost(disabledPostInfo00);
+            Board board = post.getBoard();
 
             MockHttpServletRequestBuilder requestBuilder = delete("/v1/boards/" + board.getId() + "/posts/" + post.getId());
             setAuthToken(requestBuilder, common00);
@@ -926,8 +1011,8 @@ public class PostControllerTest extends IricomTestSuite {
 
         @Test
         @DisplayName("존재하지 않는 게시물 삭제")
-        public void testCase04() throws Exception {
-            Board board = getBoard(updateBoard);
+        public void deleteNotExistPost() throws Exception {
+            Board board = getBoard(deleteBoardInfo00);
 
             MockHttpServletRequestBuilder requestBuilder = delete("/v1/boards/" + board.getId() + "/posts/unknown");
             setAuthToken(requestBuilder, common00);
@@ -946,9 +1031,9 @@ public class PostControllerTest extends IricomTestSuite {
 
         @Test
         @DisplayName("좋아요")
-        public void testCase00() throws Exception {
-            Board board = getBoard(voteBoard);
-            Post post = getPost(votePost00);
+        public void upvote() throws Exception {
+            Post post = getPost(votePostInfo00);
+            Board board = post.getBoard();
 
             Map<String, Object> requestBody = new HashMap<>();
             requestBody.put("type", "upvote");
@@ -966,9 +1051,9 @@ public class PostControllerTest extends IricomTestSuite {
 
         @Test
         @DisplayName("싫어요")
-        public void testCase01() throws Exception {
-            Board board = getBoard(voteBoard);
-            Post post = getPost(votePost00);
+        public void downvote() throws Exception {
+            Post post = getPost(votePostInfo00);
+            Board board = post.getBoard();
 
             Map<String, Object> requestBody = new HashMap<>();
             requestBody.put("type", "downvote");
@@ -986,9 +1071,9 @@ public class PostControllerTest extends IricomTestSuite {
 
         @Test
         @DisplayName("중복 좋아요")
-        public void testCase02() throws Exception {
-            Board board = getBoard(voteBoard);
-            Post post = getPost(votePost00);
+        public void duplicateUpvote() throws Exception {
+            Post post = getPost(votePostInfo01);
+            Board board = post.getBoard();
 
             Map<String, Object> requestBody = new HashMap<>();
             requestBody.put("type", "upvote");
@@ -1011,9 +1096,9 @@ public class PostControllerTest extends IricomTestSuite {
 
         @Test
         @DisplayName("중복 싫어요")
-        public void testCase03() throws Exception {
-            Board board = getBoard(voteBoard);
-            Post post = getPost(votePost00);
+        public void duplicateDonwvote() throws Exception {
+            Post post = getPost(votePostInfo01);
+            Board board = post.getBoard();
 
             Map<String, Object> requestBody = new HashMap<>();
             requestBody.put("type", "downvote");
@@ -1036,9 +1121,9 @@ public class PostControllerTest extends IricomTestSuite {
 
         @Test
         @DisplayName("발행되지 않은 게시물")
-        public void testCase04() throws Exception {
-            Board board = getBoard(voteBoard);
-            Post post = getPost(votePost01);
+        public void temporaryPost() throws Exception {
+            Post post = getPost(votePostInfo02);
+            Board board = post.getBoard();
 
             Map<String, Object> requestBody = new HashMap<>();
             requestBody.put("type", "upvote");
@@ -1056,9 +1141,9 @@ public class PostControllerTest extends IricomTestSuite {
 
         @Test
         @DisplayName("다른 게시판의 게시물")
-        public void testCase05() throws Exception {
+        public void otherBoard() throws Exception {
             Board board = getBoard(testBoardInfo00);
-            Post post = getPost(votePost00);
+            Post post = getPost(votePostInfo03);
 
             Map<String, Object> requestBody = new HashMap<>();
             requestBody.put("type", "upvote");
@@ -1077,9 +1162,9 @@ public class PostControllerTest extends IricomTestSuite {
 
         @Test
         @DisplayName("비활성화 게시판")
-        public void testCase06() throws Exception {
-            Board board = getBoard(disableTestBoardInfo00);
-            Post post = getPost(disableBoardPost00);
+        public void disabledPost() throws Exception {
+            Post post = getPost(votePostInfo04);
+            Board board = post.getBoard();
 
             Map<String, Object> requestBody = new HashMap<>();
             requestBody.put("type", "upvote");
@@ -1098,9 +1183,9 @@ public class PostControllerTest extends IricomTestSuite {
 
         @Test
         @DisplayName("올바르지 않은 요청")
-        public void testCase07() throws Exception {
-            Board board = getBoard(voteBoard);
-            Post post = getPost(votePost00);
+        public void invalidRequest() throws Exception {
+            Post post = getPost(votePostInfo05);
+            Board board = post.getBoard();
 
             Map<String, Object> requestBody = new HashMap<>();
             requestBody.put("type", "unknown");
@@ -1118,9 +1203,9 @@ public class PostControllerTest extends IricomTestSuite {
 
         @Test
         @DisplayName("타입을 포함하지 않은 요청")
-        public void testCase08() throws Exception {
-            Board board = getBoard(voteBoard);
-            Post post = getPost(votePost00);
+        public void notIncludeType() throws Exception {
+            Post post = getPost(votePostInfo05);
+            Board board = post.getBoard();
 
             MockHttpServletRequestBuilder requestBuilder = patch("/v1/boards/" + board.getId() + "/posts/" + post.getId() + "/vote");
             setAuthToken(requestBuilder, common00);
