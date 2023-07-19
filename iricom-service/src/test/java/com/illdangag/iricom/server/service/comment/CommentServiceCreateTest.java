@@ -11,19 +11,15 @@ import com.illdangag.iricom.server.test.data.wrapper.TestPostInfo;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 
-import java.util.Arrays;
 import java.util.Collections;
-import java.util.List;
 
-@Nested
 @DisplayName("service: 댓글 - 생성")
 @Slf4j
-public class CommentCreateServiceTest extends IricomTestSuite {
+public class CommentServiceCreateTest extends IricomTestSuite {
     @Autowired
     private CommentService commentService;
 
@@ -40,17 +36,13 @@ public class CommentCreateServiceTest extends IricomTestSuite {
             .content("commentInfo00").creator(allBoardAdmin).post(commentTestPostInfo00)
             .build();
 
-    public CommentCreateServiceTest(ApplicationContext context) {
+    public CommentServiceCreateTest(ApplicationContext context) {
         super(context);
 
-        List<TestBoardInfo> testBoardInfoList = Arrays.asList(commentTestBoardInfo);
-        List<TestPostInfo> testPostInfoList = Arrays.asList(commentTestPostInfo00);
-        List<TestCommentInfo> testCommentInfoList = Arrays.asList(commentInfo00);
-
-        super.setBoard(testBoardInfoList);
-        super.setPost(testPostInfoList);
-        super.setComment(testCommentInfoList);
-        super.setDeletedComment(testCommentInfoList);
+        addTestBoardInfo(commentTestBoardInfo);
+        addTestPostInfo(commentTestPostInfo00);
+        addTestCommentInfo(commentInfo00);
+        init();
     }
 
     @Test

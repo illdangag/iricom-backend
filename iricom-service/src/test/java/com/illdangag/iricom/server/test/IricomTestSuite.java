@@ -49,63 +49,42 @@ public abstract class IricomTestSuite {
 
     protected static final TestAccountInfo systemAdmin = TestAccountInfo.builder()
             .email("admin@iricom.com").isAdmin(true).nickname("admin").description("system admin").build();
-
     protected static final TestAccountInfo allBoardAdmin = TestAccountInfo.builder()
             .email("all-board@iricom.com").nickname("allBoard").description("all board admin.").build();
-
     protected static final TestAccountInfo enableBoardAdmin = TestAccountInfo.builder()
             .email("enabled@iricom.com").nickname("enabled").description("enable board admin.").build();
-
     protected static final TestAccountInfo toEnableBoardAdmin = TestAccountInfo.builder()
             .email("to-enabled@iricom.com").nickname("toEnabled").description("to enable board admin.").build();
-
     protected static final TestAccountInfo disableBoardAdmin = TestAccountInfo.builder()
             .email("disabled@iricom.com").nickname("disable").description("disable board admin.").build();
-
     protected static final TestAccountInfo toDisableBoardAdmin = TestAccountInfo.builder()
             .email("to-disabled@iricom.com").nickname("toDisabled").description("to disable board admin.").build();
-
     protected static final TestAccountInfo common00 = TestAccountInfo.builder()
             .email("common00@iricom.com").nickname("commonAccount00").description("this is common00.").build();
-
     protected static final TestAccountInfo common01 = TestAccountInfo.builder()
             .email("common01@iricom.com").nickname("commonAccount01").description("this is common01.").build();
-
     protected static final TestAccountInfo common02 = TestAccountInfo.builder()
             .email("common02@iricom.com").nickname("commonAccount02").description("this is common02.").build();
-
     protected static final TestAccountInfo common03 = TestAccountInfo.builder()
             .email("common03@iricom.com").nickname("commonAccount03").description("this is common03.").build();
-
     protected static final TestAccountInfo common04 = TestAccountInfo.builder()
             .email("common04@iricom.com").nickname("commonAccount04").description("this is common04.").build();
-
     protected static final TestAccountInfo common05 = TestAccountInfo.builder()
             .email("common05@iricom.com").nickname("commonAccount05").description("this is common05.").build();
-
     protected static final TestAccountInfo common06 = TestAccountInfo.builder()
             .email("common06@iricom.com").nickname("commonAccount06").description("this is common06.").build();
-
     protected static final TestAccountInfo common07 = TestAccountInfo.builder()
             .email("common07@iricom.com").nickname("commonAccount07").description("this is common07.").build();
-
     protected static final TestAccountInfo common08 = TestAccountInfo.builder()
             .email("common08@iricom.com").nickname("commonAccount08").description("this is common08.").build();
-
     protected static final TestAccountInfo common09 = TestAccountInfo.builder()
             .email("common09@iricom.com").nickname("commonAccount09").description("this is common09.").build();
-
     protected static final TestAccountInfo unknown00 = TestAccountInfo.builder()
-            .email("unknown00@iriom.com").nickname("").description("")
-            .isUnregistered(true).build();
-
+            .email("unknown00@iriom.com").nickname("").description("").isUnregistered(true).build();
     protected static final TestAccountInfo unknown01 = TestAccountInfo.builder()
-            .email("unknown01@iricom.com").nickname("").description("")
-            .isUnregistered(true).build();
-
+            .email("unknown01@iricom.com").nickname("").description("").isUnregistered(true).build();
     protected static final TestAccountInfo unknown02 = TestAccountInfo.builder()
-            .email("unknown02@iricom.com").nickname("").description("")
-            .isUnregistered(true).build();
+            .email("unknown02@iricom.com").nickname("").description("").isUnregistered(true).build();
 
     private static final TestAccountInfo[] testAccountInfos = {
             systemAdmin, // 시스템 관리자
@@ -120,20 +99,19 @@ public abstract class IricomTestSuite {
             unknown02, // 등록되지 않은 계정의 정보 수정 테스트용 계정, 테스트 케이스가 수행 되면 등록된 계정으로 전환
     };
 
-    private static final TestBoardInfo[] testBoardInfos = {
-    };
+    private final List<TestBoardInfo> testBoardInfoList = new ArrayList<>();
 
-    private static final TestPostInfo[] testPostInfos = {
-    };
+    private final List<TestAccountGroupInfo> testAccountGroupInfoList = new ArrayList<>();
 
-    private static final TestCommentInfo[] testCommentInfos = {
-    };
+    private final List<TestPostInfo> testPostInfoList = new ArrayList<>();
 
-    private static final TestPostReportInfo[] testPostReportInfos = {
-    };
+    private final List<TestCommentInfo> testCommentInfoList = new ArrayList<>();
 
-    private static final TestCommentReportInfo[] testCommentReportInfos = {
-    };
+    private final List<TestPostReportInfo> testPostReportInfoList = new ArrayList<>();
+
+    private final List<TestCommentReportInfo> testCommentReportInfoList = new ArrayList<>();
+
+    private final List<TestPostBanInfo> testPostBanInfoList = new ArrayList<>();
 
     private static final Map<TestAccountInfo, Account> accountMap = new HashMap<>();
     private static final Map<TestBoardInfo, Board> boardMap = new HashMap<>();
@@ -166,8 +144,8 @@ public abstract class IricomTestSuite {
         this.accountGroupRepository = context.getBean(AccountGroupRepository.class);
 
         if (!isInit) {
-            this.init();
             isInit = true;
+            this.setAccount(Arrays.asList(testAccountInfos));
         }
     }
 
@@ -320,15 +298,17 @@ public abstract class IricomTestSuite {
     }
 
     protected void init() {
-        this.setAccount(Arrays.asList(testAccountInfos));
-        this.setBoard(Arrays.asList(testBoardInfos));
-        this.setPost(Arrays.asList(testPostInfos));
-        this.setComment(Arrays.asList(testCommentInfos));
-        this.setPostReport(Arrays.asList(testPostReportInfos));
-        this.setCommentReport(Arrays.asList(testCommentReportInfos));
-        this.setDeletedComment(Arrays.asList(testCommentInfos));
-        this.setDisabledCommentBoard(Arrays.asList(testPostInfos));
-        this.setDisabledBoard(Arrays.asList(testBoardInfos));
+        this.setBoard(testBoardInfoList);
+        this.setPost(testPostInfoList);
+        this.setComment(testCommentInfoList);
+        this.setPostReport(testPostReportInfoList);
+        this.setCommentReport(testCommentReportInfoList);
+        this.setAccountGroup(testAccountGroupInfoList);
+
+        this.setBanPost(testPostBanInfoList);
+        this.setDeletedComment(testCommentInfoList);
+        this.setDisabledCommentBoard(testPostInfoList);
+        this.setDisabledBoard(testBoardInfoList);
     }
 
     private Account createAccount(TestAccountInfo testAccountInfo) {
@@ -659,5 +639,61 @@ public abstract class IricomTestSuite {
                 TestCommentReportInfo.builder().type(ReportType.ETC).reason("etc report").reportAccount(common08).comment(testCommentInfo).build(),
                 TestCommentReportInfo.builder().type(ReportType.ETC).reason("etc report").reportAccount(common09).comment(testCommentInfo).build()
         );
+    }
+
+    protected void addTestBoardInfo(TestBoardInfo ...testBoardInfos) {
+        this.addTestBoardInfo(Arrays.asList(testBoardInfos));
+    }
+
+    protected void addTestBoardInfo(List<TestBoardInfo> testBoardInfoList) {
+        this.testBoardInfoList.addAll(testBoardInfoList);
+    }
+
+    protected void addTestAccountGroupInfo(TestAccountGroupInfo ...testAccountGroupInfos) {
+        this.addTestAccountGroupInfo(Arrays.asList(testAccountGroupInfos));
+    }
+
+    protected void addTestAccountGroupInfo(List<TestAccountGroupInfo> testAccountGroupInfoList) {
+        this.testAccountGroupInfoList.addAll(testAccountGroupInfoList);
+    }
+
+    protected void addTestPostInfo(TestPostInfo ...testPostInfos) {
+        this.addTestPostInfo(Arrays.asList(testPostInfos));
+    }
+
+    protected void addTestPostInfo(List<TestPostInfo> testPostInfoList) {
+        this.testPostInfoList.addAll(testPostInfoList);
+    }
+
+    protected void addTestCommentInfo(TestCommentInfo ...testCommentInfos) {
+        this.addTestCommentInfo(Arrays.asList(testCommentInfos));
+    }
+
+    protected void addTestCommentInfo(List<TestCommentInfo> testCommentInfoList) {
+        this.testCommentInfoList.addAll(testCommentInfoList);
+    }
+
+    protected void addTestPostReportInfo(TestPostReportInfo ...testPostReportInfos) {
+        this.addTestPostReportInfo(Arrays.asList(testPostReportInfos));
+    }
+
+    protected void addTestPostReportInfo(List<TestPostReportInfo> testPostReportInfoList) {
+        this.testPostReportInfoList.addAll(testPostReportInfoList);
+    }
+
+    protected void addTestCommentReportInfo(TestCommentReportInfo ...testCommentReportInfos) {
+        this.addTestCommentReportInfo(Arrays.asList(testCommentReportInfos));
+    }
+
+    protected void addTestCommentReportInfo(List<TestCommentReportInfo> testCommentReportInfoList) {
+        this.testCommentReportInfoList.addAll(testCommentReportInfoList);
+    }
+
+    protected void addTestPostBanInfo(TestPostBanInfo ...testPostBanInfos) {
+        this.addTestPostBanInfo(Arrays.asList(testPostBanInfos));
+    }
+
+    protected void addTestPostBanInfo(List<TestPostBanInfo> testPostBanInfoList) {
+        this.testPostBanInfoList.addAll(testPostBanInfoList);
     }
 }

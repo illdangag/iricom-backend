@@ -7,24 +7,19 @@ import com.illdangag.iricom.server.service.CommentService;
 import com.illdangag.iricom.server.test.IricomTestSuite;
 import com.illdangag.iricom.server.test.data.wrapper.TestBoardInfo;
 import com.illdangag.iricom.server.test.data.wrapper.TestCommentInfo;
-import com.illdangag.iricom.server.test.data.wrapper.TestCommentReportInfo;
 import com.illdangag.iricom.server.test.data.wrapper.TestPostInfo;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 
-import java.util.Arrays;
 import java.util.Collections;
-import java.util.List;
 
-@Nested
 @DisplayName("service: 댓글 - 좋아요, 싫어요")
 @Slf4j
-public class CommentVoteServiceTest extends IricomTestSuite {
+public class CommentServiceVoteTest extends IricomTestSuite {
     @Autowired
     private CommentService commentService;
 
@@ -48,17 +43,13 @@ public class CommentVoteServiceTest extends IricomTestSuite {
             .build();
 
     @Autowired
-    public CommentVoteServiceTest(ApplicationContext context) {
+    public CommentServiceVoteTest(ApplicationContext context) {
         super(context);
 
-        List<TestBoardInfo> testBoardInfoList = Arrays.asList(commentTestBoardInfo);
-        List<TestPostInfo> testPostInfoList = Arrays.asList(votePostInfo00);
-        List<TestCommentInfo> testCommentInfoList = Arrays.asList(voteCommentInfo00, voteCommentInfo01, voteCommentInfo02);
-
-        super.setBoard(testBoardInfoList);
-        super.setPost(testPostInfoList);
-        super.setComment(testCommentInfoList);
-        super.setDeletedComment(testCommentInfoList);
+        addTestBoardInfo(commentTestBoardInfo);
+        addTestPostInfo(votePostInfo00);
+        addTestCommentInfo(voteCommentInfo00, voteCommentInfo01, voteCommentInfo02);
+        init();
     }
 
     @Test
