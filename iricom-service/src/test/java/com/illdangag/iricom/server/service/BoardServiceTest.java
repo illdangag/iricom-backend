@@ -25,43 +25,43 @@ public class BoardServiceTest extends IricomTestSuite {
     @Autowired
     private BoardService boardService;
 
-    private TestBoardInfo disclosedBoard00 = TestBoardInfo.builder()
+    private final TestBoardInfo disclosedBoard00 = TestBoardInfo.builder()
             .title("testBoardInfo00").isEnabled(true).undisclosed(false)
             .adminList(Collections.singletonList(allBoardAdmin)).build();
 
-    private TestBoardInfo undisclosedBoard00 = TestBoardInfo.builder()
+    private final TestBoardInfo undisclosedBoard00 = TestBoardInfo.builder()
             .title("undisclosedBoard00").isEnabled(true).undisclosed(true)
             .adminList(Collections.singletonList(allBoardAdmin)).build();
-    private TestBoardInfo undisclosedBoard01 = TestBoardInfo.builder()
+    private final TestBoardInfo undisclosedBoard01 = TestBoardInfo.builder()
             .title("undisclosedBoard01").isEnabled(true).undisclosed(true)
             .adminList(Collections.singletonList(allBoardAdmin)).build();
-    private TestBoardInfo undisclosedBoard02 = TestBoardInfo.builder()
+    private final TestBoardInfo undisclosedBoard02 = TestBoardInfo.builder()
             .title("undisclosedBoard02").isEnabled(true).undisclosed(true)
             .adminList(Collections.singletonList(allBoardAdmin)).build();
-    private TestBoardInfo undisclosedBoard03 = TestBoardInfo.builder()
+    private final TestBoardInfo undisclosedBoard03 = TestBoardInfo.builder()
             .title("undisclosedBoard03").isEnabled(true).undisclosed(true)
             .adminList(Collections.singletonList(allBoardAdmin)).build();
-    private TestBoardInfo undisclosedBoard04 = TestBoardInfo.builder()
+    private final TestBoardInfo undisclosedBoard04 = TestBoardInfo.builder()
             .title("undisclosedBoard04").isEnabled(true).undisclosed(true)
             .adminList(Collections.singletonList(allBoardAdmin)).build();
 
-    private TestAccountGroupInfo testAccountGroupInfo00 = TestAccountGroupInfo.builder()
+    private final TestAccountGroupInfo testAccountGroupInfo00 = TestAccountGroupInfo.builder()
             .title("testAccountGroupInfo00").description("description")
             .accountList(Arrays.asList(common00)).boardList(Arrays.asList(undisclosedBoard00))
             .build();
-    private TestAccountGroupInfo testAccountGroupInfo01 = TestAccountGroupInfo.builder()
+    private final TestAccountGroupInfo testAccountGroupInfo01 = TestAccountGroupInfo.builder()
             .title("testAccountGroupInfo01").description("description")
             .accountList(Arrays.asList(common01)).boardList(Arrays.asList(undisclosedBoard01))
             .build();
-    private TestAccountGroupInfo testAccountGroupInfo02 = TestAccountGroupInfo.builder()
+    private final TestAccountGroupInfo testAccountGroupInfo02 = TestAccountGroupInfo.builder()
             .title("testAccountGroupInfo02").description("description")
             .accountList(Arrays.asList(common02)).boardList(Arrays.asList(undisclosedBoard02))
             .build();
-    private TestAccountGroupInfo testAccountGroupInfo03 = TestAccountGroupInfo.builder()
+    private final TestAccountGroupInfo testAccountGroupInfo03 = TestAccountGroupInfo.builder()
             .title("testAccountGroupInfo04").description("description").deleted(true)
             .accountList(Arrays.asList(common00)).boardList(Arrays.asList(undisclosedBoard03))
             .build();
-    private TestAccountGroupInfo testAccountGroupInfo04 = TestAccountGroupInfo.builder()
+    private final TestAccountGroupInfo testAccountGroupInfo04 = TestAccountGroupInfo.builder()
             .title("testAccountGroupInfo04").description("description").deleted(true)
             .accountList(Arrays.asList(common01)).boardList(Arrays.asList(undisclosedBoard04))
             .build();

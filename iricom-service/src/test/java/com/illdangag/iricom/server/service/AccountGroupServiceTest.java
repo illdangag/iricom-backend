@@ -33,29 +33,29 @@ public class AccountGroupServiceTest extends IricomTestSuite {
     @Autowired
     private AccountGroupService accountGroupService;
 
-    private TestBoardInfo testBoardInfo00 = TestBoardInfo.builder()
+    private final TestBoardInfo testBoardInfo00 = TestBoardInfo.builder()
             .title("testBoardInfo00").isEnabled(true).adminList(Collections.singletonList(allBoardAdmin)).build();
-    private TestBoardInfo testBoardInfo01 = TestBoardInfo.builder()
+    private final TestBoardInfo testBoardInfo01 = TestBoardInfo.builder()
             .title("testBoardInfo01").isEnabled(true).adminList(Collections.singletonList(allBoardAdmin)).build();
-    private TestBoardInfo testBoardInfo02 = TestBoardInfo.builder()
+    private final TestBoardInfo testBoardInfo02 = TestBoardInfo.builder()
             .title("testBoardInfo02").isEnabled(true).adminList(Collections.singletonList(allBoardAdmin)).build();
 
-    private TestAccountGroupInfo testAccountGroupInfo00 = TestAccountGroupInfo.builder()
+    private final TestAccountGroupInfo testAccountGroupInfo00 = TestAccountGroupInfo.builder()
             .title("testAccountGroupInfo00").description("description").build();
-    private TestAccountGroupInfo testAccountGroupInfo01 = TestAccountGroupInfo.builder()
+    private final TestAccountGroupInfo testAccountGroupInfo01 = TestAccountGroupInfo.builder()
             .title("testAccountGroupInfo01").description("description").build();
-    private TestAccountGroupInfo testAccountGroupInfo02 = TestAccountGroupInfo.builder()
+    private final TestAccountGroupInfo testAccountGroupInfo02 = TestAccountGroupInfo.builder()
             .title("testAccountGroupInfo02").description("description")
             .accountList(Arrays.asList(common00, common01)).boardList(Arrays.asList(testBoardInfo00, testBoardInfo01)).build();
-    private TestAccountGroupInfo testAccountGroupInfo03 = TestAccountGroupInfo.builder()
+    private final TestAccountGroupInfo testAccountGroupInfo03 = TestAccountGroupInfo.builder()
             .title("testAccountGroupInfo03").description("description")
             .accountList(Arrays.asList(common00, common01)).boardList(Arrays.asList(testBoardInfo00, testBoardInfo01)).build();
-    private TestAccountGroupInfo testAccountGroupInfo04 = TestAccountGroupInfo.builder()
+    private final TestAccountGroupInfo testAccountGroupInfo04 = TestAccountGroupInfo.builder()
             .title("testAccountGroupInfo04").description("description")
             .accountList(Arrays.asList(common00, common01)).boardList(Arrays.asList(testBoardInfo00, testBoardInfo01)).build();
-    private TestAccountGroupInfo testAccountGroupInfo05 = TestAccountGroupInfo.builder()
+    private final TestAccountGroupInfo testAccountGroupInfo05 = TestAccountGroupInfo.builder()
             .title("testAccountGroupInfo05").description("description").build();
-    private TestAccountGroupInfo testAccountGroupInfo06 = TestAccountGroupInfo.builder()
+    private final TestAccountGroupInfo testAccountGroupInfo06 = TestAccountGroupInfo.builder()
             .title("testAccountGroupInfo06").description("description").build();
 
     @Autowired

@@ -31,14 +31,14 @@ public class PostServiceTest extends IricomTestSuite {
     private PostService postService;
 
     // 공개 게시판
-    protected static final TestBoardInfo boardInfo00 = TestBoardInfo.builder()
+    private static final TestBoardInfo boardInfo00 = TestBoardInfo.builder()
             .title("boardInfo00").isEnabled(true)
             .adminList(Collections.singletonList(allBoardAdmin)).build();
     // 비공개 게시판
-    protected static final TestBoardInfo undisclosedBoardInfo00 = TestBoardInfo.builder()
+    private static final TestBoardInfo undisclosedBoardInfo00 = TestBoardInfo.builder()
             .title("undisclosedBoardInfo00").isEnabled(true).undisclosed(true)
             .adminList(Collections.singletonList(allBoardAdmin)).build();
-    protected static final TestBoardInfo undisclosedBoardInfo01 = TestBoardInfo.builder()
+    private static final TestBoardInfo undisclosedBoardInfo01 = TestBoardInfo.builder()
             .title("undisclosedBoardInfo01").isEnabled(true).undisclosed(true)
             .adminList(Collections.singletonList(allBoardAdmin)).build();
 
@@ -53,67 +53,67 @@ public class PostServiceTest extends IricomTestSuite {
             .build();
 
     // 공개 게시판에 작성된 일반 게시물
-    protected static final TestPostInfo postInfo00 = TestPostInfo.builder()
+    private static final TestPostInfo postInfo00 = TestPostInfo.builder()
             .title("postInfo00").content("content").isAllowComment(true)
             .postType(PostType.POST).postState(PostState.PUBLISH)
             .creator(common00).board(boardInfo00).build();
-    protected static final TestPostInfo postInfo01 = TestPostInfo.builder()
+    private static final TestPostInfo postInfo01 = TestPostInfo.builder()
             .title("postInfo01").content("content").isAllowComment(true)
             .postType(PostType.POST).postState(PostState.PUBLISH)
             .creator(common00).board(boardInfo00).build();
     // 신고된 게시물
-    protected static final TestPostInfo reportedPost00 = TestPostInfo.builder()
+    private static final TestPostInfo reportedPost00 = TestPostInfo.builder()
             .title("reportedPost00").content("report contents").isAllowComment(true)
             .postType(PostType.POST).postState(PostState.PUBLISH)
             .creator(common00).board(boardInfo00).build();
     // 비공개 게시판에 작성된 게시물
-    protected static final TestPostInfo undisclosedPost00 = TestPostInfo.builder()
+    private static final TestPostInfo undisclosedPost00 = TestPostInfo.builder()
             .title("undisclosedPost00").content("content").isAllowComment(true)
             .postType(PostType.POST).postState(PostState.PUBLISH)
             .creator(common00).board(undisclosedBoardInfo00).build();
-    protected static final TestPostInfo undisclosedPost01 = TestPostInfo.builder()
+    private static final TestPostInfo undisclosedPost01 = TestPostInfo.builder()
             .title("undisclosedPost01").content("content").isAllowComment(true)
             .postType(PostType.POST).postState(PostState.PUBLISH)
             .creator(common00).board(undisclosedBoardInfo01).build();
 
     // 게시물 신고
-    protected static final TestPostReportInfo postReport00 = TestPostReportInfo.builder()
+    private static final TestPostReportInfo postReport00 = TestPostReportInfo.builder()
             .type(ReportType.HATE).reason("test post report")
             .reportAccount(common00).post(reportedPost00)
             .build();
-    protected static final TestPostReportInfo postReport01 = TestPostReportInfo.builder()
+    private static final TestPostReportInfo postReport01 = TestPostReportInfo.builder()
             .type(ReportType.POLITICAL).reason("test post report")
             .reportAccount(common01).post(reportedPost00)
             .build();
-    protected static final TestPostReportInfo postReport02 = TestPostReportInfo.builder()
+    private static final TestPostReportInfo postReport02 = TestPostReportInfo.builder()
             .type(ReportType.PORNOGRAPHY).reason("test post report")
             .reportAccount(common02).post(reportedPost00)
             .build();
-    protected static final TestPostReportInfo postReport03 = TestPostReportInfo.builder()
+    private static final TestPostReportInfo postReport03 = TestPostReportInfo.builder()
             .type(ReportType.ETC).reason("test post report")
             .reportAccount(common03).post(reportedPost00)
             .build();
-    protected static final TestPostReportInfo postReport04 = TestPostReportInfo.builder()
+    private static final TestPostReportInfo postReport04 = TestPostReportInfo.builder()
             .type(ReportType.ETC).reason("test post report")
             .reportAccount(common04).post(reportedPost00)
             .build();
-    protected static final TestPostReportInfo postReport05 = TestPostReportInfo.builder()
+    private static final TestPostReportInfo postReport05 = TestPostReportInfo.builder()
             .type(ReportType.ETC).reason("test post report")
             .reportAccount(common05).post(reportedPost00)
             .build();
-    protected static final TestPostReportInfo postReport06 = TestPostReportInfo.builder()
+    private static final TestPostReportInfo postReport06 = TestPostReportInfo.builder()
             .type(ReportType.ETC).reason("test post report")
             .reportAccount(common06).post(reportedPost00)
             .build();
-    protected static final TestPostReportInfo postReport07 = TestPostReportInfo.builder()
+    private static final TestPostReportInfo postReport07 = TestPostReportInfo.builder()
             .type(ReportType.ETC).reason("test post report")
             .reportAccount(common07).post(reportedPost00)
             .build();
-    protected static final TestPostReportInfo postReport08 = TestPostReportInfo.builder()
+    private static final TestPostReportInfo postReport08 = TestPostReportInfo.builder()
             .type(ReportType.ETC).reason("test post report")
             .reportAccount(common08).post(reportedPost00)
             .build();
-    protected static final TestPostReportInfo postReport09 = TestPostReportInfo.builder()
+    private static final TestPostReportInfo postReport09 = TestPostReportInfo.builder()
             .type(ReportType.ETC).reason("test post report")
             .reportAccount(common09).post(reportedPost00)
             .build();

@@ -29,30 +29,30 @@ public class ReportServiceTest extends IricomTestSuite {
     @Autowired
     ReportService reportService;
 
-    protected static final TestBoardInfo enableBoard00 = TestBoardInfo.builder()
+    private static final TestBoardInfo enableBoard00 = TestBoardInfo.builder()
             .title("enable").isEnabled(true).adminList(Arrays.asList(allBoardAdmin)).build();
-    protected static final TestBoardInfo enableBoard01 = TestBoardInfo.builder()
+    private static final TestBoardInfo enableBoard01 = TestBoardInfo.builder()
             .title("enable").isEnabled(true).adminList(Arrays.asList(allBoardAdmin)).build();
-    protected static final TestBoardInfo disableBoard00 = TestBoardInfo.builder()
+    private static final TestBoardInfo disableBoard00 = TestBoardInfo.builder()
             .title("disable").isEnabled(false).adminList(Arrays.asList(allBoardAdmin)).build();
 
-    protected static final TestPostInfo post00 = TestPostInfo.builder()
+    private static final TestPostInfo post00 = TestPostInfo.builder()
             .title("post00").content("report contents").isAllowComment(true)
             .postType(PostType.POST).postState(PostState.PUBLISH)
             .creator(common00).board(enableBoard00).build();
-    protected static final TestPostInfo post01 = TestPostInfo.builder()
+    private static final TestPostInfo post01 = TestPostInfo.builder()
             .title("post01").content("report contents").isAllowComment(true)
             .postType(PostType.POST).postState(PostState.PUBLISH)
             .creator(common00).board(enableBoard00).build();
-    protected static final TestPostInfo post02 = TestPostInfo.builder()
+    private static final TestPostInfo post02 = TestPostInfo.builder()
             .title("post01").content("report contents").isAllowComment(true)
             .postType(PostType.POST).postState(PostState.PUBLISH)
             .creator(common00).board(disableBoard00).build();
-    protected static final TestPostInfo reportedPost00 = TestPostInfo.builder()
+    private static final TestPostInfo reportedPost00 = TestPostInfo.builder()
             .title("reportedPost00").content("report contents").isAllowComment(true)
             .postType(PostType.POST).postState(PostState.PUBLISH)
             .creator(common00).board(enableBoard00).build();
-    protected static final TestPostInfo reportedPost01 = TestPostInfo.builder()
+    private static final TestPostInfo reportedPost01 = TestPostInfo.builder()
             .title("reportedPost01").content("report contents").isAllowComment(true)
             .postType(PostType.POST).postState(PostState.PUBLISH)
             .creator(common00).board(enableBoard00).build();

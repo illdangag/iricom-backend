@@ -25,51 +25,51 @@ public class CommentServiceTest extends IricomTestSuite {
     @Autowired
     private CommentService commentService;
 
-    protected static final TestBoardInfo commentTestBoardInfo = TestBoardInfo.builder()
+    private static final TestBoardInfo commentTestBoardInfo = TestBoardInfo.builder()
             .title("commentTestBoardInfo").isEnabled(true).adminList(Collections.singletonList(allBoardAdmin)).build();
 
-    protected static final TestPostInfo commentTestPostInfo00 = TestPostInfo.builder()
+    private static final TestPostInfo commentTestPostInfo00 = TestPostInfo.builder()
             .title("commentTestPostInfo").content("commentTestPostInfo").isAllowComment(true)
             .postType(PostType.POST).postState(PostState.PUBLISH)
             .creator(allBoardAdmin).board(commentTestBoardInfo)
             .build();
 
-    protected static final TestCommentInfo commentInfo00 = TestCommentInfo.builder()
+    private static final TestCommentInfo commentInfo00 = TestCommentInfo.builder()
             .content("commentInfo00").creator(allBoardAdmin).post(commentTestPostInfo00)
             .build();
 
-    protected static final TestCommentInfo reportedCommentInfo00 = TestCommentInfo.builder()
+    private static final TestCommentInfo reportedCommentInfo00 = TestCommentInfo.builder()
             .content("reportedCommentInfo00").creator(allBoardAdmin).post(commentTestPostInfo00)
             .build();
 
-    protected static final TestCommentReportInfo commentReport00 = TestCommentReportInfo.builder()
+    private static final TestCommentReportInfo commentReport00 = TestCommentReportInfo.builder()
             .type(ReportType.HATE).reason("test comment report").reportAccount(common00).comment(reportedCommentInfo00)
             .build();
-    protected static final TestCommentReportInfo commentReport01 = TestCommentReportInfo.builder()
+    private static final TestCommentReportInfo commentReport01 = TestCommentReportInfo.builder()
             .type(ReportType.PORNOGRAPHY).reason("test comment report").reportAccount(common01).comment(reportedCommentInfo00)
             .build();
-    protected static final TestCommentReportInfo commentReport02 = TestCommentReportInfo.builder()
+    private static final TestCommentReportInfo commentReport02 = TestCommentReportInfo.builder()
             .type(ReportType.POLITICAL).reason("test comment report").reportAccount(common02).comment(reportedCommentInfo00)
             .build();
-    protected static final TestCommentReportInfo commentReport03 = TestCommentReportInfo.builder()
+    private static final TestCommentReportInfo commentReport03 = TestCommentReportInfo.builder()
             .type(ReportType.ETC).reason("test comment report").reportAccount(common03).comment(reportedCommentInfo00)
             .build();
-    protected static final TestCommentReportInfo commentReport04 = TestCommentReportInfo.builder()
+    private static final TestCommentReportInfo commentReport04 = TestCommentReportInfo.builder()
             .type(ReportType.HATE).reason("test comment report").reportAccount(common04).comment(reportedCommentInfo00)
             .build();
-    protected static final TestCommentReportInfo commentReport05 = TestCommentReportInfo.builder()
+    private static final TestCommentReportInfo commentReport05 = TestCommentReportInfo.builder()
             .type(ReportType.PORNOGRAPHY).reason("test comment report").reportAccount(common05).comment(reportedCommentInfo00)
             .build();
-    protected static final TestCommentReportInfo commentReport06 = TestCommentReportInfo.builder()
+    private static final TestCommentReportInfo commentReport06 = TestCommentReportInfo.builder()
             .type(ReportType.POLITICAL).reason("test comment report").reportAccount(common06).comment(reportedCommentInfo00)
             .build();
-    protected static final TestCommentReportInfo commentReport07 = TestCommentReportInfo.builder()
+    private static final TestCommentReportInfo commentReport07 = TestCommentReportInfo.builder()
             .type(ReportType.ETC).reason("test comment report").reportAccount(common07).comment(reportedCommentInfo00)
             .build();
-    protected static final TestCommentReportInfo commentReport08 = TestCommentReportInfo.builder()
+    private static final TestCommentReportInfo commentReport08 = TestCommentReportInfo.builder()
             .type(ReportType.HATE).reason("test comment report").reportAccount(common08).comment(reportedCommentInfo00)
             .build();
-    protected static final TestCommentReportInfo commentReport09 = TestCommentReportInfo.builder()
+    private static final TestCommentReportInfo commentReport09 = TestCommentReportInfo.builder()
             .type(ReportType.PORNOGRAPHY).reason("test comment report").reportAccount(common09).comment(reportedCommentInfo00)
             .build();
 
