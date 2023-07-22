@@ -299,16 +299,17 @@ public abstract class IricomTestSuite {
 
     protected void init() {
         this.setBoard(testBoardInfoList);
+        this.setAccountGroup(testAccountGroupInfoList);
         this.setPost(testPostInfoList);
         this.setComment(testCommentInfoList);
         this.setPostReport(testPostReportInfoList);
         this.setCommentReport(testCommentReportInfoList);
-        this.setAccountGroup(testAccountGroupInfoList);
 
         this.setBanPost(testPostBanInfoList);
         this.setDeletedComment(testCommentInfoList);
         this.setDisabledCommentBoard(testPostInfoList);
         this.setDisabledBoard(testBoardInfoList);
+        this.deleteAccountGroup(testAccountGroupInfoList);
     }
 
     private Account createAccount(TestAccountInfo testAccountInfo) {

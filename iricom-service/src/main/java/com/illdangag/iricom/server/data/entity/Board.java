@@ -48,7 +48,7 @@ public class Board {
     private Boolean notificationOnly = false;
 
     @Builder.Default
-    private Boolean undisclosed = false; // 공개되지 않은 게시판
+    private Boolean undisclosed = false; // 비공개 게시판 여부
 
     @Override
     public boolean equals(Object object) {
