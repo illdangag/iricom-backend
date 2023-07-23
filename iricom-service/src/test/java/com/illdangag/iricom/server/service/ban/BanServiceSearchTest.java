@@ -27,25 +27,24 @@ public class BanServiceSearchTest extends IricomTestSuite {
     @Autowired
     private BanService banService;
 
+    // 게시판
     private final TestBoardInfo boardInfo00 = TestBoardInfo.builder()
             .title("boardInfo00").isEnabled(true).adminList(Collections.singletonList(allBoardAdmin)).build();
-
+    // 게시물
     private final TestPostInfo alreadyBanPostInfo00 = TestPostInfo.builder()
             .title("alreadyBanPostInfo00").content("alreadyBanPostInfo00").isAllowComment(true)
             .postType(PostType.POST).postState(PostState.PUBLISH)
             .creator(allBoardAdmin).board(boardInfo00)
             .build();
-
     private final TestPostInfo alreadyBanPostInfo01 = TestPostInfo.builder()
             .title("alreadyBanPostInfo00").content("alreadyBanPostInfo00").isAllowComment(true)
             .postType(PostType.POST).postState(PostState.PUBLISH)
             .creator(allBoardAdmin).board(boardInfo00)
             .build();
-
+    // 게시물 신고
     private final TestPostBanInfo postBanInfo00 = TestPostBanInfo.builder()
             .banAccount(systemAdmin).post(alreadyBanPostInfo00).reason("BAN")
             .build();
-
     private final TestPostBanInfo postBanInfo01 = TestPostBanInfo.builder()
             .banAccount(systemAdmin).post(alreadyBanPostInfo01).reason("BAN")
             .build();

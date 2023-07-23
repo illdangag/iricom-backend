@@ -5,6 +5,7 @@ import com.illdangag.iricom.server.data.entity.Board;
 import com.illdangag.iricom.server.data.entity.PostState;
 import com.illdangag.iricom.server.data.entity.PostType;
 import com.illdangag.iricom.server.data.request.PostInfoSearch;
+import com.illdangag.iricom.server.data.response.PostInfo;
 import com.illdangag.iricom.server.data.response.PostInfoList;
 import com.illdangag.iricom.server.exception.IricomException;
 import com.illdangag.iricom.server.service.PostService;
@@ -59,6 +60,7 @@ public class PostServiceSearchTest extends IricomTestSuite {
         addTestBoardInfo(boardInfo00, undisclosedBoardInfo00);
         addTestPostInfo(testPostInfo00, undisclosedPost01);
         addTestAccountGroupInfo(testAccountGroupInfo00);
+
         init();
     }
 
@@ -123,27 +125,18 @@ public class PostServiceSearchTest extends IricomTestSuite {
     @DisplayName("계정이 작성한 게시물 조회")
     public void getAccountCreatedPost() throws Exception {
         Account account = getAccount(common00);
-
         String postId00 = String.valueOf(getPost(testPostInfo00).getId());
         String postId01 = String.valueOf(getPost(undisclosedPost01).getId());
 
-        int skip = 0;
-        PostInfoList postInfoList;
-        Set<String> postInfoIdSet = new HashSet<>();
-
-        do {
-            PostInfoSearch postInfoSearch = PostInfoSearch.builder()
-                    .skip(skip).limit(100)
-                    .build();
-            postInfoList = postService.getPostInfoList(account, postInfoSearch);
-            List<String> postInfoIdList = postInfoList.getPostInfoList().stream()
-                    .map(item -> item.getId())
+        List<String> list = getAllList(PostInfoSearch.builder().build(), searchRequest -> {
+            PostInfoSearch postInfoSearch = (PostInfoSearch) searchRequest;
+            PostInfoList postInfoList = postService.getPostInfoList(account, postInfoSearch);
+            return postInfoList.getPostInfoList().stream()
+                    .map(PostInfo::getId)
                     .collect(Collectors.toList());
-            postInfoIdSet.addAll(postInfoIdList);
-            skip += 100;
-        } while (skip < postInfoList.getTotal());
+        });
 
-        Assertions.assertTrue(postInfoIdSet.contains(postId00));
-        Assertions.assertTrue(postInfoIdSet.contains(postId01));
+        Assertions.assertTrue(list.contains(postId00));
+        Assertions.assertTrue(list.contains(postId01));
     }
 }

@@ -8,7 +8,6 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 
-import javax.persistence.Column;
 import javax.validation.constraints.NotNull;
 
 @Getter
@@ -19,9 +18,8 @@ public class AccountInfoSearch extends SearchRequest {
     @Builder.Default
     private String keyword = "";
 
-    @Column(name = "is_block")
     @Builder.Default
-    private Boolean block = null;
+    private Boolean blocked = null;
 
     public Pageable getPageable() {
         Sort sort = Sort.by(

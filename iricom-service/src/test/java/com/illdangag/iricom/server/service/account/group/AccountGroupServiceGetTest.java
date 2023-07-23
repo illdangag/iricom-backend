@@ -1,9 +1,7 @@
 package com.illdangag.iricom.server.service.account.group;
 
 import com.illdangag.iricom.server.data.entity.AccountGroup;
-import com.illdangag.iricom.server.data.request.AccountGroupInfoSearch;
 import com.illdangag.iricom.server.data.response.AccountGroupInfo;
-import com.illdangag.iricom.server.data.response.AccountGroupInfoList;
 import com.illdangag.iricom.server.data.response.AccountInfo;
 import com.illdangag.iricom.server.data.response.BoardInfo;
 import com.illdangag.iricom.server.exception.IricomException;
@@ -85,16 +83,5 @@ public class AccountGroupServiceGetTest extends IricomTestSuite {
         Assertions.assertThrows(IricomException.class, () -> {
             accountGroupService.getAccountGroupInfo(accountGroupId);
         });
-    }
-
-    @Test
-    @DisplayName("목록 조회")
-    public void getList() throws Exception {
-        AccountGroupInfoSearch accountGroupInfoSearch = AccountGroupInfoSearch.builder()
-                .build();
-
-        AccountGroupInfoList accountGroupInfoList = accountGroupService.getAccountGroupInfoList(accountGroupInfoSearch);
-
-        Assertions.assertNotNull(accountGroupInfoList);
     }
 }

@@ -11,6 +11,7 @@ import com.illdangag.iricom.server.data.entity.*;
 import com.illdangag.iricom.server.data.request.*;
 import com.illdangag.iricom.server.test.data.wrapper.*;
 import com.illdangag.iricom.server.test.util.FirebaseUtils;
+import com.illdangag.iricom.server.test.util.SearchAllListResponse;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.test.autoconfigure.restdocs.AutoConfigureRestDocs;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
@@ -696,5 +697,22 @@ public abstract class IricomTestSuite {
 
     protected void addTestPostBanInfo(List<TestPostBanInfo> testPostBanInfoList) {
         this.testPostBanInfoList.addAll(testPostBanInfoList);
+    }
+
+    protected <T> List<T> getAllList(SearchRequest searchRequest, SearchAllListResponse<T> response) {
+        List<T> resultList = new LinkedList<>();
+
+        final int unit = 100;
+        int skip = 0;
+
+        List<T> tempList;
+        do {
+            searchRequest.setSkip(skip);
+            searchRequest.setLimit(unit);
+            tempList = response.func(searchRequest);
+            resultList.addAll(tempList);
+            skip += unit;
+        } while (unit <= tempList.size());
+        return resultList;
     }
 }

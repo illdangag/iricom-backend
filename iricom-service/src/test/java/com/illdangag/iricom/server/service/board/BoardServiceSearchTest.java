@@ -17,7 +17,6 @@ import org.springframework.context.ApplicationContext;
 
 import java.util.Arrays;
 import java.util.Collections;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -37,14 +36,14 @@ public class BoardServiceSearchTest extends IricomTestSuite {
             .title("undisclosedBoard01").isEnabled(true).undisclosed(true).adminList(Collections.singletonList(allBoardAdmin)).build();
     private final TestBoardInfo undisclosedBoard02 = TestBoardInfo.builder()
             .title("undisclosedBoard02").isEnabled(true).undisclosed(true).adminList(Collections.singletonList(allBoardAdmin)).build();
-
+    // 계정 그룹
     private final TestAccountGroupInfo testAccountGroupInfo00 = TestAccountGroupInfo.builder()
             .title("testAccountGroupInfo00").description("description").deleted(false)
-            .accountList(Arrays.asList(common00)).boardList(Arrays.asList(undisclosedBoard01))
+            .accountList(Collections.singletonList(common00)).boardList(Collections.singletonList(undisclosedBoard01))
             .build();
     private final TestAccountGroupInfo testAccountGroupInfo01 = TestAccountGroupInfo.builder()
             .title("testAccountGroupInfo01").description("description").deleted(true)
-            .accountList(Arrays.asList(common00)).boardList(Arrays.asList(undisclosedBoard02))
+            .accountList(Collections.singletonList(common00)).boardList(Collections.singletonList(undisclosedBoard02))
             .build();
 
     public BoardServiceSearchTest(ApplicationContext context) {
@@ -52,6 +51,7 @@ public class BoardServiceSearchTest extends IricomTestSuite {
 
         addTestBoardInfo(disclosedBoard00, undisclosedBoard00, undisclosedBoard01, undisclosedBoard02);
         addTestAccountGroupInfo(testAccountGroupInfo00, testAccountGroupInfo01);
+
         init();
     }
 
@@ -61,77 +61,51 @@ public class BoardServiceSearchTest extends IricomTestSuite {
         String disclosedBoardId = String.valueOf(getBoard(disclosedBoard00).getId());
         String undisclosedBoardId = String.valueOf(getBoard(undisclosedBoard00).getId());
 
-        List<String> allBoardInfoIdList = new LinkedList<>();
-        BoardInfoList boardInfoList;
-        int skip = 0;
-        do {
-            BoardInfoSearch boardInfoSearch = BoardInfoSearch.builder()
-                    .skip(skip).limit(100)
-                    .build();
-            boardInfoList = boardService.getBoardInfoList(boardInfoSearch);
-
-            List<String> boardInfoIdList = boardInfoList.getBoardInfoList().stream()
+        List<String> list = getAllList(BoardInfoSearch.builder().build(), (searchRequest -> {
+            BoardInfoSearch boardInfoSearch = (BoardInfoSearch) searchRequest;
+            BoardInfoList boardInfoList = boardService.getBoardInfoList(boardInfoSearch);
+            return boardInfoList.getBoardInfoList().stream()
                     .map(BoardInfo::getId)
                     .collect(Collectors.toList());
-            allBoardInfoIdList.addAll(boardInfoIdList);
-            skip += 100;
-        } while (skip < boardInfoList.getTotal());
+        }));
 
-        Assertions.assertTrue(allBoardInfoIdList.contains(disclosedBoardId));
-        Assertions.assertFalse(allBoardInfoIdList.contains(undisclosedBoardId));
+        Assertions.assertTrue(list.contains(disclosedBoardId));
+        Assertions.assertFalse(list.contains(undisclosedBoardId));
     }
 
     @Test
     @DisplayName("공개 게시판 및 계정 그룹에 포함된 게시물 목록 조회")
     public void searchDisclosedBoardAndAccountGroupBoardList() throws Exception {
         Account account = getAccount(common00);
-
         String inaccessibleBoardId = String.valueOf(getBoard(undisclosedBoard00).getId());
         String accessibleBoardId = String.valueOf(getBoard(undisclosedBoard01).getId());
 
-        List<String> allBoardInfoIdList = new LinkedList<>();
-        BoardInfoList boardInfoList;
-        int skip = 0;
-        do {
-            BoardInfoSearch boardInfoSearch = BoardInfoSearch.builder()
-                    .skip(skip).limit(100)
-                    .build();
-            boardInfoList = boardService.getBoardInfoList(account, boardInfoSearch);
-
-            List<String> boardInfoIdList = boardInfoList.getBoardInfoList().stream()
+        List<String> list = getAllList(BoardInfoSearch.builder().build(), searchRequest -> {
+            BoardInfoSearch boardInfoSearch = (BoardInfoSearch) searchRequest;
+            BoardInfoList boardInfoList = boardService.getBoardInfoList(account, boardInfoSearch);
+            return boardInfoList.getBoardInfoList().stream()
                     .map(BoardInfo::getId)
                     .collect(Collectors.toList());
-            allBoardInfoIdList.addAll(boardInfoIdList);
-            skip += 100;
-        } while (skip < boardInfoList.getTotal());
+        });
 
-        Assertions.assertTrue(allBoardInfoIdList.contains(accessibleBoardId));
-        Assertions.assertFalse(allBoardInfoIdList.contains(inaccessibleBoardId));
+        Assertions.assertTrue(list.contains(accessibleBoardId));
+        Assertions.assertFalse(list.contains(inaccessibleBoardId));
     }
 
     @Test
     @DisplayName("삭제된 계정 그룹에 포함된 게시판 목록 조회")
     public void searchDisclosedBoardAndDeletedAccountGroupBoardList() throws Exception {
         Account account = getAccount(common01);
-
         String undisclosedBoardId = String.valueOf(getBoard(undisclosedBoard02).getId());
 
-        List<String> allBoardInfoIdList = new LinkedList<>();
-        BoardInfoList boardInfoList;
-        int skip = 0;
-        do {
-            BoardInfoSearch boardInfoSearch = BoardInfoSearch.builder()
-                    .skip(skip).limit(100)
-                    .build();
-            boardInfoList = boardService.getBoardInfoList(account, boardInfoSearch);
-
-            List<String> boardInfoIdList = boardInfoList.getBoardInfoList().stream()
+        List<String> list = getAllList(BoardInfoSearch.builder().build(), searchRequest -> {
+            BoardInfoSearch boardInfoSearch = (BoardInfoSearch) searchRequest;
+            BoardInfoList boardInfoList = boardService.getBoardInfoList(account, boardInfoSearch);
+            return boardInfoList.getBoardInfoList().stream()
                     .map(BoardInfo::getId)
                     .collect(Collectors.toList());
-            allBoardInfoIdList.addAll(boardInfoIdList);
-            skip += 100;
-        } while (skip < boardInfoList.getTotal());
+        });
 
-        Assertions.assertFalse(allBoardInfoIdList.contains(undisclosedBoardId));
+        Assertions.assertFalse(list.contains(undisclosedBoardId));
     }
 }
