@@ -10,16 +10,28 @@ import com.illdangag.iricom.server.data.response.CommentInfoList;
 import javax.validation.Valid;
 
 public interface CommentService {
+    /**
+     * 댓글 생성
+     */
     CommentInfo createCommentInfo(Account account, String boardId, String postId, @Valid CommentInfoCreate commentInfoCreate);
 
+    /**
+     * 댓글 생성
+     */
     CommentInfo createCommentInfo(Account account, Board board, Post post, @Valid CommentInfoCreate commentInfoCreate);
 
     CommentInfoList getComment(String boardId, String postId, @Valid CommentInfoSearch commentInfoSearch);
 
     CommentInfoList getComment(Board board, Post post, @Valid CommentInfoSearch commentInfoSearch);
 
+    /**
+     * 댓글 조회
+     */
     CommentInfo getComment(String boardId, String postId, String commentId);
 
+    /**
+     * 댓글 조회
+     */
     CommentInfo getComment(Board board, Post post, Comment comment);
 
     CommentInfo updateComment(Account account, String boardId, String postId, String commentId, @Valid CommentInfoUpdate commentInfoUpdate);

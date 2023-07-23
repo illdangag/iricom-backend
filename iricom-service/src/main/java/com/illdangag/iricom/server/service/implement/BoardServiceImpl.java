@@ -127,6 +127,10 @@ public class BoardServiceImpl implements BoardService {
             board.setNotificationOnly(boardInfoUpdate.getNotificationOnly());
         }
 
+        if (boardInfoUpdate.getUndisclosed() != null) {
+            board.setUndisclosed(boardInfoUpdate.getUndisclosed());
+        }
+
         this.boardRepository.save(board);
         return new BoardInfo(board);
     }

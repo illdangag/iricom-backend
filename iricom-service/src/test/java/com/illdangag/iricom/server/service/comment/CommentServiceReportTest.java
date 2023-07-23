@@ -54,7 +54,7 @@ public class CommentServiceReportTest extends IricomTestSuite {
         Board board = post.getBoard();
 
         CommentInfo commentInfo = commentService.getComment(board, post, comment);
-        Assertions.assertTrue(commentInfo.getIsReport());
+        Assertions.assertTrue(commentInfo.getReport());
         Assertions.assertNull(commentInfo.getContent());
     }
 }

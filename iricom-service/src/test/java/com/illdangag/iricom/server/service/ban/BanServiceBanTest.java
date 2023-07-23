@@ -179,7 +179,7 @@ public class BanServiceBanTest extends IricomTestSuite {
     }
 
     @Test
-    @DisplayName("차단")
+    @DisplayName("이미 차단한 게시물")
     public void banAlreadyBanPost() {
         Account account = getAccount(systemAdmin);
         Post post = getPost(alreadyBanPostInfo01);
@@ -194,7 +194,7 @@ public class BanServiceBanTest extends IricomTestSuite {
     }
 
     @Test
-    @DisplayName("차단")
+    @DisplayName("다른 게시판에 존재하는 게시물")
     public void banPostInOtherBoard() throws Exception {
         Account account = getAccount(systemAdmin);
         Board board = getBoard(boardInfo00);

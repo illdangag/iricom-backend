@@ -3,6 +3,7 @@ package com.illdangag.iricom.server.service.comment;
 import com.illdangag.iricom.server.data.entity.*;
 import com.illdangag.iricom.server.data.request.CommentInfoCreate;
 import com.illdangag.iricom.server.data.response.CommentInfo;
+import com.illdangag.iricom.server.exception.IricomException;
 import com.illdangag.iricom.server.service.CommentService;
 import com.illdangag.iricom.server.test.IricomTestSuite;
 import com.illdangag.iricom.server.test.data.wrapper.TestBoardInfo;
@@ -15,6 +16,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 
+import javax.validation.ConstraintViolationException;
 import java.util.Collections;
 
 @DisplayName("service: 댓글 - 생성")
@@ -23,25 +25,27 @@ public class CommentServiceCreateTest extends IricomTestSuite {
     @Autowired
     private CommentService commentService;
 
-    private static final TestBoardInfo commentTestBoardInfo = TestBoardInfo.builder()
-            .title("commentTestBoardInfo").isEnabled(true).adminList(Collections.singletonList(allBoardAdmin)).build();
-
-    private static final TestPostInfo commentTestPostInfo00 = TestPostInfo.builder()
-            .title("commentTestPostInfo").content("commentTestPostInfo").isAllowComment(true)
+    // 게시판
+    private final TestBoardInfo testBoardInfo00 = TestBoardInfo.builder()
+            .title("testBoardInfo00").isEnabled(true).adminList(Collections.singletonList(allBoardAdmin)).build();
+    // 게시물
+    private final TestPostInfo testPostInfo00 = TestPostInfo.builder()
+            .title("testPostInfo00").content("testPostInfo00").isAllowComment(true)
             .postType(PostType.POST).postState(PostState.PUBLISH)
-            .creator(allBoardAdmin).board(commentTestBoardInfo)
+            .creator(allBoardAdmin).board(testBoardInfo00)
             .build();
-
-    private static final TestCommentInfo commentInfo00 = TestCommentInfo.builder()
-            .content("commentInfo00").creator(allBoardAdmin).post(commentTestPostInfo00)
+    // 댓글
+    private final TestCommentInfo testCommentInfo00 = TestCommentInfo.builder()
+            .content("commentInfo00").creator(allBoardAdmin).post(testPostInfo00)
             .build();
 
     public CommentServiceCreateTest(ApplicationContext context) {
         super(context);
 
-        addTestBoardInfo(commentTestBoardInfo);
-        addTestPostInfo(commentTestPostInfo00);
-        addTestCommentInfo(commentInfo00);
+        addTestBoardInfo(testBoardInfo00);
+        addTestPostInfo(testPostInfo00);
+        addTestCommentInfo(testCommentInfo00);
+
         init();
     }
 
@@ -49,27 +53,64 @@ public class CommentServiceCreateTest extends IricomTestSuite {
     @DisplayName("댓글 생성")
     public void createComment() throws Exception {
         Account account = getAccount(common00);
-        Post post = getPost(commentTestPostInfo00);
+        Post post = getPost(testPostInfo00);
         Board board = post.getBoard();
+
+        String postId = String.valueOf(post.getId());
+        String boardId = String.valueOf(board.getId());
 
         CommentInfoCreate commentInfoCreate = CommentInfoCreate.builder()
                 .content("댓글 생성")
                 .build();
-        CommentInfo commentInfo = commentService.createCommentInfo(account, board, post, commentInfoCreate);
+        CommentInfo commentInfo = commentService.createCommentInfo(account, boardId, postId, commentInfoCreate);
 
         Assertions.assertEquals("댓글 생성", commentInfo.getContent());
         Assertions.assertNull(commentInfo.getReferenceCommentId());
         Assertions.assertFalse(commentInfo.getDeleted());
-        Assertions.assertFalse(commentInfo.getIsReport());
+        Assertions.assertFalse(commentInfo.getReport());
+    }
+
+    @Test
+    @DisplayName("내용이 빈 문자열")
+    public void emptyContent() throws Exception {
+        Account account = getAccount(common00);
+        Post post = getPost(testPostInfo00);
+        Board board = post.getBoard();
+
+        CommentInfoCreate commentInfoCreate = CommentInfoCreate.builder()
+                .content("")
+                .build();
+
+        Assertions.assertThrows(ConstraintViolationException.class, () -> {
+            this.commentService.createCommentInfo(account, board, post, commentInfoCreate);
+        });
+    }
+
+    @Test
+    @DisplayName("내용이 긴 문자열")
+    public void overflowContent() throws Exception {
+        Account account = getAccount(common00);
+        Post post = getPost(testPostInfo00);
+        Board board = post.getBoard();
+
+        CommentInfoCreate commentInfoCreate = CommentInfoCreate.builder()
+                .content("0123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789" +
+                        "0123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789" +
+                        "0")
+                .build();
+
+        Assertions.assertThrows(ConstraintViolationException.class, () -> {
+            this.commentService.createCommentInfo(account, board, post, commentInfoCreate);
+        });
     }
 
     @Test
     @DisplayName("대댓글 생성")
     public void createNestedComment() throws Exception {
         Account account = getAccount(common00);
-        Post post = getPost(commentTestPostInfo00);
+        Post post = getPost(testPostInfo00);
         Board board = post.getBoard();
-        Comment referenceComment = getComment(commentInfo00);
+        Comment referenceComment = getComment(testCommentInfo00);
         String referenceCommentId = String.valueOf(referenceComment.getId());
 
         CommentInfoCreate commentInfoCreate = CommentInfoCreate.builder()
@@ -80,6 +121,25 @@ public class CommentServiceCreateTest extends IricomTestSuite {
         Assertions.assertEquals("대댓글 생성", commentInfo.getContent());
         Assertions.assertEquals(referenceCommentId, commentInfo.getReferenceCommentId());
         Assertions.assertFalse(commentInfo.getDeleted());
-        Assertions.assertFalse(commentInfo.getIsReport());
+        Assertions.assertFalse(commentInfo.getReport());
+    }
+
+    @Test
+    @DisplayName("존재하지 않는 댓글에 대댓글")
+    public void invalidReferenceComment() throws Exception {
+        Account account = getAccount(common00);
+        Post post = getPost(testPostInfo00);
+        Board board = post.getBoard();
+
+        CommentInfoCreate commentInfoCreate = CommentInfoCreate.builder()
+                .content("대댓글 생성").referenceCommentId("NOT_EXIST_COMMENT")
+                .build();
+
+        IricomException iricomException = Assertions.assertThrows(IricomException.class, () -> {
+            this.commentService.createCommentInfo(account, board, post, commentInfoCreate);
+        });
+
+        Assertions.assertEquals("05000001", iricomException.getErrorCode());
+        Assertions.assertEquals("Not exist reference comment.", iricomException.getMessage());
     }
 }

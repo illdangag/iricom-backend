@@ -36,7 +36,13 @@ public interface BoardService {
      */
     BoardInfoList getBoardInfoList(Account account, @Valid BoardInfoSearch boardInfoSearch);
 
+    /**
+     * 게시판 정보 수정
+     */
     BoardInfo updateBoardInfo(String id, @Valid BoardInfoUpdate boardInfoUpdate);
 
+    /**
+     * 게시판 정보 수정
+     */
     BoardInfo updateBoardInfo(Board board, @Valid BoardInfoUpdate boardInfoUpdate);
 }

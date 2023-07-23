@@ -129,6 +129,7 @@ public class CommentServiceImpl implements CommentService {
         comment.setContent(commentInfoUpdate.getContent());
         comment.setUpdateDate(LocalDateTime.now());
         this.commentRepository.save(comment);
+
         AccountInfo accountInfo = this.accountService.getAccountInfo(comment.getAccount());
         long upvote = this.commentVoteRepository.getCommentVoteCount(comment, VoteType.UPVOTE);
         long downvote = this.commentVoteRepository.getCommentVoteCount(comment, VoteType.DOWNVOTE);

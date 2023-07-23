@@ -101,7 +101,7 @@ public class BoardServiceCreateTest extends IricomTestSuite {
 
     @Test
     @DisplayName("비활성화")
-    public void disabled() throws Exception {
+    public void disabledBoard() throws Exception {
         BoardInfoCreate boardInfoCreate = BoardInfoCreate.builder()
                 .title("new create")
                 .description("")
@@ -115,7 +115,7 @@ public class BoardServiceCreateTest extends IricomTestSuite {
 
     @Test
     @DisplayName("비공개")
-    public void undisclosed() throws Exception {
+    public void undisclosedBoard() throws Exception {
         BoardInfoCreate boardInfoCreate = BoardInfoCreate.builder()
                 .title("new create")
                 .description("")
@@ -129,7 +129,7 @@ public class BoardServiceCreateTest extends IricomTestSuite {
 
     @Test
     @DisplayName("공지 사항 전용")
-    public void notificationOnly() throws Exception {
+    public void notificationOnlyBoard() throws Exception {
         BoardInfoCreate boardInfoCreate = BoardInfoCreate.builder()
                 .title("new create")
                 .description("")

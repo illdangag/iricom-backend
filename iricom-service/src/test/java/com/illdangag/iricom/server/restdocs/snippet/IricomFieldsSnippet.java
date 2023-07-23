@@ -62,7 +62,7 @@ public class IricomFieldsSnippet {
             ResponseField.builder().path("downvote").description("싫어요").type(JsonFieldType.NUMBER).build(),
             ResponseField.builder().path("hasNestedComment").description("하위 댓글 여부").type(JsonFieldType.BOOLEAN).build(),
             ResponseField.builder().path("deleted").description("삭제 여부").type(JsonFieldType.BOOLEAN).build(),
-            ResponseField.builder().path("isReport").description("신고 여부").type(JsonFieldType.BOOLEAN).build(),
+            ResponseField.builder().path("report").description("신고 여부").type(JsonFieldType.BOOLEAN).build(),
             ResponseField.builder().path("nestedComments").description("대댓글 목록").isOptional(true).type(JsonFieldType.ARRAY).build()
     );
 

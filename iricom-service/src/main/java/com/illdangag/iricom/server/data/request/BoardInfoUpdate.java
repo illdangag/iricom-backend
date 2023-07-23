@@ -17,4 +17,6 @@ public class BoardInfoUpdate {
     private Boolean enabled;
 
     private Boolean notificationOnly;
+
+    private Boolean undisclosed;
 }

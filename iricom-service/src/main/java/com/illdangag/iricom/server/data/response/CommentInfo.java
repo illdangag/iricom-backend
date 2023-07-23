@@ -36,7 +36,7 @@ public class CommentInfo {
     @JsonProperty("nestedComments")
     private List<CommentInfo> nestedCommentList = null;
 
-    private Boolean isReport;
+    private Boolean report;
 
     public CommentInfo(Comment comment, AccountInfo accountInfo, long upvote, long downvote, long reportCount) {
         this.id = comment.getId().toString();
@@ -60,9 +60,9 @@ public class CommentInfo {
             this.account = null;
         }
 
-        this.isReport = reportCount >= 10;
+        this.report = reportCount >= 10;
 
-        if (this.isReport) {
+        if (this.report) {
             this.content = null;
         }
     }
