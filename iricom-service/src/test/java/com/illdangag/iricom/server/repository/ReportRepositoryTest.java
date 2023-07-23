@@ -17,7 +17,7 @@ import java.util.Collections;
 import java.util.List;
 
 @Slf4j
-@DisplayName("ReportRepository")
+@DisplayName("repository: ReportRepository")
 public class ReportRepositoryTest extends IricomTestSuite {
     @Autowired
     ReportRepository reportRepository;

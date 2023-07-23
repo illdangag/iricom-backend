@@ -15,7 +15,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-@DisplayName("본인 정보 조회")
+@DisplayName("controller: 정보 조회")
 public class InformationControllerTest extends IricomTestSuite {
     @Autowired
     MockMvc mockMvc;

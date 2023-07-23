@@ -23,21 +23,21 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @Slf4j
-@DisplayName("계정")
+@DisplayName("controller: 계정")
 public class AccountControllerTest extends IricomTestSuite {
     @Autowired
     MockMvc mockMvc;
 
-    private static final TestBoardInfo testBoardInfo00 = TestBoardInfo.builder()
+    private final TestBoardInfo testBoardInfo00 = TestBoardInfo.builder()
             .title("testBoardInfo00").isEnabled(true).adminList(Collections.singletonList(allBoardAdmin)).build();
 
     @Autowired
     public AccountControllerTest(ApplicationContext context) {
         super(context);
 
-        List<TestBoardInfo> testBoardInfoList = Arrays.asList(testBoardInfo00);
+        addTestBoardInfo(testBoardInfo00);
 
-        super.setBoard(testBoardInfoList);
+        init();
     }
 
     @Nested

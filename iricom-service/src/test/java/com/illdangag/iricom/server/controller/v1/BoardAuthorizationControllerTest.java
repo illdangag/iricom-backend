@@ -22,21 +22,21 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @Slf4j
-@DisplayName("게시판 관리자")
+@DisplayName("controller: 게시판 관리자")
 public class BoardAuthorizationControllerTest extends IricomTestSuite {
     @Autowired
     MockMvc mockMvc;
 
-    final TestBoardInfo testBoardInfo00 = TestBoardInfo.builder()
+    private final TestBoardInfo testBoardInfo00 = TestBoardInfo.builder()
             .title("restDoc").isEnabled(true).adminList(Collections.singletonList(allBoardAdmin)).build();
 
     @Autowired
     public BoardAuthorizationControllerTest(ApplicationContext context) {
         super(context);
 
-        List<TestBoardInfo> testBoardInfoList = Arrays.asList(testBoardInfo00);
+        addTestBoardInfo(testBoardInfo00);
 
-        super.setBoard(testBoardInfoList);
+        init();
     }
 
     @Nested

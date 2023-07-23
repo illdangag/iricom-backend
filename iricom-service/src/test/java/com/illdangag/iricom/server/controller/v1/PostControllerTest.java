@@ -29,116 +29,116 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @Slf4j
-@DisplayName("게시물")
+@DisplayName("controller: 게시물")
 public class PostControllerTest extends IricomTestSuite {
     @Autowired
     MockMvc mockMvc;
 
-    private static final TestBoardInfo testBoardInfo00 = TestBoardInfo.builder()
+    private final TestBoardInfo testBoardInfo00 = TestBoardInfo.builder()
             .title("testBoardInfo00").isEnabled(true).adminList(Arrays.asList(allBoardAdmin, common01)).build();
-    private static final TestBoardInfo disableTestBoardInfo00 = TestBoardInfo.builder()
+    private final TestBoardInfo disableTestBoardInfo00 = TestBoardInfo.builder()
             .title("disableTestBoardInfo00").isEnabled(false).adminList(Arrays.asList(allBoardAdmin, disableBoardAdmin)).build();
-    private static final TestBoardInfo autoBoardInfo00 = TestBoardInfo.builder()
+    private final TestBoardInfo autoBoardInfo00 = TestBoardInfo.builder()
             .title("autoBoardInfo00").isEnabled(true).adminList(Collections.singletonList(allBoardAdmin)).build();
-    private static final TestBoardInfo deleteBoardInfo00 = TestBoardInfo.builder()
+    private final TestBoardInfo deleteBoardInfo00 = TestBoardInfo.builder()
             .title("deleteBoardInfo00").isEnabled(true).adminList(Collections.singletonList(allBoardAdmin)).build();
-    private static final TestBoardInfo voteBoardInfo00 = TestBoardInfo.builder()
+    private final TestBoardInfo voteBoardInfo00 = TestBoardInfo.builder()
             .title("voteBoardInfo00").isEnabled(true).adminList(Collections.singletonList(allBoardAdmin)).build();
 
-    private static final TestPostInfo enableBoardPost00 = TestPostInfo.builder()
+    private final TestPostInfo enableBoardPost00 = TestPostInfo.builder()
             .title("enableBoardPost00").content("enableBoardPost00").isAllowComment(true)
             .postType(PostType.POST).postState(PostState.PUBLISH)
             .creator(allBoardAdmin).board(testBoardInfo00).build();
-    private static final TestPostInfo disableBoardPost00 = TestPostInfo.builder()
+    private final TestPostInfo disableBoardPost00 = TestPostInfo.builder()
             .title("disableBoardPost00").content("content").isAllowComment(true)
             .postType(PostType.POST).postState(PostState.PUBLISH)
             .creator(common00).board(disableTestBoardInfo00).build();
-    protected static final TestPostInfo disableBoardNotification00 = TestPostInfo.builder()
+    protected final TestPostInfo disableBoardNotification00 = TestPostInfo.builder()
             .title("disableBoardNotification00").content("disableBoardNotification00").isAllowComment(true)
             .postType(PostType.NOTIFICATION).postState(PostState.TEMPORARY)
             .creator(allBoardAdmin).board(disableTestBoardInfo00).build();
-    protected static final TestPostInfo enableBoardPost03 = TestPostInfo.builder()
+    protected final TestPostInfo enableBoardPost03 = TestPostInfo.builder()
             .title("enableBoardPost03").content("enableBoardPost03").isAllowComment(true)
             .postType(PostType.POST).postState(PostState.TEMPORARY)
             .creator(allBoardAdmin).board(testBoardInfo00).build();
-    protected static final TestPostInfo temporaryPostInfo00 = TestPostInfo.builder()
+    protected final TestPostInfo temporaryPostInfo00 = TestPostInfo.builder()
             .title("temporaryBoardInfo00").content("enableBoardPost03").isAllowComment(true)
             .postType(PostType.POST).postState(PostState.TEMPORARY)
             .creator(common00).board(testBoardInfo00).build();
-    protected static final TestPostInfo temporaryPostInfo01 = TestPostInfo.builder()
+    protected final TestPostInfo temporaryPostInfo01 = TestPostInfo.builder()
             .title("temporaryPostInfo01").content("temporaryPostInfo01").isAllowComment(true)
             .postType(PostType.POST).postState(PostState.TEMPORARY)
             .creator(common00).board(testBoardInfo00).build();
-    protected static final TestPostInfo temporaryPostInfo02 = TestPostInfo.builder()
+    protected final TestPostInfo temporaryPostInfo02 = TestPostInfo.builder()
             .title("temporaryPostInfo02").content("temporaryPostInfo02").isAllowComment(true)
             .postType(PostType.POST).postState(PostState.TEMPORARY)
             .creator(common00).board(disableTestBoardInfo00).build();
-    protected static final TestPostInfo publishPostInfo00 = TestPostInfo.builder()
+    protected final TestPostInfo publishPostInfo00 = TestPostInfo.builder()
             .title("publishPostInfo00").content("publishPostInfo00").isAllowComment(true)
             .postType(PostType.POST).postState(PostState.PUBLISH)
             .creator(common00).board(testBoardInfo00).build();
-    protected static final TestPostInfo notificationPostInfo00 = TestPostInfo.builder()
+    protected final TestPostInfo notificationPostInfo00 = TestPostInfo.builder()
             .title("notificationPostInfo00").content("notificationPostInfo00").isAllowComment(true)
             .postType(PostType.NOTIFICATION).postState(PostState.TEMPORARY)
             .creator(allBoardAdmin).board(testBoardInfo00).build();
-    private static final TestPostInfo updatePostInfo00 = TestPostInfo.builder()
+    private final TestPostInfo updatePostInfo00 = TestPostInfo.builder()
             .title("updatePostInfo00").content("updatePostInfo00").isAllowComment(true)
             .postType(PostType.POST).postState(PostState.TEMPORARY)
             .creator(common00).board(testBoardInfo00).build();
-    private static final TestPostInfo updatePostInfo01 = TestPostInfo.builder()
+    private final TestPostInfo updatePostInfo01 = TestPostInfo.builder()
             .title("updatePostInfo01").content("updatePostInfo01").isAllowComment(true)
             .postType(PostType.POST).postState(PostState.TEMPORARY)
             .creator(allBoardAdmin).board(testBoardInfo00).build();
-    private static final TestPostInfo updatePostInfo02 = TestPostInfo.builder()
+    private final TestPostInfo updatePostInfo02 = TestPostInfo.builder()
             .title("updatePostInfo02").content("updatePostInfo02").isAllowComment(true)
             .postType(PostType.POST).postState(PostState.PUBLISH)
             .creator(common00).board(testBoardInfo00).build();
-    private static final TestPostInfo autoPostInfo00 = TestPostInfo.builder()
+    private final TestPostInfo autoPostInfo00 = TestPostInfo.builder()
             .title("autoPostInfo00").content("autoPostInfo00").isAllowComment(true)
             .postType(PostType.POST).postState(PostState.PUBLISH)
             .creator(common00).board(autoBoardInfo00).build();
-    private static final TestPostInfo autoPostInfo01 = TestPostInfo.builder()
+    private final TestPostInfo autoPostInfo01 = TestPostInfo.builder()
             .title("autoPostInfo01").content("autoPostInfo01").isAllowComment(true)
             .postType(PostType.POST).postState(PostState.PUBLISH)
             .creator(common01).board(autoBoardInfo00).build();
 
-    private static final TestPostInfo deletePostInfo00 = TestPostInfo.builder()
+    private final TestPostInfo deletePostInfo00 = TestPostInfo.builder()
             .title("deletePostInfo00").content("deletePostInfo00").isAllowComment(true)
             .postType(PostType.POST).postState(PostState.TEMPORARY)
             .creator(common00).board(autoBoardInfo00).build();
-    private static final TestPostInfo deletePostInfo01 = TestPostInfo.builder()
+    private final TestPostInfo deletePostInfo01 = TestPostInfo.builder()
             .title("deletePostInfo01").content("deletePostInfo01").isAllowComment(true)
             .postType(PostType.POST).postState(PostState.PUBLISH)
             .creator(common00).board(autoBoardInfo00).build();
-    private static final TestPostInfo deletePostInfo02 = TestPostInfo.builder()
+    private final TestPostInfo deletePostInfo02 = TestPostInfo.builder()
             .title("deletePostInfo02").content("deletePostInfo02").isAllowComment(true)
             .postType(PostType.POST).postState(PostState.PUBLISH)
             .creator(common00).board(autoBoardInfo00).build();
-    private static final TestPostInfo disabledPostInfo00 = TestPostInfo.builder()
+    private final TestPostInfo disabledPostInfo00 = TestPostInfo.builder()
             .title("disabledPostInfo00").content("disabledPostInfo00").isAllowComment(true)
             .postType(PostType.POST).postState(PostState.PUBLISH)
             .creator(common00).board(disableTestBoardInfo00).build();
-    private static final TestPostInfo votePostInfo00 = TestPostInfo.builder()
+    private final TestPostInfo votePostInfo00 = TestPostInfo.builder()
             .title("votePostInfo00").content("votePostInfo00").isAllowComment(true)
             .postType(PostType.POST).postState(PostState.PUBLISH)
             .creator(common00).board(voteBoardInfo00).build();
-    private static final TestPostInfo votePostInfo01 = TestPostInfo.builder()
+    private final TestPostInfo votePostInfo01 = TestPostInfo.builder()
             .title("votePostInfo01").content("votePostInfo01").isAllowComment(true)
             .postType(PostType.POST).postState(PostState.PUBLISH)
             .creator(common00).board(voteBoardInfo00).build();
-    private static final TestPostInfo votePostInfo02 = TestPostInfo.builder()
+    private final TestPostInfo votePostInfo02 = TestPostInfo.builder()
             .title("votePostInfo02").content("votePostInfo02").isAllowComment(true)
             .postType(PostType.POST).postState(PostState.TEMPORARY)
             .creator(common00).board(voteBoardInfo00).build();
-    private static final TestPostInfo votePostInfo03 = TestPostInfo.builder()
+    private final TestPostInfo votePostInfo03 = TestPostInfo.builder()
             .title("votePostInfo03").content("votePostInfo03").isAllowComment(true)
             .postType(PostType.POST).postState(PostState.PUBLISH)
             .creator(common00).board(voteBoardInfo00).build();
-    private static final TestPostInfo votePostInfo04 = TestPostInfo.builder()
+    private final TestPostInfo votePostInfo04 = TestPostInfo.builder()
             .title("votePostInfo04").content("votePostInfo04").isAllowComment(true)
             .postType(PostType.POST).postState(PostState.PUBLISH)
             .creator(common00).board(disableTestBoardInfo00).build();
-    private static final TestPostInfo votePostInfo05 = TestPostInfo.builder()
+    private final TestPostInfo votePostInfo05 = TestPostInfo.builder()
             .title("votePostInfo05").content("votePostInfo05").isAllowComment(true)
             .postType(PostType.POST).postState(PostState.PUBLISH)
             .creator(common00).board(voteBoardInfo00).build();
@@ -147,18 +147,15 @@ public class PostControllerTest extends IricomTestSuite {
     public PostControllerTest(ApplicationContext context) {
         super(context);
 
-        List<TestBoardInfo> testBoardInfoList = Arrays.asList(testBoardInfo00, disableTestBoardInfo00, autoBoardInfo00,
+        addTestBoardInfo(testBoardInfo00, disableTestBoardInfo00, autoBoardInfo00,
                 deleteBoardInfo00, voteBoardInfo00);
-        List<TestPostInfo> testPostInfoList = Arrays.asList(enableBoardPost00, disableBoardPost00, disableBoardNotification00,
+        addTestPostInfo(enableBoardPost00, disableBoardPost00, disableBoardNotification00,
                 enableBoardPost03, temporaryPostInfo00, temporaryPostInfo01, publishPostInfo00, notificationPostInfo00,
                 temporaryPostInfo02, updatePostInfo00, updatePostInfo01, updatePostInfo02, autoPostInfo00, autoPostInfo01,
                 deletePostInfo00, deletePostInfo01, deletePostInfo02, disabledPostInfo00, votePostInfo00, votePostInfo01,
                 votePostInfo02, votePostInfo03, votePostInfo04, votePostInfo05);
 
-        super.setBoard(testBoardInfoList);
-        super.setPost(testPostInfoList);
-
-        super.setDisabledBoard(testBoardInfoList);
+        init();
     }
 
     @Nested

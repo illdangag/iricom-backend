@@ -25,7 +25,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @Slf4j
-@DisplayName("게시판")
+@DisplayName("controller: 게시판")
 public class BoardControllerTest extends IricomTestSuite {
     @Autowired
     MockMvc mockMvc;
@@ -39,9 +39,9 @@ public class BoardControllerTest extends IricomTestSuite {
     public BoardControllerTest(ApplicationContext context) {
         super(context);
 
-        List<TestBoardInfo> testBoardInfoList = Arrays.asList(testBoardInfo00, testBoardInfo01);
+        addTestBoardInfo(testBoardInfo00, testBoardInfo01);
 
-        super.setBoard(testBoardInfoList);
+        init();
     }
 
     @Nested

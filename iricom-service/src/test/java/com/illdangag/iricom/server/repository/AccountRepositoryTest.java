@@ -8,7 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 
 @Slf4j
-@DisplayName("AccountRepository")
+@DisplayName("repository: AccountRepository")
 public class AccountRepositoryTest extends IricomTestSuite {
     @Autowired
     AccountRepository accountRepository;

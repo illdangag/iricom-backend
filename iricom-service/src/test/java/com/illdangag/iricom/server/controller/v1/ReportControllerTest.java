@@ -23,7 +23,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @Slf4j
-@DisplayName("신고")
+@DisplayName("controller: 신고")
 public class ReportControllerTest extends IricomTestSuite {
     @Autowired
     MockMvc mockMvc;
@@ -69,16 +69,11 @@ public class ReportControllerTest extends IricomTestSuite {
     public ReportControllerTest(ApplicationContext context) {
         super(context);
 
-        List<TestBoardInfo> testBoardInfoList = Arrays.asList(testBoardInfo00, testBoardInfo01, testBoardInfo02);
-        List<TestPostInfo> testPostInfoList = Arrays.asList(testPostInfo00, testPostInfo01, testPostInfo02, testPostInfo03);
-        List<TestCommentInfo> testCommentInfoList = Arrays.asList(testCommentInfo00, testCommentInfo01, testCommentInfo02, testCommentInfo03);
+        addTestBoardInfo(testBoardInfo00, testBoardInfo01, testBoardInfo02);
+        addTestPostInfo(testPostInfo00, testPostInfo01, testPostInfo02, testPostInfo03);
+        addTestCommentInfo(testCommentInfo00, testCommentInfo01, testCommentInfo02, testCommentInfo03);
 
-        super.setBoard(testBoardInfoList);
-        super.setPost(testPostInfoList);
-        super.setComment(testCommentInfoList);
-
-        super.setDisabledBoard(testBoardInfoList);
-        super.setDisabledCommentBoard(testPostInfoList);
+        init();
     }
 
     @Nested

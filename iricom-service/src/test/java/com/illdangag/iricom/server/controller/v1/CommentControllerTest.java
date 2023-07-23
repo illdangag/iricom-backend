@@ -22,7 +22,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-@DisplayName("댓글")
+@DisplayName("controller: 댓글")
 public class CommentControllerTest extends IricomTestSuite {
     @Autowired
     MockMvc mockMvc;
@@ -143,24 +143,17 @@ public class CommentControllerTest extends IricomTestSuite {
     public CommentControllerTest(ApplicationContext context) {
         super(context);
 
-        List<TestBoardInfo> testBoardInfoList = Arrays.asList(testBoardInfo00, testDisableBoardInfo00, testVoteBoardInfo00,
+        addTestBoardInfo(testBoardInfo00, testDisableBoardInfo00, testVoteBoardInfo00,
                 testVoteBoardInfo01, testVoteBoardInfo02, testReportBoardInfo00);
-        List<TestPostInfo> testPostInfoList = Arrays.asList(testPostInfo00, testPostInfo01, testPostInfo02, testPostInfo03,
+        addTestPostInfo(testPostInfo00, testPostInfo01, testPostInfo02, testPostInfo03,
                 testPostInfo04, deletePostInfo00, votePostInfo00, votePostInfo01, votePostInfo02, reportPostInfo00);
-        List<TestCommentInfo> testCommentInfoList = Arrays.asList(testCommentInfo00, testCommentInfo01, testCommentInfo02,
+        addTestCommentInfo(testCommentInfo00, testCommentInfo01, testCommentInfo02,
                 testCommentInfo03, testCommentInfo04, testCommentInfo05, deleteCommentInfo00, deleteCommentInfo01,
                 deleteCommentInfo02, deletedCommentInfo00, deleteCommentInfo03, voteCommentInfo00, voteCommentInfo01,
                 voteCommentInfo02, voteCommentInfo03, voteCommentInfo04, voteCommentInfo05, voteCommentInfo06,
                 voteCommentInfo07);
 
-        super.setBoard(testBoardInfoList);
-        super.setPost(testPostInfoList);
-        super.setComment(testCommentInfoList);
-
-        super.setDisabledCommentBoard(testPostInfoList);
-        super.setDisabledBoard(testBoardInfoList);
-
-        super.setDeletedComment(testCommentInfoList);
+        init();
     }
 
     @Nested

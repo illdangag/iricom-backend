@@ -13,7 +13,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-@DisplayName("서버 정보")
+@DisplayName("controller: 서버 정보")
 public class MainControllerTest extends IricomTestSuite {
     @Autowired
     MockMvc mockMvc;
