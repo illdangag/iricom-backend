@@ -355,7 +355,7 @@ public abstract class IricomTestSuite {
         BoardInfoCreate boardInfoCreate = BoardInfoCreate.builder()
                 .title(testBoardInfo.getTitle())
                 .description(testBoardInfo.getDescription())
-                .enabled(testBoardInfo.isEnabled())
+                .enabled(true)
                 .undisclosed(testBoardInfo.isUndisclosed())
                 .build();
 
@@ -390,7 +390,7 @@ public abstract class IricomTestSuite {
         PostInfoCreate postInfoCreate = PostInfoCreate.builder()
                 .title(testPostInfo.getTitle())
                 .content(testPostInfo.getContent())
-                .isAllowComment(true)
+                .allowComment(true)
                 .type(testPostInfo.getPostType())
                 .build();
         PostInfo postInfo = this.postService.createPostInfo(account, board, postInfoCreate);
@@ -403,7 +403,7 @@ public abstract class IricomTestSuite {
         Post post = postMap.get(testPostInfo);
 
         PostInfoUpdate postInfoUpdate = PostInfoUpdate.builder()
-                .isAllowComment(false)
+                .allowComment(false)
                 .build();
         this.postService.updatePostInfo(account, board, post, postInfoUpdate);
 

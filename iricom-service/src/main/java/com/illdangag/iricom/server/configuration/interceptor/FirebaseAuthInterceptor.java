@@ -59,8 +59,7 @@ public class FirebaseAuthInterceptor implements HandlerInterceptor {
         if (firebaseTokenOptional.isPresent()) {
             // firebase 토큰으로 사용자를 조회
             FirebaseToken firebaseToken = firebaseTokenOptional.get();
-            FirebaseAuthentication firebaseAuthentication = this.getFirebaseAuthentication(firebaseToken);
-            account = firebaseAuthentication.getAccount();
+            account = this.getFirebaseAuthentication(firebaseToken);
             request.setAttribute("account", account); // 계정 정보를 api endpoint로 전달
         }
 
@@ -164,34 +163,29 @@ public class FirebaseAuthInterceptor implements HandlerInterceptor {
         return Optional.of(firebaseToken);
     }
 
-    private FirebaseAuthentication getFirebaseAuthentication(FirebaseToken firebaseToken) {
+    /**
+     * firebase token으로 계정 정보 조회
+     */
+    private Account getFirebaseAuthentication(FirebaseToken firebaseToken) {
         Optional<FirebaseAuthentication> firebaseAuthenticationOptional = this.firebaseAuthenticationRepository.getFirebaseAuthentication(firebaseToken.getUid());
         FirebaseAuthentication firebaseAuthentication;
         if (firebaseAuthenticationOptional.isEmpty()) {
             // 로그인 후 첫 API 호출인 경우, firebase 정보에 대하여 iricom 계정 생성
             Account account = null;
+
             List<Account> accountList = this.accountRepository.getAccountList(firebaseToken.getEmail());
-            if (accountList.isEmpty()) {
-                account = Account.builder()
-                        .email(firebaseToken.getEmail())
-                        .build();
+            if (accountList.isEmpty()) { // 계정이 존재하지 않은 경우
+                account = Account.builder().email(firebaseToken.getEmail()).build();
             } else {
                 account = accountList.get(0);
             }
 
-            firebaseAuthentication = FirebaseAuthentication.builder()
-                    .id(firebaseToken.getUid())
-                    .account(account)
-                    .build();
+            firebaseAuthentication = FirebaseAuthentication.builder().id(firebaseToken.getUid()).account(account).build();
             this.accountRepository.saveAccount(account);
 
             AccountDetail accountDetail = account.getAccountDetail();
             if (accountDetail == null) {
-                accountDetail = AccountDetail.builder()
-                        .account(account)
-                        .nickname("")
-                        .description("")
-                        .build();
+                accountDetail = AccountDetail.builder().account(account).nickname("").description("").build();
                 this.accountRepository.saveAccountDetail(accountDetail);
                 account.setAccountDetail(accountDetail);
                 this.accountRepository.saveAccount(account);
@@ -201,6 +195,6 @@ public class FirebaseAuthInterceptor implements HandlerInterceptor {
             firebaseAuthentication = firebaseAuthenticationOptional.get();
         }
 
-        return firebaseAuthentication;
+        return firebaseAuthentication.getAccount();
     }
 }

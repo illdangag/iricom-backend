@@ -91,7 +91,7 @@ public class BanServiceBanTest extends IricomTestSuite {
         Assertions.assertNotNull(postBanInfo);
         Assertions.assertEquals("BAN", postBanInfo.getReason());
         Assertions.assertEquals(String.valueOf(post.getId()), postBanInfo.getPostInfo().getId());
-        Assertions.assertTrue(postBanInfo.getPostInfo().getIsBan());
+        Assertions.assertTrue(postBanInfo.getPostInfo().getBan());
         Assertions.assertTrue(postBanInfo.getEnabled());
     }
 
@@ -110,7 +110,7 @@ public class BanServiceBanTest extends IricomTestSuite {
         Assertions.assertNotNull(postBanInfo);
         Assertions.assertEquals("BAN", postBanInfo.getReason());
         Assertions.assertEquals(String.valueOf(post.getId()), postBanInfo.getPostInfo().getId());
-        Assertions.assertTrue(postBanInfo.getPostInfo().getIsBan());
+        Assertions.assertTrue(postBanInfo.getPostInfo().getBan());
         Assertions.assertTrue(postBanInfo.getEnabled());
     }
 

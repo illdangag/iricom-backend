@@ -85,7 +85,7 @@ public class PostServiceImpl implements PostService {
                 .type(postInfoCreate.getType())
                 .title(postInfoCreate.getTitle())
                 .content(postInfoCreate.getContent())
-                .allowComment(postInfoCreate.getIsAllowComment())
+                .allowComment(postInfoCreate.getAllowComment())
                 .build();
         post.setTemporaryContent(postContent);
 
@@ -154,8 +154,8 @@ public class PostServiceImpl implements PostService {
         if (postInfoUpdate.getContent() != null) {
             temporaryPostContent.setContent(postInfoUpdate.getContent());
         }
-        if (postInfoUpdate.getIsAllowComment() != null) {
-            temporaryPostContent.setAllowComment(postInfoUpdate.getIsAllowComment());
+        if (postInfoUpdate.getAllowComment() != null) {
+            temporaryPostContent.setAllowComment(postInfoUpdate.getAllowComment());
         }
 
         this.postRepository.save(temporaryPostContent);

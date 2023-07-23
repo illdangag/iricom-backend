@@ -18,5 +18,5 @@ public class PostInfoUpdate {
     @Size(max = 10000, message = "The content must be less than 10000 characters.")
     private String content;
 
-    private Boolean isAllowComment;
+    private Boolean allowComment;
 }

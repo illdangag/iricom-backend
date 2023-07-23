@@ -36,7 +36,7 @@ public class PostInfo {
 
     private String content;
 
-    private Boolean isAllowComment;
+    private Boolean allowComment;
 
     private Long viewCount;
 
@@ -46,15 +46,15 @@ public class PostInfo {
 
     private Long commentCount;
 
-    private Boolean isPublish;
+    private Boolean publish;
 
     private Boolean hasTemporary;
 
     private String boardId;
 
-    private Boolean isReport;
+    private Boolean report;
 
-    private Boolean isBan;
+    private Boolean ban;
 
     public PostInfo(Post post, boolean includeContent, PostState postState, long commentCount, long upvote, long downvote, long reportCount, boolean isBan) {
         this.id = "" + post.getId();
@@ -65,7 +65,7 @@ public class PostInfo {
         this.upvote = upvote;
         this.downvote = downvote;
         this.commentCount = commentCount;
-        this.isPublish = post.getContent() != null;
+        this.publish = post.getContent() != null;
         this.hasTemporary = post.getTemporaryContent() != null;
         this.boardId = "" + post.getBoard().getId();
 
@@ -86,16 +86,16 @@ public class PostInfo {
         this.type = content.getType().getText();
         this.status = content.getState().getText();
         this.title = content.getTitle();
-        this.isAllowComment = content.getAllowComment();
+        this.allowComment = content.getAllowComment();
 
         if (includeContent) {
             this.content = content.getContent();
         }
 
-        this.isReport = reportCount >= 10;
-        this.isBan = isBan;
+        this.report = reportCount >= 10;
+        this.ban = isBan;
 
-        if (this.isReport || this.isBan) {
+        if (this.report || this.ban) {
             this.content = null;
         }
     }

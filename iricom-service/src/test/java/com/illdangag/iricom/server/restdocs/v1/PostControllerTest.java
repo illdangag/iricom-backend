@@ -78,7 +78,7 @@ public class PostControllerTest extends IricomTestSuite {
         requestBody.put("title", "new_title");
         requestBody.put("type", "post");
         requestBody.put("content", "new_content");
-        requestBody.put("isAllowComment", true);
+        requestBody.put("allowComment", true);
 
         MockHttpServletRequestBuilder requestBuilder = post("/v1/boards/{boardId}/posts", board.getId())
                 .content(getJsonString(requestBody))
@@ -110,7 +110,7 @@ public class PostControllerTest extends IricomTestSuite {
                                 fieldWithPath("title").description("제목"),
                                 fieldWithPath("type").description("게시물의 종류 (post: 게시물, notification: 공지사항)"),
                                 fieldWithPath("content").description("내용"),
-                                fieldWithPath("isAllowComment").description("댓글 허용 여부")
+                                fieldWithPath("allowComment").description("댓글 허용 여부")
                         ),
                         responseFields(fieldDescriptorList.toArray(FieldDescriptor[]::new))
                 ));
@@ -209,7 +209,7 @@ public class PostControllerTest extends IricomTestSuite {
         requestBody.put("title", "update_title");
         requestBody.put("type", "post");
         requestBody.put("content", "update_content");
-        requestBody.put("isAllowComment", false);
+        requestBody.put("allowComment", false);
 
         MockHttpServletRequestBuilder requestBuilder = patch("/v1/boards/{boardId}/posts/{postId}", board.getId(), post.getId())
                 .content(getJsonString(requestBody))
@@ -242,7 +242,7 @@ public class PostControllerTest extends IricomTestSuite {
                                 fieldWithPath("title").description("제목"),
                                 fieldWithPath("type").description("게시물의 종류 (post: 게시물, notification: 공지사항)"),
                                 fieldWithPath("content").description("내용"),
-                                fieldWithPath("isAllowComment").description("댓글 허용 여부")
+                                fieldWithPath("allowComment").description("댓글 허용 여부")
                         ),
                         responseFields(fieldDescriptorList.toArray(FieldDescriptor[]::new))
                 ));

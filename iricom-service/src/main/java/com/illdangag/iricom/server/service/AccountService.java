@@ -1,7 +1,6 @@
 package com.illdangag.iricom.server.service;
 
 import com.illdangag.iricom.server.data.entity.Account;
-import com.illdangag.iricom.server.data.request.AccountInfoCreate;
 import com.illdangag.iricom.server.data.request.AccountInfoSearch;
 import com.illdangag.iricom.server.data.request.AccountInfoUpdate;
 import com.illdangag.iricom.server.data.response.AccountInfo;
@@ -12,8 +11,6 @@ import java.util.List;
 import java.util.Map;
 
 public interface AccountService {
-    AccountInfo createAccountInfo(@Valid AccountInfoCreate accountInfoCreate);
-
     AccountInfo getAccountInfo(String id);
 
     AccountInfo getAccountInfo(Account account);

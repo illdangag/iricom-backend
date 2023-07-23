@@ -22,11 +22,11 @@ public class BoardInfoCreate {
     private String description = "";
 
     @Builder.Default
-    private Boolean enabled = Boolean.TRUE;
+    private Boolean enabled = Boolean.TRUE; // 활성화
 
     @Builder.Default
-    private Boolean undisclosed = Boolean.FALSE;
+    private Boolean undisclosed = Boolean.FALSE; // 비공개 게시판
 
     @Builder.Default
-    private Boolean notificationOnly = Boolean.FALSE;
+    private Boolean notificationOnly = Boolean.FALSE; // 공지 사항 전용
 }

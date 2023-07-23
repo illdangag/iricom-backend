@@ -26,7 +26,9 @@ public class IricomFieldsSnippet {
             ResponseField.builder().path("id").description("아이디").build(),
             ResponseField.builder().path("title").description("제목").build(),
             ResponseField.builder().path("description").description("설명").build(),
-            ResponseField.builder().path("isEnabled").description("활성화 여부").build()
+            ResponseField.builder().path("enabled").description("활성화 여부").build(),
+            ResponseField.builder().path("unDisclosed").description("비공개 여부").build(),
+            ResponseField.builder().path("notificationOnly").description("공지사항 전용 여부").build()
     );
 
     private static final List<ResponseField> postResponseFieldList = Arrays.asList(
@@ -41,12 +43,12 @@ public class IricomFieldsSnippet {
             ResponseField.builder().path("upvote").description("좋아요").build(),
             ResponseField.builder().path("downvote").description("싫어요").build(),
             ResponseField.builder().path("commentCount").description("댓글 수").build(),
-            ResponseField.builder().path("isAllowComment").description("댓글 허용 여부").build(),
-            ResponseField.builder().path("isPublish").description("임시 저장 여부").build(),
+            ResponseField.builder().path("allowComment").description("댓글 허용 여부").build(),
+            ResponseField.builder().path("publish").description("임시 저장 여부").build(),
             ResponseField.builder().path("hasTemporary").description("임시 저장 여부").build(),
             ResponseField.builder().path("boardId").description("게시물이 작성된 게시판 아이디").build(),
-            ResponseField.builder().path("isReport").description("신고 여부").build(),
-            ResponseField.builder().path("isBan").description("차단 여부").build(),
+            ResponseField.builder().path("report").description("신고 여부").build(),
+            ResponseField.builder().path("ban").description("차단 여부").build(),
             ResponseField.builder().path("account").description("작성자").build()
     );
 
@@ -59,7 +61,7 @@ public class IricomFieldsSnippet {
             ResponseField.builder().path("upvote").description("좋아요").type(JsonFieldType.NUMBER).build(),
             ResponseField.builder().path("downvote").description("싫어요").type(JsonFieldType.NUMBER).build(),
             ResponseField.builder().path("hasNestedComment").description("하위 댓글 여부").type(JsonFieldType.BOOLEAN).build(),
-            ResponseField.builder().path("isDeleted").description("삭제 여부").type(JsonFieldType.BOOLEAN).build(),
+            ResponseField.builder().path("deleted").description("삭제 여부").type(JsonFieldType.BOOLEAN).build(),
             ResponseField.builder().path("isReport").description("신고 여부").type(JsonFieldType.BOOLEAN).build(),
             ResponseField.builder().path("nestedComments").description("대댓글 목록").isOptional(true).type(JsonFieldType.ARRAY).build()
     );

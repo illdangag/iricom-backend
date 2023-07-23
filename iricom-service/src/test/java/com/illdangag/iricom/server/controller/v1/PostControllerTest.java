@@ -187,7 +187,7 @@ public class PostControllerTest extends IricomTestSuite {
                         .andExpect(jsonPath("$.title").value("new_title"))
                         .andExpect(jsonPath("$.type").value("post"))
                         .andExpect(jsonPath("$.content").value("new_content"))
-                        .andExpect(jsonPath("$.isAllowComment").value(true))
+                        .andExpect(jsonPath("$.allowComment").value(true))
                         .andDo(print());
             }
 
@@ -210,7 +210,7 @@ public class PostControllerTest extends IricomTestSuite {
                         .andExpect(jsonPath("$.title").value("only_title"))
                         .andExpect(jsonPath("$.type").value("post"))
                         .andExpect(jsonPath("$.content").value(""))
-                        .andExpect(jsonPath("$.isAllowComment").value(true))
+                        .andExpect(jsonPath("$.allowComment").value(true))
                         .andDo(print());
             }
 
@@ -303,7 +303,7 @@ public class PostControllerTest extends IricomTestSuite {
                         .andExpect(jsonPath("$.title").value("new_title"))
                         .andExpect(jsonPath("$.type").value("notification"))
                         .andExpect(jsonPath("$.content").value("new_content"))
-                        .andExpect(jsonPath("$.isAllowComment").value(true))
+                        .andExpect(jsonPath("$.allowComment").value(true))
                         .andDo(print());
             }
 
@@ -326,7 +326,7 @@ public class PostControllerTest extends IricomTestSuite {
                         .andExpect(jsonPath("$.title").value("only_title"))
                         .andExpect(jsonPath("$.type").value("notification"))
                         .andExpect(jsonPath("$.content").value(""))
-                        .andExpect(jsonPath("$.isAllowComment").value(true))
+                        .andExpect(jsonPath("$.allowComment").value(true))
                         .andDo(print());
             }
 
@@ -417,7 +417,7 @@ public class PostControllerTest extends IricomTestSuite {
                             .andExpect(jsonPath("$.title").value("new_title"))
                             .andExpect(jsonPath("$.type").value("notification"))
                             .andExpect(jsonPath("$.content").value("new_content"))
-                            .andExpect(jsonPath("$.isAllowComment").value(true))
+                            .andExpect(jsonPath("$.allowComment").value(true))
                             .andDo(print());
                 }
 
@@ -782,7 +782,7 @@ public class PostControllerTest extends IricomTestSuite {
             Map<String, Object> requestBody = new HashMap<>();
             requestBody.put("title", "update_title");
             requestBody.put("content", "update_content");
-            requestBody.put("isAllowComment", false);
+            requestBody.put("allowComment", false);
 
             MockHttpServletRequestBuilder requestBuilder = patch("/v1/boards/" + board.getId() + "/posts/" + post.getId())
                     .content(getJsonString(requestBody))
@@ -793,7 +793,7 @@ public class PostControllerTest extends IricomTestSuite {
                     .andExpect(status().is(200))
                     .andExpect(jsonPath("$.title").value("update_title"))
                     .andExpect(jsonPath("$.content").value("update_content"))
-                    .andExpect(jsonPath("$.isAllowComment").value(false))
+                    .andExpect(jsonPath("$.allowComment").value(false))
                     .andDo(print());
         }
 
@@ -844,7 +844,7 @@ public class PostControllerTest extends IricomTestSuite {
             Board board = post.getBoard();
 
             Map<String, Object> requestBody = new HashMap<>();
-            requestBody.put("isAllowComment", false);
+            requestBody.put("allowComment", false);
 
             MockHttpServletRequestBuilder requestBuilder = patch("/v1/boards/" + board.getId() + "/posts/" + post.getId())
                     .content(getJsonString(requestBody))
@@ -853,7 +853,7 @@ public class PostControllerTest extends IricomTestSuite {
 
             mockMvc.perform(requestBuilder)
                     .andExpect(status().is(200))
-                    .andExpect(jsonPath("$.isAllowComment").value(false))
+                    .andExpect(jsonPath("$.allowComment").value(false))
                     .andDo(print());
         }
 

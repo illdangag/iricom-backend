@@ -59,7 +59,7 @@ public class CommentServiceCreateTest extends IricomTestSuite {
 
         Assertions.assertEquals("댓글 생성", commentInfo.getContent());
         Assertions.assertNull(commentInfo.getReferenceCommentId());
-        Assertions.assertFalse(commentInfo.getIsDeleted());
+        Assertions.assertFalse(commentInfo.getDeleted());
         Assertions.assertFalse(commentInfo.getIsReport());
     }
 
@@ -79,7 +79,7 @@ public class CommentServiceCreateTest extends IricomTestSuite {
         CommentInfo commentInfo = commentService.createCommentInfo(account, board, post, commentInfoCreate);
         Assertions.assertEquals("대댓글 생성", commentInfo.getContent());
         Assertions.assertEquals(referenceCommentId, commentInfo.getReferenceCommentId());
-        Assertions.assertFalse(commentInfo.getIsDeleted());
+        Assertions.assertFalse(commentInfo.getDeleted());
         Assertions.assertFalse(commentInfo.getIsReport());
     }
 }

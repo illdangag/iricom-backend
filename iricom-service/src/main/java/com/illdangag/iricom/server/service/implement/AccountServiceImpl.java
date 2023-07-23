@@ -3,7 +3,6 @@ package com.illdangag.iricom.server.service.implement;
 import com.illdangag.iricom.server.data.entity.Account;
 import com.illdangag.iricom.server.data.entity.AccountAuth;
 import com.illdangag.iricom.server.data.entity.AccountDetail;
-import com.illdangag.iricom.server.data.request.AccountInfoCreate;
 import com.illdangag.iricom.server.data.request.AccountInfoSearch;
 import com.illdangag.iricom.server.data.request.AccountInfoUpdate;
 import com.illdangag.iricom.server.data.response.AccountInfo;
@@ -34,30 +33,6 @@ public class AccountServiceImpl implements AccountService {
     @Autowired
     public AccountServiceImpl(AccountRepository accountRepository) {
         this.accountRepository = accountRepository;
-    }
-
-    @Override
-    public AccountInfo createAccountInfo(@Valid AccountInfoCreate accountInfoCreate) {
-        Account account = Account.builder()
-                .email(accountInfoCreate.getEmail())
-                .build();
-        this.accountRepository.saveAccount(account);
-
-        AccountDetail accountDetail = AccountDetail.builder()
-                .account(account)
-                .nickname(accountInfoCreate.getNickname())
-                .description(accountInfoCreate.getDescription())
-                .build();
-        this.accountRepository.saveAccountDetail(accountDetail);
-
-        account.setAccountDetail(accountDetail);
-
-        if (!accountInfoCreate.getNickname().isEmpty()) {
-            account.setAuth(AccountAuth.ACCOUNT);
-        }
-        this.accountRepository.saveAccount(account);
-
-        return new AccountInfo(account);
     }
 
     @Override

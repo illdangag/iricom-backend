@@ -36,9 +36,11 @@ public class BoardServiceImpl implements BoardService {
         Board board = Board.builder()
                 .title(boardInfoCreate.getTitle())
                 .description(boardInfoCreate.getDescription())
+                .enabled(boardInfoCreate.getEnabled())
                 .undisclosed(boardInfoCreate.getUndisclosed())
                 .notificationOnly(boardInfoCreate.getNotificationOnly())
                 .build();
+
         this.boardRepository.save(board);
         return new BoardInfo(board);
     }

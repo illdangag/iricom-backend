@@ -96,7 +96,9 @@ public class BoardAuthorizationControllerTest extends IricomTestSuite {
         fieldDescriptorList.add(fieldWithPath("boardAdmins.[].id").description("게시판 아이디"));
         fieldDescriptorList.add(fieldWithPath("boardAdmins.[].title").description("게시판 제목"));
         fieldDescriptorList.add(fieldWithPath("boardAdmins.[].description").description("게시판 설명"));
-        fieldDescriptorList.add(fieldWithPath("boardAdmins.[].isEnabled").description("게시판 활성화 여부"));
+        fieldDescriptorList.add(fieldWithPath("boardAdmins.[].enabled").description("게시판 활성화 여부"));
+        fieldDescriptorList.add(fieldWithPath("boardAdmins.[].unDisclosed").description("게시판 비공개 여부"));
+        fieldDescriptorList.add(fieldWithPath("boardAdmins.[].notificationOnly").description("게시판 공지 사항 전용 여부"));
         fieldDescriptorList.addAll(IricomFieldsSnippet.getAccount("boardAdmins.[].accounts.[]."));
 
         mockMvc.perform(requestBuilder)
@@ -134,7 +136,10 @@ public class BoardAuthorizationControllerTest extends IricomTestSuite {
         fieldDescriptorList.add(fieldWithPath("id").description("게시판 아이디"));
         fieldDescriptorList.add(fieldWithPath("title").description("게시판 제목"));
         fieldDescriptorList.add(fieldWithPath("description").description("게시판 설명"));
-        fieldDescriptorList.add(fieldWithPath("isEnabled").description("게시판 활셩화 여부"));
+        fieldDescriptorList.add(fieldWithPath("enabled").description("게시판 활성화 여부"));
+        fieldDescriptorList.add(fieldWithPath("unDisclosed").description("게시판 비공개 여부"));
+        fieldDescriptorList.add(fieldWithPath("notificationOnly").description("게시판 공지 사항 전용 여부"));
+
         fieldDescriptorList.addAll(IricomFieldsSnippet.getAccount("accounts.[]."));
 
         mockMvc.perform(requestBuilder)

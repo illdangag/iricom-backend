@@ -299,7 +299,7 @@ public class BoardAuthorizationControllerTest extends IricomTestSuite {
                         .andExpect(jsonPath("$.id").exists())
                         .andExpect(jsonPath("$.title").exists())
                         .andExpect(jsonPath("$.description").exists())
-                        .andExpect(jsonPath("$.isEnabled").exists())
+                        .andExpect(jsonPath("$.enabled").exists())
                         .andExpect(jsonPath("$.accounts").isArray())
                         .andDo(print());
             }

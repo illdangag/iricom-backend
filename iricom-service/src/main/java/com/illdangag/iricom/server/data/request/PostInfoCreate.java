@@ -23,5 +23,5 @@ public class PostInfoCreate {
     private String content = "";
 
     @Builder.Default
-    private Boolean isAllowComment = true;
+    private Boolean allowComment = true;
 }
