@@ -65,7 +65,7 @@ public class BanServiceUnbanTest extends IricomTestSuite {
     public BanServiceUnbanTest(ApplicationContext context) {
         super(context);
 
-        addTestBoardInfo(boardInfo00);
+        addTestBoardInfo(boardInfo00, boardInfo01);
         addTestPostInfo(alreadyBanPostInfo00, alreadyBanPostInfo01, alreadyBanPostInfo02, alreadyBanPostInfo03);
         addTestPostBanInfo(postBanInfo00, postBanInfo01, postBanInfo02, postBanInfo03);
 
@@ -76,10 +76,10 @@ public class BanServiceUnbanTest extends IricomTestSuite {
     @DisplayName("시스템 관리자")
     public void unbanSystemAdmin() throws Exception {
         Account account = getAccount(systemAdmin);
-        Post post = getPost(alreadyBanPostInfo02);
-        Board board = post.getBoard();
+        String boardId = getBoardId(alreadyBanPostInfo02.getBoard());
+        String postId = getPostId(alreadyBanPostInfo02);
 
-        PostBanInfo postBanInfo = banService.unbanPost(account, board, post);
+        PostBanInfo postBanInfo = banService.unbanPost(account, boardId, postId);
 
         Assertions.assertFalse(postBanInfo.getEnabled());
     }
@@ -88,10 +88,10 @@ public class BanServiceUnbanTest extends IricomTestSuite {
     @DisplayName("게시판 관리자")
     public void unbanBoardAdmin() throws Exception {
         Account account = getAccount(allBoardAdmin);
-        Post post = getPost(alreadyBanPostInfo03);
-        Board board = post.getBoard();
+        String boardId = getBoardId(alreadyBanPostInfo03.getBoard());
+        String postId = getPostId(alreadyBanPostInfo03);
 
-        PostBanInfo postBanInfo = banService.unbanPost(account, board, post);
+        PostBanInfo postBanInfo = banService.unbanPost(account, boardId, postId);
 
         Assertions.assertFalse(postBanInfo.getEnabled());
     }
@@ -100,47 +100,59 @@ public class BanServiceUnbanTest extends IricomTestSuite {
     @DisplayName("다른 게시판 관리자")
     public void unbanOtherBoardAdmin() throws Exception {
         Account account = getAccount(enableBoardAdmin);
-        Post post = getPost(alreadyBanPostInfo01);
-        Board board = post.getBoard();
+        String boardId = getBoardId(alreadyBanPostInfo01.getBoard());
+        String postId = getPostId(alreadyBanPostInfo01);
 
-        Assertions.assertThrows(IricomException.class, () -> {
-            banService.unbanPost(account, board, post);
+        IricomException iricomException = Assertions.assertThrows(IricomException.class, () -> {
+            banService.unbanPost(account, boardId, postId);
         });
+
+        Assertions.assertEquals("04000009", iricomException.getErrorCode());
+        Assertions.assertEquals("Invalid authorization.", iricomException.getMessage());
     }
 
     @Test
     @DisplayName("일반 사용자")
     public void unbanAccount() throws Exception {
         Account account = getAccount(common00);
-        Post post = getPost(alreadyBanPostInfo01);
-        Board board = post.getBoard();
+        String boardId = getBoardId(alreadyBanPostInfo01.getBoard());
+        String postId = getPostId(alreadyBanPostInfo01);
 
-        Assertions.assertThrows(IricomException.class, () -> {
-            banService.unbanPost(account, board, post);
+        IricomException iricomException = Assertions.assertThrows(IricomException.class, () -> {
+            banService.unbanPost(account, boardId, postId);
         });
+
+        Assertions.assertEquals("04000009", iricomException.getErrorCode());
+        Assertions.assertEquals("Invalid authorization.", iricomException.getMessage());
     }
 
     @Test
     @DisplayName("등록되지 않은 사용자")
     public void unbanUnknown() throws Exception {
         Account account = getAccount(unknown00);
-        Post post = getPost(alreadyBanPostInfo01);
-        Board board = post.getBoard();
+        String boardId = getBoardId(alreadyBanPostInfo01.getBoard());
+        String postId = getPostId(alreadyBanPostInfo01);
 
-        Assertions.assertThrows(IricomException.class, () -> {
-            banService.unbanPost(account, board, post);
+        IricomException iricomException = Assertions.assertThrows(IricomException.class, () -> {
+            banService.unbanPost(account, boardId, postId);
         });
+
+        Assertions.assertEquals("04000009", iricomException.getErrorCode());
+        Assertions.assertEquals("Invalid authorization.", iricomException.getMessage());
     }
 
     @Test
-    @DisplayName("차단 해제")
+    @DisplayName("게시물이 포함된 게시판이 아닌 다른 게시판")
     public void unbanPostInOtherBoard() throws Exception {
         Account account = getAccount(systemAdmin);
-        Board board = getBoard(boardInfo01);
-        Post post = getPost(alreadyBanPostInfo01);
+        String boardId = getBoardId(boardInfo01);
+        String postId = getPostId(alreadyBanPostInfo01);
 
-        Assertions.assertThrows(IricomException.class, () -> {
-            banService.unbanPost(account, board, post);
+        IricomException iricomException = Assertions.assertThrows(IricomException.class, () -> {
+            banService.unbanPost(account, boardId, postId);
         });
+
+        Assertions.assertEquals("04000000", iricomException.getErrorCode());
+        Assertions.assertEquals("Not exist post.", iricomException.getMessage());
     }
 }

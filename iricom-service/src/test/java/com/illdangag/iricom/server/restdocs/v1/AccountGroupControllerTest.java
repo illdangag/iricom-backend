@@ -2,7 +2,6 @@ package com.illdangag.iricom.server.restdocs.v1;
 
 import com.illdangag.iricom.server.data.entity.Account;
 import com.illdangag.iricom.server.data.entity.AccountGroup;
-import com.illdangag.iricom.server.data.entity.Board;
 import com.illdangag.iricom.server.restdocs.snippet.IricomFieldsSnippet;
 import com.illdangag.iricom.server.test.IricomTestSuite;
 import com.illdangag.iricom.server.test.data.wrapper.TestAccountGroupInfo;
@@ -63,7 +62,7 @@ public class AccountGroupControllerTest extends IricomTestSuite {
     @DisplayName("계정 그룹 생성")
     public void ag001() throws Exception {
         Account account = getAccount(common00);
-        Board board = getBoard(testBoardInfo00);
+        String boardId = getBoardId(testBoardInfo00);
 
         Map<String, Object> requestBody = new HashMap<>();
         requestBody.put("title", "Account group");
@@ -72,7 +71,7 @@ public class AccountGroupControllerTest extends IricomTestSuite {
         List<String> accountIdList = Arrays.asList(String.valueOf(account.getId()));
         requestBody.put("accountIds", accountIdList);
 
-        List<String> boardIdList = Arrays.asList(String.valueOf(board.getId()));
+        List<String> boardIdList = Arrays.asList(String.valueOf(boardId));
         requestBody.put("boardIds", boardIdList);
 
         MockHttpServletRequestBuilder requestBuilder = post("/v1/group/account")
@@ -190,7 +189,7 @@ public class AccountGroupControllerTest extends IricomTestSuite {
         AccountGroup accountGroup = getAccountGroup(testAccountGroupInfo01);
 
         Account account = getAccount(common00);
-        Board board = getBoard(testBoardInfo00);
+        String boardId = getBoardId(testBoardInfo00);
 
         Map<String, Object> requestBody = new HashMap<>();
         requestBody.put("title", "Update group title");
@@ -199,7 +198,7 @@ public class AccountGroupControllerTest extends IricomTestSuite {
         List<String> accountIdList = Arrays.asList(String.valueOf(account.getId()));
         requestBody.put("accountIds", accountIdList);
 
-        List<String> boardIdList = Arrays.asList(String.valueOf(board.getId()));
+        List<String> boardIdList = Arrays.asList(String.valueOf(boardId));
         requestBody.put("boardIds", boardIdList);
 
         MockHttpServletRequestBuilder requestBuilder = patch("/v1/group/account/{id}", accountGroup.getId())

@@ -1,7 +1,6 @@
 package com.illdangag.iricom.server.service.post;
 
 import com.illdangag.iricom.server.data.entity.Account;
-import com.illdangag.iricom.server.data.entity.Board;
 import com.illdangag.iricom.server.data.entity.PostType;
 import com.illdangag.iricom.server.data.request.PostInfoCreate;
 import com.illdangag.iricom.server.exception.IricomException;
@@ -51,7 +50,7 @@ public class PostServiceCreateTest extends IricomTestSuite {
     @DisplayName("닉네임이 등록되지 않은 사용자")
     public void postUnregisteredAccount() throws Exception {
         Account account = getAccount(unknown00);
-        Board board = getBoard(boardInfo00);
+        String boardId = getBoardId(boardInfo00);
 
         PostInfoCreate postInfoCreate = PostInfoCreate.builder()
                 .title("Unregistered account post title")
@@ -60,7 +59,7 @@ public class PostServiceCreateTest extends IricomTestSuite {
                 .build();
 
         Assertions.assertThrows(IricomException.class, () -> {
-            postService.createPostInfo(account, board, postInfoCreate);
+            postService.createPostInfo(account, boardId, postInfoCreate);
         });
     }
 
@@ -68,7 +67,7 @@ public class PostServiceCreateTest extends IricomTestSuite {
     @DisplayName("계정 그룹에 포함되지 않은 비공개 게시판")
     public void postUndisclosedBoard() throws Exception {
         Account account = getAccount(common01);
-        Board board = getBoard(undisclosedBoardInfo00);
+        String boardId = getBoardId(undisclosedBoardInfo00);
 
         PostInfoCreate postInfoCreate = PostInfoCreate.builder()
                 .title("Unregistered account post title")
@@ -77,7 +76,7 @@ public class PostServiceCreateTest extends IricomTestSuite {
                 .build();
 
         Assertions.assertThrows(IricomException.class, () -> {
-            postService.createPostInfo(account, board, postInfoCreate);
+            postService.createPostInfo(account, boardId, postInfoCreate);
         });
     }
 
@@ -85,7 +84,7 @@ public class PostServiceCreateTest extends IricomTestSuite {
     @DisplayName("계정 그룹에 포함된 비공개 게시판")
     public void postUndisclosedBoardInAccountGroup() throws Exception {
         Account account = getAccount(common00);
-        Board board = getBoard(undisclosedBoardInfo00);
+        String boardId = getBoardId(undisclosedBoardInfo00);
 
         PostInfoCreate postInfoCreate = PostInfoCreate.builder()
                 .title("Unregistered account post title")
@@ -93,6 +92,6 @@ public class PostServiceCreateTest extends IricomTestSuite {
                 .type(PostType.POST)
                 .build();
 
-        postService.createPostInfo(account, board, postInfoCreate);
+        postService.createPostInfo(account, boardId, postInfoCreate);
     }
 }

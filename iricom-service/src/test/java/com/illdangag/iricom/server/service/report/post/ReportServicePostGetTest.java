@@ -75,9 +75,8 @@ public class ReportServicePostGetTest extends IricomTestSuite {
         Account systemAdminAccount = getAccount(systemAdmin);
         PostReport postReport = getPostReport(postReport00);
         Post post = postReport.getPost();
-        Board board = getBoard(enableBoard01);
+        String boardId = getBoardId(enableBoard01);
 
-        String boardId = String.valueOf(board.getId());
         String postId = String.valueOf(post.getId());
         String reportId = String.valueOf(postReport.getId());
 
@@ -109,14 +108,13 @@ public class ReportServicePostGetTest extends IricomTestSuite {
         PostReport postReport = getPostReport(postReport00);
         Post post = postReport.getPost();
         Board board = post.getBoard();
-        Post invaildPost = getPost(post00);
+        String invalidPostId = getPostId(post00);
 
         String boardId = String.valueOf(board.getId());
-        String postId = String.valueOf(invaildPost.getId());
         String reportId = String.valueOf(postReport.getId());
 
         Assertions.assertThrows(IricomException.class, () -> {
-            reportService.getPostReportInfo(systemAdminAccount, boardId, postId, reportId);
+            reportService.getPostReportInfo(systemAdminAccount, boardId, invalidPostId, reportId);
         });
     }
 

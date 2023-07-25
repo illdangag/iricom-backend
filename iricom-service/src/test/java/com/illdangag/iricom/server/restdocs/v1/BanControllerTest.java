@@ -84,13 +84,13 @@ public class BanControllerTest extends IricomTestSuite {
     @Test
     @DisplayName("게시물 차단")
     public void bp001() throws Exception {
-        Post post = getPost(testPostInfo00);
-        Board board = post.getBoard();
+        String boardId = getBoardId(testPostInfo00.getBoard());
+        String postId = getPostId(testPostInfo00);
 
         Map<String, Object> requestBody = new HashMap<>();
         requestBody.put("reason", "This is ban.");
 
-        MockHttpServletRequestBuilder requestBuilder = post("/v1/ban/post/boards/{boardId}/posts/{postId}", board.getId(), post.getId())
+        MockHttpServletRequestBuilder requestBuilder = post("/v1/ban/post/boards/{boardId}/posts/{postId}", boardId, postId)
                 .content(getJsonString(requestBody))
                 .contentType(MediaType.APPLICATION_JSON);
         setAuthToken(requestBuilder, systemAdmin);
@@ -166,9 +166,9 @@ public class BanControllerTest extends IricomTestSuite {
     @Test
     @DisplayName("게시물 목록 조회: 게시판")
     public void bp003() throws Exception {
-        Board board = getBoard(boardInfo00);
+        String boardId = getBoardId(boardInfo00);
 
-        MockHttpServletRequestBuilder requestBuilder = get("/v1/ban/post/boards/{boardId}", board.getId())
+        MockHttpServletRequestBuilder requestBuilder = get("/v1/ban/post/boards/{boardId}", boardId)
                 .param("skip", "0")
                 .param("limit", "20")
                 .param("reason", "already");
@@ -209,10 +209,10 @@ public class BanControllerTest extends IricomTestSuite {
     @Test
     @DisplayName("게시물 정보 조회")
     public void bp004() throws Exception {
-        Post post = getPost(alreadyPostInfo00);
-        Board board = post.getBoard();
+        String boardId = getBoardId(alreadyPostInfo00.getBoard());
+        String postId = getPostId(alreadyPostInfo00);
 
-        MockHttpServletRequestBuilder requestBuilder = get("/v1/ban/post/boards/{boardId}/posts/{postId}", board.getId(), post.getId());
+        MockHttpServletRequestBuilder requestBuilder = get("/v1/ban/post/boards/{boardId}/posts/{postId}", boardId, postId);
         setAuthToken(requestBuilder, systemAdmin);
 
         List<FieldDescriptor> fieldDescriptorList = new LinkedList<>();
@@ -245,13 +245,13 @@ public class BanControllerTest extends IricomTestSuite {
     @Test
     @DisplayName("게시물 차단")
     public void bp005() throws Exception {
-        Post post = getPost(alreadyPostInfo01);
-        Board board = post.getBoard();
+        String boardId = getBoardId(alreadyPostInfo01.getBoard());
+        String postId = getPostId(alreadyPostInfo01);
 
         Map<String, Object> requestBody = new HashMap<>();
         requestBody.put("reason", "Reason update.");
 
-        MockHttpServletRequestBuilder requestBuilder = patch("/v1/ban/post/boards/{boardId}/posts/{postId}", board.getId(), post.getId())
+        MockHttpServletRequestBuilder requestBuilder = patch("/v1/ban/post/boards/{boardId}/posts/{postId}", boardId, postId)
                 .content(getJsonString(requestBody))
                 .contentType(MediaType.APPLICATION_JSON);
         setAuthToken(requestBuilder, systemAdmin);
@@ -289,10 +289,10 @@ public class BanControllerTest extends IricomTestSuite {
     @Test
     @DisplayName("게시물 차단 해제")
     public void bp006() throws Exception {
-        Post post = getPost(alreadyPostInfo01);
-        Board board = post.getBoard();
+        String boardId = getBoardId(alreadyPostInfo01.getBoard());
+        String postId = getPostId(alreadyPostInfo01);
 
-        MockHttpServletRequestBuilder requestBuilder = delete("/v1/ban/post/boards/{boardId}/posts/{postId}", board.getId(), post.getId());
+        MockHttpServletRequestBuilder requestBuilder = delete("/v1/ban/post/boards/{boardId}/posts/{postId}", boardId, postId);
         setAuthToken(requestBuilder, systemAdmin);
 
         List<FieldDescriptor> fieldDescriptorList = new LinkedList<>();

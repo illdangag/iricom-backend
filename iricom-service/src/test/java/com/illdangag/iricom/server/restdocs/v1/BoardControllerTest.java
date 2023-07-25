@@ -1,6 +1,5 @@
 package com.illdangag.iricom.server.restdocs.v1;
 
-import com.illdangag.iricom.server.data.entity.Board;
 import com.illdangag.iricom.server.restdocs.snippet.IricomFieldsSnippet;
 import com.illdangag.iricom.server.test.IricomTestSuite;
 import com.illdangag.iricom.server.test.data.wrapper.TestBoardInfo;
@@ -122,9 +121,9 @@ public class BoardControllerTest extends IricomTestSuite {
     @Test
     @DisplayName("정보 조회")
     public void bd003() throws Exception {
-        Board board = getBoard(testBoardInfo00);
+        String boardId = getBoardId(testBoardInfo00);
 
-        MockHttpServletRequestBuilder requestBuilder = get("/v1/boards/{id}", board.getId());
+        MockHttpServletRequestBuilder requestBuilder = get("/v1/boards/{id}", boardId);
         setAuthToken(requestBuilder, common00);
 
         List<FieldDescriptor> fieldDescriptorList = new LinkedList<>();
@@ -154,14 +153,14 @@ public class BoardControllerTest extends IricomTestSuite {
     @Test
     @DisplayName("정보 수정")
     public void testCase03() throws Exception {
-        Board board = getBoard(testBoardInfo01);
+        String boardId = getBoardId(testBoardInfo01);
 
         Map<String, Object> requestBody = new HashMap<>();
         requestBody.put("title", "update_title");
         requestBody.put("description", "update_description");
         requestBody.put("enabled", false);
 
-        MockHttpServletRequestBuilder requestBuilder = patch("/v1/boards/{id}", board.getId())
+        MockHttpServletRequestBuilder requestBuilder = patch("/v1/boards/{id}", boardId)
                 .content(getJsonString(requestBody))
                 .contentType(MediaType.APPLICATION_JSON);
         setAuthToken(requestBuilder, systemAdmin);

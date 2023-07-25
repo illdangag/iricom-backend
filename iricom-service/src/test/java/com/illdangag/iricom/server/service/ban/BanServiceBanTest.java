@@ -80,17 +80,17 @@ public class BanServiceBanTest extends IricomTestSuite {
     @DisplayName("시스템 관리자")
     public void banSystemAdmin() throws Exception {
         Account account = getAccount(systemAdmin);
-        Post post = getPost(toBanPostInfo00);
-        Board board = post.getBoard();
+        String boardId = getBoardId(toBanPostInfo00.getBoard());
+        String postId = getPostId(toBanPostInfo00);
 
         PostBanInfoCreate postBanInfoCreate = PostBanInfoCreate.builder()
                 .reason("BAN")
                 .build();
-        PostBanInfo postBanInfo = banService.banPost(account, board, post, postBanInfoCreate);
+        PostBanInfo postBanInfo = banService.banPost(account, boardId, postId, postBanInfoCreate);
 
         Assertions.assertNotNull(postBanInfo);
         Assertions.assertEquals("BAN", postBanInfo.getReason());
-        Assertions.assertEquals(String.valueOf(post.getId()), postBanInfo.getPostInfo().getId());
+        Assertions.assertEquals(String.valueOf(postId), postBanInfo.getPostInfo().getId());
         Assertions.assertTrue(postBanInfo.getPostInfo().getBan());
         Assertions.assertTrue(postBanInfo.getEnabled());
     }
@@ -99,17 +99,17 @@ public class BanServiceBanTest extends IricomTestSuite {
     @DisplayName("게시판 관리자")
     public void banBoardAdmin() throws Exception {
         Account account = getAccount(allBoardAdmin);
-        Post post = getPost(toBanPostInfo01);
-        Board board = post.getBoard();
+        String boardId = getBoardId(toBanPostInfo01.getBoard());
+        String postId = getPostId(toBanPostInfo01);
 
         PostBanInfoCreate postBanInfoCreate = PostBanInfoCreate.builder()
                 .reason("BAN")
                 .build();
-        PostBanInfo postBanInfo = banService.banPost(account, board, post, postBanInfoCreate);
+        PostBanInfo postBanInfo = banService.banPost(account, boardId, postId, postBanInfoCreate);
 
         Assertions.assertNotNull(postBanInfo);
         Assertions.assertEquals("BAN", postBanInfo.getReason());
-        Assertions.assertEquals(String.valueOf(post.getId()), postBanInfo.getPostInfo().getId());
+        Assertions.assertEquals(String.valueOf(postId), postBanInfo.getPostInfo().getId());
         Assertions.assertTrue(postBanInfo.getPostInfo().getBan());
         Assertions.assertTrue(postBanInfo.getEnabled());
     }
@@ -118,15 +118,15 @@ public class BanServiceBanTest extends IricomTestSuite {
     @DisplayName("다른 게시판 관리자")
     public void banOtherBoardAdmin() throws Exception {
         Account account = getAccount(enableBoardAdmin);
-        Post post = getPost(toBanPostInfo01);
-        Board board = post.getBoard();
+        String boardId = getBoardId(toBanPostInfo01.getBoard());
+        String postId = getPostId(toBanPostInfo01);
 
         PostBanInfoCreate postBanInfoCreate = PostBanInfoCreate.builder()
                 .reason("BAN")
                 .build();
 
         Assertions.assertThrows(IricomException.class, () -> {
-            banService.banPost(account, board, post, postBanInfoCreate);
+            banService.banPost(account, boardId, postId, postBanInfoCreate);
         });
     }
 
@@ -134,15 +134,15 @@ public class BanServiceBanTest extends IricomTestSuite {
     @DisplayName("일반 사용자")
     public void banAccount() throws Exception {
         Account account = getAccount(common00);
-        Post post = getPost(toBanPostInfo02);
-        Board board = post.getBoard();
+        String boardId = getBoardId(toBanPostInfo02.getBoard());
+        String postId = getPostId(toBanPostInfo02);
 
         PostBanInfoCreate postBanInfoCreate = PostBanInfoCreate.builder()
                 .reason("BAN")
                 .build();
 
         Assertions.assertThrows(IricomException.class, () -> {
-            banService.banPost(account, board, post, postBanInfoCreate);
+            banService.banPost(account, boardId, postId, postBanInfoCreate);
         });
     }
 
@@ -150,15 +150,15 @@ public class BanServiceBanTest extends IricomTestSuite {
     @DisplayName("등록되지 않은 사용자")
     public void banUnknown() throws Exception {
         Account account = getAccount(unknown00);
-        Post post = getPost(toBanPostInfo02);
-        Board board = post.getBoard();
+        String boardId = getBoardId(toBanPostInfo02.getBoard());
+        String postId = getPostId(toBanPostInfo02);
 
         PostBanInfoCreate postBanInfoCreate = PostBanInfoCreate.builder()
                 .reason("BAN")
                 .build();
 
         Assertions.assertThrows(IricomException.class, () -> {
-            banService.banPost(account, board, post, postBanInfoCreate);
+            banService.banPost(account, boardId, postId, postBanInfoCreate);
         });
     }
 
@@ -166,15 +166,15 @@ public class BanServiceBanTest extends IricomTestSuite {
     @DisplayName("이미 차단된 게시물")
     public void alreadyBanPost() throws Exception {
         Account account = getAccount(systemAdmin);
-        Post post = getPost(alreadyBanPostInfo00);
-        Board board = post.getBoard();
+        String boardId = getBoardId(alreadyBanPostInfo00.getBoard());
+        String postId = getPostId(alreadyBanPostInfo00);
 
         PostBanInfoCreate postBanInfoCreate = PostBanInfoCreate.builder()
                 .reason("BAN")
                 .build();
 
         Assertions.assertThrows(IricomException.class, () -> {
-            banService.banPost(account, board, post, postBanInfoCreate);
+            banService.banPost(account, boardId, postId, postBanInfoCreate);
         });
     }
 
@@ -182,14 +182,14 @@ public class BanServiceBanTest extends IricomTestSuite {
     @DisplayName("이미 차단한 게시물")
     public void banAlreadyBanPost() {
         Account account = getAccount(systemAdmin);
-        Post post = getPost(alreadyBanPostInfo01);
-        Board board = post.getBoard();
+        String boardId = getBoardId(alreadyBanPostInfo01.getBoard());
+        String postId = getPostId(alreadyBanPostInfo01);
 
         PostBanInfoCreate postBanInfoCreate = PostBanInfoCreate.builder()
                 .reason("Already ban")
                 .build();
         Assertions.assertThrows(IricomException.class, () -> {
-            banService.banPost(account, board, post, postBanInfoCreate);
+            banService.banPost(account, boardId, postId, postBanInfoCreate);
         });
     }
 
@@ -197,14 +197,14 @@ public class BanServiceBanTest extends IricomTestSuite {
     @DisplayName("다른 게시판에 존재하는 게시물")
     public void banPostInOtherBoard() throws Exception {
         Account account = getAccount(systemAdmin);
-        Board board = getBoard(boardInfo00);
-        Post post = getPost(toBanPostInfo04);
+        String boardId = getBoardId(boardInfo00);
+        String postId = getPostId(toBanPostInfo04);
 
         PostBanInfoCreate postBanInfoCreate = PostBanInfoCreate.builder()
                 .reason("not exist post")
                 .build();
         Assertions.assertThrows(IricomException.class, () -> {
-            banService.banPost(account, board, post, postBanInfoCreate);
+            banService.banPost(account, boardId, postId, postBanInfoCreate);
         });
     }
 }

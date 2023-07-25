@@ -1,7 +1,6 @@
 package com.illdangag.iricom.server.service.account.group;
 
 import com.illdangag.iricom.server.data.entity.Account;
-import com.illdangag.iricom.server.data.entity.Board;
 import com.illdangag.iricom.server.data.request.AccountGroupInfoCreate;
 import com.illdangag.iricom.server.data.response.AccountGroupInfo;
 import com.illdangag.iricom.server.exception.IricomException;
@@ -84,12 +83,12 @@ public class AccountGroupServiceCreateTest extends IricomTestSuite {
         String title = "New account group with board";
         String description = "description";
 
-        Board board = getBoard(testBoardInfo00);
+        String boardId = getBoardId(testBoardInfo00);
 
         AccountGroupInfoCreate accountGroupInfoCreate = AccountGroupInfoCreate.builder()
                 .title(title)
                 .description(description)
-                .boardIdList(Arrays.asList(String.valueOf(board.getId())))
+                .boardIdList(Arrays.asList(String.valueOf(boardId)))
                 .build();
 
         AccountGroupInfo accountGroupInfo = accountGroupService.createAccountGroupInfo(accountGroupInfoCreate);
@@ -108,12 +107,12 @@ public class AccountGroupServiceCreateTest extends IricomTestSuite {
         String description = "description";
 
         Account account = getAccount(common00);
-        Board board = getBoard(testBoardInfo00);
+        String boardId = getBoardId(testBoardInfo00);
 
         AccountGroupInfoCreate accountGroupInfoCreate = AccountGroupInfoCreate.builder()
                 .title(title)
                 .description(description)
-                .boardIdList(Arrays.asList(String.valueOf(board.getId())))
+                .boardIdList(Arrays.asList(String.valueOf(boardId)))
                 .accountIdList(Arrays.asList(String.valueOf(account.getId())))
                 .build();
 

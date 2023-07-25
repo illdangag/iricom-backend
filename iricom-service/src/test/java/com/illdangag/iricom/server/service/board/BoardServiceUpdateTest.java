@@ -1,6 +1,5 @@
 package com.illdangag.iricom.server.service.board;
 
-import com.illdangag.iricom.server.data.entity.Board;
 import com.illdangag.iricom.server.data.request.BoardInfoUpdate;
 import com.illdangag.iricom.server.data.response.BoardInfo;
 import com.illdangag.iricom.server.service.BoardService;
@@ -38,8 +37,7 @@ public class BoardServiceUpdateTest extends IricomTestSuite {
     @Test
     @DisplayName("수정")
     public void updateBoard() throws Exception {
-        Board board = getBoard(testBoardInfo00);
-        String boardId = String.valueOf(board.getId());
+        String boardId = getBoardId(testBoardInfo00);
 
         BoardInfoUpdate boardInfoUpdate = BoardInfoUpdate.builder()
                 .title("update title")
@@ -59,41 +57,41 @@ public class BoardServiceUpdateTest extends IricomTestSuite {
     @Test
     @DisplayName("제목을 빈 문자열로 설정")
     public void emptyTitle() throws Exception {
-        Board board = getBoard(testBoardInfo00);
+        String boardId = getBoardId(testBoardInfo00);
 
         BoardInfoUpdate boardInfoUpdate = BoardInfoUpdate.builder()
                 .title("")
                 .build();
 
         Assertions.assertThrows(ConstraintViolationException.class, () -> {
-            this.boardService.updateBoardInfo(board, boardInfoUpdate);
+            this.boardService.updateBoardInfo(boardId, boardInfoUpdate);
         });
     }
 
     @Test
     @DisplayName("제목을 긴 문자열로 설정")
     public void overflowTitle() throws Exception {
-        Board board = getBoard(testBoardInfo00);
+        String boardId = getBoardId(testBoardInfo00);
 
         BoardInfoUpdate boardInfoUpdate = BoardInfoUpdate.builder()
                 .title("012345678901234567890123456789012345678901234567890")
                 .build();
 
         Assertions.assertThrows(ConstraintViolationException.class, () -> {
-            this.boardService.updateBoardInfo(board, boardInfoUpdate);
+            this.boardService.updateBoardInfo(boardId, boardInfoUpdate);
         });
     }
 
     @Test
     @DisplayName("설명을 빈 문자열로 설정")
     public void emptyDescription() throws Exception {
-        Board board = getBoard(testBoardInfo00);
+        String boardId = getBoardId(testBoardInfo00);
 
         BoardInfoUpdate boardInfoUpdate = BoardInfoUpdate.builder()
                 .description("")
                 .build();
 
-        BoardInfo boardInfo = this.boardService.updateBoardInfo(board, boardInfoUpdate);
+        BoardInfo boardInfo = this.boardService.updateBoardInfo(boardId, boardInfoUpdate);
 
         Assertions.assertEquals("", boardInfo.getDescription());
     }
@@ -101,27 +99,27 @@ public class BoardServiceUpdateTest extends IricomTestSuite {
     @Test
     @DisplayName("설명을 긴 문자열로 설정")
     public void overflowDescription() throws Exception {
-        Board board = getBoard(testBoardInfo00);
+        String boardId = getBoardId(testBoardInfo00);
 
         BoardInfoUpdate boardInfoUpdate = BoardInfoUpdate.builder()
                 .description("01234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890")
                 .build();
 
         Assertions.assertThrows(ConstraintViolationException.class, () -> {
-            this.boardService.updateBoardInfo(board, boardInfoUpdate);
+            this.boardService.updateBoardInfo(boardId, boardInfoUpdate);
         });
     }
 
     @Test
     @DisplayName("비활성화")
     public void disabledBoard() throws Exception {
-        Board board = getBoard(testBoardInfo00);
+        String boardId = getBoardId(testBoardInfo00);
 
         BoardInfoUpdate boardInfoUpdate = BoardInfoUpdate.builder()
                 .enabled(false)
                 .build();
 
-        BoardInfo boardInfo = this.boardService.updateBoardInfo(board, boardInfoUpdate);
+        BoardInfo boardInfo = this.boardService.updateBoardInfo(boardId, boardInfoUpdate);
 
         Assertions.assertFalse(boardInfo.getEnabled());
     }
@@ -129,13 +127,13 @@ public class BoardServiceUpdateTest extends IricomTestSuite {
     @Test
     @DisplayName("비공개")
     public void undisclosedBoard() throws Exception {
-        Board board = getBoard(testBoardInfo00);
+        String boardId = getBoardId(testBoardInfo00);
 
         BoardInfoUpdate boardInfoUpdate = BoardInfoUpdate.builder()
                 .undisclosed(true)
                 .build();
 
-        BoardInfo boardInfo = this.boardService.updateBoardInfo(board, boardInfoUpdate);
+        BoardInfo boardInfo = this.boardService.updateBoardInfo(boardId, boardInfoUpdate);
 
         Assertions.assertTrue(boardInfo.getUnDisclosed());
     }
@@ -143,13 +141,13 @@ public class BoardServiceUpdateTest extends IricomTestSuite {
     @Test
     @DisplayName("공지 사항 전용")
     public void notificationOnlyBoard() throws Exception {
-        Board board = getBoard(testBoardInfo00);
+        String boardId = getBoardId(testBoardInfo00);
 
         BoardInfoUpdate boardInfoUpdate = BoardInfoUpdate.builder()
                 .notificationOnly(true)
                 .build();
 
-        BoardInfo boardInfo = this.boardService.updateBoardInfo(board, boardInfoUpdate);
+        BoardInfo boardInfo = this.boardService.updateBoardInfo(boardId, boardInfoUpdate);
 
         Assertions.assertTrue(boardInfo.getNotificationOnly());
     }

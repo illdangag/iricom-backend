@@ -2,7 +2,6 @@ package com.illdangag.iricom.server.service.account.group;
 
 import com.illdangag.iricom.server.data.entity.Account;
 import com.illdangag.iricom.server.data.entity.AccountGroup;
-import com.illdangag.iricom.server.data.entity.Board;
 import com.illdangag.iricom.server.data.request.AccountGroupInfoUpdate;
 import com.illdangag.iricom.server.data.response.AccountGroupInfo;
 import com.illdangag.iricom.server.data.response.AccountInfo;
@@ -101,17 +100,17 @@ public class AccountGroupServiceUpdateTest extends IricomTestSuite {
         AccountGroup accountGroup = getAccountGroup(testAccountGroupInfo01);
         String accountGroupId = String.valueOf(accountGroup.getId());
 
-        Board board = getBoard(testBoardInfo00);
+        String boardId = getBoardId(testBoardInfo00);
 
         AccountGroupInfoUpdate accountGroupInfoUpdate = AccountGroupInfoUpdate.builder()
-                .boardIdList(Arrays.asList(String.valueOf(board.getId())))
+                .boardIdList(Arrays.asList(String.valueOf(boardId)))
                 .build();
 
         AccountGroupInfo accountGroupInfo = accountGroupService.updateAccountGroupInfo(accountGroupId, accountGroupInfoUpdate);
         List<BoardInfo> boardInfoList = accountGroupInfo.getBoardInfoList();
 
         Assertions.assertEquals(1, boardInfoList.size());
-        Assertions.assertEquals(String.valueOf(board.getId()), boardInfoList.get(0).getId());
+        Assertions.assertEquals(String.valueOf(boardId), boardInfoList.get(0).getId());
     }
 
     @Test
@@ -125,10 +124,8 @@ public class AccountGroupServiceUpdateTest extends IricomTestSuite {
         String accountId00 = String.valueOf(account00.getId());
         String accountId01 = String.valueOf(account01.getId());
 
-        Board board00 = getBoard(testAccountGroupInfo02.getBoardList().get(0));
-        Board board01 = getBoard(testAccountGroupInfo02.getBoardList().get(1));
-        String boardId00 = String.valueOf(board00.getId());
-        String boardId01 = String.valueOf(board01.getId());
+        String boardId00 = getBoardId(testAccountGroupInfo02.getBoardList().get(0));
+        String boardId01 = getBoardId(testAccountGroupInfo02.getBoardList().get(1));
 
         AccountGroupInfoUpdate accountGroupInfoUpdate = AccountGroupInfoUpdate.builder()
                 .accountIdList(Arrays.asList(accountId00, accountId01))
@@ -162,10 +159,8 @@ public class AccountGroupServiceUpdateTest extends IricomTestSuite {
         String accountId00 = String.valueOf(account00.getId());
         String accountId01 = String.valueOf(account01.getId());
 
-        Board board00 = getBoard(testAccountGroupInfo02.getBoardList().get(0));
-        Board board01 = getBoard(testBoardInfo02);
-        String boardId00 = String.valueOf(board00.getId());
-        String boardId01 = String.valueOf(board01.getId());
+        String boardId00 = getBoardId(testAccountGroupInfo02.getBoardList().get(0));
+        String boardId01 = getBoardId(testBoardInfo02);
 
         AccountGroupInfoUpdate accountGroupInfoUpdate = AccountGroupInfoUpdate.builder()
                 .boardIdList(Arrays.asList(boardId00, boardId01))

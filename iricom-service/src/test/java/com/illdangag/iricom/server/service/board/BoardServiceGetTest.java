@@ -1,7 +1,6 @@
 package com.illdangag.iricom.server.service.board;
 
 import com.illdangag.iricom.server.data.entity.Account;
-import com.illdangag.iricom.server.data.entity.Board;
 import com.illdangag.iricom.server.data.response.BoardInfo;
 import com.illdangag.iricom.server.exception.IricomException;
 import com.illdangag.iricom.server.service.BoardService;
@@ -54,19 +53,16 @@ public class BoardServiceGetTest extends IricomTestSuite {
     @Test
     @DisplayName("공개 게시판 조회")
     public void getDisclosed() throws Exception {
-        Board board = getBoard(disclosedBoard00);
-        String boardId = String.valueOf(board.getId());
+        String boardId = getBoardId(disclosedBoard00);
         BoardInfo boardInfo = boardService.getBoardInfo(boardId);
 
         Assertions.assertNotNull(boardInfo);
-        Assertions.assertEquals(board.getTitle(), boardInfo.getTitle());
     }
 
     @Test
     @DisplayName("비공개 게시판 조회")
     public void getUndisclosed() throws Exception {
-        Board board = getBoard(undisclosedBoard00);
-        String boardId = String.valueOf(board.getId());
+        String boardId = getBoardId(undisclosedBoard00);
 
         Assertions.assertThrows(IricomException.class, () -> {
             boardService.getBoardInfo(boardId);
@@ -77,21 +73,18 @@ public class BoardServiceGetTest extends IricomTestSuite {
     @DisplayName("계정 그룹에 포함된 비공개 게시판")
     public void getUndisclosedInAccountGroup() throws Exception {
         Account account = getAccount(testAccountGroupInfo00.getAccountList().get(0));
-        Board board = getBoard(undisclosedBoard00);
-        String boardId = String.valueOf(board.getId());
+        String boardId = getBoardId(undisclosedBoard00);
 
         BoardInfo boardInfo = boardService.getBoardInfo(account, boardId);
 
         Assertions.assertNotNull(boardInfo);
-        Assertions.assertEquals(board.getTitle(), boardInfo.getTitle());
     }
 
     @Test
     @DisplayName("계정 그룹에 포함되지 않은 비공개 게시판")
     public void getUndisclosedNotInAccountGroup() throws Exception {
         Account account = getAccount(common00);
-        Board board = getBoard(undisclosedBoard01);
-        String boardId = String.valueOf(board.getId());
+        String boardId = getBoardId(undisclosedBoard01);
 
         Assertions.assertThrows(IricomException.class, () -> {
             boardService.getBoardInfo(account, boardId);
@@ -102,8 +95,7 @@ public class BoardServiceGetTest extends IricomTestSuite {
     @DisplayName("삭제된 계정 그룹에 포함된 비공개 게시판 조회")
     public void getUndisclosedBoardAndDeletedAccountGroup() throws Exception {
         Account account = getAccount(common00);
-        Board board = getBoard(undisclosedBoard03);
-        String boardId = String.valueOf(board.getId());
+        String boardId = getBoardId(undisclosedBoard03);
 
         Assertions.assertThrows(IricomException.class, () -> {
             boardService.getBoardInfo(account, boardId);

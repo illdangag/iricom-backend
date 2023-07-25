@@ -1,7 +1,6 @@
 package com.illdangag.iricom.server.service.post;
 
 import com.illdangag.iricom.server.data.entity.Account;
-import com.illdangag.iricom.server.data.entity.Board;
 import com.illdangag.iricom.server.data.entity.PostState;
 import com.illdangag.iricom.server.data.entity.PostType;
 import com.illdangag.iricom.server.data.request.PostInfoSearch;
@@ -65,10 +64,8 @@ public class PostServiceSearchTest extends IricomTestSuite {
     @Test
     @DisplayName("공개 게시판")
     public void getPostListDisclosedBoard() throws Exception {
-        Board board = getBoard(boardInfo00);
-        String boardId = String.valueOf(board.getId());
-
-        String postInfoId = String.valueOf(getPost(testPostInfo00).getId());
+        String boardId = getBoardId(boardInfo00);
+        String postId = getPostId(testPostInfo00);
 
         PostInfoSearch postInfoSearch = PostInfoSearch.builder()
                 .skip(0).limit(100)
@@ -78,14 +75,13 @@ public class PostServiceSearchTest extends IricomTestSuite {
                 .map(item -> item.getId())
                 .collect(Collectors.toList());
 
-        Assertions.assertTrue(postIdList.contains(postInfoId));
+        Assertions.assertTrue(postIdList.contains(postId));
     }
 
     @Test
     @DisplayName("권한을 사용하지 않고 비공개 게시판")
     public void getPostListUndisclosedBoard() throws Exception {
-        Board board = getBoard(undisclosedBoardInfo00);
-        String boardId = String.valueOf(board.getId());
+        String boardId = getBoardId(undisclosedBoardInfo00);
 
         PostInfoSearch postInfoSearch = PostInfoSearch.builder()
                 .skip(0).limit(100)
@@ -103,9 +99,8 @@ public class PostServiceSearchTest extends IricomTestSuite {
     @DisplayName("계정 그룹에 포함된 비공개 게시판")
     public void getPostListUndisclosedBoardInAccountGroup() throws Exception {
         Account account = getAccount(common00);
-        Board board = getBoard(undisclosedBoardInfo00);
-        String boardId = String.valueOf(board.getId());
-        String postInfoId = String.valueOf(getPost(undisclosedPost01).getId());
+        String boardId = getBoardId(undisclosedBoardInfo00);
+        String postId = getPostId(undisclosedPost01);
 
         PostInfoSearch postInfoSearch = PostInfoSearch.builder()
                 .skip(0).limit(100)
@@ -116,15 +111,15 @@ public class PostServiceSearchTest extends IricomTestSuite {
                 .map(item -> item.getId())
                 .collect(Collectors.toList());
 
-        Assertions.assertTrue(postIdList.contains(postInfoId));
+        Assertions.assertTrue(postIdList.contains(postId));
     }
 
     @Test
     @DisplayName("계정이 작성한 게시물 조회")
     public void getAccountCreatedPost() throws Exception {
         Account account = getAccount(common00);
-        String postId00 = String.valueOf(getPost(testPostInfo00).getId());
-        String postId01 = String.valueOf(getPost(undisclosedPost01).getId());
+        String postId00 = getPostId(testPostInfo00);
+        String postId01 = getPostId(undisclosedPost01);
 
         List<String> list = getAllList(PostInfoSearch.builder().build(), searchRequest -> {
             PostInfoSearch postInfoSearch = (PostInfoSearch) searchRequest;

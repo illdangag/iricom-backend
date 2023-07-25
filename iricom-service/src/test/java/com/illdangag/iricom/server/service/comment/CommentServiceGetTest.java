@@ -95,11 +95,8 @@ public class CommentServiceGetTest extends IricomTestSuite {
     @Test
     @DisplayName("존재하지 않는 댓글")
     public void notExistComment() throws Exception {
-        Post post = getPost(testPostInfo00);
-        Board board = post.getBoard();
-
-        String boardId = String.valueOf(board.getId());
-        String postId = String.valueOf(post.getId());
+        String boardId = getBoardId(testPostInfo00.getBoard());
+        String postId = getPostId(testPostInfo00);
         String commentId = "NOT_EXIST_COMMENT";
 
         IricomException iricomException = Assertions.assertThrows(IricomException.class, () -> {

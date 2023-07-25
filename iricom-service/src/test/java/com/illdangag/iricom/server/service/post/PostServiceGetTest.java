@@ -1,7 +1,6 @@
 package com.illdangag.iricom.server.service.post;
 
 import com.illdangag.iricom.server.data.entity.Account;
-import com.illdangag.iricom.server.data.entity.Post;
 import com.illdangag.iricom.server.data.entity.PostState;
 import com.illdangag.iricom.server.data.entity.PostType;
 import com.illdangag.iricom.server.data.response.PostInfo;
@@ -78,9 +77,9 @@ public class PostServiceGetTest extends IricomTestSuite {
     @Test
     @DisplayName("공개된 게시판의 게시물을 권한 없이 조회")
     public void getDisclosedBoardPost() throws Exception {
-        Post post = getPost(postInfo00);
+        String postId = getPostId(postInfo00);
 
-        PostInfo postInfo = postService.getPostInfo(post, PostState.PUBLISH, true);
+        PostInfo postInfo = postService.getPostInfo(postId, PostState.PUBLISH, true);
 
         Assertions.assertNotNull(postInfo);
     }
@@ -88,10 +87,10 @@ public class PostServiceGetTest extends IricomTestSuite {
     @Test
     @DisplayName("비공개 게시판의 게시물 조회")
     public void getUndisclosedBoardPost() throws Exception {
-        Post post = getPost(undisclosedPost00);
+        String postId = getPostId(undisclosedPost00);
 
         Assertions.assertThrows(IricomException.class, () -> {
-            postService.getPostInfo(post, PostState.PUBLISH, true);
+            postService.getPostInfo(postId, PostState.PUBLISH, true);
         });
     }
 
@@ -99,22 +98,22 @@ public class PostServiceGetTest extends IricomTestSuite {
     @DisplayName("계정 그룹에 포함된 게시판의 게시물을 조회")
     public void getPostInAccountGroup() throws Exception {
         Account account = getAccount(common00);
-        Post post = getPost(undisclosedPost00);
+        String postId = getPostId(undisclosedPost00);
 
-        PostInfo postInfo = postService.getPostInfo(account, post, PostState.PUBLISH, true);
+        PostInfo postInfo = postService.getPostInfo(account, postId, PostState.PUBLISH, true);
 
         Assertions.assertNotNull(postInfo);
-        Assertions.assertEquals(String.valueOf(post.getId()), postInfo.getId());
+        Assertions.assertEquals(postId, postInfo.getId());
     }
 
     @Test
     @DisplayName("삭제된 계정 그룹에 포함된 게시판")
     public void getUndisclosedBoardPostInDeletedAccountGroup() throws Exception {
         Account account = getAccount(common00);
-        Post post = getPost(undisclosedPost01);
+        String postId = getPostId(undisclosedPost01);
 
         Assertions.assertThrows(IricomException.class, () -> {
-            postService.getPostInfo(account, post, PostState.PUBLISH, true);
+            postService.getPostInfo(account, postId, PostState.PUBLISH, true);
         });
     }
 }

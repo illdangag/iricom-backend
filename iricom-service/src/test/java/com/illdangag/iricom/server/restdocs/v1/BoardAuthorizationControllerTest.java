@@ -1,7 +1,6 @@
 package com.illdangag.iricom.server.restdocs.v1;
 
 import com.illdangag.iricom.server.data.entity.Account;
-import com.illdangag.iricom.server.data.entity.Board;
 import com.illdangag.iricom.server.restdocs.snippet.IricomFieldsSnippet;
 import com.illdangag.iricom.server.test.IricomTestSuite;
 import com.illdangag.iricom.server.test.data.wrapper.TestBoardInfo;
@@ -18,9 +17,7 @@ import java.util.*;
 
 import static org.springframework.restdocs.headers.HeaderDocumentation.requestHeaders;
 import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document;
-import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.get;
-import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.post;
-import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.delete;
+import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.*;
 import static org.springframework.restdocs.operation.preprocess.Preprocessors.*;
 import static org.springframework.restdocs.payload.PayloadDocumentation.*;
 import static org.springframework.restdocs.request.RequestDocumentation.*;
@@ -49,11 +46,11 @@ public class BoardAuthorizationControllerTest extends IricomTestSuite {
     @DisplayName("게시판 관리자 추가")
     public void at001() throws Exception {
         Account account = getAccount(toEnableBoardAdmin);
-        Board board = getBoard(boardAdminBoard00);
+        String boardId = getBoardId(boardAdminBoard00);
 
         Map<String, Object> requestBody = new HashMap<>();
         requestBody.put("accountId", account.getId());
-        requestBody.put("boardId", board.getId());
+        requestBody.put("boardId", boardId);
 
         MockHttpServletRequestBuilder requestBuilder = post("/v1/auth/boards")
                 .content(getJsonString(requestBody))
@@ -128,8 +125,8 @@ public class BoardAuthorizationControllerTest extends IricomTestSuite {
     @Test
     @DisplayName("게시판 관리자 조회")
     public void at003() throws Exception {
-        Board board = getBoard(boardAdminBoard00);
-        MockHttpServletRequestBuilder requestBuilder = get("/v1/auth/boards/{id}", board.getId());
+        String boardId = getBoardId(boardAdminBoard00);
+        MockHttpServletRequestBuilder requestBuilder = get("/v1/auth/boards/{id}", boardId);
         setAuthToken(requestBuilder, systemAdmin);
 
         List<FieldDescriptor> fieldDescriptorList = new LinkedList<>();
@@ -167,11 +164,11 @@ public class BoardAuthorizationControllerTest extends IricomTestSuite {
     @DisplayName("게시판 관리자 삭제")
     public void at004() throws Exception {
         Account account = getAccount(toDisableBoardAdmin);
-        Board board = getBoard(boardAdminBoard00);
+        String boardId = getBoardId(boardAdminBoard00);
 
         Map<String, Object> requestBody = new HashMap<>();
         requestBody.put("accountId", account.getId());
-        requestBody.put("boardId", board.getId());
+        requestBody.put("boardId", boardId);
 
         MockHttpServletRequestBuilder requestBuilder = delete("/v1/auth/boards")
                 .content(getJsonString(requestBody))

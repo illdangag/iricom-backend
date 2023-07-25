@@ -110,10 +110,9 @@ public class ReportServiceCommentReportTest extends IricomTestSuite {
         Comment comment = getComment(comment01);
         Post post = comment.getPost();
         Board board = post.getBoard();
-        Post invalidPost = getPost(post01);
+        String invalidPostId = getPostId(post01);
 
         String boardId = String.valueOf(board.getId());
-        String invalidPostId = String.valueOf(invalidPost.getId());
         String commentId = String.valueOf(comment.getId());
 
         CommentReportInfoCreate commentReportInfoCreate = CommentReportInfoCreate.builder()
@@ -135,9 +134,8 @@ public class ReportServiceCommentReportTest extends IricomTestSuite {
         Account account = getAccount(common00);
         Comment comment = getComment(comment01);
         Post post = comment.getPost();
-        Board invalidBoard = getBoard(enableBoard01);
+        String invalidBoardId = getBoardId(enableBoard01);
 
-        String invalidBoardId = String.valueOf(invalidBoard.getId());
         String postId = String.valueOf(post.getId());
         String commentId = String.valueOf(comment.getId());
 

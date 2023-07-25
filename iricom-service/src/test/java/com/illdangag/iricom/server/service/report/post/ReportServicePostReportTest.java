@@ -51,11 +51,8 @@ public class ReportServicePostReportTest extends IricomTestSuite {
     @DisplayName("게시물 신고")
     public void reportPost() throws Exception {
         Account account = getAccount(common01);
-        Post post = getPost(testPostInfo00);
-        Board board = post.getBoard();
-
-        String boardId = String.valueOf(board.getId());
-        String postId = String.valueOf(post.getId());
+        String boardId = getBoardId(testPostInfo00.getBoard());
+        String postId = getPostId(testPostInfo00);
 
         PostReportInfoCreate postReportInfoCreate = PostReportInfoCreate.builder()
                 .type(ReportType.ETC)
@@ -69,11 +66,8 @@ public class ReportServicePostReportTest extends IricomTestSuite {
     @DisplayName("중복 게시물 신고")
     public void duplicateReportPost() throws Exception {
         Account account = getAccount(common00);
-        Post post = getPost(testPostInfo01);
-        Board board = post.getBoard();
-
-        String boardId = String.valueOf(board.getId());
-        String postId = String.valueOf(post.getId());
+        String boardId = getBoardId(testPostInfo01.getBoard());
+        String postId = getPostId(testPostInfo01);
 
         PostReportInfoCreate postReportInfoCreate = PostReportInfoCreate.builder()
                 .type(ReportType.ETC)
@@ -93,11 +87,8 @@ public class ReportServicePostReportTest extends IricomTestSuite {
     @DisplayName("게시물의 게시판 불일치")
     public void notMatchPostAndBoard() throws Exception {
         Account account = getAccount(common00);
-        Post post = getPost(testPostInfo01);
-        Board board = getBoard(testBoardInfo01);
-
-        String boardId = String.valueOf(board.getId());
-        String postId = String.valueOf(post.getId());
+        String boardId = getBoardId(testBoardInfo01);
+        String postId = getPostId(testPostInfo01);
 
         PostReportInfoCreate postReportInfoCreate = PostReportInfoCreate.builder()
                 .type(ReportType.ETC)
@@ -113,9 +104,7 @@ public class ReportServicePostReportTest extends IricomTestSuite {
     @DisplayName("존재하지 않는 게시물")
     public void notExistPost() throws Exception {
         Account account = getAccount(common00);
-        Board board = getBoard(testBoardInfo00);
-
-        String boardId = String.valueOf(board.getId());
+        String boardId = getBoardId(testBoardInfo00);
 
         PostReportInfoCreate postReportInfoCreate = PostReportInfoCreate.builder()
                 .type(ReportType.ETC)
@@ -131,9 +120,7 @@ public class ReportServicePostReportTest extends IricomTestSuite {
     @DisplayName("존재하지 않는 게시판")
     public void notExistBoard() throws Exception {
         Account account = getAccount(common00);
-        Post post = getPost(testPostInfo01);
-
-        String postId = String.valueOf(post.getId());
+        String postId = getPostId(testPostInfo01);
 
         PostReportInfoCreate postReportInfoCreate = PostReportInfoCreate.builder()
                 .type(ReportType.ETC)

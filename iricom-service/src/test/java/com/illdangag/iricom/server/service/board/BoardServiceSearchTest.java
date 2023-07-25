@@ -57,8 +57,8 @@ public class BoardServiceSearchTest extends IricomTestSuite {
     @Test
     @DisplayName("공개 개시판 목록 조회")
     public void searchDisclosedBoardList() throws Exception {
-        String disclosedBoardId = String.valueOf(getBoard(disclosedBoard00).getId());
-        String undisclosedBoardId = String.valueOf(getBoard(undisclosedBoard00).getId());
+        String disclosedBoardId = String.valueOf(getBoardId(disclosedBoard00));
+        String undisclosedBoardId = String.valueOf(getBoardId(undisclosedBoard00));
 
         List<String> list = getAllList(BoardInfoSearch.builder().build(), (searchRequest -> {
             BoardInfoSearch boardInfoSearch = (BoardInfoSearch) searchRequest;
@@ -76,8 +76,8 @@ public class BoardServiceSearchTest extends IricomTestSuite {
     @DisplayName("공개 게시판 및 계정 그룹에 포함된 게시물 목록 조회")
     public void searchDisclosedBoardAndAccountGroupBoardList() throws Exception {
         Account account = getAccount(common00);
-        String inaccessibleBoardId = String.valueOf(getBoard(undisclosedBoard00).getId());
-        String accessibleBoardId = String.valueOf(getBoard(undisclosedBoard01).getId());
+        String inaccessibleBoardId = String.valueOf(getBoardId(undisclosedBoard00));
+        String accessibleBoardId = String.valueOf(getBoardId(undisclosedBoard01));
 
         List<String> list = getAllList(BoardInfoSearch.builder().build(), searchRequest -> {
             BoardInfoSearch boardInfoSearch = (BoardInfoSearch) searchRequest;
@@ -95,7 +95,7 @@ public class BoardServiceSearchTest extends IricomTestSuite {
     @DisplayName("삭제된 계정 그룹에 포함된 게시판 목록 조회")
     public void searchDisclosedBoardAndDeletedAccountGroupBoardList() throws Exception {
         Account account = getAccount(common01);
-        String undisclosedBoardId = String.valueOf(getBoard(undisclosedBoard02).getId());
+        String undisclosedBoardId = String.valueOf(getBoardId(undisclosedBoard02));
 
         List<String> list = getAllList(BoardInfoSearch.builder().build(), searchRequest -> {
             BoardInfoSearch boardInfoSearch = (BoardInfoSearch) searchRequest;

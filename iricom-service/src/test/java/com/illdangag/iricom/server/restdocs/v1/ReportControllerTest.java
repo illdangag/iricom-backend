@@ -97,14 +97,14 @@ public class ReportControllerTest extends IricomTestSuite {
     @Test
     @DisplayName("게시물 신고")
     public void rp001() throws Exception {
-        Post post = getPost(testPostInfo00);
-        Board board = post.getBoard();
+        String boardId = getBoardId(testPostInfo00.getBoard());
+        String postId = getPostId(testPostInfo00);
 
         Map<String, Object> requestBody = new HashMap<>();
         requestBody.put("type", "hate");
         requestBody.put("reason", "This is a hateful post.");
 
-        MockHttpServletRequestBuilder requestBuilder = post("/v1/report/post/boards/{boardId}/posts/{postId}", board.getId(), post.getId())
+        MockHttpServletRequestBuilder requestBuilder = post("/v1/report/post/boards/{boardId}/posts/{postId}", boardId, postId)
                 .content(getJsonString(requestBody))
                 .contentType(MediaType.APPLICATION_JSON);
         setAuthToken(requestBuilder, common00);
@@ -143,9 +143,9 @@ public class ReportControllerTest extends IricomTestSuite {
     @Test
     @DisplayName("게시물 신고 목록 조회 (게시판)")
     public void rp002() throws Exception {
-        Board board = getBoard(testBoardInfo00);
+        String boardId = getBoardId(testBoardInfo00);
 
-        MockHttpServletRequestBuilder requestBuilder = get("/v1/report/post/boards/{boardId}", board.getId())
+        MockHttpServletRequestBuilder requestBuilder = get("/v1/report/post/boards/{boardId}", boardId)
                 .param("skip", "0")
                 .param("limit", "5")
                 .param("type", "hate")
@@ -190,10 +190,10 @@ public class ReportControllerTest extends IricomTestSuite {
     @Test
     @DisplayName("게시물 신고 목록 조회 (게시판, 게시물)")
     public void rp003() throws Exception {
-        Post post = getPost(testPostInfo01);
-        Board board = post.getBoard();
+        String boardId = getBoardId(testPostInfo01.getBoard());
+        String postId = getPostId(testPostInfo01);
 
-        MockHttpServletRequestBuilder requestBuilder = get("/v1/report/post/boards/{boardId}/posts/{postId}", board.getId(), post.getId())
+        MockHttpServletRequestBuilder requestBuilder = get("/v1/report/post/boards/{boardId}/posts/{postId}", boardId, postId)
                 .param("skip", "0")
                 .param("limit", "5")
                 .param("type", "hate")

@@ -54,8 +54,7 @@ public class AccountGroupServiceGetTest extends IricomTestSuite {
                 .map(item -> String.valueOf(item.getId()))
                 .toArray(String[]::new);
         String[] boardIds = testAccountGroupInfo00.getBoardList().stream()
-                .map(AccountGroupServiceGetTest.this::getBoard)
-                .map(item -> String.valueOf(item.getId()))
+                .map(AccountGroupServiceGetTest.this::getBoardId)
                 .toArray(String[]::new);
 
         AccountGroupInfo accountGroupInfo = accountGroupService.getAccountGroupInfo(accountGroupId);

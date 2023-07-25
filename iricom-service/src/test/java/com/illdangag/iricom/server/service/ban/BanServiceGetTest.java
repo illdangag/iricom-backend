@@ -52,10 +52,10 @@ public class BanServiceGetTest extends IricomTestSuite {
     @DisplayName("시스템 관리자")
     public void getPostBanInfoSystemAdmin() throws Exception {
         Account account = getAccount(systemAdmin);
-        Post post = getPost(alreadyBanPostInfo00);
-        Board board = post.getBoard();
+        String boardId = getBoardId(alreadyBanPostInfo00.getBoard());
+        String postId = getPostId(alreadyBanPostInfo00);
 
-        PostBanInfo postBanInfo = banService.getPostBanInfo(account, board, post);
+        PostBanInfo postBanInfo = banService.getPostBanInfo(account, boardId, postId);
         Assertions.assertTrue(postBanInfo.getEnabled());
     }
 
@@ -63,10 +63,10 @@ public class BanServiceGetTest extends IricomTestSuite {
     @DisplayName("게시판 관리자")
     public void getPostBanInfoBoardAdmin() throws Exception {
         Account account = getAccount(allBoardAdmin);
-        Post post = getPost(alreadyBanPostInfo00);
-        Board board = post.getBoard();
+        String boardId = getBoardId(alreadyBanPostInfo00.getBoard());
+        String postId = getPostId(alreadyBanPostInfo00);
 
-        PostBanInfo postBanInfo = banService.getPostBanInfo(account, board, post);
+        PostBanInfo postBanInfo = banService.getPostBanInfo(account, boardId, postId);
         Assertions.assertTrue(postBanInfo.getEnabled());
     }
 
@@ -74,11 +74,11 @@ public class BanServiceGetTest extends IricomTestSuite {
     @DisplayName("다른 게시판 관리자")
     public void getPostBanInfoOtherBoardAdmin() throws Exception {
         Account account = getAccount(enableBoardAdmin);
-        Post post = getPost(alreadyBanPostInfo00);
-        Board board = post.getBoard();
+        String boardId = getBoardId(alreadyBanPostInfo00.getBoard());
+        String postId = getPostId(alreadyBanPostInfo00);
 
         Assertions.assertThrows(IricomException.class, () -> {
-            banService.getPostBanInfo(account, board, post);
+            banService.getPostBanInfo(account, boardId, postId);
         });
     }
 
@@ -86,11 +86,11 @@ public class BanServiceGetTest extends IricomTestSuite {
     @DisplayName("일반 사용자")
     public void getPostBanInfoAccount() throws Exception {
         Account account = getAccount(common00);
-        Post post = getPost(alreadyBanPostInfo00);
-        Board board = post.getBoard();
+        String boardId = getBoardId(alreadyBanPostInfo00.getBoard());
+        String postId = getPostId(alreadyBanPostInfo00);
 
         Assertions.assertThrows(IricomException.class, () -> {
-            banService.getPostBanInfo(account, board, post);
+            banService.getPostBanInfo(account, boardId, postId);
         });
     }
 
@@ -98,11 +98,11 @@ public class BanServiceGetTest extends IricomTestSuite {
     @DisplayName("등록되지 않은 사용자")
     public void getPostBanInfoUnknown() throws Exception {
         Account account = getAccount(unknown00);
-        Post post = getPost(alreadyBanPostInfo00);
-        Board board = post.getBoard();
+        String boardId = getBoardId(alreadyBanPostInfo00.getBoard());
+        String postId = getPostId(alreadyBanPostInfo00);
 
         Assertions.assertThrows(IricomException.class, () -> {
-            banService.getPostBanInfo(account, board, post);
+            banService.getPostBanInfo(account, boardId, postId);
         });
     }
 
@@ -110,11 +110,11 @@ public class BanServiceGetTest extends IricomTestSuite {
     @DisplayName("시스템 관리자")
     public void getPostInOtherBoard() throws Exception {
         Account account = getAccount(systemAdmin);
-        Board board = getBoard(boardInfo01);
-        Post post = getPost(alreadyBanPostInfo00);
+        String boardId = getBoardId(boardInfo01);
+        String postId = getPostId(alreadyBanPostInfo00);
 
         Assertions.assertThrows(IricomException.class, () -> {
-            banService.getPostBanInfo(account, board, post);
+            banService.getPostBanInfo(account, boardId, postId);
         });
     }
 }

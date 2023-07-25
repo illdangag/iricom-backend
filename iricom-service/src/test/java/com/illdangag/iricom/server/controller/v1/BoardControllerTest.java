@@ -1,6 +1,5 @@
 package com.illdangag.iricom.server.controller.v1;
 
-import com.illdangag.iricom.server.data.entity.Board;
 import com.illdangag.iricom.server.test.IricomTestSuite;
 import com.illdangag.iricom.server.test.data.wrapper.TestBoardInfo;
 import lombok.extern.slf4j.Slf4j;
@@ -223,9 +222,9 @@ public class BoardControllerTest extends IricomTestSuite {
             @Test
             @DisplayName("존재하는 게시판")
             public void existBoard() throws Exception {
-                Board board = getBoard(testBoardInfo00);
+                String boardId = getBoardId(testBoardInfo00);
 
-                MockHttpServletRequestBuilder requestBuilder = get("/v1/boards/" + board.getId());
+                MockHttpServletRequestBuilder requestBuilder = get("/v1/boards/" + boardId);
                 setAuthToken(requestBuilder, common00);
 
                 mockMvc.perform(requestBuilder)
@@ -344,14 +343,14 @@ public class BoardControllerTest extends IricomTestSuite {
         @Test
         @DisplayName("제목, 설명, 활성화 여부")
         public void titleDescriptionEnabled() throws Exception {
-            Board board = getBoard(testBoardInfo01);
+            String boardId = getBoardId(testBoardInfo01);
 
             Map<String, Object> requestBody = new HashMap<>();
             requestBody.put("title", "update_title");
             requestBody.put("description", "update_description");
             requestBody.put("enabled", false);
 
-            MockHttpServletRequestBuilder requestBuilder = patch("/v1/boards/" + board.getId())
+            MockHttpServletRequestBuilder requestBuilder = patch("/v1/boards/{boardId}", boardId)
                     .content(getJsonString(requestBody))
                     .contentType(MediaType.APPLICATION_JSON);
             setAuthToken(requestBuilder, systemAdmin);
@@ -367,12 +366,12 @@ public class BoardControllerTest extends IricomTestSuite {
         @Test
         @DisplayName("제목")
         public void title() throws Exception {
-            Board board = getBoard(testBoardInfo01);
+            String boardId = getBoardId(testBoardInfo01);
 
             Map<String, Object> requestBody = new HashMap<>();
             requestBody.put("title", "only_title");
 
-            MockHttpServletRequestBuilder requestBuilder = patch("/v1/boards/" + board.getId())
+            MockHttpServletRequestBuilder requestBuilder = patch("/v1/boards/{boardId}", boardId)
                     .content(getJsonString(requestBody))
                     .contentType(MediaType.APPLICATION_JSON);
             setAuthToken(requestBuilder, systemAdmin);
@@ -386,12 +385,12 @@ public class BoardControllerTest extends IricomTestSuite {
         @Test
         @DisplayName("설명")
         public void description() throws Exception {
-            Board board = getBoard(testBoardInfo01);
+            String boardId = getBoardId(testBoardInfo01);
 
             Map<String, Object> requestBody = new HashMap<>();
             requestBody.put("description", "only_description");
 
-            MockHttpServletRequestBuilder requestBuilder = patch("/v1/boards/" + board.getId())
+            MockHttpServletRequestBuilder requestBuilder = patch("/v1/boards/{boardId}", boardId)
                     .content(getJsonString(requestBody))
                     .contentType(MediaType.APPLICATION_JSON);
             setAuthToken(requestBuilder, systemAdmin);
@@ -405,12 +404,12 @@ public class BoardControllerTest extends IricomTestSuite {
         @Test
         @DisplayName("활성화 여부")
         public void enabled() throws Exception {
-            Board board = getBoard(testBoardInfo01);
+            String boardId = getBoardId(testBoardInfo01);
 
             Map<String, Object> requestBody = new HashMap<>();
             requestBody.put("enabled", true);
 
-            MockHttpServletRequestBuilder requestBuilder = patch("/v1/boards/" + board.getId())
+            MockHttpServletRequestBuilder requestBuilder = patch("/v1/boards/{boardId}", boardId)
                     .content(getJsonString(requestBody))
                     .contentType(MediaType.APPLICATION_JSON);
             setAuthToken(requestBuilder, systemAdmin);
@@ -424,12 +423,12 @@ public class BoardControllerTest extends IricomTestSuite {
         @Test
         @DisplayName("제목 빈 문자열")
         public void emptyStringTitle() throws Exception {
-            Board board = getBoard(testBoardInfo01);
+            String boardId = getBoardId(testBoardInfo01);
 
             Map<String, Object> requestBody = new HashMap<>();
             requestBody.put("title", "");
 
-            MockHttpServletRequestBuilder requestBuilder = patch("/v1/boards/" + board.getId())
+            MockHttpServletRequestBuilder requestBuilder = patch("/v1/boards/{boardId}", boardId)
                     .content(getJsonString(requestBody))
                     .contentType(MediaType.APPLICATION_JSON);
             setAuthToken(requestBuilder, systemAdmin);
@@ -443,12 +442,12 @@ public class BoardControllerTest extends IricomTestSuite {
         @Test
         @DisplayName("제목 길이 초과")
         public void overflowTitle() throws Exception {
-            Board board = getBoard(testBoardInfo01);
+            String boardId = getBoardId(testBoardInfo01);
 
             Map<String, Object> requestBody = new HashMap<>();
             requestBody.put("title", "012345678901234567890");
 
-            MockHttpServletRequestBuilder requestBuilder = patch("/v1/boards/" + board.getId())
+            MockHttpServletRequestBuilder requestBuilder = patch("/v1/boards/{boardId}", boardId)
                     .content(getJsonString(requestBody))
                     .contentType(MediaType.APPLICATION_JSON);
             setAuthToken(requestBuilder, systemAdmin);
@@ -462,12 +461,12 @@ public class BoardControllerTest extends IricomTestSuite {
         @Test
         @DisplayName("설명 빈 문자열")
         public void emptyStringDescription() throws Exception {
-            Board board = getBoard(testBoardInfo01);
+            String boardId = getBoardId(testBoardInfo01);
 
             Map<String, Object> requestBody = new HashMap<>();
             requestBody.put("description", "");
 
-            MockHttpServletRequestBuilder requestBuilder = patch("/v1/boards/" + board.getId())
+            MockHttpServletRequestBuilder requestBuilder = patch("/v1/boards/{boardId}", boardId)
                     .content(getJsonString(requestBody))
                     .contentType(MediaType.APPLICATION_JSON);
             setAuthToken(requestBuilder, systemAdmin);
@@ -481,12 +480,12 @@ public class BoardControllerTest extends IricomTestSuite {
         @Test
         @DisplayName("설명 길이 초과")
         public void overflowDescription() throws Exception {
-            Board board = getBoard(testBoardInfo01);
+            String boardId = getBoardId(testBoardInfo01);
 
             Map<String, Object> requestBody = new HashMap<>();
             requestBody.put("description", "01234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890");
 
-            MockHttpServletRequestBuilder requestBuilder = patch("/v1/boards/" + board.getId())
+            MockHttpServletRequestBuilder requestBuilder = patch("/v1/boards/{boardId}", boardId)
                     .content(getJsonString(requestBody))
                     .contentType(MediaType.APPLICATION_JSON);
             setAuthToken(requestBuilder, systemAdmin);
@@ -504,14 +503,14 @@ public class BoardControllerTest extends IricomTestSuite {
             @Test
             @DisplayName("게시판 관리자")
             public void boardAdmin() throws Exception {
-                Board board = getBoard(testBoardInfo01);
+                String boardId = getBoardId(testBoardInfo01);
 
                 Map<String, Object> requestBody = new HashMap<>();
                 requestBody.put("title", "update_title");
                 requestBody.put("description", "update_description");
                 requestBody.put("enabled", false);
 
-                MockHttpServletRequestBuilder requestBuilder = patch("/v1/boards/" + board.getId())
+                MockHttpServletRequestBuilder requestBuilder = patch("/v1/boards/{boardId}", boardId)
                         .content(getJsonString(requestBody))
                         .contentType(MediaType.APPLICATION_JSON);
                 setAuthToken(requestBuilder, allBoardAdmin);
@@ -524,14 +523,14 @@ public class BoardControllerTest extends IricomTestSuite {
             @Test
             @DisplayName("일반 계정")
             public void account() throws Exception {
-                Board board = getBoard(testBoardInfo01);
+                String boardId = getBoardId(testBoardInfo01);
 
                 Map<String, Object> requestBody = new HashMap<>();
                 requestBody.put("title", "update_title");
                 requestBody.put("description", "update_description");
                 requestBody.put("enabled", false);
 
-                MockHttpServletRequestBuilder requestBuilder = patch("/v1/boards/" + board.getId())
+                MockHttpServletRequestBuilder requestBuilder = patch("/v1/boards/{boardId}", boardId)
                         .content(getJsonString(requestBody))
                         .contentType(MediaType.APPLICATION_JSON);
                 setAuthToken(requestBuilder, common00);

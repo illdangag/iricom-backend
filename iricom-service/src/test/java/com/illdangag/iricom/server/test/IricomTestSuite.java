@@ -603,12 +603,20 @@ public abstract class IricomTestSuite {
         return accountMap.get(testAccountInfo);
     }
 
-    protected Board getBoard(TestBoardInfo testBoardInfo) {
+    private Board getBoard(TestBoardInfo testBoardInfo) {
         return boardMap.get(testBoardInfo);
     }
 
-    protected Post getPost(TestPostInfo testPostInfo) {
+    protected String getBoardId(TestBoardInfo testBoardInfo) {
+        return String.valueOf(getBoard(testBoardInfo).getId());
+    }
+
+    private Post getPost(TestPostInfo testPostInfo) {
         return postMap.get(testPostInfo);
+    }
+
+    protected String getPostId(TestPostInfo testPostInfo) {
+        return String.valueOf(getPost(testPostInfo).getId());
     }
 
     protected Comment getComment(TestCommentInfo testCommentInfo) {

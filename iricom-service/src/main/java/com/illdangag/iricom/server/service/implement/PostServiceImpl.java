@@ -172,6 +172,12 @@ public class PostServiceImpl implements PostService {
     }
 
     @Override
+    public PostInfo getPostInfo(Account account, String postId, PostState postState, boolean includeContent) {
+        Post post = this.getPost(postId);
+        return this.getPostInfo(account, post, postState, includeContent);
+    }
+
+    @Override
     public PostInfo getPostInfo(Account account, Post post, PostState postState, boolean includeContent) {
         Board board = post.getBoard();
         String boardId = String.valueOf(board.getId());
@@ -184,6 +190,12 @@ public class PostServiceImpl implements PostService {
         boolean isBan = this.isBanPost(post);
 
         return new PostInfo(post, includeContent, postState, commentCount, upvote, downvote, reportCount, isBan);
+    }
+
+    @Override
+    public PostInfo getPostInfo(String postId, PostState postState, boolean includeContent) {
+        Post post = this.getPost(postId);
+        return this.getPostInfo(post, postState, includeContent);
     }
 
     @Override

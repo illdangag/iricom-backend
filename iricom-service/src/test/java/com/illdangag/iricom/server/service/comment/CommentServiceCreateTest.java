@@ -53,11 +53,8 @@ public class CommentServiceCreateTest extends IricomTestSuite {
     @DisplayName("댓글 생성")
     public void createComment() throws Exception {
         Account account = getAccount(common00);
-        Post post = getPost(testPostInfo00);
-        Board board = post.getBoard();
-
-        String postId = String.valueOf(post.getId());
-        String boardId = String.valueOf(board.getId());
+        String boardId = getBoardId(testPostInfo00.getBoard());
+        String postId = getPostId(testPostInfo00);
 
         CommentInfoCreate commentInfoCreate = CommentInfoCreate.builder()
                 .content("댓글 생성")
@@ -74,15 +71,15 @@ public class CommentServiceCreateTest extends IricomTestSuite {
     @DisplayName("내용이 빈 문자열")
     public void emptyContent() throws Exception {
         Account account = getAccount(common00);
-        Post post = getPost(testPostInfo00);
-        Board board = post.getBoard();
+        String boardId = getBoardId(testPostInfo00.getBoard());
+        String postId = getPostId(testPostInfo00);
 
         CommentInfoCreate commentInfoCreate = CommentInfoCreate.builder()
                 .content("")
                 .build();
 
         Assertions.assertThrows(ConstraintViolationException.class, () -> {
-            this.commentService.createCommentInfo(account, board, post, commentInfoCreate);
+            this.commentService.createCommentInfo(account, boardId, postId, commentInfoCreate);
         });
     }
 
@@ -90,8 +87,8 @@ public class CommentServiceCreateTest extends IricomTestSuite {
     @DisplayName("내용이 긴 문자열")
     public void overflowContent() throws Exception {
         Account account = getAccount(common00);
-        Post post = getPost(testPostInfo00);
-        Board board = post.getBoard();
+        String boardId = getBoardId(testPostInfo00.getBoard());
+        String postId = getPostId(testPostInfo00);
 
         CommentInfoCreate commentInfoCreate = CommentInfoCreate.builder()
                 .content("0123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789" +
@@ -100,7 +97,7 @@ public class CommentServiceCreateTest extends IricomTestSuite {
                 .build();
 
         Assertions.assertThrows(ConstraintViolationException.class, () -> {
-            this.commentService.createCommentInfo(account, board, post, commentInfoCreate);
+            this.commentService.createCommentInfo(account, boardId, postId, commentInfoCreate);
         });
     }
 
@@ -108,8 +105,9 @@ public class CommentServiceCreateTest extends IricomTestSuite {
     @DisplayName("대댓글 생성")
     public void createNestedComment() throws Exception {
         Account account = getAccount(common00);
-        Post post = getPost(testPostInfo00);
-        Board board = post.getBoard();
+        String boardId = getBoardId(testPostInfo00.getBoard());
+        String postId = getPostId(testPostInfo00);
+
         Comment referenceComment = getComment(testCommentInfo00);
         String referenceCommentId = String.valueOf(referenceComment.getId());
 
@@ -117,7 +115,7 @@ public class CommentServiceCreateTest extends IricomTestSuite {
                 .content("대댓글 생성").referenceCommentId(referenceCommentId)
                 .build();
 
-        CommentInfo commentInfo = commentService.createCommentInfo(account, board, post, commentInfoCreate);
+        CommentInfo commentInfo = commentService.createCommentInfo(account, boardId, postId, commentInfoCreate);
         Assertions.assertEquals("대댓글 생성", commentInfo.getContent());
         Assertions.assertEquals(referenceCommentId, commentInfo.getReferenceCommentId());
         Assertions.assertFalse(commentInfo.getDeleted());
@@ -128,15 +126,15 @@ public class CommentServiceCreateTest extends IricomTestSuite {
     @DisplayName("존재하지 않는 댓글에 대댓글")
     public void invalidReferenceComment() throws Exception {
         Account account = getAccount(common00);
-        Post post = getPost(testPostInfo00);
-        Board board = post.getBoard();
+        String boardId = getBoardId(testPostInfo00.getBoard());
+        String postId = getPostId(testPostInfo00);
 
         CommentInfoCreate commentInfoCreate = CommentInfoCreate.builder()
                 .content("대댓글 생성").referenceCommentId("NOT_EXIST_COMMENT")
                 .build();
 
         IricomException iricomException = Assertions.assertThrows(IricomException.class, () -> {
-            this.commentService.createCommentInfo(account, board, post, commentInfoCreate);
+            this.commentService.createCommentInfo(account, boardId, postId, commentInfoCreate);
         });
 
         Assertions.assertEquals("05000001", iricomException.getErrorCode());
