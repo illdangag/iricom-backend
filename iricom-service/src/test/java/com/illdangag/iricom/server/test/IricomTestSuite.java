@@ -270,6 +270,16 @@ public abstract class IricomTestSuite {
     }
 
     /**
+     * 공자 사항 전용 게시판
+     */
+    protected void setNotificationOnlyBoard(List<TestBoardInfo> testBoardInfoList) {
+        testBoardInfoList.stream()
+                .filter(item -> item.isNotificationOnly())
+                .map(boardMap::get)
+                .forEach(this::notificationOnlyBoard);
+    }
+
+    /**
      * 게시물 차단
      */
     protected void setBanPost(List<TestPostBanInfo> testPostBanInfoList) {
@@ -310,6 +320,7 @@ public abstract class IricomTestSuite {
         this.setDeletedComment(testCommentInfoList);
         this.setDisabledCommentBoard(testPostInfoList);
         this.setDisabledBoard(testBoardInfoList);
+        this.setNotificationOnlyBoard(testBoardInfoList);
         this.deleteAccountGroup(testAccountGroupInfoList);
     }
 
@@ -374,6 +385,13 @@ public abstract class IricomTestSuite {
     private void disableBoard(Board board) {
         BoardInfoUpdate boardInfoUpdate = BoardInfoUpdate.builder()
                 .enabled(false)
+                .build();
+        this.boardService.updateBoardInfo(board, boardInfoUpdate);
+    }
+
+    private void notificationOnlyBoard(Board board) {
+        BoardInfoUpdate boardInfoUpdate = BoardInfoUpdate.builder()
+                .notificationOnly(true)
                 .build();
         this.boardService.updateBoardInfo(board, boardInfoUpdate);
     }

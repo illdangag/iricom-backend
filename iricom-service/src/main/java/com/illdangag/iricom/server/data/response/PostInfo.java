@@ -57,7 +57,7 @@ public class PostInfo {
     private Boolean ban;
 
     public PostInfo(Post post, boolean includeContent, PostState postState, long commentCount, long upvote, long downvote, long reportCount, boolean isBan) {
-        this.id = "" + post.getId();
+        this.id = String.valueOf(post.getId());
         this.createDate = DateTimeUtils.getLong(post.getCreateDate());
         this.updateDate = DateTimeUtils.getLong(post.getUpdateDate());
         this.accountInfo = new AccountInfo(post.getAccount());
@@ -67,7 +67,7 @@ public class PostInfo {
         this.commentCount = commentCount;
         this.publish = post.getContent() != null;
         this.hasTemporary = post.getTemporaryContent() != null;
-        this.boardId = "" + post.getBoard().getId();
+        this.boardId = String.valueOf(post.getBoard().getId());
 
         PostContent content;
         if (postState == PostState.PUBLISH) {

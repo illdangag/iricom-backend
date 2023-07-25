@@ -54,6 +54,7 @@ public enum IricomErrorCode {
     ALREADY_BAN_POST("04000010", 400, "Already ban post."),
     ALREADY_UNBAN_POST("04000011", 400, "Already unban post."),
     INVALID_AUTHORIZATION_TO_POST_ONLY_NOTIFICATION_BOARD("04000012", 400, "Board is for notification only."),
+    INVALID_UPDATE_POST_IN_NOTIFICATION_ONLY_BOARD("04000013", 400, "Board is for notification only."),
 
     // comment: 05XXXXXX
     NOT_EXIST_COMMENT("05000000", 404, "Not exist comment."),

@@ -112,15 +112,9 @@ public class PostServiceImpl implements PostService {
             throw new IricomException(IricomErrorCode.DISABLED_BOARD);
         }
 
+        // 권한이 있는 게시판의 게시물인지 확인
         // 공개 게시판 또는 계정 그룹에 포함된 게시판인지 확인
         this.getDisclosedBoard(account, String.valueOf(board.getId()));
-
-        // 공지 사항인 경우 시스템 관리자 또는 해당 게시판 관리자만 수정 가능
-        if (postInfoUpdate.getType() == PostType.NOTIFICATION) {
-            if (!this.hasAuthorization(account, board)) {
-                throw new IricomException(IricomErrorCode.INVALID_AUTHORIZATION_TO_NOTIFICATION);
-            }
-        }
 
         // 본인이 작성한 게시물만 수정이 가능
         if (!post.getAccount().equals(account)) {
@@ -139,9 +133,23 @@ public class PostServiceImpl implements PostService {
                     .allowComment(content.getAllowComment())
                     .build();
             post.setTemporaryContent(temporaryPostContent);
-            this.postRepository.save(post, temporaryPostContent);
         } else {
             temporaryPostContent = post.getTemporaryContent();
+        }
+
+        PostType updatePostType = postInfoUpdate.getType();
+        if (board.getNotificationOnly()) { // 공지 사항 전용 게시판의 게시물인 경우
+            // 현재 일반 게시물로 작성된 게시물을 갱신 하거나 공지 사항 게시물을 일반 게시물로 변경 할 수 없음
+            if (updatePostType == PostType.POST || temporaryPostContent.getType() == PostType.POST && updatePostType == null) {
+                throw new IricomException(IricomErrorCode.INVALID_UPDATE_POST_IN_NOTIFICATION_ONLY_BOARD);
+            }
+        }
+
+        if (updatePostType == PostType.NOTIFICATION) { // 공지 사항인 경우
+            // 시스템 관리자 또는 해당 게시판 관리자만 수정 가능
+            if (!this.hasAuthorization(account, board)) {
+                throw new IricomException(IricomErrorCode.INVALID_AUTHORIZATION_TO_NOTIFICATION);
+            }
         }
 
         if (postInfoUpdate.getType() != null) {
@@ -158,7 +166,7 @@ public class PostServiceImpl implements PostService {
             temporaryPostContent.setAllowComment(postInfoUpdate.getAllowComment());
         }
 
-        this.postRepository.save(temporaryPostContent);
+        this.postRepository.save(post, temporaryPostContent);
 
         return this.getPostInfo(account, post, PostState.TEMPORARY, true);
     }

@@ -22,5 +22,8 @@ public class TestBoardInfo {
     private boolean undisclosed = false;
 
     @Builder.Default
+    private boolean notificationOnly = false;
+
+    @Builder.Default
     private List<TestAccountInfo> adminList = new LinkedList<>();
 }
