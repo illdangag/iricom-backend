@@ -627,8 +627,12 @@ public abstract class IricomTestSuite {
         return String.valueOf(this.getComment(testCommentInfo).getId());
     }
 
-    protected PostReport getPostReport(TestPostReportInfo testPostReportInfo) {
+    private PostReport getPostReport(TestPostReportInfo testPostReportInfo) {
         return postReportMap.get(testPostReportInfo);
+    }
+
+    protected String getPostReportId(TestPostReportInfo testPostReportInfo) {
+        return String.valueOf(this.getPostReport(testPostReportInfo).getId());
     }
 
     protected CommentReport getCommentReport(TestCommentReportInfo testCommentReportInfo) {

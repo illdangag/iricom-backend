@@ -239,11 +239,11 @@ public class ReportControllerTest extends IricomTestSuite {
     @Test
     @DisplayName("게시물 신고 정보 조회")
     public void rp004() throws Exception {
-        PostReport postReport = getPostReport(testPostReportInfo00);
-        Post post = postReport.getPost();
-        Board board = post.getBoard();
+        String postReportId = getPostReportId(testPostReportInfo00);
+        String postId = getPostId(testPostReportInfo00.getPost());
+        String boardId = getBoardId(testPostReportInfo00.getPost().getBoard());
 
-        MockHttpServletRequestBuilder requestBuilder = get("/v1/report/post/boards/{boardId}/posts/{postId}/reports/{reportId}", board.getId(), post.getId(), postReport.getId());
+        MockHttpServletRequestBuilder requestBuilder = get("/v1/report/post/boards/{boardId}/posts/{postId}/reports/{reportId}", boardId, postId, postReportId);
         setAuthToken(requestBuilder, allBoardAdmin);
 
         List<FieldDescriptor> fieldDescriptorList = new LinkedList<>();

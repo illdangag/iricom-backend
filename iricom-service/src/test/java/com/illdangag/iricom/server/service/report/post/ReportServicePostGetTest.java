@@ -57,31 +57,24 @@ public class ReportServicePostGetTest extends IricomTestSuite {
     @DisplayName("기본 조회")
     public void getPostReportInfo() throws Exception {
         Account systemAdminAccount = getAccount(systemAdmin);
-        PostReport postReport = getPostReport(postReport00);
-        Post post = postReport.getPost();
-        Board board = post.getBoard();
+        String postReportId = getPostReportId(postReport00);
+        String postId = getPostId(postReport00.getPost());
+        String boardId = getBoardId(postReport00.getPost().getBoard());
 
-        String boardId = String.valueOf(board.getId());
-        String postId = String.valueOf(post.getId());
-        String reportId = String.valueOf(postReport.getId());
-
-        PostReportInfo postReportInfo = reportService.getPostReportInfo(systemAdminAccount, boardId, postId, reportId);
-        Assertions.assertEquals(reportId, postReportInfo.getId());
+        PostReportInfo postReportInfo = reportService.getPostReportInfo(systemAdminAccount, boardId, postId, postReportId);
+        Assertions.assertEquals(postReportId, postReportInfo.getId());
     }
 
     @Test
     @DisplayName("올바르지 않은 게시판")
     public void invalidBoard() throws Exception {
         Account systemAdminAccount = getAccount(systemAdmin);
-        PostReport postReport = getPostReport(postReport00);
-        Post post = postReport.getPost();
+        String postReportId = getPostReportId(postReport00);
+        String postId = getPostId(postReport00.getPost());
         String boardId = getBoardId(enableBoard01);
 
-        String postId = String.valueOf(post.getId());
-        String reportId = String.valueOf(postReport.getId());
-
         Assertions.assertThrows(IricomException.class, () -> {
-            reportService.getPostReportInfo(systemAdminAccount, boardId, postId, reportId);
+            reportService.getPostReportInfo(systemAdminAccount, boardId, postId, postReportId);
         });
     }
 
@@ -89,15 +82,12 @@ public class ReportServicePostGetTest extends IricomTestSuite {
     @DisplayName("존재하지 않는 게시판")
     public void notExistBoard() throws Exception {
         Account systemAdminAccount = getAccount(systemAdmin);
-        PostReport postReport = getPostReport(postReport00);
-        Post post = postReport.getPost();
-
+        String postReportId = getPostReportId(postReport00);
+        String postId = getPostId(postReport00.getPost());
         String boardId = "NOT_EXIST";
-        String postId = String.valueOf(post.getId());
-        String reportId = String.valueOf(postReport.getId());
 
         Assertions.assertThrows(IricomException.class, () -> {
-            reportService.getPostReportInfo(systemAdminAccount, boardId, postId, reportId);
+            reportService.getPostReportInfo(systemAdminAccount, boardId, postId, postReportId);
         });
     }
 
@@ -105,16 +95,13 @@ public class ReportServicePostGetTest extends IricomTestSuite {
     @DisplayName("올바르지 않은 게시물")
     public void invalidPost() throws Exception {
         Account systemAdminAccount = getAccount(systemAdmin);
-        PostReport postReport = getPostReport(postReport00);
-        Post post = postReport.getPost();
-        Board board = post.getBoard();
+        String postReportId = getPostReportId(postReport00);
+        String postId = getPostId(postReport00.getPost());
+        String boardId = getBoardId(postReport00.getPost().getBoard());
         String invalidPostId = getPostId(post00);
 
-        String boardId = String.valueOf(board.getId());
-        String reportId = String.valueOf(postReport.getId());
-
         Assertions.assertThrows(IricomException.class, () -> {
-            reportService.getPostReportInfo(systemAdminAccount, boardId, invalidPostId, reportId);
+            reportService.getPostReportInfo(systemAdminAccount, boardId, invalidPostId, postReportId);
         });
     }
 
@@ -122,33 +109,12 @@ public class ReportServicePostGetTest extends IricomTestSuite {
     @DisplayName("존재하지 않은 게시물")
     public void notExistPost() throws Exception {
         Account systemAdminAccount = getAccount(systemAdmin);
-        PostReport postReport = getPostReport(postReport00);
-        Post post = postReport.getPost();
-        Board board = post.getBoard();
-
-        String boardId = String.valueOf(board.getId());
+        String postReportId = getPostReportId(postReport00);
+        String boardId = getBoardId(postReport00.getPost().getBoard());
         String postId = "NOT_EXIST";
-        String reportId = String.valueOf(postReport.getId());
 
         Assertions.assertThrows(IricomException.class, () -> {
-            reportService.getPostReportInfo(systemAdminAccount, boardId, postId, reportId);
-        });
-    }
-
-    @Test
-    @DisplayName("올바르지 않은 신고")
-    public void invalidReport() throws Exception {
-        Account systemAdminAccount = getAccount(systemAdmin);
-        PostReport postReport = getPostReport(postReport00);
-        Post post = postReport.getPost();
-        Board board = post.getBoard();
-
-        String boardId = String.valueOf(board.getId());
-        String postId = String.valueOf(post.getId());
-        String reportId = String.valueOf(postReport00);
-
-        Assertions.assertThrows(IricomException.class, () -> {
-            reportService.getPostReportInfo(systemAdminAccount, boardId, postId, reportId);
+            reportService.getPostReportInfo(systemAdminAccount, boardId, postId, postReportId);
         });
     }
 
@@ -156,16 +122,12 @@ public class ReportServicePostGetTest extends IricomTestSuite {
     @DisplayName("존재하지 않은 신고")
     public void notExistReport() throws Exception {
         Account systemAdminAccount = getAccount(systemAdmin);
-        PostReport postReport = getPostReport(postReport00);
-        Post post = postReport.getPost();
-        Board board = post.getBoard();
-
-        String boardId = String.valueOf(board.getId());
-        String postId = String.valueOf(post.getId());
-        String reportId = "NOT_EXIST";
+        String postId = getPostId(postReport00.getPost());
+        String boardId = getBoardId(postReport00.getPost().getBoard());
+        String postReportId = "NOT_EXIST";
 
         Assertions.assertThrows(IricomException.class, () -> {
-            reportService.getPostReportInfo(systemAdminAccount, boardId, postId, reportId);
+            reportService.getPostReportInfo(systemAdminAccount, boardId, postId, postReportId);
         });
     }
 }

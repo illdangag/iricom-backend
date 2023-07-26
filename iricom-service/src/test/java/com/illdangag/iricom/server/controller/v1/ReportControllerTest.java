@@ -328,7 +328,7 @@ public class ReportControllerTest extends IricomTestSuite {
             @DisplayName("올바르지 않은 게시판")
             public void testCase05() throws Exception {
                 String commentId = getCommentId(testCommentInfo00);
-                String postId =getPostId(testCommentInfo00.getPost());
+                String postId = getPostId(testCommentInfo00.getPost());
                 String boardId = getBoardId(testBoardInfo01);
 
                 Map<String, Object> requestBody = new HashMap<>();
