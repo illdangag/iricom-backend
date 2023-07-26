@@ -608,7 +608,7 @@ public abstract class IricomTestSuite {
     }
 
     protected String getBoardId(TestBoardInfo testBoardInfo) {
-        return String.valueOf(getBoard(testBoardInfo).getId());
+        return String.valueOf(this.getBoard(testBoardInfo).getId());
     }
 
     private Post getPost(TestPostInfo testPostInfo) {
@@ -616,11 +616,15 @@ public abstract class IricomTestSuite {
     }
 
     protected String getPostId(TestPostInfo testPostInfo) {
-        return String.valueOf(getPost(testPostInfo).getId());
+        return String.valueOf(this.getPost(testPostInfo).getId());
     }
 
-    protected Comment getComment(TestCommentInfo testCommentInfo) {
+    private Comment getComment(TestCommentInfo testCommentInfo) {
         return commentMap.get(testCommentInfo);
+    }
+
+    protected String getCommentId(TestCommentInfo testCommentInfo) {
+        return String.valueOf(this.getComment(testCommentInfo).getId());
     }
 
     protected PostReport getPostReport(TestPostReportInfo testPostReportInfo) {

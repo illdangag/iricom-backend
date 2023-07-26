@@ -60,13 +60,9 @@ public class ReportServiceCommentReportTest extends IricomTestSuite {
     @DisplayName("댓글 신고")
     public void reportComment() throws Exception {
         Account account = getAccount(common00);
-        Comment comment = getComment(comment00);
-        Post post = comment.getPost();
-        Board board = post.getBoard();
-
-        String boardId = String.valueOf(board.getId());
-        String postId = String.valueOf(post.getId());
-        String commentId = String.valueOf(comment.getId());
+        String commentId = getCommentId(comment00);
+        String postId = getPostId(comment00.getPost());
+        String boardId = getBoardId(comment00.getPost().getBoard());
 
         CommentReportInfoCreate commentReportInfoCreate = CommentReportInfoCreate.builder()
                 .type(ReportType.ETC)
@@ -80,13 +76,9 @@ public class ReportServiceCommentReportTest extends IricomTestSuite {
     @DisplayName("중복 댓글 신고")
     public void duplicationReportComment() throws Exception {
         Account account = getAccount(common00);
-        Comment comment = getComment(comment01);
-        Post post = comment.getPost();
-        Board board = post.getBoard();
-
-        String boardId = String.valueOf(board.getId());
-        String postId = String.valueOf(post.getId());
-        String commentId = String.valueOf(comment.getId());
+        String commentId = getCommentId(comment01);
+        String postId = getPostId(comment01.getPost());
+        String boardId = getBoardId(comment01.getPost().getBoard());
 
         CommentReportInfoCreate commentReportInfoCreate = CommentReportInfoCreate.builder()
                 .type(ReportType.ETC)
@@ -107,13 +99,10 @@ public class ReportServiceCommentReportTest extends IricomTestSuite {
     @DisplayName("댓글의 게시물 불일치")
     public void notMatchPost() throws Exception {
         Account account = getAccount(common00);
-        Comment comment = getComment(comment01);
-        Post post = comment.getPost();
-        Board board = post.getBoard();
+        String commentId = getCommentId(comment01);
+        String postId = getPostId(comment01.getPost());
+        String boardId = getBoardId(comment01.getPost().getBoard());
         String invalidPostId = getPostId(post01);
-
-        String boardId = String.valueOf(board.getId());
-        String commentId = String.valueOf(comment.getId());
 
         CommentReportInfoCreate commentReportInfoCreate = CommentReportInfoCreate.builder()
                 .type(ReportType.ETC)
@@ -132,12 +121,9 @@ public class ReportServiceCommentReportTest extends IricomTestSuite {
     @DisplayName("댓글의 게시물의 게시판 불일치")
     public void notMatchBoard() throws Exception {
         Account account = getAccount(common00);
-        Comment comment = getComment(comment01);
-        Post post = comment.getPost();
+        String commentId = getCommentId(comment01);
+        String postId = getPostId(comment01.getPost());
         String invalidBoardId = getBoardId(enableBoard01);
-
-        String postId = String.valueOf(post.getId());
-        String commentId = String.valueOf(comment.getId());
 
         CommentReportInfoCreate commentReportInfoCreate = CommentReportInfoCreate.builder()
                 .type(ReportType.ETC)
@@ -156,12 +142,8 @@ public class ReportServiceCommentReportTest extends IricomTestSuite {
     @DisplayName("존재하지 않는 댓글")
     public void notExistComment() throws Exception {
         Account account = getAccount(common00);
-        Comment comment = getComment(comment01);
-        Post post = comment.getPost();
-        Board board = post.getBoard();
-
-        String boardId = String.valueOf(board.getId());
-        String postId = String.valueOf(post.getId());
+        String postId = getPostId(comment01.getPost());
+        String boardId = getBoardId(comment01.getPost().getBoard());
         String commentId = "NOT_EXIST_COMMENT";
 
         CommentReportInfoCreate commentReportInfoCreate = CommentReportInfoCreate.builder()
@@ -181,13 +163,9 @@ public class ReportServiceCommentReportTest extends IricomTestSuite {
     @DisplayName("존재하지 않는 게시물")
     public void notExistPost() throws Exception {
         Account account = getAccount(common00);
-        Comment comment = getComment(comment01);
-        Post post = comment.getPost();
-        Board board = post.getBoard();
-
-        String boardId = String.valueOf(board.getId());
+        String commentId = getCommentId(comment01);
+        String boardId = getBoardId(comment01.getPost().getBoard());
         String postId = "NOT_EXIST_POST";
-        String commentId = String.valueOf(comment.getId());
 
         CommentReportInfoCreate commentReportInfoCreate = CommentReportInfoCreate.builder()
                 .type(ReportType.ETC)
@@ -206,12 +184,9 @@ public class ReportServiceCommentReportTest extends IricomTestSuite {
     @DisplayName("존재하지 않는 게시판")
     public void notExistBoard() throws Exception {
         Account account = getAccount(common00);
-        Comment comment = getComment(comment01);
-        Post post = comment.getPost();
-
+        String commentId = getCommentId(comment01);
+        String postId = getPostId(comment01.getPost());
         String boardId = "NOT_EXIST_BOARD";
-        String postId = String.valueOf(post.getId());
-        String commentId = String.valueOf(comment.getId());
 
         CommentReportInfoCreate commentReportInfoCreate = CommentReportInfoCreate.builder()
                 .type(ReportType.ETC)

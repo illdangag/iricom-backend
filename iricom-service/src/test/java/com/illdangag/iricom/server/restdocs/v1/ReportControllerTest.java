@@ -279,15 +279,15 @@ public class ReportControllerTest extends IricomTestSuite {
     @Test
     @DisplayName("댓글 신고")
     public void rc001() throws Exception {
-        Comment comment = getComment(testCommentInfo02);
-        Post post = comment.getPost();
-        Board board = post.getBoard();
+        String commentId = getCommentId(testCommentInfo02);
+        String postId = getPostId(testCommentInfo02.getPost());
+        String boardId = getBoardId(testCommentInfo02.getPost().getBoard());
 
         Map<String, Object> requestBody = new HashMap<>();
         requestBody.put("type", "hate");
         requestBody.put("reason", "This is a hateful post.");
 
-        MockHttpServletRequestBuilder requestBuilder = post("/v1/report/comment/boards/{boardId}/posts/{postId}/comments/{commentId}", board.getId(), post.getId(), comment.getId())
+        MockHttpServletRequestBuilder requestBuilder = post("/v1/report/comment/boards/{boardId}/posts/{postId}/comments/{commentId}", boardId, postId, commentId)
                 .content(getJsonString(requestBody))
                 .contentType(MediaType.APPLICATION_JSON);
         setAuthToken(requestBuilder, allBoardAdmin);
@@ -329,11 +329,9 @@ public class ReportControllerTest extends IricomTestSuite {
     @Test
     @DisplayName("게시물 신고 목록 조회 (게시판)")
     public void rc002() throws Exception {
-        Comment comment = getComment(testCommentInfo02);
-        Post post = comment.getPost();
-        Board board = post.getBoard();
+        String boardId = getBoardId(testCommentInfo02.getPost().getBoard());
 
-        MockHttpServletRequestBuilder requestBuilder = get("/v1/report/comment/boards/{boardId}", board.getId())
+        MockHttpServletRequestBuilder requestBuilder = get("/v1/report/comment/boards/{boardId}", boardId)
                 .param("skip", "0")
                 .param("limit", "5")
                 .param("type", "hate")
@@ -378,11 +376,10 @@ public class ReportControllerTest extends IricomTestSuite {
     @Test
     @DisplayName("게시물 신고 목록 조회 (게시판, 게시물)")
     public void rc003() throws Exception {
-        Comment comment = getComment(testCommentInfo02);
-        Post post = comment.getPost();
-        Board board = post.getBoard();
+        String postId = getPostId(testCommentInfo02.getPost());
+        String boardId = getBoardId(testCommentInfo02.getPost().getBoard());
 
-        MockHttpServletRequestBuilder requestBuilder = get("/v1/report/comment/boards/{boardId}/posts/{postId}", board.getId(), post.getId())
+        MockHttpServletRequestBuilder requestBuilder = get("/v1/report/comment/boards/{boardId}/posts/{postId}", boardId, postId)
                 .param("skip", "0")
                 .param("limit", "5")
                 .param("type", "hate")
@@ -428,11 +425,11 @@ public class ReportControllerTest extends IricomTestSuite {
     @Test
     @DisplayName("게시물 신고 목록 조회 (게시판, 게시물, 댓글)")
     public void rc004() throws Exception {
-        Comment comment = getComment(testCommentInfo02);
-        Post post = comment.getPost();
-        Board board = post.getBoard();
+        String commentId = getCommentId(testCommentInfo02);
+        String postId = getPostId(testCommentInfo02.getPost());
+        String boardId = getBoardId(testCommentInfo02.getPost().getBoard());
 
-        MockHttpServletRequestBuilder requestBuilder = get("/v1/report/comment/boards/{boardId}/posts/{postId}/comments/{commentId}", board.getId(), post.getId(), comment.getId())
+        MockHttpServletRequestBuilder requestBuilder = get("/v1/report/comment/boards/{boardId}/posts/{postId}/comments/{commentId}", boardId, postId, commentId)
                 .param("skip", "0")
                 .param("limit", "5")
                 .param("type", "hate")

@@ -108,8 +108,7 @@ public class CommentServiceCreateTest extends IricomTestSuite {
         String boardId = getBoardId(testPostInfo00.getBoard());
         String postId = getPostId(testPostInfo00);
 
-        Comment referenceComment = getComment(testCommentInfo00);
-        String referenceCommentId = String.valueOf(referenceComment.getId());
+        String referenceCommentId = getCommentId(testCommentInfo00);
 
         CommentInfoCreate commentInfoCreate = CommentInfoCreate.builder()
                 .content("대댓글 생성").referenceCommentId(referenceCommentId)

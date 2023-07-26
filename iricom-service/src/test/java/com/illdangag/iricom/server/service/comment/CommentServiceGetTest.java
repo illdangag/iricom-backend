@@ -55,13 +55,9 @@ public class CommentServiceGetTest extends IricomTestSuite {
     @Test
     @DisplayName("조회")
     public void getComment() throws Exception {
-        Comment comment = getComment(testCommentInfo00);
-        Post post = comment.getPost();
-        Board board = post.getBoard();
-
-        String boardId = String.valueOf(board.getId());
-        String postId = String.valueOf(post.getId());
-        String commentId = String.valueOf(comment.getId());
+        String commentId = getCommentId(testCommentInfo00);
+        String postId = getPostId(testCommentInfo00.getPost());
+        String boardId = getBoardId(testCommentInfo00.getPost().getBoard());
 
         CommentInfo commentInfo = this.commentService.getComment(boardId, postId, commentId);
 
@@ -76,15 +72,10 @@ public class CommentServiceGetTest extends IricomTestSuite {
     @Test
     @DisplayName("대댓글 조회")
     public void getReferenceComment() throws Exception {
-        Comment comment = getComment(testCommentInfo01);
-        Comment referenceComment = comment.getReferenceComment();
-        Post post = comment.getPost();
-        Board board = post.getBoard();
-
-        String boardId = String.valueOf(board.getId());
-        String postId = String.valueOf(post.getId());
-        String commentId = String.valueOf(comment.getId());
-        String referenceCommentId = String.valueOf(referenceComment.getId());
+        String commentId = getCommentId(testCommentInfo01);
+        String referenceCommentId = getCommentId(testCommentInfo01.getReferenceComment());
+        String postId = getPostId(testCommentInfo01.getPost());
+        String boardId = getBoardId(testCommentInfo01.getPost().getBoard());
 
         CommentInfo commentInfo = this.commentService.getComment(boardId, postId, commentId);
 
