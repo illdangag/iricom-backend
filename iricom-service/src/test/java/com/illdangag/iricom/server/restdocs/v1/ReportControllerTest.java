@@ -476,12 +476,12 @@ public class ReportControllerTest extends IricomTestSuite {
     @Test
     @DisplayName("게시물 신고 정보 조회")
     public void rc005() throws Exception {
-        CommentReport commentReport = getCommentReport(testCommentReportInfo00);
-        Comment comment = commentReport.getComment();
-        Post post = comment.getPost();
-        Board board = post.getBoard();
+        String commentReportId = getCommentReportId(testCommentReportInfo00);
+        String commentId = getCommentId(testCommentReportInfo00.getComment());
+        String postId = getPostId(testCommentReportInfo00.getComment().getPost());
+        String boardId = getBoardId(testCommentReportInfo00.getComment().getPost().getBoard());
 
-        MockHttpServletRequestBuilder requestBuilder = get("/v1/report/comment/boards/{boardId}/posts/{postId}/comments/{commentId}/reports/{reportId}", board.getId(), post.getId(), comment.getId(), commentReport.getId());
+        MockHttpServletRequestBuilder requestBuilder = get("/v1/report/comment/boards/{boardId}/posts/{postId}/comments/{commentId}/reports/{reportId}", boardId, postId, commentId, commentReportId);
         setAuthToken(requestBuilder, allBoardAdmin);
 
         List<FieldDescriptor> fieldDescriptorList = new LinkedList<>();

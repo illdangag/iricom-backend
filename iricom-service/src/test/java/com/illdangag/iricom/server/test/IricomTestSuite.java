@@ -635,12 +635,20 @@ public abstract class IricomTestSuite {
         return String.valueOf(this.getPostReport(testPostReportInfo).getId());
     }
 
-    protected CommentReport getCommentReport(TestCommentReportInfo testCommentReportInfo) {
+    private CommentReport getCommentReport(TestCommentReportInfo testCommentReportInfo) {
         return commentReportMap.get(testCommentReportInfo);
     }
 
-    protected PostBan getPostBan(TestPostBanInfo testPostBanInfo) {
+    protected String getCommentReportId(TestCommentReportInfo testCommentReportInfo) {
+        return String.valueOf(this.getCommentReport(testCommentReportInfo).getId());
+    }
+
+    private PostBan getPostBan(TestPostBanInfo testPostBanInfo) {
         return postBanMap.get(testPostBanInfo);
+    }
+
+    protected String getPostBanId(TestPostBanInfo testPostBanInfo) {
+        return String.valueOf(this.getPostBan(testPostBanInfo).getId());
     }
 
     protected AccountGroup getAccountGroup(TestAccountGroupInfo testAccountGroupInfo) {
