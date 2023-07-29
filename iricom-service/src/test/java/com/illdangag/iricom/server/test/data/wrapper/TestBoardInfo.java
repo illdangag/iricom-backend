@@ -26,4 +26,7 @@ public class TestBoardInfo {
 
     @Builder.Default
     private List<TestAccountInfo> adminList = new LinkedList<>();
+
+    @Builder.Default
+    private List<TestAccountInfo> removeAdminList = new LinkedList<>();
 }

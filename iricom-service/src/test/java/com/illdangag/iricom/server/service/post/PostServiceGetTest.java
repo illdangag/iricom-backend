@@ -62,7 +62,6 @@ public class PostServiceGetTest extends IricomTestSuite {
             .postType(PostType.POST).postState(PostState.PUBLISH)
             .creator(common00).board(undisclosedBoardInfo01).build();
 
-
     @Autowired
     public PostServiceGetTest(ApplicationContext context) {
         super(context);
@@ -112,8 +111,11 @@ public class PostServiceGetTest extends IricomTestSuite {
         Account account = getAccount(common00);
         String postId = getPostId(undisclosedPost01);
 
-        Assertions.assertThrows(IricomException.class, () -> {
+        IricomException iricomException = Assertions.assertThrows(IricomException.class, () -> {
             postService.getPostInfo(account, postId, PostState.PUBLISH, true);
         });
+
+        Assertions.assertEquals("03000000", iricomException.getErrorCode());
+        Assertions.assertEquals("Not exist board.", iricomException.getMessage());
     }
 }

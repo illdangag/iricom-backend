@@ -1,15 +1,14 @@
 package com.illdangag.iricom.server.data.request;
 
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import javax.validation.constraints.Size;
 
 @Getter
-@AllArgsConstructor
-@NoArgsConstructor
+@AllArgsConstructor(access = AccessLevel.PRIVATE)
+@NoArgsConstructor(access = AccessLevel.PRIVATE)
+@Builder
 public class CommentInfoUpdate {
-    @Size(max = 200, message = "The content must be less then 200 characters.")
+    @Size(min = 1, max = 200, message = "The content must be less then 200 characters.")
     private String content;
 }

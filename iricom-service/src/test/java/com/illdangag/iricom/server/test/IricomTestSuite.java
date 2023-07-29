@@ -101,17 +101,11 @@ public abstract class IricomTestSuite {
     };
 
     private final List<TestBoardInfo> testBoardInfoList = new ArrayList<>();
-
     private final List<TestAccountGroupInfo> testAccountGroupInfoList = new ArrayList<>();
-
     private final List<TestPostInfo> testPostInfoList = new ArrayList<>();
-
     private final List<TestCommentInfo> testCommentInfoList = new ArrayList<>();
-
     private final List<TestPostReportInfo> testPostReportInfoList = new ArrayList<>();
-
     private final List<TestCommentReportInfo> testCommentReportInfoList = new ArrayList<>();
-
     private final List<TestPostBanInfo> testPostBanInfoList = new ArrayList<>();
 
     private static final Map<TestAccountInfo, Account> accountMap = new HashMap<>();
@@ -302,10 +296,25 @@ public abstract class IricomTestSuite {
     /**
      * 계정 그룹 삭제
      */
-    protected void deleteAccountGroup(List<TestAccountGroupInfo> testAccountGroupInfoList) {
+    private void deleteAccountGroup(List<TestAccountGroupInfo> testAccountGroupInfoList) {
         testAccountGroupInfoList.stream()
                 .filter(TestAccountGroupInfo::getDeleted)
                 .forEach(this::deleteAccountGroup);
+    }
+
+    /**
+     * 게시판 관리자 삭제
+     */
+    private void deleteBoardAdmin(List<TestBoardInfo> testBoardInfoList) {
+        testBoardInfoList.forEach(item -> {
+            String boardId = this.getBoardId(item);
+
+            item.getRemoveAdminList()
+                    .forEach(account -> {
+                        String accountId = accountMap.get(account).getId().toString();
+                        this.deleteBoardAdmin(accountId, boardId);
+                    });
+        });
     }
 
     protected void init() {
@@ -322,6 +331,7 @@ public abstract class IricomTestSuite {
         this.setDisabledBoard(testBoardInfoList);
         this.setNotificationOnlyBoard(testBoardInfoList);
         this.deleteAccountGroup(testAccountGroupInfoList);
+        this.deleteBoardAdmin(testBoardInfoList);
     }
 
     private Account createAccount(TestAccountInfo testAccountInfo) {
@@ -380,6 +390,14 @@ public abstract class IricomTestSuite {
                 .boardId(boardId)
                 .build();
         this.boardAuthorizationService.createBoardAdminAuth(boardAdminInfoCreate);
+    }
+
+    private void deleteBoardAdmin(String accountId, String boardId) {
+        BoardAdminInfoDelete boardAdminInfoDelete = BoardAdminInfoDelete.builder()
+                .accountId(accountId)
+                .boardId(boardId)
+                .build();
+        this.boardAuthorizationService.deleteBoardAdminAuth(boardAdminInfoDelete);
     }
 
     private void disableBoard(Board board) {

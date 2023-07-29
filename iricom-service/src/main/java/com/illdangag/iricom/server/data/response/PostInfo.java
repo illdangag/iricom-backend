@@ -56,6 +56,8 @@ public class PostInfo {
 
     private Boolean ban;
 
+    private Boolean deleted;
+
     public PostInfo(Post post, boolean includeContent, PostState postState, long commentCount, long upvote, long downvote, long reportCount, boolean isBan) {
         this.id = String.valueOf(post.getId());
         this.createDate = DateTimeUtils.getLong(post.getCreateDate());
@@ -70,13 +72,12 @@ public class PostInfo {
         this.boardId = String.valueOf(post.getBoard().getId());
 
         PostContent content;
-        if (postState == PostState.PUBLISH) {
+        if (postState == PostState.PUBLISH) { // 발행한 게시물 조회
             if (post.getContent() == null) {
                 throw new IricomException(IricomErrorCode.NOT_EXIST_PUBLISH_CONTENT);
             }
             content = post.getContent();
-        } else {
-            // 임시 저장 내용을 우선
+        } else { // 임시 저장 내용을 우선
             if (post.getTemporaryContent() != null) {
                 content = post.getTemporaryContent();
             } else {
@@ -90,6 +91,12 @@ public class PostInfo {
 
         if (includeContent) {
             this.content = content.getContent();
+        }
+
+        this.deleted = post.getDeleted() != null && post.getDeleted();
+        if (this.deleted) { // 삭제된 게시물인 경우
+            // 내용을 포함하지 않음
+            this.content = null;
         }
 
         this.report = reportCount >= 10;

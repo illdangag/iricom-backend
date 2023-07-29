@@ -64,7 +64,7 @@ public class PostServiceImpl implements PostService {
         }
 
         // 공개 게시판 또는 계정 그룹에 포함된 게시판인지 확인
-        this.getDisclosedBoard(account, String.valueOf(board.getId()));
+        this.getDisclosedBoard(account, board.getId());
 
         // 공지 사항인 경우 시스템 관리자 또는 해당 게시판 관리자만 작성 가능
         if (postInfoCreate.getType() == PostType.NOTIFICATION) {
@@ -114,7 +114,7 @@ public class PostServiceImpl implements PostService {
 
         // 권한이 있는 게시판의 게시물인지 확인
         // 공개 게시판 또는 계정 그룹에 포함된 게시판인지 확인
-        this.getDisclosedBoard(account, String.valueOf(board.getId()));
+        this.getDisclosedBoard(account, board.getId());
 
         // 본인이 작성한 게시물만 수정이 가능
         if (!post.getAccount().equals(account)) {
@@ -265,7 +265,7 @@ public class PostServiceImpl implements PostService {
         }
 
         // 공개 게시판 또는 계정 그룹에 포함된 게시판인지 확인
-        this.getDisclosedBoard(account, String.valueOf(board.getId()));
+        this.getDisclosedBoard(account, board.getId());
 
         // 본인이 작성한 게시물만 발행 가능
         if (!post.getAccount().equals(account)) {
@@ -365,9 +365,17 @@ public class PostServiceImpl implements PostService {
             throw new IricomException(IricomErrorCode.NOT_EXIST_POST);
         }
 
-        // 활성화된 게시판에만 게시물 발행 가능
+        // 활성화된 게시판에만 게시물 삭제 가능
         if (!board.getEnabled()) {
             throw new IricomException(IricomErrorCode.DISABLED_BOARD);
+        }
+
+        // 공개 게시판 또는 계정 그룹에 포함된 게시판인지 확인
+        this.getDisclosedBoard(account, board.getId());
+
+        if (post.getDeleted()) { // 이미 삭제된 게시물인 경우
+            // 존재하지 않은 게시물로 간주
+            throw new IricomException(IricomErrorCode.NOT_EXIST_POST);
         }
 
         // 본인이 작성한 게시물만 삭제 가능
@@ -375,7 +383,6 @@ public class PostServiceImpl implements PostService {
             throw new IricomException(IricomErrorCode.INVALID_AUTHORIZATION_TO_UPDATE_POST_OR_NOTIFICATION);
         }
 
-        // 공지 사항인 경우 시스템 관리자 또는 해당 게시판 관리자만 삭제
         PostContent content;
         if (post.getContent() != null) {
             content = post.getContent();
@@ -383,6 +390,7 @@ public class PostServiceImpl implements PostService {
             content = post.getTemporaryContent();
         }
 
+        // 공지 사항인 경우 시스템 관리자 또는 해당 게시판 관리자만 삭제
         if (content.getType() == PostType.NOTIFICATION) {
             if (!this.hasAuthorization(account, board)) {
                 throw new IricomException(IricomErrorCode.INVALID_AUTHORIZATION_TO_NOTIFICATION);
@@ -412,10 +420,6 @@ public class PostServiceImpl implements PostService {
     @Override
     public PostInfo votePost(Account account, Board board, Post post, VoteType voteType) {
         // 게시판에 포함된 게시물인지 확인
-        if (!board.equals(post.getBoard())) {
-            throw new IricomException(IricomErrorCode.NOT_EXIST_POST);
-        }
-
         if (!board.equals(post.getBoard())) {
             throw new IricomException(IricomErrorCode.NOT_EXIST_POST);
         }
@@ -484,7 +488,12 @@ public class PostServiceImpl implements PostService {
         }
 
         Optional<BoardAdmin> boardAdminOptional = this.boardAdminRepository.getBoardAdmin(board, account);
-        return boardAdminOptional.isPresent();
+        if (boardAdminOptional.isEmpty()) {
+            return false;
+        }
+
+        BoardAdmin boardAdmin = boardAdminOptional.get();
+        return !boardAdmin.getDeleted();
     }
 
     private Post getPost(String id) {
@@ -512,7 +521,11 @@ public class PostServiceImpl implements PostService {
             throw new IricomException(IricomErrorCode.NOT_EXIST_BOARD);
         }
 
-        Optional<Board> boardOptional = this.boardRepository.getDisclosedBoard(account, boardId);
+        return this.getDisclosedBoard(account, boardId);
+    }
+
+    private Board getDisclosedBoard(Account account, long id) {
+        Optional<Board> boardOptional = this.boardRepository.getDisclosedBoard(account, id);
         return boardOptional.orElseThrow(() -> new IricomException(IricomErrorCode.NOT_EXIST_BOARD));
     }
 

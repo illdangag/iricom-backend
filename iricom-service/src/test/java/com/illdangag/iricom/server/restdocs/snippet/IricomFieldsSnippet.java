@@ -49,7 +49,8 @@ public class IricomFieldsSnippet {
             ResponseField.builder().path("boardId").description("게시물이 작성된 게시판 아이디").build(),
             ResponseField.builder().path("report").description("신고 여부").build(),
             ResponseField.builder().path("ban").description("차단 여부").build(),
-            ResponseField.builder().path("account").description("작성자").build()
+            ResponseField.builder().path("account").description("작성자").build(),
+            ResponseField.builder().path("deleted").description("삭제 여부").type(JsonFieldType.BOOLEAN).build()
     );
 
     private static final List<ResponseField> commentResponseFieldList = Arrays.asList(
