@@ -45,7 +45,8 @@ public class BoardAuthorizationServiceImpl implements BoardAuthorizationService 
     /**
      * 게시판 관리자 권한 추가
      */
-    public void createBoardAdminAuth(BoardAdminInfoCreate boardAdminInfoCreate) {
+    @Override
+    public BoardAdminInfo createBoardAdminAuth(@Valid BoardAdminInfoCreate boardAdminInfoCreate) {
         Account account = this.getAccount(boardAdminInfoCreate.getAccountId());
         if (account.getAccountDetail() == null) {
             throw new IricomException(IricomErrorCode.NOT_EXIST_ACCOUNT_DETAIL_TO_UPDATE_BOARD_ADMIN);
@@ -53,9 +54,9 @@ public class BoardAuthorizationServiceImpl implements BoardAuthorizationService 
 
         Board board = this.getBoard(boardAdminInfoCreate.getBoardId());
 
+        // 해당 게시판에 관리자로 이미 추가된 경우에는 추가로 등록하지 않도록 함
         Optional<BoardAdmin> boardAdminOptional = this.boardAdminRepository.getBoardAdmin(board, account);
-        if (boardAdminOptional.isEmpty() || boardAdminOptional.get().getDeleted()) {
-            // 이전에 해당 게시판에 권한을 추가한 적이 없거나 해당 게시판의 권한이 삭제 되었다면
+        if (boardAdminOptional.isEmpty() || boardAdminOptional.get().getDeleted()) { // 이전에 해당 게시판에 권한을 추가한 적이 없거나 해당 게시판의 권한이 삭제 되었다면
             BoardAdmin boardAdmin = BoardAdmin.builder()
                     .account(account)
                     .board(board)
@@ -64,18 +65,20 @@ public class BoardAuthorizationServiceImpl implements BoardAuthorizationService 
             this.boardAdminRepository.save(boardAdmin);
         }
 
-        if (account.getAuth() == AccountAuth.ACCOUNT) {
-            // 일반 계정인 경우에 게시판 관리자 계정으로 정보 수정
+        if (account.getAuth() == AccountAuth.ACCOUNT) { // 일반 계정인 경우
+            // 게시판 관리자 계정으로 정보 수정
             account.setAuth(AccountAuth.BOARD_ADMIN);
             this.accountService.saveAccount(account);
         }
+
+        return this.getBoardAdminInfo(board);
     }
 
     /**
      * 게시판 관리지 권한 삭제
      */
     @Override
-    public void deleteBoardAdminAuth(BoardAdminInfoDelete boardAdminInfoDelete) {
+    public BoardAdminInfo deleteBoardAdminAuth(@Valid BoardAdminInfoDelete boardAdminInfoDelete) {
         Account account = this.getAccount(boardAdminInfoDelete.getAccountId());
         Board board = this.getBoard(boardAdminInfoDelete.getBoardId());
 
@@ -93,11 +96,14 @@ public class BoardAuthorizationServiceImpl implements BoardAuthorizationService 
 
         // 게시판 관리자 권한이 남아 있지 않은 경우
         // 계정 정보를 일반 계정으로 수정
+        AccountAuth accountAuth = account.getAuth();
         List<BoardAdmin> boardAdminList = this.boardAdminRepository.getBoardAdminList(account, false);
-        if (boardAdminList.isEmpty()) {
+        if (boardAdminList.isEmpty() && accountAuth == AccountAuth.BOARD_ADMIN) {
             account.setAuth(AccountAuth.ACCOUNT);
             this.accountService.saveAccount(account);
         }
+
+        return this.getBoardAdminInfo(board);
     }
 
     /**
@@ -148,16 +154,18 @@ public class BoardAuthorizationServiceImpl implements BoardAuthorizationService 
     @Override
     public BoardAdminInfo getBoardAdminInfo(String boardId) {
         Board board = this.getBoard(boardId);
+        return this.getBoardAdminInfo(board);
+    }
+
+    private BoardAdminInfo getBoardAdminInfo(Board board) {
         List<BoardAdmin> boardAdminList = this.boardAdminRepository.getBoardAdminList(Collections.singletonList(board));
 
         BoardAdminInfo boardAdminInfo = new BoardAdminInfo(board);
         if (!boardAdminList.isEmpty()) {
-            Set<BoardAdmin> boardAdminSet = new HashSet<>();
-            List<BoardAdmin> sortedBoardAdminList = boardAdminList.stream()
+            Set<BoardAdmin> boardAdminSet = boardAdminList.stream()
                     .sorted((item1, item2) -> {
                         return item1.getCreateDate().compareTo(item2.getCreateDate()) * -1;
-                    }).collect(Collectors.toList());
-            boardAdminSet.addAll(sortedBoardAdminList);
+                    }).collect(Collectors.toSet());
             List<AccountInfo> accountInfoList = boardAdminSet.stream()
                     .filter(boardAdmin -> !boardAdmin.getDeleted())
                     .map(BoardAdmin::getAccount)
@@ -178,11 +186,16 @@ public class BoardAuthorizationServiceImpl implements BoardAuthorizationService 
         }
 
         Optional<BoardAdmin> boardAdminOptional = this.boardAdminRepository.getBoardAdmin(board, account);
-        return boardAdminOptional.isPresent();
+        if (boardAdminOptional.isEmpty()) {
+            return false;
+        }
+
+        BoardAdmin boardAdmin = boardAdminOptional.get();
+        return !boardAdmin.getDeleted();
     }
 
     private Board getBoard(String id) {
-        long boardId = -1;
+        long boardId;
         try {
             boardId = Long.parseLong(id);
         } catch (Exception exception) {

@@ -11,9 +11,9 @@ import com.illdangag.iricom.server.data.response.BoardAdminInfoList;
 import javax.validation.Valid;
 
 public interface BoardAuthorizationService {
-    void createBoardAdminAuth(BoardAdminInfoCreate boardAdminInfoCreate);
+    BoardAdminInfo createBoardAdminAuth(@Valid BoardAdminInfoCreate boardAdminInfoCreate);
 
-    void deleteBoardAdminAuth(BoardAdminInfoDelete boardAdminInfoDelete);
+    BoardAdminInfo deleteBoardAdminAuth(@Valid BoardAdminInfoDelete boardAdminInfoDelete);
 
     BoardAdminInfoList getBoardAdminInfoList(@Valid BoardAdminInfoSearch boardAdminInfoSearch);
 

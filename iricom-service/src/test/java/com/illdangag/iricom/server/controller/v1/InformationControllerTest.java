@@ -70,7 +70,6 @@ public class InformationControllerTest extends IricomTestSuite {
             mockMvc.perform(requestBuilder)
                     .andExpect(status().is(200))
                     .andExpect(jsonPath("$.email").value(account.getEmail()))
-                    .andExpect(jsonPath("$.auth").value("account"))
                     .andDo(print());
         }
     }

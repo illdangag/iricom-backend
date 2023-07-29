@@ -118,7 +118,7 @@ public abstract class IricomTestSuite {
     private static final Map<TestPostBanInfo, PostBan> postBanMap = new HashMap<>();
     private static final Map<TestAccountGroupInfo, AccountGroup> accountGroupMap = new HashMap<>();
 
-    private static boolean isInit = false;
+    private static boolean isAccountInit = false;
 
     public IricomTestSuite(ApplicationContext context) {
         this.accountService = context.getBean(AccountService.class);
@@ -138,10 +138,12 @@ public abstract class IricomTestSuite {
         this.banRepository = context.getBean(BanRepository.class);
         this.accountGroupRepository = context.getBean(AccountGroupRepository.class);
 
-        if (!isInit) {
-            isInit = true;
-            this.setAccount(Arrays.asList(testAccountInfos));
+        if (isAccountInit) {
+            return;
         }
+
+        isAccountInit = true;
+        this.setAccount(Arrays.asList(testAccountInfos));
     }
 
     /**
@@ -268,7 +270,7 @@ public abstract class IricomTestSuite {
      */
     protected void setNotificationOnlyBoard(List<TestBoardInfo> testBoardInfoList) {
         testBoardInfoList.stream()
-                .filter(item -> item.isNotificationOnly())
+                .filter(TestBoardInfo::isNotificationOnly)
                 .map(boardMap::get)
                 .forEach(this::notificationOnlyBoard);
     }
@@ -362,7 +364,7 @@ public abstract class IricomTestSuite {
     }
 
     private Board getBoard(String id) {
-        long boardId = -1;
+        long boardId;
         try {
             boardId = Long.parseLong(id);
         } catch (Exception exception) {
@@ -574,14 +576,14 @@ public abstract class IricomTestSuite {
                 .deleted(false)
                 .build();
         List<AccountInAccountGroup> accountInAccountGroupList = testAccountGroupInfo.getAccountList().stream()
-                .map(item -> getAccount(item))
+                .map(this::getAccount)
                 .map(item -> AccountInAccountGroup.builder()
                         .accountGroup(accountGroup)
                         .account(item)
                         .build())
                 .collect(Collectors.toList());
         List<BoardInAccountGroup> boardInAccountGroupList = testAccountGroupInfo.getBoardList().stream()
-                .map(item -> getBoard(item))
+                .map(this::getBoard)
                 .map(item -> BoardInAccountGroup.builder()
                         .accountGroup(accountGroup)
                         .board(item)
@@ -619,6 +621,10 @@ public abstract class IricomTestSuite {
 
     protected Account getAccount(TestAccountInfo testAccountInfo) {
         return accountMap.get(testAccountInfo);
+    }
+
+    protected String getAccountId(TestAccountInfo testAccountInfo) {
+        return String.valueOf(this.getAccount(testAccountInfo).getId());
     }
 
     private Board getBoard(TestBoardInfo testBoardInfo) {

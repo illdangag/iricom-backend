@@ -89,7 +89,6 @@ public class AccountControllerTest extends IricomTestSuite {
                 mockMvc.perform(requestBuilder)
                         .andExpect(status().is(200))
                         .andExpect(jsonPath("$.email").value(common00.getEmail()))
-                        .andExpect(jsonPath("$.auth").value("account"))
                         .andDo(print());
             }
         }

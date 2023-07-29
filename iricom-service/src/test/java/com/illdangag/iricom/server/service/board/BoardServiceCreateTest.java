@@ -13,8 +13,8 @@ import org.springframework.context.ApplicationContext;
 
 import javax.validation.ConstraintViolationException;
 
-@DisplayName("service: 게시판 생성")
 @Slf4j
+@DisplayName("service: 게시판 - 생성")
 public class BoardServiceCreateTest extends IricomTestSuite {
     @Autowired
     private BoardService boardService;

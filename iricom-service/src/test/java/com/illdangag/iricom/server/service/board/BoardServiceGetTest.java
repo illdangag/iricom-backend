@@ -22,9 +22,9 @@ import java.util.Collections;
 public class BoardServiceGetTest extends IricomTestSuite {
     @Autowired
     private BoardService boardService;
-
+    // 게시판
     private final TestBoardInfo disclosedBoard00 = TestBoardInfo.builder()
-            .title("testBoardInfo00").isEnabled(true).undisclosed(false)
+            .title("disclosedBoard00").isEnabled(true).undisclosed(false)
             .adminList(Collections.singletonList(allBoardAdmin)).build();
     private final TestBoardInfo undisclosedBoard00 = TestBoardInfo.builder()
             .title("undisclosedBoard00").isEnabled(true).undisclosed(true)
@@ -32,14 +32,14 @@ public class BoardServiceGetTest extends IricomTestSuite {
     private final TestBoardInfo undisclosedBoard03 = TestBoardInfo.builder()
             .title("undisclosedBoard03").isEnabled(true).undisclosed(true)
             .adminList(Collections.singletonList(allBoardAdmin)).build();
-
+    private final TestBoardInfo undisclosedBoard01 = TestBoardInfo.builder()
+            .title("undisclosedBoard01").isEnabled(true).undisclosed(true)
+            .adminList(Collections.singletonList(allBoardAdmin)).build();
+    // 게정 그룹
     private final TestAccountGroupInfo testAccountGroupInfo00 = TestAccountGroupInfo.builder()
             .title("testAccountGroupInfo00").description("description")
             .accountList(Arrays.asList(common00)).boardList(Arrays.asList(undisclosedBoard00))
             .build();
-    private final TestBoardInfo undisclosedBoard01 = TestBoardInfo.builder()
-            .title("undisclosedBoard01").isEnabled(true).undisclosed(true)
-            .adminList(Collections.singletonList(allBoardAdmin)).build();
 
     @Autowired
     public BoardServiceGetTest(ApplicationContext context) {
