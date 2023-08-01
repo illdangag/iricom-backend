@@ -90,19 +90,14 @@ asciidoctor {
 
     baseDirFollowsSourceFile()
 
+    copy {
+        from "build/docs/asciidoc"
+        into "src/main/resources/static/docs"
+    }
+
     doFirst {
         delete file('src/main/resources/static/docs')
-    }
-}
-
-task copyDocument(type: Copy) {
-    dependsOn asciidoctor
-    from file("build/docs/asciidoc")
-    into file("src/main/resources/static/docs")
-}
-
-build {
-    dependsOn copyDocument
+    }\
 }
 
 bootJar {
