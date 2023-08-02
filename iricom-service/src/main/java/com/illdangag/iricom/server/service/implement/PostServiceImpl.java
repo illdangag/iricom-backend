@@ -246,6 +246,35 @@ public class PostServiceImpl implements PostService {
     }
 
     @Override
+    public PostInfo getPostInfo(String boardId, String postId, PostState postState) {
+        Board board = this.getDisclosedBoard(boardId);
+        Post post = this.getPost(postId);
+        return this.getPostInfo(board, post, postState);
+    }
+
+    @Override
+    public PostInfo getPostInfo(Board board, Post post, PostState postState) {
+        if (!board.getEnabled()) {
+            throw new IricomException(IricomErrorCode.DISABLED_BOARD);
+        }
+
+        // 게시판에 존재하는 게시물인지 확인
+        if (!board.equals(post.getBoard())) {
+            throw new IricomException(IricomErrorCode.NOT_EXIST_POST);
+        }
+
+        if (postState == PostState.TEMPORARY) {
+            throw new IricomException(IricomErrorCode.INVALID_AUTHORIZATION_TO_GET_TEMPORARY_CONTENT);
+        } else {
+            post.setViewCount(post.getViewCount() + 1);
+        }
+
+        this.postRepository.save(post);
+
+        return this.getPostInfo(post, postState, true);
+    }
+
+    @Override
     public PostInfo publishPostInfo(Account account, String boardId, String postId) {
         Board board = this.getDisclosedBoard(account, boardId);
         Post post = this.getPost(postId);

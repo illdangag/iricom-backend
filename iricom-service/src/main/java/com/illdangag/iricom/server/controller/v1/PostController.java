@@ -119,7 +119,12 @@ public class PostController {
             throw new IricomException(IricomErrorCode.INVALID_POST_STATE);
         }
 
-        PostInfo postInfo = this.postService.getPostInfo(account, boardId, postId, postState);
+        PostInfo postInfo;
+        if (account == null) {
+            postInfo = this.postService.getPostInfo(boardId, postId, postState);
+        } else {
+            postInfo = this.postService.getPostInfo(account, boardId, postId, postState);
+        }
         return ResponseEntity.status(HttpStatus.OK).body(postInfo);
     }
 

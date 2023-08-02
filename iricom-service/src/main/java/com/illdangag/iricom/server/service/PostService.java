@@ -30,6 +30,10 @@ public interface PostService {
 
     PostInfo getPostInfo(Post post, PostState postState, boolean includeContent);
 
+    PostInfo getPostInfo(String boardId, String postId, PostState postState);
+
+    PostInfo getPostInfo(Board board, Post post, PostState postState);
+
     PostInfoList getPublishPostInfoList(String boardId, @Valid PostInfoSearch postInfoSearch);
 
     PostInfoList getPublishPostInfoList(Account account, String boardId, @Valid PostInfoSearch postInfoSearch);
