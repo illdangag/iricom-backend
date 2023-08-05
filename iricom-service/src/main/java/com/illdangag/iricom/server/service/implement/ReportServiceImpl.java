@@ -56,6 +56,8 @@ public class ReportServiceImpl implements ReportService {
 
     @Override
     public PostReportInfo getPostReportInfo(Account account, Board board, Post post, String reportId) {
+        this.validate(account, board, post);
+
         Optional<PostReport> postReportOptional = this.reportRepository.getPostReport(reportId);
         PostReport postReport = postReportOptional.orElseThrow(() -> new IricomException(IricomErrorCode.NOT_EXIST_POST_REPORT));
 
@@ -81,6 +83,8 @@ public class ReportServiceImpl implements ReportService {
 
     @Override
     public PostReportInfoList getPostReportInfoList(Account account, Board board, PostReportInfoSearch postReportInfoSearch) {
+        this.validate(account, board);
+
         if (!this.boardAuthorizationService.hasAuthorization(account, board)) {
             throw new IricomException(IricomErrorCode.INVALID_AUTHORIZATION_TO_GET_POST_REPORT_LIST);
         }
@@ -124,6 +128,8 @@ public class ReportServiceImpl implements ReportService {
 
     @Override
     public PostReportInfoList getPostReportInfoList(Account account, Board board, Post post, PostReportInfoSearch postReportInfoSearch) {
+        this.validate(account, board, post);
+
         if (!this.boardAuthorizationService.hasAuthorization(account, board)) {
             throw new IricomException(IricomErrorCode.INVALID_AUTHORIZATION_TO_GET_POST_REPORT_LIST);
         }
@@ -169,6 +175,8 @@ public class ReportServiceImpl implements ReportService {
 
     @Override
     public PostReportInfo reportPost(Account account, Board board, Post post, PostReportInfoCreate postReportInfoCreate) {
+        this.validate(account, board, post);
+
         if (!post.getBoard().equals(board)) {
             throw new IricomException(IricomErrorCode.NOT_EXIST_POST);
         }
@@ -203,11 +211,9 @@ public class ReportServiceImpl implements ReportService {
 
     @Override
     public CommentReportInfo reportComment(Account account, Board board, Post post, Comment comment, CommentReportInfoCreate commentReportInfoCreate) {
-        if (!comment.getPost().equals(post)) {
-            throw new IricomException(IricomErrorCode.NOT_EXIST_COMMENT);
-        } else if (!post.getBoard().equals(board)) {
-            throw new IricomException(IricomErrorCode.NOT_EXIST_POST);
-        } else if (!board.getEnabled()) {
+        this.validate(account, board, post, comment);
+
+        if (!board.getEnabled()) {
             throw new IricomException(IricomErrorCode.DISABLED_BOARD);
         } else if (!post.isPublish()) {
             throw new IricomException(IricomErrorCode.NOT_EXIST_PUBLISH_CONTENT);
@@ -241,6 +247,8 @@ public class ReportServiceImpl implements ReportService {
 
     @Override
     public CommentReportInfoList getCommentReportInfoList(Account account, Board board, CommentReportInfoSearch commentReportInfoSearch) {
+        this.validate(account, board);
+
         if (!this.boardAuthorizationService.hasAuthorization(account, board)) {
             throw new IricomException(IricomErrorCode.INVALID_AUTHORIZATION_TO_GET_POST_REPORT_LIST);
         }
@@ -280,11 +288,14 @@ public class ReportServiceImpl implements ReportService {
     public CommentReportInfoList getCommentReportInfoList(Account account, String boardId, String postId, CommentReportInfoSearch commentReportInfoSearch) {
         Board board = this.getBoard(boardId);
         Post post = this.getPost(postId);
+
         return this.getCommentReportInfoList(account, board, post, commentReportInfoSearch);
     }
 
     @Override
     public CommentReportInfoList getCommentReportInfoList(Account account, Board board, Post post, CommentReportInfoSearch commentReportInfoSearch) {
+        this.validate(account, board, post);
+
         if (!this.boardAuthorizationService.hasAuthorization(account, board)) {
             throw new IricomException(IricomErrorCode.INVALID_AUTHORIZATION_TO_GET_POST_REPORT_LIST);
         }
@@ -323,11 +334,14 @@ public class ReportServiceImpl implements ReportService {
         Board board = this.getBoard(boardId);
         Post post = this.getPost(postId);
         Comment comment = this.getComment(commentId);
+
         return this.getCommentReportInfoList(account, board, post, comment, commentReportInfoSearch);
     }
 
     @Override
     public CommentReportInfoList getCommentReportInfoList(Account account, Board board, Post post, Comment comment, CommentReportInfoSearch commentReportInfoSearch) {
+        this.validate(account, board, post, comment);
+
         if (!this.boardAuthorizationService.hasAuthorization(account, board)) {
             throw new IricomException(IricomErrorCode.INVALID_AUTHORIZATION_TO_GET_POST_REPORT_LIST);
         }
@@ -365,11 +379,14 @@ public class ReportServiceImpl implements ReportService {
         Board board = this.getBoard(boardId);
         Post post = this.getPost(postId);
         Comment comment = this.getComment(commentId);
+
         return this.getCommentReportInfo(account, board, post, comment, reportId);
     }
 
     @Override
     public CommentReportInfo getCommentReportInfo(Account account, Board board, Post post, Comment comment, String reportId) {
+        this.validate(account, board, post, comment);
+
         if (!this.boardAuthorizationService.hasAuthorization(account, board)) {
             throw new IricomException(IricomErrorCode.INVALID_AUTHORIZATION_TO_GET_POST_REPORT_LIST);
         }
@@ -413,5 +430,34 @@ public class ReportServiceImpl implements ReportService {
     private Comment getComment(String id) {
         Optional<Comment> commentOptional = this.commentRepository.getComment(id);
         return commentOptional.orElseThrow(() -> new IricomException(IricomErrorCode.NOT_EXIST_COMMENT));
+    }
+
+    private void validate(Account account, Board board) {
+        if (board.getUndisclosed()) {
+            if (account == null) {
+                throw new IricomException(IricomErrorCode.NOT_EXIST_BOARD);
+            }
+
+            List<Long> accessibleBoardIdList = this.boardRepository.getAccessibleBoardIdList(account);
+            if (!accessibleBoardIdList.contains(board.getId())) {
+                throw new IricomException(IricomErrorCode.NOT_EXIST_BOARD);
+            }
+        }
+    }
+
+    private void validate(Account account, Board board, Post post) {
+        this.validate(account, board);
+
+        if (!post.getBoard().equals(board)) { // 해당 개시판에서 발행되지 않은 게시물
+            throw new IricomException(IricomErrorCode.NOT_EXIST_POST);
+        }
+    }
+
+    private void validate(Account account, Board board, Post post, Comment comment) {
+        this.validate(account, board, post);
+
+        if (!comment.getPost().equals(post)) {
+            throw new IricomException(IricomErrorCode.NOT_EXIST_COMMENT);
+        }
     }
 }

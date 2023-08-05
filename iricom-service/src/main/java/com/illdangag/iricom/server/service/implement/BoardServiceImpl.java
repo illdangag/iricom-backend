@@ -47,13 +47,15 @@ public class BoardServiceImpl implements BoardService {
 
     @Override
     public BoardInfo getBoardInfo(String id) {
-        Board board = this.getDiscloseBoard(id);
+        Board board = this.getBoard(id);
+        this.validate(null, board);
         return new BoardInfo(board);
     }
 
     @Override
     public BoardInfo getBoardInfo(Account account, String id) {
-        Board board = this.getDisclosedBoard(account, id);
+        Board board = this.getBoard(id);
+        this.validate(account, board);
         return new BoardInfo(board);
     }
 
@@ -147,26 +149,39 @@ public class BoardServiceImpl implements BoardService {
         return boardOptional.orElseThrow(() -> new IricomException(IricomErrorCode.NOT_EXIST_BOARD));
     }
 
-    private Board getDiscloseBoard(String id) {
-        long boardId = -1;
-        try {
-            boardId = Long.parseLong(id);
-        } catch (Exception exception) {
-            throw new IricomException(IricomErrorCode.NOT_EXIST_BOARD);
-        }
-        Optional<Board> boardOptional = this.boardRepository.getDisclosedBoard(boardId);
-        return boardOptional.orElseThrow(() -> new IricomException(IricomErrorCode.NOT_EXIST_BOARD));
-    }
+//    private Board getDiscloseBoard(String id) {
+//        long boardId = -1;
+//        try {
+//            boardId = Long.parseLong(id);
+//        } catch (Exception exception) {
+//            throw new IricomException(IricomErrorCode.NOT_EXIST_BOARD);
+//        }
+//        Optional<Board> boardOptional = this.boardRepository.getDisclosedBoard(boardId);
+//        return boardOptional.orElseThrow(() -> new IricomException(IricomErrorCode.NOT_EXIST_BOARD));
+//    }
+//
+//    private Board getDisclosedBoard(Account account, String id) {
+//        long boardId = -1;
+//        try {
+//            boardId = Long.parseLong(id);
+//        } catch (Exception exception) {
+//            throw new IricomException(IricomErrorCode.NOT_EXIST_BOARD);
+//        }
+//
+//        Optional<Board> boardOptional = this.boardRepository.getDisclosedBoard(account, boardId);
+//        return boardOptional.orElseThrow(() -> new IricomException(IricomErrorCode.NOT_EXIST_BOARD));
+//    }
 
-    private Board getDisclosedBoard(Account account, String id) {
-        long boardId = -1;
-        try {
-            boardId = Long.parseLong(id);
-        } catch (Exception exception) {
-            throw new IricomException(IricomErrorCode.NOT_EXIST_BOARD);
-        }
+    private void validate(Account account, Board board) {
+        if (board.getUndisclosed()) {
+            if (account == null) {
+                throw new IricomException(IricomErrorCode.NOT_EXIST_BOARD);
+            }
 
-        Optional<Board> boardOptional = this.boardRepository.getDisclosedBoard(account, boardId);
-        return boardOptional.orElseThrow(() -> new IricomException(IricomErrorCode.NOT_EXIST_BOARD));
+            List<Long> accessibleBoardIdList = this.boardRepository.getAccessibleBoardIdList(account);
+            if (!accessibleBoardIdList.contains(board.getId())) {
+                throw new IricomException(IricomErrorCode.NOT_EXIST_BOARD);
+            }
+        }
     }
 }

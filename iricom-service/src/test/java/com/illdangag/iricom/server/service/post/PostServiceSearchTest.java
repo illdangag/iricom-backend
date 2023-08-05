@@ -108,7 +108,7 @@ public class PostServiceSearchTest extends IricomTestSuite {
 
         PostInfoList postInfoList = postService.getPublishPostInfoList(account, boardId, postInfoSearch);
         List<String> postIdList = postInfoList.getPostInfoList().stream()
-                .map(item -> item.getId())
+                .map(PostInfo::getId)
                 .collect(Collectors.toList());
 
         Assertions.assertTrue(postIdList.contains(postId));
