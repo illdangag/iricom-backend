@@ -60,7 +60,8 @@ public class CommentController {
                                                           @RequestParam(name = "limit", defaultValue = "20", required = false) String limitVariable,
                                                           @RequestParam(name = "includeComment", defaultValue = "false", required = false) String includeCommentVariable,
                                                           @RequestParam(name = "referenceCommentId", defaultValue = "", required = false) String referenceCommentId,
-                                                          @RequestParam(name = "includeCommentLimit", defaultValue = "5", required = false) String includeCommentLimitVariable) {
+                                                          @RequestParam(name = "includeCommentLimit", defaultValue = "5", required = false) String includeCommentLimitVariable,
+                                                          @RequestContext Account account) {
         int skip;
         int limit;
         boolean includeComment;
@@ -97,7 +98,15 @@ public class CommentController {
                 .referenceCommentId(referenceCommentId)
                 .includeCommentLimit(includeCommentLimit)
                 .build();
-        CommentInfoList commentInfoList = this.commentService.getComment(boardId, postId, commentInfoSearch);
+
+        CommentInfoList commentInfoList;
+
+        if (account != null) {
+            commentInfoList = this.commentService.getComment(account, boardId, postId, commentInfoSearch);
+        } else {
+            commentInfoList = this.commentService.getComment(boardId, postId, commentInfoSearch);
+        }
+
         return ResponseEntity.status(HttpStatus.OK).body(commentInfoList);
     }
 
@@ -109,8 +118,16 @@ public class CommentController {
     @RequestMapping(method = RequestMethod.GET, value = "/comments/{comment_id}")
     public ResponseEntity<CommentInfo> getCommentInfo(@PathVariable(value = "board_id") String boardId,
                                                       @PathVariable(value = "post_id") String postId,
-                                                      @PathVariable(value = "comment_id") String commentId) {
-        CommentInfo commentInfo = this.commentService.getComment(boardId, postId, commentId);
+                                                      @PathVariable(value = "comment_id") String commentId,
+                                                      @RequestContext Account account) {
+        CommentInfo commentInfo;
+
+        if (account != null) {
+            commentInfo = this.commentService.getComment(account, boardId, postId, commentId);
+        } else {
+            commentInfo = this.commentService.getComment(boardId, postId, commentId);
+        }
+
         return ResponseEntity.status(HttpStatus.OK).body(commentInfo);
     }
 

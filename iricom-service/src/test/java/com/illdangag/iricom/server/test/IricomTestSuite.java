@@ -481,7 +481,9 @@ public abstract class IricomTestSuite {
         }
         CommentInfoCreate commentInfoCreate = builder.build();
 
-        CommentInfo commentInfo = this.commentService.createCommentInfo(account, board, post, commentInfoCreate);
+        String boardId = String.valueOf(board.getId());
+        String postId = String.valueOf(post.getId());
+        CommentInfo commentInfo = this.commentService.createCommentInfo(account, boardId, postId, commentInfoCreate);
         return this.getComment(commentInfo.getId());
     }
 

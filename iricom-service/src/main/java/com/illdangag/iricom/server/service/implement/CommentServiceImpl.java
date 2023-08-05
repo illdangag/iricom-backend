@@ -56,7 +56,7 @@ public class CommentServiceImpl implements CommentService {
 
     @Override
     public CommentInfo createCommentInfo(Account account, Board board, Post post, @Valid CommentInfoCreate commentInfoCreate) {
-        this.validate(board, post);
+        this.validate(account, board, post);
 
         if (!board.getEnabled()) { // 비활성화 게시판인 경우
             throw new IricomException(IricomErrorCode.DISABLED_BOARD);
@@ -107,7 +107,7 @@ public class CommentServiceImpl implements CommentService {
 
     @Override
     public CommentInfo updateComment(Account account, Board board, Post post, Comment comment, @Valid CommentInfoUpdate commentInfoUpdate) {
-        this.validate(board, post, comment);
+        this.validate(account, board, post, comment);
 
         if (!board.getEnabled()) { // 비활성화 게시판인 경우
             throw new IricomException(IricomErrorCode.DISABLED_BOARD);
@@ -146,8 +146,20 @@ public class CommentServiceImpl implements CommentService {
     }
 
     @Override
+    public CommentInfoList getComment(Account account, String boardId, String postId, CommentInfoSearch commentInfoSearch) {
+        Board board = this.getBoard(boardId);
+        Post post = this.getPost(postId);
+        return this.getComment(account, board, post, commentInfoSearch);
+    }
+
+    @Override
     public CommentInfoList getComment(Board board, Post post, @Valid CommentInfoSearch commentInfoSearch) {
-        this.validate(board, post);
+        return this.getComment(null, board, post, commentInfoSearch);
+    }
+
+    @Override
+    public CommentInfoList getComment(Account account, Board board, Post post, CommentInfoSearch commentInfoSearch) {
+        this.validate(account, board, post);
 
         long total;
         List<Comment> commentList;
@@ -190,12 +202,25 @@ public class CommentServiceImpl implements CommentService {
         Board board = this.getBoard(boardId);
         Post post = this.getPost(postId);
         Comment comment = this.getComment(commentId);
-        return this.getComment(board, post, comment);
+        return this.getComment(null, board, post, comment);
+    }
+
+    @Override
+    public CommentInfo getComment(Account account, String boardId, String postId, String commentId) {
+        Board board = this.getBoard(boardId);
+        Post post = this.getPost(postId);
+        Comment comment = this.getComment(commentId);
+        return this.getComment(account, board, post, comment);
     }
 
     @Override
     public CommentInfo getComment(Board board, Post post, Comment comment) {
-        this.validate(board, post, comment);
+        return this.getComment(null, board, post, comment);
+    }
+
+    @Override
+    public CommentInfo getComment(Account account, Board board, Post post, Comment comment) {
+        this.validate(account, board, post, comment);
         return this.getCommentInfo(comment);
     }
 
@@ -218,7 +243,7 @@ public class CommentServiceImpl implements CommentService {
 
     @Override
     public CommentInfo deleteComment(Account account, Board board, Post post, Comment comment) {
-        this.validate(board, post, comment);
+        this.validate(account, board, post, comment);
 
         if (!comment.getAccount().equals(account)) {
             // 다른 계정의 댓글을 삭제 하는 경우
@@ -244,7 +269,7 @@ public class CommentServiceImpl implements CommentService {
 
     @Override
     public CommentInfo voteComment(Account account, Board board, Post post, Comment comment, VoteType voteType) {
-        this.validate(board, post, comment);
+        this.validate(account, board, post, comment);
 
         if (!board.getEnabled()) {
             throw new IricomException(IricomErrorCode.DISABLED_BOARD);
@@ -279,24 +304,6 @@ public class CommentServiceImpl implements CommentService {
         return new CommentInfo(comment, accountInfo, upvote, downvote, reportCount);
     }
 
-    private void validate(Board board, Post post) {
-        if (!post.getBoard().equals(board)) { // 해당 개시판에서 발행되지 않은 게시물
-            throw new IricomException(IricomErrorCode.NOT_EXIST_POST);
-        }
-
-        if (!post.isPublish()) { // 발행되지 않은 게시물
-            throw new IricomException(IricomErrorCode.NOT_EXIST_PUBLISH_CONTENT);
-        }
-    }
-
-    private void validate(Board board, Post post, Comment comment) {
-        this.validate(board, post);
-
-        if (!comment.getPost().equals(post)) { // 해당 게시물에 작성된 댓글이 아닌 경우
-            throw new IricomException(IricomErrorCode.NOT_EXIST_COMMENT);
-        }
-    }
-
     private Board getBoard(String id) {
         long boardId = -1;
         try {
@@ -316,5 +323,34 @@ public class CommentServiceImpl implements CommentService {
     private Comment getComment(String id) {
         Optional<Comment> commentOptional = this.commentRepository.getComment(id);
         return commentOptional.orElseThrow(() -> new IricomException(IricomErrorCode.NOT_EXIST_COMMENT));
+    }
+
+    private void validate(Account account, Board board, Post post) {
+        if (board.getUndisclosed()) {
+            if (account == null) {
+                throw new IricomException(IricomErrorCode.NOT_EXIST_BOARD);
+            }
+
+            List<Long> accessibleBoardIdList = this.boardRepository.getAccessibleBoardIdList(account);
+            if (!accessibleBoardIdList.contains(board.getId())) {
+                throw new IricomException(IricomErrorCode.NOT_EXIST_BOARD);
+            }
+        }
+
+        if (!post.getBoard().equals(board)) { // 해당 개시판에서 발행되지 않은 게시물
+            throw new IricomException(IricomErrorCode.NOT_EXIST_POST);
+        }
+
+        if (!post.isPublish()) { // 발행되지 않은 게시물
+            throw new IricomException(IricomErrorCode.NOT_EXIST_PUBLISH_CONTENT);
+        }
+    }
+
+    private void validate(Account account, Board board, Post post, Comment comment) {
+        this.validate(account, board, post);
+
+        if (!comment.getPost().equals(post)) { // 해당 게시물에 작성된 댓글이 아닌 경우
+            throw new IricomException(IricomErrorCode.NOT_EXIST_COMMENT);
+        }
     }
 }

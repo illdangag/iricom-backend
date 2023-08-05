@@ -1,7 +1,6 @@
 package com.illdangag.iricom.server.service.board.authorization;
 
 import com.illdangag.iricom.server.data.request.BoardAdminInfoSearch;
-import com.illdangag.iricom.server.data.response.BoardAdminInfo;
 import com.illdangag.iricom.server.data.response.BoardAdminInfoList;
 import com.illdangag.iricom.server.service.BoardAuthorizationService;
 import com.illdangag.iricom.server.test.IricomTestSuite;
@@ -18,8 +17,6 @@ import java.util.Arrays;
 @Slf4j
 @DisplayName("service: 게시판 관리자 - 검색")
 public class BoardAuthorizationServiceSearchTest extends IricomTestSuite {
-    private static boolean isInit = false;
-
     @Autowired
     private BoardAuthorizationService boardAuthorizationService;
     // 게시판
