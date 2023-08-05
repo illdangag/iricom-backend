@@ -106,7 +106,7 @@ public class PostServiceUpdateTest extends IricomTestSuite {
 
     @Test
     @DisplayName("발행하지 않은 게시물")
-    public void updateTemporaryPost() throws Exception {
+    public void updateTemporaryPost() {
         String boardId = getBoardId(temporaryTestPostInfo00.getBoard());
         String postId = getPostId(temporaryTestPostInfo00);
         Account account = getAccount(temporaryTestPostInfo00.getCreator());
@@ -125,7 +125,7 @@ public class PostServiceUpdateTest extends IricomTestSuite {
 
     @Test
     @DisplayName("발행한 게시물")
-    public void updatePublishPost() throws Exception {
+    public void updatePublishPost() {
         String boardId = getBoardId(publishTestPostInfo00.getBoard());
         String postId = getPostId(publishTestPostInfo00);
         Account account = getAccount(publishTestPostInfo00.getCreator());
@@ -144,7 +144,7 @@ public class PostServiceUpdateTest extends IricomTestSuite {
 
     @Test
     @DisplayName("발행하지 않은 공지사항")
-    public void updateTemporaryNotification() throws Exception {
+    public void updateTemporaryNotification() {
         String boardId = getBoardId(temporaryTestNotificationInfo00.getBoard());
         String postId = getPostId(temporaryTestNotificationInfo00);
         Account account = getAccount(temporaryTestNotificationInfo00.getCreator());
@@ -163,7 +163,7 @@ public class PostServiceUpdateTest extends IricomTestSuite {
 
     @Test
     @DisplayName("발행한 공지사항")
-    public void updatePublishNotification() throws Exception {
+    public void updatePublishNotification() {
         String boardId = getBoardId(publishTestNotificationInfo00.getBoard());
         String postId = getPostId(publishTestNotificationInfo00);
         Account account = getAccount(publishTestNotificationInfo00.getCreator());
@@ -182,7 +182,7 @@ public class PostServiceUpdateTest extends IricomTestSuite {
 
     @Test
     @DisplayName("작성자가 다른 게시물")
-    public void updateOtherCreator() throws Exception {
+    public void updateOtherCreator() {
         Account account = getAccount(common01);
         String boardId = getBoardId(publishTestPostInfo01.getBoard());
         String postId = getPostId(publishTestPostInfo01);
@@ -202,7 +202,7 @@ public class PostServiceUpdateTest extends IricomTestSuite {
 
     @Test
     @DisplayName("제목이 빈 문자열")
-    public void emptyTitle() throws Exception {
+    public void emptyTitle() {
         String boardId = getBoardId(publishTestPostInfo00.getBoard());
         String postId = getPostId(publishTestPostInfo00);
         Account account = getAccount(publishTestPostInfo00.getCreator());
@@ -218,7 +218,7 @@ public class PostServiceUpdateTest extends IricomTestSuite {
 
     @Test
     @DisplayName("제목이 긴 문자열")
-    public void overflowTitle() throws Exception {
+    public void overflowTitle() {
         String boardId = getBoardId(publishTestPostInfo00.getBoard());
         String postId = getPostId(publishTestPostInfo00);
         Account account = getAccount(publishTestPostInfo00.getCreator());
@@ -234,7 +234,7 @@ public class PostServiceUpdateTest extends IricomTestSuite {
 
     @Test
     @DisplayName("존재하지 않는 게시판")
-    public void notExistBoard() throws Exception {
+    public void notExistBoard() {
         String postId = getPostId(publishTestPostInfo00);
         Account account = getAccount(publishTestPostInfo00.getCreator());
 
@@ -255,7 +255,7 @@ public class PostServiceUpdateTest extends IricomTestSuite {
 
     @Test
     @DisplayName("일치하지 않는 게시판")
-    public void notMatchBoard() throws Exception {
+    public void notMatchBoard() {
         String boardId = getBoardId(testBoardInfo01);
         String postId = getPostId(publishTestPostInfo00);
         Account account = getAccount(publishTestPostInfo00.getCreator());
@@ -275,7 +275,7 @@ public class PostServiceUpdateTest extends IricomTestSuite {
 
     @Test
     @DisplayName("비활성화 게시판")
-    public void disabledBoard() throws Exception {
+    public void disabledBoard() {
         String boardId = getBoardId(disabledBoardTestPostInfo00.getBoard());
         String postId = getPostId(disabledBoardTestPostInfo00);
         Account account = getAccount(disabledBoardTestPostInfo00.getCreator());
@@ -295,7 +295,7 @@ public class PostServiceUpdateTest extends IricomTestSuite {
 
     @Test
     @DisplayName("공지사항 전용 게시판의 일반 게시물")
-    public void updatePostOnlyNotification() throws Exception {
+    public void updatePostOnlyNotification() {
         String boardId = getBoardId(publishTestPostInfo02.getBoard());
         String postId = getPostId(publishTestPostInfo02);
         Account account = getAccount(publishTestPostInfo02.getCreator());
@@ -315,7 +315,7 @@ public class PostServiceUpdateTest extends IricomTestSuite {
 
     @Test
     @DisplayName("공지 사항 전용 게시판에 공지 사항 게시물")
-    public void updateNotificationOnlyNotification() throws Exception {
+    public void updateNotificationOnlyNotification() {
         String boardId = getBoardId(temporaryTestNotificationInfo01.getBoard());
         String postId = getPostId(temporaryTestNotificationInfo01);
         Account account = getAccount(temporaryTestNotificationInfo01.getCreator());
@@ -333,7 +333,7 @@ public class PostServiceUpdateTest extends IricomTestSuite {
 
     @Test
     @DisplayName("일반 계정이 일반 게시판의 일반 게시물을 공지 사항으로 변경")
-    public void switchPostToNotificationByAccount() throws Exception {
+    public void switchPostToNotificationByAccount() {
         String boardId = getBoardId(temporaryTestNotificationInfo02.getBoard());
         String postId = getPostId(temporaryTestNotificationInfo02);
         Account account = getAccount(temporaryTestNotificationInfo02.getCreator());
@@ -354,7 +354,7 @@ public class PostServiceUpdateTest extends IricomTestSuite {
 
     @Test
     @DisplayName("게시판 관리자가 일반 게시판의 일반 게시물을 공지 사항으로 변경")
-    public void switchPostToNotificationByBoardAdmin() throws Exception {
+    public void switchPostToNotificationByBoardAdmin() {
         String boardId = getBoardId(temporaryTestNotificationInfo03.getBoard());
         String postId = getPostId(temporaryTestNotificationInfo03);
         Account account = getAccount(temporaryTestNotificationInfo03.getCreator());
@@ -375,7 +375,7 @@ public class PostServiceUpdateTest extends IricomTestSuite {
 
     @Test
     @DisplayName("공지 사항 전용 게시판의 일반 게시물을 공지 사항으로 변경")
-    public void switchPostToNotificationNotificationOnlyBoard() throws Exception {
+    public void switchPostToNotificationNotificationOnlyBoard() {
         String boardId = getBoardId(temporaryTestNotificationInfo04.getBoard());
         String postId = getPostId(temporaryTestNotificationInfo04);
         Account account = getAccount(temporaryTestNotificationInfo04.getCreator());

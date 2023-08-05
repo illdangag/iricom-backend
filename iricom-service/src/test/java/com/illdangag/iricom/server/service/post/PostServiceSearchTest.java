@@ -29,59 +29,82 @@ public class PostServiceSearchTest extends IricomTestSuite {
     @Autowired
     private PostService postService;
 
-    // 공개 게시판
-    private final TestBoardInfo boardInfo00 = TestBoardInfo.builder()
-            .title("boardInfo00").isEnabled(true).adminList(Collections.singletonList(allBoardAdmin)).build();
-    // 비공개 게시판
-    private final TestBoardInfo undisclosedBoardInfo00 = TestBoardInfo.builder()
-            .title("undisclosedBoardInfo00").isEnabled(true).undisclosed(true).adminList(Collections.singletonList(allBoardAdmin)).build();
-    // 계정 그룹
-    private final TestAccountGroupInfo testAccountGroupInfo00 = TestAccountGroupInfo.builder()
-            .title("testAccountGroupInfo00").description("description").deleted(false)
-            .accountList(Collections.singletonList(common00)).boardList(Collections.singletonList(undisclosedBoardInfo00))
-            .build();
-    // 게시물
-    private final TestPostInfo testPostInfo00 = TestPostInfo.builder()
-            .title("post00").content("content").isAllowComment(true)
-            .postType(PostType.POST).postState(PostState.PUBLISH)
-            .creator(common00).board(boardInfo00).build();
-    private final TestPostInfo undisclosedPost01 = TestPostInfo.builder()
-            .title("undisclosedPost01").content("content").isAllowComment(true)
-            .postType(PostType.POST).postState(PostState.PUBLISH)
-            .creator(common00).board(undisclosedBoardInfo00).build();
-
     @Autowired
     public PostServiceSearchTest(ApplicationContext context) {
         super(context);
-
-        addTestBoardInfo(boardInfo00, undisclosedBoardInfo00);
-        addTestPostInfo(testPostInfo00, undisclosedPost01);
-        addTestAccountGroupInfo(testAccountGroupInfo00);
-
-        init();
     }
 
     @Test
     @DisplayName("공개 게시판")
-    public void getPostListDisclosedBoard() throws Exception {
-        String boardId = getBoardId(boardInfo00);
+    public void getPostListDisclosedBoard() {
+        TestBoardInfo testBoardInfo = TestBoardInfo.builder()
+                .title("testBoardInfo").isEnabled(true).adminList(Collections.singletonList(allBoardAdmin)).build();
+
+        TestPostInfo testPostInfo00 = TestPostInfo.builder()
+                .title("testPostInfo00").content("content").isAllowComment(true)
+                .postType(PostType.POST).postState(PostState.PUBLISH)
+                .creator(common00).board(testBoardInfo).build();
+        TestPostInfo testPostInfo01 = TestPostInfo.builder()
+                .title("testPostInfo01").content("content").isAllowComment(true)
+                .postType(PostType.POST).postState(PostState.PUBLISH)
+                .creator(common00).board(testBoardInfo).build();
+        TestPostInfo testPostInfo02 = TestPostInfo.builder()
+                .title("testPostInfo02").content("content").isAllowComment(true)
+                .postType(PostType.POST).postState(PostState.PUBLISH)
+                .creator(common00).board(testBoardInfo).build();
+
+        addTestBoardInfo(testBoardInfo);
+        addTestPostInfo(testPostInfo00, testPostInfo01, testPostInfo02);
+        init();
+
+        String boardId = getBoardId(testBoardInfo);
         String postId = getPostId(testPostInfo00);
 
         PostInfoSearch postInfoSearch = PostInfoSearch.builder()
                 .skip(0).limit(100)
                 .build();
+
         PostInfoList postInfoList = postService.getPublishPostInfoList(boardId, postInfoSearch);
+
         List<String> postIdList = postInfoList.getPostInfoList().stream()
-                .map(item -> item.getId())
+                .map(PostInfo::getId)
                 .collect(Collectors.toList());
 
+        Assertions.assertEquals(3, postInfoList.getTotal());
         Assertions.assertTrue(postIdList.contains(postId));
     }
 
     @Test
     @DisplayName("권한을 사용하지 않고 비공개 게시판")
-    public void getPostListUndisclosedBoard() throws Exception {
-        String boardId = getBoardId(undisclosedBoardInfo00);
+    public void getPostListUndisclosedBoard() {
+        TestBoardInfo testBoardInfo = TestBoardInfo.builder()
+                .title("testBoardInfo").isEnabled(true).undisclosed(true)
+                .adminList(Collections.singletonList(allBoardAdmin)).build();
+
+        TestPostInfo testPostInfo00 = TestPostInfo.builder()
+                .title("testPostInfo00").content("content").isAllowComment(true)
+                .postType(PostType.POST).postState(PostState.PUBLISH)
+                .creator(common00).board(testBoardInfo).build();
+        TestPostInfo testPostInfo01 = TestPostInfo.builder()
+                .title("testPostInfo01").content("content").isAllowComment(true)
+                .postType(PostType.POST).postState(PostState.PUBLISH)
+                .creator(common00).board(testBoardInfo).build();
+        TestPostInfo testPostInfo02 = TestPostInfo.builder()
+                .title("testPostInfo02").content("content").isAllowComment(true)
+                .postType(PostType.POST).postState(PostState.PUBLISH)
+                .creator(common00).board(testBoardInfo).build();
+
+        TestAccountGroupInfo testAccountGroupInfo = TestAccountGroupInfo.builder()
+                .title("testAccountGroupInfo").description("description").deleted(false)
+                .accountList(Collections.singletonList(common00)).boardList(Collections.singletonList(testBoardInfo))
+                .build();
+
+        addTestBoardInfo(testBoardInfo);
+        addTestPostInfo(testPostInfo00, testPostInfo01, testPostInfo02);
+        addTestAccountGroupInfo(testAccountGroupInfo);
+        init();
+
+        String boardId = getBoardId(testBoardInfo);
 
         PostInfoSearch postInfoSearch = PostInfoSearch.builder()
                 .skip(0).limit(100)
@@ -97,29 +120,74 @@ public class PostServiceSearchTest extends IricomTestSuite {
 
     @Test
     @DisplayName("계정 그룹에 포함된 비공개 게시판")
-    public void getPostListUndisclosedBoardInAccountGroup() throws Exception {
+    public void getPostListUndisclosedBoardInAccountGroup() {
+        TestBoardInfo testBoardInfo = TestBoardInfo.builder()
+                .title("testBoardInfo").isEnabled(true).undisclosed(true)
+                .adminList(Collections.singletonList(allBoardAdmin)).build();
+
+        TestPostInfo testPostInfo00 = TestPostInfo.builder()
+                .title("testPostInfo00").content("content").isAllowComment(true)
+                .postType(PostType.POST).postState(PostState.PUBLISH)
+                .creator(common00).board(testBoardInfo).build();
+        TestPostInfo testPostInfo01 = TestPostInfo.builder()
+                .title("testPostInfo01").content("content").isAllowComment(true)
+                .postType(PostType.POST).postState(PostState.PUBLISH)
+                .creator(common00).board(testBoardInfo).build();
+        TestPostInfo testPostInfo02 = TestPostInfo.builder()
+                .title("testPostInfo02").content("content").isAllowComment(true)
+                .postType(PostType.POST).postState(PostState.PUBLISH)
+                .creator(common00).board(testBoardInfo).build();
+
+        TestAccountGroupInfo testAccountGroupInfo = TestAccountGroupInfo.builder()
+                .title("testAccountGroupInfo").description("description").deleted(false)
+                .accountList(Collections.singletonList(common00)).boardList(Collections.singletonList(testBoardInfo))
+                .build();
+
+        addTestBoardInfo(testBoardInfo);
+        addTestPostInfo(testPostInfo00, testPostInfo01, testPostInfo02);
+        addTestAccountGroupInfo(testAccountGroupInfo);
+        init();
+
         Account account = getAccount(common00);
-        String boardId = getBoardId(undisclosedBoardInfo00);
-        String postId = getPostId(undisclosedPost01);
+        String boardId = getBoardId(testBoardInfo);
+        String postId = getPostId(testPostInfo00);
 
         PostInfoSearch postInfoSearch = PostInfoSearch.builder()
                 .skip(0).limit(100)
                 .build();
 
         PostInfoList postInfoList = postService.getPublishPostInfoList(account, boardId, postInfoSearch);
+
         List<String> postIdList = postInfoList.getPostInfoList().stream()
                 .map(PostInfo::getId)
                 .collect(Collectors.toList());
 
+        Assertions.assertEquals(3, postInfoList.getTotal());
         Assertions.assertTrue(postIdList.contains(postId));
     }
 
     @Test
     @DisplayName("계정이 작성한 게시물 조회")
-    public void getAccountCreatedPost() throws Exception {
+    public void getAccountCreatedPost() {
+        TestBoardInfo testBoardInfo = TestBoardInfo.builder()
+                .title("testBoardInfo").isEnabled(true).adminList(Collections.singletonList(allBoardAdmin)).build();
+
+        TestPostInfo testPostInfo00 = TestPostInfo.builder()
+                .title("testPostInfo00").content("content").isAllowComment(true)
+                .postType(PostType.POST).postState(PostState.PUBLISH)
+                .creator(common00).board(testBoardInfo).build();
+        TestPostInfo testPostInfo01 = TestPostInfo.builder()
+                .title("testPostInfo01").content("content").isAllowComment(true)
+                .postType(PostType.POST).postState(PostState.PUBLISH)
+                .creator(common00).board(testBoardInfo).build();
+
+        addTestBoardInfo(testBoardInfo);
+        addTestPostInfo(testPostInfo00, testPostInfo01);
+        init();
+
         Account account = getAccount(common00);
         String postId00 = getPostId(testPostInfo00);
-        String postId01 = getPostId(undisclosedPost01);
+        String postId01 = getPostId(testPostInfo01);
 
         List<String> list = getAllList(PostInfoSearch.builder().build(), searchRequest -> {
             PostInfoSearch postInfoSearch = (PostInfoSearch) searchRequest;

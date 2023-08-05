@@ -97,7 +97,7 @@ public class PostServiceDeleteTest extends IricomTestSuite {
 
     @Test
     @DisplayName("게시물 삭제")
-    public void deletePost() throws Exception {
+    public void deletePost() {
         TestPostInfo targetPostInfo = testPostInfo00;
 
         Account creator = getAccount(targetPostInfo.getCreator());
@@ -113,7 +113,7 @@ public class PostServiceDeleteTest extends IricomTestSuite {
 
     @Test
     @DisplayName("자신이 작성하지 않은 게시물 삭제")
-    public void notCreator() throws Exception {
+    public void notCreator() {
         TestPostInfo targetPostInfo = testPostInfo01;
 
         Account account = getAccount(common01);
@@ -132,7 +132,7 @@ public class PostServiceDeleteTest extends IricomTestSuite {
 
     @Test
     @DisplayName("비활성화 게시판의 게시물 삭제")
-    public void disabledBoard() throws Exception {
+    public void disabledBoard() {
         TestPostInfo targetPostInfo = testPostInfo02;
 
         Account creator = getAccount(targetPostInfo.getCreator());
@@ -149,7 +149,7 @@ public class PostServiceDeleteTest extends IricomTestSuite {
 
     @Test
     @DisplayName("권한 없는 비공개 게시판의 게시물 삭제")
-    public void noAuthUndisclosedBoard() throws Exception {
+    public void noAuthUndisclosedBoard() {
         TestPostInfo targetPostInfo = testPostInfo03;
 
         Account creator = getAccount(targetPostInfo.getCreator());
@@ -166,7 +166,7 @@ public class PostServiceDeleteTest extends IricomTestSuite {
 
     @Test
     @DisplayName("권한이 있는 비공게 게시판의 게시물 삭제")
-    public void undisclosedBoard() throws Exception {
+    public void undisclosedBoard() {
         TestPostInfo targetPostInfo = testPostInfo04;
 
         Account creator = getAccount(targetPostInfo.getCreator());
@@ -181,7 +181,7 @@ public class PostServiceDeleteTest extends IricomTestSuite {
 
     @Test
     @DisplayName("공지 사항 삭제")
-    public void deleteNotification() throws Exception {
+    public void deleteNotification() {
         TestPostInfo targetPostInfo = testPostInfo05;
 
         Account creator = getAccount(targetPostInfo.getCreator());
@@ -196,7 +196,7 @@ public class PostServiceDeleteTest extends IricomTestSuite {
 
     @Test
     @DisplayName("게시판 관리자에서 삭제된 계정이 공지 사항 게시물 삭제")
-    public void deleteNoAuthNotification() throws Exception {
+    public void deleteNoAuthNotification() {
         TestPostInfo targetPostInfo = testPostInfo06;
 
         Account creator = getAccount(targetPostInfo.getCreator());

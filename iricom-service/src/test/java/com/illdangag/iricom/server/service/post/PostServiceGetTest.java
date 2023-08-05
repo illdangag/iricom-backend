@@ -17,7 +17,6 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 
-import java.util.Arrays;
 import java.util.Collections;
 
 @DisplayName("service: 게시물 - 조회")
@@ -26,58 +25,28 @@ public class PostServiceGetTest extends IricomTestSuite {
     @Autowired
     private PostService postService;
 
-    // 공개 게시판
-    private final TestBoardInfo disclosedBoardInfo00 = TestBoardInfo.builder()
-            .title("disclosedBoardInfo00").isEnabled(true)
-            .adminList(Collections.singletonList(allBoardAdmin)).build();
-    // 비공개 게시판
-    private final TestBoardInfo undisclosedBoardInfo00 = TestBoardInfo.builder()
-            .title("undisclosedBoardInfo00").isEnabled(true).undisclosed(true)
-            .adminList(Collections.singletonList(allBoardAdmin)).build();
-    private final TestBoardInfo undisclosedBoardInfo01 = TestBoardInfo.builder()
-            .title("undisclosedBoardInfo00").isEnabled(true).undisclosed(true)
-            .adminList(Collections.singletonList(allBoardAdmin)).build();
-
-    // 계정 그룹
-    private final TestAccountGroupInfo accountGroupInfo00 = TestAccountGroupInfo.builder()
-            .title("accountGroupInfo00").description("description")
-            .accountList(Arrays.asList(common00)).boardList(Arrays.asList(undisclosedBoardInfo00))
-            .build();
-    private final TestAccountGroupInfo accountGroupInfo01 = TestAccountGroupInfo.builder()
-            .title("accountGroupInfo01").description("description").deleted(true)
-            .accountList(Arrays.asList(common00)).boardList(Arrays.asList(undisclosedBoardInfo01))
-            .build();
-
-    // 게시물
-    private final TestPostInfo postInfo00 = TestPostInfo.builder()
-            .title("postInfo00").content("content").isAllowComment(true)
-            .postType(PostType.POST).postState(PostState.PUBLISH)
-            .creator(common00).board(disclosedBoardInfo00).build();
-    private final TestPostInfo undisclosedPost00 = TestPostInfo.builder()
-            .title("undisclosedPost00").content("content").isAllowComment(true)
-            .postType(PostType.POST).postState(PostState.PUBLISH)
-            .creator(common00).board(undisclosedBoardInfo00).build();
-    private final TestPostInfo undisclosedPost01 = TestPostInfo.builder()
-            .title("undisclosedPost01").content("content").isAllowComment(true)
-            .postType(PostType.POST).postState(PostState.PUBLISH)
-            .creator(common00).board(undisclosedBoardInfo01).build();
-
     @Autowired
     public PostServiceGetTest(ApplicationContext context) {
         super(context);
-
-        addTestBoardInfo(disclosedBoardInfo00, undisclosedBoardInfo00, undisclosedBoardInfo01);
-        addTestPostInfo(postInfo00, undisclosedPost00, undisclosedPost01);
-        addTestAccountGroupInfo(accountGroupInfo00, accountGroupInfo01);
-
-        init();
     }
 
     @Test
     @DisplayName("공개된 게시판의 게시물을 권한 없이 조회")
-    public void getDisclosedBoardPost() throws Exception {
-        String postId = getPostId(postInfo00);
+    public void getDisclosedBoardPost() {
+        TestBoardInfo testBoardInfo = TestBoardInfo.builder()
+                .title("testBoardInfo").isEnabled(true)
+                .adminList(Collections.singletonList(allBoardAdmin)).build();
 
+        TestPostInfo testPostInfo = TestPostInfo.builder()
+                .title("testPostInfo").content("content").isAllowComment(true)
+                .postType(PostType.POST).postState(PostState.PUBLISH)
+                .creator(common00).board(testBoardInfo).build();
+
+        addTestBoardInfo(testBoardInfo);
+        addTestPostInfo(testPostInfo);
+        init();
+
+        String postId = getPostId(testPostInfo);
         PostInfo postInfo = postService.getPostInfo(postId, PostState.PUBLISH, true);
 
         Assertions.assertNotNull(postInfo);
@@ -85,8 +54,28 @@ public class PostServiceGetTest extends IricomTestSuite {
 
     @Test
     @DisplayName("비공개 게시판의 게시물 조회")
-    public void getUndisclosedBoardPost() throws Exception {
-        String postId = getPostId(undisclosedPost00);
+    public void getUndisclosedBoardPost() {
+        TestBoardInfo testBoardInfo = TestBoardInfo.builder()
+                .title("testBoardInfo").isEnabled(true).undisclosed(true)
+                .adminList(Collections.singletonList(allBoardAdmin)).build();
+
+        TestPostInfo testPostInfo = TestPostInfo.builder()
+                .title("testPostInfo").content("content").isAllowComment(true)
+                .postType(PostType.POST).postState(PostState.PUBLISH)
+                .creator(common00).board(testBoardInfo).build();
+
+        TestAccountGroupInfo testAccountGroupInfo = TestAccountGroupInfo.builder()
+                .title("testAccountGroupInfo").description("description")
+                .accountList(Collections.singletonList(common00))
+                .boardList(Collections.singletonList(testBoardInfo))
+                .build();
+
+        addTestBoardInfo(testBoardInfo);
+        addTestPostInfo(testPostInfo);
+        addTestAccountGroupInfo(testAccountGroupInfo);
+        init();
+
+        String postId = getPostId(testPostInfo);
 
         Assertions.assertThrows(IricomException.class, () -> {
             postService.getPostInfo(postId, PostState.PUBLISH, true);
@@ -95,9 +84,29 @@ public class PostServiceGetTest extends IricomTestSuite {
 
     @Test
     @DisplayName("계정 그룹에 포함된 게시판의 게시물을 조회")
-    public void getPostInAccountGroup() throws Exception {
+    public void getPostInAccountGroup() {
+        TestBoardInfo testBoardInfo = TestBoardInfo.builder()
+                .title("testBoardInfo").isEnabled(true).undisclosed(true)
+                .adminList(Collections.singletonList(allBoardAdmin)).build();
+
+        TestPostInfo testPostInfo = TestPostInfo.builder()
+                .title("testPostInfo").content("content").isAllowComment(true)
+                .postType(PostType.POST).postState(PostState.PUBLISH)
+                .creator(common00).board(testBoardInfo).build();
+
+        TestAccountGroupInfo testAccountGroupInfo = TestAccountGroupInfo.builder()
+                .title("testAccountGroupInfo").description("description")
+                .accountList(Collections.singletonList(common00))
+                .boardList(Collections.singletonList(testBoardInfo))
+                .build();
+
+        addTestBoardInfo(testBoardInfo);
+        addTestPostInfo(testPostInfo);
+        addTestAccountGroupInfo(testAccountGroupInfo);
+        init();
+
         Account account = getAccount(common00);
-        String postId = getPostId(undisclosedPost00);
+        String postId = getPostId(testPostInfo);
 
         PostInfo postInfo = postService.getPostInfo(account, postId, PostState.PUBLISH, true);
 
@@ -107,9 +116,29 @@ public class PostServiceGetTest extends IricomTestSuite {
 
     @Test
     @DisplayName("삭제된 계정 그룹에 포함된 게시판")
-    public void getUndisclosedBoardPostInDeletedAccountGroup() throws Exception {
+    public void getUndisclosedBoardPostInDeletedAccountGroup() {
+        TestBoardInfo testBoardInfo = TestBoardInfo.builder()
+                .title("testBoardInfo").isEnabled(true).undisclosed(true)
+                .adminList(Collections.singletonList(allBoardAdmin)).build();
+
+        TestPostInfo testPostInfo = TestPostInfo.builder()
+                .title("testPostInfo").content("content").isAllowComment(true)
+                .postType(PostType.POST).postState(PostState.PUBLISH)
+                .creator(common00).board(testBoardInfo).build();
+
+        TestAccountGroupInfo testAccountGroupInfo = TestAccountGroupInfo.builder()
+                .title("testAccountGroupInfo").description("description").deleted(true)
+                .accountList(Collections.singletonList(common00))
+                .boardList(Collections.singletonList(testBoardInfo))
+                .build();
+
+        addTestBoardInfo(testBoardInfo);
+        addTestPostInfo(testPostInfo);
+        addTestAccountGroupInfo(testAccountGroupInfo);
+        init();
+
         Account account = getAccount(common00);
-        String postId = getPostId(undisclosedPost01);
+        String postId = getPostId(testPostInfo);
 
         IricomException iricomException = Assertions.assertThrows(IricomException.class, () -> {
             postService.getPostInfo(account, postId, PostState.PUBLISH, true);
