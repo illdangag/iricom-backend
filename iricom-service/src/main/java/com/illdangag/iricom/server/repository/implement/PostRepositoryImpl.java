@@ -58,6 +58,7 @@ public class PostRepositoryImpl implements PostRepository {
         EntityManager entityManager = this.entityManagerFactory.createEntityManager();
         final String jpql = "SELECT p FROM Post p " +
                 " WHERE p.board = :board" +
+                " AND p.deleted = false" +
                 " AND p.content IS NOT NULL" +
                 " AND p.content.type = :type" +
                 " ORDER BY p.createDate DESC";
@@ -77,6 +78,7 @@ public class PostRepositoryImpl implements PostRepository {
         EntityManager entityManager = this.entityManagerFactory.createEntityManager();
         final String jpql = "SELECT p FROM Post p" +
                 " WHERE p.board = :board" +
+                " AND p.deleted = false" +
                 " AND p.content IS NOT NULL" +
                 " ORDER BY p.createDate DESC";
 
@@ -130,6 +132,7 @@ public class PostRepositoryImpl implements PostRepository {
         EntityManager entityManager = this.entityManagerFactory.createEntityManager();
         final String jpql = "SELECT COUNT(*) FROM Post p" +
                 " WHERE p.board = :board" +
+                " AND p.deleted = false" +
                 " AND p.content IS NOT NULL" +
                 " AND p.content.type = :type";
 
@@ -146,6 +149,7 @@ public class PostRepositoryImpl implements PostRepository {
         EntityManager entityManager = this.entityManagerFactory.createEntityManager();
         final String jpql = "SELECT COUNT(*) FROM Post p" +
                 " WHERE p.board = :board " +
+                " AND p.deleted = false" +
                 " AND p.content IS NOT NULL";
 
         TypedQuery<Long> query = entityManager.createQuery(jpql, Long.class)
@@ -160,6 +164,7 @@ public class PostRepositoryImpl implements PostRepository {
         EntityManager entityManager = this.entityManagerFactory.createEntityManager();
         final String jpql = "SELECT p FROM Post p" +
                 " WHERE p.board = :board" +
+                " AND p.deleted = false" +
                 " AND p.content IS NOT NULL" +
                 " AND p.content.type = :type" +
                 " AND UPPER(p.content.title) LIKE UPPER(:title)" +
@@ -181,6 +186,7 @@ public class PostRepositoryImpl implements PostRepository {
         EntityManager entityManager = this.entityManagerFactory.createEntityManager();
         final String jpql = "SELECT p FROM Post p" +
                 " WHERE p.board = :board" +
+                " AND p.deleted = false" +
                 " AND p.content IS NOT NULL" +
                 " AND UPPER(p.content.title) LIKE UPPER(:title)" +
                 " ORDER BY p.createDate DESC";
@@ -200,6 +206,7 @@ public class PostRepositoryImpl implements PostRepository {
         EntityManager entityManager = this.entityManagerFactory.createEntityManager();
         final String jpql = "SELECT COUNT(*) FROM Post p " +
                 " WHERE p.board = :board" +
+                " AND p.deleted = false" +
                 " AND p.content IS NOT NULL" +
                 " AND p.content.type = :type" +
                 " AND UPPER(p.content.title) LIKE UPPER(:title)";
@@ -218,6 +225,7 @@ public class PostRepositoryImpl implements PostRepository {
         EntityManager entityManager = this.entityManagerFactory.createEntityManager();
         final String jpql = "SELECT COUNT(*) FROM Post p" +
                 " WHERE p.board = :board" +
+                " AND p.deleted = false" +
                 " AND p.content IS NOT NULL" +
                 " AND UPPER(p.content.title) LIKE UPPER(:title)";
 
