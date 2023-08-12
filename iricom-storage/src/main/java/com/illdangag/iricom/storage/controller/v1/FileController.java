@@ -1,8 +1,8 @@
 package com.illdangag.iricom.storage.controller.v1;
 
-import com.illdangag.iricom.service.configuration.annotation.ApiCallLog;
-import com.illdangag.iricom.service.configuration.annotation.Auth;
-import com.illdangag.iricom.service.configuration.annotation.AuthRole;
+import com.illdangag.iricom.server.configuration.annotation.ApiCallLog;
+import com.illdangag.iricom.server.configuration.annotation.Auth;
+import com.illdangag.iricom.server.configuration.annotation.AuthRole;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RequestMapping;
