@@ -1,6 +1,8 @@
 package com.illdangag.iricom.server.service.ban;
 
-import com.illdangag.iricom.server.data.entity.*;
+import com.illdangag.iricom.server.data.entity.Account;
+import com.illdangag.iricom.server.data.entity.PostState;
+import com.illdangag.iricom.server.data.entity.PostType;
 import com.illdangag.iricom.server.data.request.PostBanInfoCreate;
 import com.illdangag.iricom.server.data.response.PostBanInfo;
 import com.illdangag.iricom.server.exception.IricomException;

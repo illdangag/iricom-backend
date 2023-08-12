@@ -1,6 +1,7 @@
 package com.illdangag.iricom.server.controller.v1;
 
-import com.illdangag.iricom.server.data.entity.*;
+import com.illdangag.iricom.server.data.entity.PostState;
+import com.illdangag.iricom.server.data.entity.PostType;
 import com.illdangag.iricom.server.test.IricomTestSuite;
 import com.illdangag.iricom.server.test.data.wrapper.TestBoardInfo;
 import com.illdangag.iricom.server.test.data.wrapper.TestCommentInfo;
@@ -14,7 +15,8 @@ import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilder;
 
-import java.util.*;
+import java.util.HashMap;
+import java.util.Map;
 
 import static org.hamcrest.Matchers.hasSize;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;

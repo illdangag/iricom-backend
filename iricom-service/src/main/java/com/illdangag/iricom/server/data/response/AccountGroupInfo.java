@@ -2,7 +2,9 @@ package com.illdangag.iricom.server.data.response;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.illdangag.iricom.server.data.entity.*;
+import com.illdangag.iricom.server.data.entity.Account;
+import com.illdangag.iricom.server.data.entity.AccountGroup;
+import com.illdangag.iricom.server.data.entity.Board;
 import lombok.*;
 
 import java.util.ArrayList;

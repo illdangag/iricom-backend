@@ -1,6 +1,9 @@
 package com.illdangag.iricom.server.service.report.comment;
 
-import com.illdangag.iricom.server.data.entity.*;
+import com.illdangag.iricom.server.data.entity.Account;
+import com.illdangag.iricom.server.data.entity.PostState;
+import com.illdangag.iricom.server.data.entity.PostType;
+import com.illdangag.iricom.server.data.entity.ReportType;
 import com.illdangag.iricom.server.data.request.CommentReportInfoSearch;
 import com.illdangag.iricom.server.data.response.CommentReportInfoList;
 import com.illdangag.iricom.server.service.ReportService;

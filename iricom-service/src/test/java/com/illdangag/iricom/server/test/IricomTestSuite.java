@@ -1,14 +1,14 @@
 package com.illdangag.iricom.server.test;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.illdangag.iricom.server.data.entity.*;
+import com.illdangag.iricom.server.data.request.*;
 import com.illdangag.iricom.server.data.response.*;
 import com.illdangag.iricom.server.exception.IricomErrorCode;
 import com.illdangag.iricom.server.exception.IricomException;
 import com.illdangag.iricom.server.repository.*;
 import com.illdangag.iricom.server.service.*;
-import com.illdangag.iricom.server.test.data.*;
-import com.illdangag.iricom.server.data.entity.*;
-import com.illdangag.iricom.server.data.request.*;
+import com.illdangag.iricom.server.test.data.FirebaseTokenResponse;
 import com.illdangag.iricom.server.test.data.wrapper.*;
 import com.illdangag.iricom.server.test.util.FirebaseUtils;
 import com.illdangag.iricom.server.test.util.SearchAllListResponse;
