@@ -8,7 +8,6 @@ plugins {
 }
 
 version = '0.8.4'
-sourceCompatibility = '11'
 
 ext {
     snippetsDir = file('build/generated-snippets') // restdocs에서 생성 될 파일의 경로

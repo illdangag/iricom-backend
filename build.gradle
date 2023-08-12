@@ -1,8 +1,30 @@
-group = 'com.illdangag.iricom'
-
 buildscript {
     ext {
         springBootVersion = '2.7.6'
         springDependencyManagementVersion = '1.0.15.RELEASE'
     }
+}
+
+plugins {
+    id 'java'
+    id 'org.springframework.boot' version "${springBootVersion}"
+    id 'io.spring.dependency-management' version "${springDependencyManagementVersion}"
+}
+
+group = 'com.illdangag.iricom'
+
+version = '0.8.4-SNAPSHOT'
+sourceCompatibility = '11'
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    implementation project(':iricom-service')
+
+    // classpath의 파일이 변경된 경우 서버 자동 재시작 기능
+    developmentOnly 'org.springframework.boot:spring-boot-devtools'
+    // spring MVC를 위한 기본적인 종속, 내장 Tomcat 포함
+    implementation 'org.springframework.boot:spring-boot-starter-web'
 }
