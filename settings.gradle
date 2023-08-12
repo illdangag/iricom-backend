@@ -1,2 +1,4 @@
 rootProject.name = 'iricom-backend'
 include 'iricom-service'
+include 'iricom-storage'
+

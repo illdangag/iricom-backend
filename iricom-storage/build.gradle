@@ -1,0 +1,47 @@
+plugins {
+    id 'java'
+    id 'org.springframework.boot' version "${springBootVersion}"
+    id 'io.spring.dependency-management' version "${springDependencyManagementVersion}"
+}
+
+version = '0.0.0'
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    implementation project(':iricom-service')
+
+    // spring MVC를 위한 기본적인 종속, 내장 Tomcat 포함
+    implementation 'org.springframework.boot:spring-boot-starter-web'
+    // annotation 기반의 데이터 검증 자동화
+    implementation 'org.springframework.boot:spring-boot-starter-validation'
+
+    // annotation 기반의 자동 코드 생성
+    compileOnly 'org.projectlombok:lombok'
+    annotationProcessor 'org.projectlombok:lombok'
+
+    // spring 테스트
+    testImplementation('org.springframework.boot:spring-boot-starter-test') {
+        exclude group: 'junit', module: 'junit' // junit 특정 버전을 사용하기 위해서 기본 junit을 포함하지 않도록 함
+    }
+    // junit
+    testImplementation "org.junit.jupiter:junit-jupiter:5.8.1"
+
+    // 테스트 코드에서 lombok을 사용하기 위함
+    testCompileOnly 'org.projectlombok:lombok'
+    testAnnotationProcessor 'org.projectlombok:lombok'
+}
+
+test {
+    useJUnitPlatform()
+}
+
+bootJar {
+    enabled = false
+}
+
+jar {
+    enabled = true
+}
