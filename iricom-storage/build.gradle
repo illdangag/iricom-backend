@@ -1,9 +1,16 @@
+import java.text.SimpleDateFormat
+
 plugins {
     id 'java'
     id 'java-test-fixtures'
     id 'org.springframework.boot' version "${springBootVersion}"
     id 'io.spring.dependency-management' version "${springDependencyManagementVersion}"
     id 'checkstyle' // code convention
+    id 'com.gorylenko.gradle-git-properties' version '2.4.1' // git 정보
+}
+
+gitProperties {
+    gitPropertiesName = 'storage-git.properties'
 }
 
 version = '0.0.0-SNAPSHOT'
@@ -14,7 +21,6 @@ repositories {
 
 dependencies {
     implementation project(':iricom-server')
-    testCompileOnly project(':iricom-server')
     testImplementation(testFixtures(project(':iricom-server')))
 
     implementation 'org.springframework.boot:spring-boot-starter-web' // spring MVC를 위한 기본적인 종속, 내장 Tomcat 포함
@@ -29,7 +35,6 @@ dependencies {
     testImplementation('org.springframework.boot:spring-boot-starter-test') {
         exclude group: 'junit', module: 'junit' // junit 특정 버전을 사용하기 위해서 기본 junit을 포함하지 않도록 함
     }
-    // junit
     testImplementation "org.junit.jupiter:junit-jupiter:5.8.1"
 
     // 테스트 코드에서 lombok을 사용하기 위함
@@ -37,6 +42,15 @@ dependencies {
     testAnnotationProcessor 'org.projectlombok:lombok'
 
     testImplementation 'com.h2database:h2:2.1.214' // 테스트 환경에서 사용 할 데이터베이스
+}
+
+processResources.doLast {
+    SimpleDateFormat sdf = new SimpleDateFormat('yyyy-MM-dd HH:mm:ss:SSS');
+    def contents =
+            'storage.version=' + version + '\n' +
+            'storage.timestamp=' + sdf.format(new Date()) + '\n'
+    println contents
+    file('./build/resources/main/storage-version.properties').text += contents
 }
 
 // code convention

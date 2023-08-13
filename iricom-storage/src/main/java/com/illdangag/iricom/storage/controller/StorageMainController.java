@@ -1,4 +1,4 @@
-package com.illdangag.iricom.server.controller;
+package com.illdangag.iricom.storage.controller;
 
 import com.illdangag.iricom.server.data.response.ServerInfo;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,12 +12,12 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@RequestMapping(value = "")
+@RequestMapping(value = "/storage")
 @PropertySources({
-        @PropertySource(value = "classpath:git.properties", ignoreResourceNotFound = false),
-        @PropertySource(value = "classpath:version.properties", ignoreResourceNotFound = false),
+        @PropertySource(value = "classpath:storage-git.properties", ignoreResourceNotFound = false),
+        @PropertySource(value = "classpath:storage-version.properties", ignoreResourceNotFound = false),
 })
-public class MainController {
+public class StorageMainController {
     private final String branch;
     private final String commit;
     private final String tags;
@@ -25,11 +25,11 @@ public class MainController {
     private final String timestamp;
 
     @Autowired
-    public MainController(@Value("${git.branch:dev}") String branch,
-                          @Value("${git.commit.id:}") String commit,
-                          @Value("${git.tags:}") String tags,
-                          @Value("${server.version:}") String version,
-                          @Value("${server.timestamp:}") String timestamp) {
+    public StorageMainController(@Value("${git.branch:dev}") String branch,
+                                 @Value("${git.commit.id:}") String commit,
+                                 @Value("${git.tags:}") String tags,
+                                 @Value("${storage.version:}") String version,
+                                 @Value("${storage.timestamp:}") String timestamp) {
         this.branch = branch;
         this.commit = commit;
         this.tags = tags;

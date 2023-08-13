@@ -13,7 +13,6 @@ plugins {
 
 group = 'com.illdangag.iricom'
 
-version = '0.8.4-SNAPSHOT'
 sourceCompatibility = '11'
 
 repositories {

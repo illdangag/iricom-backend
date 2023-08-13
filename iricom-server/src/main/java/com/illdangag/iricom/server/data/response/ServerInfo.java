@@ -13,4 +13,6 @@ public class ServerInfo {
     private String tags;
 
     private String version;
+
+    private String timestamp;
 }
