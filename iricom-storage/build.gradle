@@ -3,6 +3,7 @@ plugins {
     id 'java-test-fixtures'
     id 'org.springframework.boot' version "${springBootVersion}"
     id 'io.spring.dependency-management' version "${springDependencyManagementVersion}"
+    id 'checkstyle' // code convention
 }
 
 version = '0.0.0-SNAPSHOT'
@@ -38,7 +39,16 @@ dependencies {
     testImplementation 'com.h2database:h2:2.1.214' // 테스트 환경에서 사용 할 데이터베이스
 }
 
+// code convention
+checkstyle {
+    ignoreFailures = true
+    configFile = file("../checkstyle.xml")
+    reportsDir = file("${buildDir}/checkstyle-output")
+}
+
 test {
+    dependsOn checkstyleMain, checkstyleTest
+
     useJUnitPlatform()
 }
 

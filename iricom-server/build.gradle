@@ -3,7 +3,7 @@ plugins {
     id 'java-test-fixtures'
     id 'org.springframework.boot' version "${springBootVersion}"
     id 'io.spring.dependency-management' version "${springDependencyManagementVersion}"
-    id 'checkstyle' // code convention을 확인 하기 위함
+    id 'checkstyle' // code convention
     id 'com.gorylenko.gradle-git-properties' version '2.4.1' // git 정보
     id "org.asciidoctor.jvm.convert" version "3.3.2" // spring rest docs의 asciidoc을 지원 하기 위함
 }
@@ -30,6 +30,7 @@ dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-web' // spring MVC를 위한 기본적인 종속, 내장 Tomcat 포함
     testFixturesImplementation 'org.springframework.boot:spring-boot-starter-web'
     implementation 'org.springframework.boot:spring-boot-starter-data-jpa' // spring jpa
+    testFixturesImplementation 'org.springframework.boot:spring-boot-starter-data-jpa'
     implementation 'org.springframework.boot:spring-boot-starter-validation' // annotation 기반의 데이터 검증 자동화
 
     compileOnly 'org.projectlombok:lombok' // annotation 기반의 자동 코드 생성
@@ -64,15 +65,16 @@ dependencies {
     testFixturesImplementation 'org.apache.httpcomponents:httpclient:4.5.14'
 }
 
-// code convention을 확인 하기 위한 checkstyle 결과 추출
+// code convention
 checkstyle {
     ignoreFailures = true
-    configFile = file("checkstyle.xml")
+    configFile = file("../checkstyle.xml")
     reportsDir = file("${buildDir}/checkstyle-output")
 }
 
 test {
     dependsOn checkstyleMain, checkstyleTest
+
     outputs.dir snippetsDir
     useJUnitPlatform()
 }
@@ -95,7 +97,7 @@ asciidoctor {
 
     doFirst {
         delete file('src/main/resources/static/docs')
-    }\
+    }
 }
 
 bootJar {

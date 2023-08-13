@@ -10,7 +10,8 @@
       </option>
       <option name="taskNames">
         <list>
-          <option value=":iricom-service:test" />
+          <option value="iricom-server:test" />
+          <option value="iricom-storage:test" />
         </list>
       </option>
       <option name="vmOptions" />
@@ -18,7 +19,7 @@
     <ExternalSystemDebugServerProcess>false</ExternalSystemDebugServerProcess>
     <ExternalSystemReattachDebugProcess>true</ExternalSystemReattachDebugProcess>
     <DebugAllEnabled>false</DebugAllEnabled>
-    <ForceTestExec>true</ForceTestExec>
+    <RunAsTest>false</RunAsTest>
     <method v="2" />
   </configuration>
 </component>
