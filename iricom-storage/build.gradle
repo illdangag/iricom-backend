@@ -11,7 +11,7 @@ repositories {
 }
 
 dependencies {
-    implementation project(':iricom-service')
+    implementation project(':iricom-server')
 
     // spring MVC를 위한 기본적인 종속, 내장 Tomcat 포함
     implementation 'org.springframework.boot:spring-boot-starter-web'
