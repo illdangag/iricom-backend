@@ -62,7 +62,7 @@ public class FileRepositoryImpl implements FileRepository {
         EntityTransaction transaction = entityManager.getTransaction();
         transaction.begin();
 
-        if (fileMetadata.getId() != null) {
+        if (fileMetadata.getId() == null) {
             entityManager.persist(fileMetadata);
         } else {
             entityManager.merge(fileMetadata);
