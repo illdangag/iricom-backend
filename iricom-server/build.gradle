@@ -1,5 +1,6 @@
 plugins {
     id 'java'
+    id 'java-test-fixtures'
     id 'org.springframework.boot' version "${springBootVersion}"
     id 'io.spring.dependency-management' version "${springDependencyManagementVersion}"
     id 'checkstyle' // code convention을 확인 하기 위함
@@ -25,44 +26,42 @@ repositories {
 }
 
 dependencies {
-    // classpath의 파일이 변경된 경우 서버 자동 재시작 기능
-    developmentOnly 'org.springframework.boot:spring-boot-devtools'
-    // spring MVC를 위한 기본적인 종속, 내장 Tomcat 포함
-    implementation 'org.springframework.boot:spring-boot-starter-web'
-    // spring jpa를 사용
-    implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
-    // annotation 기반의 데이터 검증 자동화
-    implementation 'org.springframework.boot:spring-boot-starter-validation'
+    developmentOnly 'org.springframework.boot:spring-boot-devtools' // classpath의 파일이 변경된 경우 서버 자동 재시작 기능
+    implementation 'org.springframework.boot:spring-boot-starter-web' // spring MVC를 위한 기본적인 종속, 내장 Tomcat 포함
+    testFixturesImplementation 'org.springframework.boot:spring-boot-starter-web'
+    implementation 'org.springframework.boot:spring-boot-starter-data-jpa' // spring jpa
+    implementation 'org.springframework.boot:spring-boot-starter-validation' // annotation 기반의 데이터 검증 자동화
 
-    // annotation 기반의 자동 코드 생성
-    compileOnly 'org.projectlombok:lombok'
+    compileOnly 'org.projectlombok:lombok' // annotation 기반의 자동 코드 생성
     annotationProcessor 'org.projectlombok:lombok'
 
-    // mariadb 접속
-    runtimeOnly 'org.mariadb.jdbc:mariadb-java-client:3.1.0'
-
-    // 계정의 인증
-    implementation 'com.google.firebase:firebase-admin:9.1.1'
-
-    // restdocs
-    asciidoctorExtensions 'org.springframework.restdocs:spring-restdocs-asciidoctor'
+    runtimeOnly 'org.mariadb.jdbc:mariadb-java-client:3.1.0' // mariadb 접속
+    implementation 'com.google.firebase:firebase-admin:9.1.1' // 계정의 인증
 
     // spring 테스트
     testImplementation('org.springframework.boot:spring-boot-starter-test') {
         exclude group: 'junit', module: 'junit' // junit 특정 버전을 사용하기 위해서 기본 junit을 포함하지 않도록 함
     }
-    // junit
-    testImplementation "org.junit.jupiter:junit-jupiter:5.8.1"
+    testImplementation "org.junit.jupiter:junit-jupiter:5.8.1" // junit
+    testFixturesImplementation('org.springframework.boot:spring-boot-starter-test') {
+        exclude group: 'junit', module: 'junit' // junit 특정 버전을 사용하기 위해서 기본 junit을 포함하지 않도록 함
+    }
+    testFixturesImplementation "org.junit.jupiter:junit-jupiter:5.8.1" // junit
 
     // 테스트 코드에서 lombok을 사용하기 위함
     testCompileOnly 'org.projectlombok:lombok'
+    testFixturesCompileOnly 'org.projectlombok:lombok'
     testAnnotationProcessor 'org.projectlombok:lombok'
+    testFixturesAnnotationProcessor 'org.projectlombok:lombok'
 
-    // 테스트 환경에서 사용 할 데이터베이스
-    testImplementation 'com.h2database:h2:2.1.214'
+    testImplementation 'com.h2database:h2:2.1.214' // 테스트 환경에서 사용 할 데이터베이스
 
     // restdocs
+    asciidoctorExtensions 'org.springframework.restdocs:spring-restdocs-asciidoctor'
     testImplementation 'org.springframework.restdocs:spring-restdocs-mockmvc'
+    testFixturesImplementation 'org.springframework.restdocs:spring-restdocs-mockmvc'
+
+    testFixturesImplementation 'org.apache.httpcomponents:httpclient:4.5.14'
 }
 
 // code convention을 확인 하기 위한 checkstyle 결과 추출

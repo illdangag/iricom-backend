@@ -1,4 +1,6 @@
 rootProject.name = 'iricom-backend'
 include 'iricom-server'
 include 'iricom-storage'
+include 'iricom-storage:iricom-storage-file'
+findProject(':iricom-storage:iricom-storage-file')?.name = 'iricom-storage-file'
 
