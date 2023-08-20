@@ -149,29 +149,6 @@ public class BoardServiceImpl implements BoardService {
         return boardOptional.orElseThrow(() -> new IricomException(IricomErrorCode.NOT_EXIST_BOARD));
     }
 
-//    private Board getDiscloseBoard(String id) {
-//        long boardId = -1;
-//        try {
-//            boardId = Long.parseLong(id);
-//        } catch (Exception exception) {
-//            throw new IricomException(IricomErrorCode.NOT_EXIST_BOARD);
-//        }
-//        Optional<Board> boardOptional = this.boardRepository.getDisclosedBoard(boardId);
-//        return boardOptional.orElseThrow(() -> new IricomException(IricomErrorCode.NOT_EXIST_BOARD));
-//    }
-//
-//    private Board getDisclosedBoard(Account account, String id) {
-//        long boardId = -1;
-//        try {
-//            boardId = Long.parseLong(id);
-//        } catch (Exception exception) {
-//            throw new IricomException(IricomErrorCode.NOT_EXIST_BOARD);
-//        }
-//
-//        Optional<Board> boardOptional = this.boardRepository.getDisclosedBoard(account, boardId);
-//        return boardOptional.orElseThrow(() -> new IricomException(IricomErrorCode.NOT_EXIST_BOARD));
-//    }
-
     private void validate(Account account, Board board) {
         if (board.getUndisclosed()) {
             if (account == null) {

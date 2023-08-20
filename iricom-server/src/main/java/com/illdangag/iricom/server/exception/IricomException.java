@@ -7,26 +7,26 @@ import org.springframework.http.MediaType;
 import org.springframework.util.StringUtils;
 
 public class IricomException extends RuntimeException {
-    private final IricomErrorCode code;
+    private final IricomError code;
     private String message;
 
-    public IricomException(IricomErrorCode code) {
+    public IricomException(IricomError code) {
         super(code.toString());
         this.code = code;
     }
 
-    public IricomException(IricomErrorCode code, String message) {
+    public IricomException(IricomError code, String message) {
         super(code.toString());
         this.code = code;
         this.message = message;
     }
 
-    public IricomException(IricomErrorCode code, Throwable throwable) {
+    public IricomException(IricomError code, Throwable throwable) {
         super(code.toString(), throwable);
         this.code = code;
     }
 
-    public IricomException(IricomErrorCode code, String message, Throwable throwable) {
+    public IricomException(IricomError code, String message, Throwable throwable) {
         super(code.toString(), throwable);
         this.code = code;
         this.message = message;

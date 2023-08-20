@@ -39,6 +39,7 @@ public class MainControllerTest extends IricomTestSuite {
                 .andExpect(jsonPath("$.commit").exists())
                 .andExpect(jsonPath("$.tags").exists())
                 .andExpect(jsonPath("$.version").exists())
+                .andExpect(jsonPath("$.timestamp").exists())
                 .andDo(print())
                 .andDo(document("SERVER_INFO",
                         preprocessRequest(prettyPrint()),
@@ -47,7 +48,8 @@ public class MainControllerTest extends IricomTestSuite {
                                 fieldWithPath("branch").description("git branch"),
                                 fieldWithPath("commit").description("git commit"),
                                 fieldWithPath("tags").description("git tags"),
-                                fieldWithPath("version").description("service version"))
+                                fieldWithPath("version").description("service version"),
+                                fieldWithPath("timestamp").description("timestamp"))
                 ));
     }
 }

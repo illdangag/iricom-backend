@@ -22,8 +22,6 @@ public class TestFileMetadataInfo {
     public FileMetadata getFileMetadata() {
         return FileMetadata.builder()
                 .type(this.type)
-                .path(this.path)
-                .hash(this.hash)
                 .size(this.size)
                 .build();
     }

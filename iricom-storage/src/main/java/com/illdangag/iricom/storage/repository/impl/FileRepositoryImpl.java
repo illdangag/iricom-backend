@@ -25,22 +25,12 @@ public class FileRepositoryImpl implements FileRepository {
     }
 
     @Override
-    public Optional<FileMetadata> getFileMetadata(String id) {
-        try {
-            UUID fileMetadataId = UUID.fromString(id);
-            return this.getFileMetadata(fileMetadataId);
-        } catch (Exception exception) {
-            // TODO
-            throw exception;
-        }
-    }
-
-    @Override
     public Optional<FileMetadata> getFileMetadata(UUID id) {
         EntityManager entityManager = this.entityManagerFactory.createEntityManager();
 
         final String jpql = "SELECT fmd FROM FileMetadata fmd" +
-                " WHERE fmd.id = :id";
+                " WHERE fmd.id = :id" +
+                " AND fmd.deleted = false";
 
         TypedQuery<FileMetadata> query = entityManager.createQuery(jpql, FileMetadata.class)
                 .setParameter("id", id);

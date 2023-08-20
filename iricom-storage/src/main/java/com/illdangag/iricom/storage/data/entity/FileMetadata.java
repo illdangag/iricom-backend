@@ -6,9 +6,9 @@ import lombok.*;
 import lombok.experimental.SuperBuilder;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.GenericGenerator;
-import org.hibernate.annotations.UpdateTimestamp;
 
 import javax.persistence.*;
+import javax.validation.constraints.Size;
 import java.time.LocalDateTime;
 import java.util.UUID;
 
@@ -18,7 +18,7 @@ import java.util.UUID;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Entity
 @Table(indexes = {
-        @Index(name = "FileMetaData", columnList = "hash"),
+        @Index(name = "FileMetaData_deleted", columnList = "deleted"),
 })
 public class FileMetadata {
     @Id
@@ -31,21 +31,16 @@ public class FileMetadata {
     @CreationTimestamp
     private LocalDateTime createDate = LocalDateTime.now();
 
-    @Builder.Default
-    @UpdateTimestamp
-    private LocalDateTime updateDate = LocalDateTime.now();
-
     @ManyToOne
     @JoinColumn(name = "account_id")
     private Account account;
 
     private FileType type;
 
-    private String path;
-
-    private String hash;
-
     private Long size;
+
+    @Size(max = 50)
+    private String name;
 
     @Builder.Default
     private Boolean deleted = false;

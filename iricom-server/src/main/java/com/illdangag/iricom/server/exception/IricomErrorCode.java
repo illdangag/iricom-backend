@@ -9,7 +9,7 @@ import lombok.Getter;
  */
 @AllArgsConstructor
 @Getter
-public enum IricomErrorCode {
+public enum IricomErrorCode implements IricomError {
     // common: 0000XXXX
     NOT_EXIST_REQUEST_BODY("00000001", 400, "Not exist request body."),
     INVALID_REQUEST_BODY("00000002", 400, "Invalid request body."),

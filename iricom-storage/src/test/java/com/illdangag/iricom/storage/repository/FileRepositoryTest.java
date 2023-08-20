@@ -30,7 +30,6 @@ public class FileRepositoryTest extends IricomTestSuiteEx {
         FileMetadata fileMetadata = FileMetadata.builder()
                 .account(account)
                 .type(FileType.IMAGE)
-                .path("/")
                 .size(0L)
                 .build();
 

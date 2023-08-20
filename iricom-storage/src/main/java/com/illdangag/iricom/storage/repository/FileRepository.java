@@ -7,8 +7,6 @@ import java.util.Optional;
 import java.util.UUID;
 
 public interface FileRepository {
-    Optional<FileMetadata> getFileMetadata(String id);
-
     Optional<FileMetadata> getFileMetadata(UUID id);
 
     void saveFileMetadata(FileMetadata fileMetadata);
