@@ -4,7 +4,7 @@ import com.illdangag.iricom.server.data.entity.Account;
 import com.illdangag.iricom.server.exception.IricomException;
 import com.illdangag.iricom.storage.data.entity.FileMetadata;
 import com.illdangag.iricom.storage.data.response.FileMetadataInfo;
-import com.illdangag.iricom.storage.file.configuration.YamlLoadFactory;
+import com.illdangag.iricom.server.util.YamlLoadFactory;
 import com.illdangag.iricom.storage.file.exception.IricomFileStorageErrorCode;
 import com.illdangag.iricom.storage.repository.FileRepository;
 import com.illdangag.iricom.storage.service.StorageService;

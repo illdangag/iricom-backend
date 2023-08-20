@@ -1,4 +1,4 @@
-package com.illdangag.iricom.storage.file.configuration;
+package com.illdangag.iricom.server.util;
 
 import org.springframework.beans.factory.config.YamlPropertiesFactoryBean;
 import org.springframework.core.env.PropertiesPropertySource;
