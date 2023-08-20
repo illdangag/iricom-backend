@@ -31,8 +31,7 @@ dependencies {
     compileOnly 'org.projectlombok:lombok'
     annotationProcessor 'org.projectlombok:lombok'
 
-    // spring 테스트
-    testImplementation('org.springframework.boot:spring-boot-starter-test') {
+    testImplementation('org.springframework.boot:spring-boot-starter-test') { // spring 테스트
         exclude group: 'junit', module: 'junit' // junit 특정 버전을 사용하기 위해서 기본 junit을 포함하지 않도록 함
     }
     testImplementation "org.junit.jupiter:junit-jupiter:5.8.1"
@@ -42,6 +41,7 @@ dependencies {
     testAnnotationProcessor 'org.projectlombok:lombok'
 
     testImplementation 'com.h2database:h2:2.1.214' // 테스트 환경에서 사용 할 데이터베이스
+    testImplementation project(':iricom-storage:iricom-storage-file')
 }
 
 processResources.doLast {

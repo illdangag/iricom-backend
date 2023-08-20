@@ -1,9 +1,8 @@
 package com.illdangag.iricom.storage.service;
 
 import com.illdangag.iricom.server.data.entity.Account;
-import com.illdangag.iricom.server.test.IricomTestSuite;
 import com.illdangag.iricom.storage.data.response.FileMetadataInfo;
-import com.illdangag.iricom.storage.file.service.impl.FileStorageService;
+import com.illdangag.iricom.storage.test.IricomTestSuiteEx;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
@@ -13,15 +12,15 @@ import org.springframework.context.ApplicationContext;
 import java.io.InputStream;
 
 @Slf4j
-public class FileStorageServiceTest extends IricomTestSuite {
-    private final FileStorageService fileStorageService;
+public class StorageServiceTest extends IricomTestSuiteEx {
+    private final StorageService storageService;
 
     private final String IMAGE_FILE_NAME = "spring_boot_icon.png";
 
     @Autowired
-    public FileStorageServiceTest(ApplicationContext context, FileStorageService fileStorageService) {
+    public StorageServiceTest(ApplicationContext context, StorageService storageService) {
         super(context);
-        this.fileStorageService = fileStorageService;
+        this.storageService = storageService;
     }
 
     @Test
@@ -29,7 +28,7 @@ public class FileStorageServiceTest extends IricomTestSuite {
         Account account = getAccount(common00);
         InputStream sampleImageInputStream = this.getSampleImageInputStream();
 
-        FileMetadataInfo fileMetadataInfo = this.fileStorageService.uploadFile(account, IMAGE_FILE_NAME, sampleImageInputStream);
+        FileMetadataInfo fileMetadataInfo = this.storageService.uploadFile(account, IMAGE_FILE_NAME, sampleImageInputStream);
 
         Assertions.assertNotNull(fileMetadataInfo.getId());
         Assertions.assertEquals(IMAGE_FILE_NAME, fileMetadataInfo.getName());
@@ -40,11 +39,11 @@ public class FileStorageServiceTest extends IricomTestSuite {
         Account account = getAccount(common00);
         InputStream sampleImageInputStream = this.getSampleImageInputStream();
 
-        FileMetadataInfo fileMetadataInfo = this.fileStorageService.uploadFile(account, IMAGE_FILE_NAME, sampleImageInputStream);
+        FileMetadataInfo fileMetadataInfo = this.storageService.uploadFile(account, IMAGE_FILE_NAME, sampleImageInputStream);
 
         String id = fileMetadataInfo.getId();
 
-        try (InputStream inputStream = this.fileStorageService.downloadFile(id)) {
+        try (InputStream inputStream = this.storageService.downloadFile(id)) {
             Assertions.assertNotNull(inputStream);
         } catch (Exception exception) {
             log.error("error", exception);
@@ -52,6 +51,6 @@ public class FileStorageServiceTest extends IricomTestSuite {
     }
 
     private InputStream getSampleImageInputStream() {
-        return FileStorageServiceTest.class.getClassLoader().getResourceAsStream(IMAGE_FILE_NAME);
+        return StorageServiceTest.class.getClassLoader().getResourceAsStream(IMAGE_FILE_NAME);
     }
 }

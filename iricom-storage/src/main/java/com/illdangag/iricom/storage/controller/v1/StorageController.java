@@ -37,7 +37,7 @@ public class StorageController {
     @RequestMapping(method = RequestMethod.POST, value = "")
     public ResponseEntity<FileMetadataInfo> uploadFile(@RequestParam("file") MultipartFile multipartFile,
                                                    @RequestContext Account account) {
-        String fileName = multipartFile.getName();
+        String fileName = multipartFile.getOriginalFilename();
         InputStream inputStream;
         try {
             inputStream = multipartFile.getInputStream();
