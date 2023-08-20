@@ -1,4 +1,4 @@
-package com.illdangag.iricom.server.data.entity;
+package com.illdangag.iricom.server.data.entity.type;
 
 import lombok.Getter;
 

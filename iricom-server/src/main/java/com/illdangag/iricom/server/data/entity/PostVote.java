@@ -1,5 +1,6 @@
 package com.illdangag.iricom.server.data.entity;
 
+import com.illdangag.iricom.server.data.entity.type.VoteType;
 import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
 

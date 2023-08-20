@@ -5,7 +5,7 @@ import com.illdangag.iricom.server.configuration.annotation.Auth;
 import com.illdangag.iricom.server.configuration.annotation.AuthRole;
 import com.illdangag.iricom.server.configuration.annotation.RequestContext;
 import com.illdangag.iricom.server.data.entity.Account;
-import com.illdangag.iricom.server.data.entity.VoteType;
+import com.illdangag.iricom.server.data.entity.type.VoteType;
 import com.illdangag.iricom.server.data.request.CommentInfoCreate;
 import com.illdangag.iricom.server.data.request.CommentInfoSearch;
 import com.illdangag.iricom.server.data.request.CommentInfoUpdate;

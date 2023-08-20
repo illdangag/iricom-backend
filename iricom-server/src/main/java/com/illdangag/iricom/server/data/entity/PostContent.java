@@ -1,5 +1,7 @@
 package com.illdangag.iricom.server.data.entity;
 
+import com.illdangag.iricom.server.data.entity.type.PostState;
+import com.illdangag.iricom.server.data.entity.type.PostType;
 import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;

@@ -1,7 +1,7 @@
 package com.illdangag.iricom.server.service.post;
 
 import com.illdangag.iricom.server.data.entity.Account;
-import com.illdangag.iricom.server.data.entity.PostType;
+import com.illdangag.iricom.server.data.entity.type.PostType;
 import com.illdangag.iricom.server.data.request.PostInfoCreate;
 import com.illdangag.iricom.server.exception.IricomException;
 import com.illdangag.iricom.server.service.PostService;

@@ -3,7 +3,7 @@ package com.illdangag.iricom.server.repository;
 import com.illdangag.iricom.server.data.entity.Account;
 import com.illdangag.iricom.server.data.entity.Post;
 import com.illdangag.iricom.server.data.entity.PostVote;
-import com.illdangag.iricom.server.data.entity.VoteType;
+import com.illdangag.iricom.server.data.entity.type.VoteType;
 
 import java.util.Optional;
 

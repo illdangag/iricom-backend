@@ -2,6 +2,9 @@ package com.illdangag.iricom.server.test;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.illdangag.iricom.server.data.entity.*;
+import com.illdangag.iricom.server.data.entity.type.AccountAuth;
+import com.illdangag.iricom.server.data.entity.type.PostState;
+import com.illdangag.iricom.server.data.entity.type.ReportType;
 import com.illdangag.iricom.server.data.request.*;
 import com.illdangag.iricom.server.data.response.*;
 import com.illdangag.iricom.server.exception.IricomErrorCode;

@@ -4,7 +4,7 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.illdangag.iricom.server.data.entity.Post;
 import com.illdangag.iricom.server.data.entity.PostContent;
-import com.illdangag.iricom.server.data.entity.PostState;
+import com.illdangag.iricom.server.data.entity.type.PostState;
 import com.illdangag.iricom.server.exception.IricomErrorCode;
 import com.illdangag.iricom.server.exception.IricomException;
 import com.illdangag.iricom.server.util.DateTimeUtils;

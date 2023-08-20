@@ -5,7 +5,7 @@ import com.illdangag.iricom.server.configuration.annotation.Auth;
 import com.illdangag.iricom.server.configuration.annotation.AuthRole;
 import com.illdangag.iricom.server.configuration.annotation.RequestContext;
 import com.illdangag.iricom.server.data.entity.Account;
-import com.illdangag.iricom.server.data.entity.ReportType;
+import com.illdangag.iricom.server.data.entity.type.ReportType;
 import com.illdangag.iricom.server.data.request.CommentReportInfoCreate;
 import com.illdangag.iricom.server.data.request.CommentReportInfoSearch;
 import com.illdangag.iricom.server.data.request.PostReportInfoCreate;

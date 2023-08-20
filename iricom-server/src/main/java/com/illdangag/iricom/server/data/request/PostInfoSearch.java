@@ -1,6 +1,6 @@
 package com.illdangag.iricom.server.data.request;
 
-import com.illdangag.iricom.server.data.entity.PostType;
+import com.illdangag.iricom.server.data.entity.type.PostType;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;

@@ -1,7 +1,7 @@
 package com.illdangag.iricom.server.service.comment;
 
-import com.illdangag.iricom.server.data.entity.PostState;
-import com.illdangag.iricom.server.data.entity.PostType;
+import com.illdangag.iricom.server.data.entity.type.PostState;
+import com.illdangag.iricom.server.data.entity.type.PostType;
 import com.illdangag.iricom.server.data.response.CommentInfo;
 import com.illdangag.iricom.server.exception.IricomException;
 import com.illdangag.iricom.server.service.CommentService;

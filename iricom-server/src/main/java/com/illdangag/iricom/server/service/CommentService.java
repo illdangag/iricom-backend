@@ -1,6 +1,7 @@
 package com.illdangag.iricom.server.service;
 
 import com.illdangag.iricom.server.data.entity.*;
+import com.illdangag.iricom.server.data.entity.type.VoteType;
 import com.illdangag.iricom.server.data.request.CommentInfoCreate;
 import com.illdangag.iricom.server.data.request.CommentInfoSearch;
 import com.illdangag.iricom.server.data.request.CommentInfoUpdate;

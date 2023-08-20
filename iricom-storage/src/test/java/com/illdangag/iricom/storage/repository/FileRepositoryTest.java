@@ -3,7 +3,6 @@ package com.illdangag.iricom.storage.repository;
 import com.illdangag.iricom.server.data.entity.Account;
 import com.illdangag.iricom.server.test.data.wrapper.TestAccountInfo;
 import com.illdangag.iricom.storage.data.entity.FileMetadata;
-import com.illdangag.iricom.storage.data.entity.type.FileType;
 import com.illdangag.iricom.storage.test.IricomTestSuiteEx;
 import com.illdangag.iricom.storage.test.data.wrapper.TestFileMetadataInfo;
 import lombok.extern.slf4j.Slf4j;
@@ -29,7 +28,6 @@ public class FileRepositoryTest extends IricomTestSuiteEx {
 
         FileMetadata fileMetadata = FileMetadata.builder()
                 .account(account)
-                .type(FileType.IMAGE)
                 .size(0L)
                 .build();
 
@@ -42,7 +40,7 @@ public class FileRepositoryTest extends IricomTestSuiteEx {
         TestAccountInfo testAccountInfo = common00;
 
         TestFileMetadataInfo testFileMetadataInfo = TestFileMetadataInfo.builder()
-                .account(testAccountInfo).type(FileType.IMAGE).path("/").size(0L).hash("HASH").build();
+                .account(testAccountInfo).path("/").size(0L).hash("HASH").build();
 
         this.addTestFileMetadataInfo(testFileMetadataInfo);
         this.init();

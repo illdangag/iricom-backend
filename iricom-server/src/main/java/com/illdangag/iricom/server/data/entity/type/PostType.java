@@ -1,4 +1,4 @@
-package com.illdangag.iricom.server.data.entity;
+package com.illdangag.iricom.server.data.entity.type;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.illdangag.iricom.server.exception.IricomErrorCode;
@@ -8,21 +8,21 @@ import lombok.Getter;
 import java.util.Arrays;
 
 @Getter
-public enum VoteType {
-    UPVOTE("upvote"),
-    DOWNVOTE("downvote");
+public enum PostType {
+    POST("post"),
+    NOTIFICATION("notification");
 
     private String text;
 
-    VoteType(String text) {
+    PostType(String text) {
         this.text = text;
     }
 
     @JsonCreator
-    public static VoteType setValue(String key) {
-        return Arrays.stream(VoteType.values())
+    public static PostType setValue(String key) {
+        return Arrays.stream(PostType.values())
                 .filter(value -> value.getText().equalsIgnoreCase(key))
                 .findAny()
-                .orElseThrow(() -> new IricomException(IricomErrorCode.INVALID_REQUEST, "Type is invalid. (upvote, downvote)"));
+                .orElseThrow(() -> new IricomException(IricomErrorCode.INVALID_REQUEST, "Type is invalid. (POST, NOTIFICATION)"));
     }
 }

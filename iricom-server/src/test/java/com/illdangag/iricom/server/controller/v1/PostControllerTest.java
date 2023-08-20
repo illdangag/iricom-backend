@@ -1,8 +1,8 @@
 package com.illdangag.iricom.server.controller.v1;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.illdangag.iricom.server.data.entity.PostState;
-import com.illdangag.iricom.server.data.entity.PostType;
+import com.illdangag.iricom.server.data.entity.type.PostState;
+import com.illdangag.iricom.server.data.entity.type.PostType;
 import com.illdangag.iricom.server.data.response.PostInfo;
 import com.illdangag.iricom.server.test.IricomTestSuite;
 import com.illdangag.iricom.server.test.data.wrapper.TestBoardInfo;

@@ -1,6 +1,8 @@
 package com.illdangag.iricom.server.service.implement;
 
 import com.illdangag.iricom.server.data.entity.*;
+import com.illdangag.iricom.server.data.entity.type.AccountAuth;
+import com.illdangag.iricom.server.data.entity.type.PostState;
 import com.illdangag.iricom.server.data.request.PostBanInfoCreate;
 import com.illdangag.iricom.server.data.request.PostBanInfoSearch;
 import com.illdangag.iricom.server.data.request.PostBanInfoUpdate;

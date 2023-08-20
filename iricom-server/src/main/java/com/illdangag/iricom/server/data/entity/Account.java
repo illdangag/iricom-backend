@@ -1,6 +1,7 @@
 package com.illdangag.iricom.server.data.entity;
 
 import com.google.common.base.Objects;
+import com.illdangag.iricom.server.data.entity.type.AccountAuth;
 import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;

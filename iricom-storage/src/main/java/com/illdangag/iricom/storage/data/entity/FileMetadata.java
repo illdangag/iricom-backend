@@ -1,7 +1,6 @@
 package com.illdangag.iricom.storage.data.entity;
 
 import com.illdangag.iricom.server.data.entity.Account;
-import com.illdangag.iricom.storage.data.entity.type.FileType;
 import lombok.*;
 import lombok.experimental.SuperBuilder;
 import org.hibernate.annotations.CreationTimestamp;
@@ -34,8 +33,6 @@ public class FileMetadata {
     @ManyToOne
     @JoinColumn(name = "account_id")
     private Account account;
-
-    private FileType type;
 
     private Long size;
 

@@ -1,6 +1,7 @@
 package com.illdangag.iricom.server.repository;
 
 import com.illdangag.iricom.server.data.entity.*;
+import com.illdangag.iricom.server.data.entity.type.ReportType;
 
 import java.util.List;
 import java.util.Optional;

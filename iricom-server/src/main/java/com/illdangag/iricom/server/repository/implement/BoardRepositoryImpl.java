@@ -1,7 +1,7 @@
 package com.illdangag.iricom.server.repository.implement;
 
 import com.illdangag.iricom.server.data.entity.Account;
-import com.illdangag.iricom.server.data.entity.AccountAuth;
+import com.illdangag.iricom.server.data.entity.type.AccountAuth;
 import com.illdangag.iricom.server.data.entity.Board;
 import com.illdangag.iricom.server.repository.BoardRepository;
 import com.illdangag.iricom.server.util.StringUtils;

@@ -8,6 +8,7 @@ import com.illdangag.iricom.server.configuration.annotation.AuthRole;
 import com.illdangag.iricom.server.configuration.annotation.ElapseLoggable;
 import com.illdangag.iricom.server.configuration.config.FirebaseInitializer;
 import com.illdangag.iricom.server.data.entity.*;
+import com.illdangag.iricom.server.data.entity.type.AccountAuth;
 import com.illdangag.iricom.server.exception.IricomErrorCode;
 import com.illdangag.iricom.server.exception.IricomException;
 import com.illdangag.iricom.server.repository.AccountRepository;

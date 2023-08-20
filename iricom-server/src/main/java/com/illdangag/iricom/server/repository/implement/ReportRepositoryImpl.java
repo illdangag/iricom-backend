@@ -1,6 +1,7 @@
 package com.illdangag.iricom.server.repository.implement;
 
 import com.illdangag.iricom.server.data.entity.*;
+import com.illdangag.iricom.server.data.entity.type.ReportType;
 import com.illdangag.iricom.server.repository.ReportRepository;
 import com.illdangag.iricom.server.util.StringUtils;
 import lombok.extern.slf4j.Slf4j;

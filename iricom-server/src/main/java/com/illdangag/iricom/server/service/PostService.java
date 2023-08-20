@@ -1,6 +1,8 @@
 package com.illdangag.iricom.server.service;
 
 import com.illdangag.iricom.server.data.entity.*;
+import com.illdangag.iricom.server.data.entity.type.PostState;
+import com.illdangag.iricom.server.data.entity.type.VoteType;
 import com.illdangag.iricom.server.data.request.PostInfoCreate;
 import com.illdangag.iricom.server.data.request.PostInfoSearch;
 import com.illdangag.iricom.server.data.request.PostInfoUpdate;

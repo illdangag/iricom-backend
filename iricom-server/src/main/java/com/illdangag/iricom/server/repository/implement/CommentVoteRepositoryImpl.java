@@ -3,7 +3,7 @@ package com.illdangag.iricom.server.repository.implement;
 import com.illdangag.iricom.server.data.entity.Account;
 import com.illdangag.iricom.server.data.entity.Comment;
 import com.illdangag.iricom.server.data.entity.CommentVote;
-import com.illdangag.iricom.server.data.entity.VoteType;
+import com.illdangag.iricom.server.data.entity.type.VoteType;
 import com.illdangag.iricom.server.repository.CommentVoteRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
