@@ -4,7 +4,6 @@ import com.illdangag.iricom.server.data.entity.Account;
 import com.illdangag.iricom.server.exception.IricomException;
 import com.illdangag.iricom.storage.data.entity.FileMetadata;
 import com.illdangag.iricom.storage.data.response.FileMetadataInfo;
-import com.illdangag.iricom.server.util.YamlLoadFactory;
 import com.illdangag.iricom.storage.file.exception.IricomFileStorageErrorCode;
 import com.illdangag.iricom.storage.repository.FileRepository;
 import com.illdangag.iricom.storage.service.StorageService;
@@ -12,7 +11,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.io.FileUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.context.annotation.PropertySource;
 import org.springframework.stereotype.Service;
 
 import java.io.File;
@@ -25,7 +23,6 @@ import java.util.UUID;
 
 @Slf4j
 @Service
-@PropertySource(value = "classpath:storage.yml", factory = YamlLoadFactory.class)
 public class FileStorageService implements StorageService {
     private final String STORAGE_PATH;
 
