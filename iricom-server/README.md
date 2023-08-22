@@ -1,8 +1,14 @@
 # Iricom Service
 
+---
+
 ## 설정
 
-### firebase
+### Firebase
+
+계정의 인증
+
+- firebase authentication
 
 firebase에서 프로젝트를 생성 후 프로젝트 설정 페이지의 서비스 설정 탭에서 firebase의 비공개 키를 발급 받아 `resources/firebase-adminsdk.json`에 위치
 
@@ -20,18 +26,16 @@ firebase에서 프로젝트를 생성 후 프로젝트 설정 페이지의 서�
   "client_x509_cert_url": "{{client_x509_cert_url}}"
 }
 ```
-firebase-adminsdk.json
 
 ### VM Option
+
 ```
 -Dspring.datasource.url=jdbc:mariadb://{HOST}:{PORT}/{DATABASE}
 -Dspring.datasource.username={USERNAME}
 -Dspring.datasource.password={PASSWORD}
 ```
 
-
-
-## Run
+## 실행
 
 ```shell
 java \
@@ -39,11 +43,10 @@ java \
 -Dspring.datasource.username={USERNAME} \
 -Dspring.datasource.password={PASSWORD} \
 -jar ./iricom-backend-0.0.0.jar
-
 ```
 
-## REST API Document
+## REST API 문서
 
-Spring REST Docs
+`Spring REST Docs`
 
 {Iricom host}/docs/index.html
