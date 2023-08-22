@@ -23,15 +23,15 @@ import java.util.UUID;
 
 @Slf4j
 @Service
-public class FileStorageService implements StorageService {
+public class FileStorageServiceImpl implements StorageService {
     private final String STORAGE_PATH;
 
     private final FileRepository fileRepository;
 
     @Autowired
-    public FileStorageService(@Value("${storage.path:}") String storagePath, FileRepository fileRepository) {
-        this.STORAGE_PATH = storagePath;
+    public FileStorageServiceImpl(FileRepository fileRepository, @Value("${storage.path:}") String storagePath) {
         this.fileRepository = fileRepository;
+        this.STORAGE_PATH = storagePath;
 
         if (storagePath == null || storagePath.isEmpty()) {
             throw new IricomException(IricomFileStorageErrorCode.INVALID_STORAGE_PATH);

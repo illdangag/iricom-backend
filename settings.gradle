@@ -3,4 +3,6 @@ include 'iricom-server'
 include 'iricom-storage'
 include 'iricom-storage:iricom-storage-file'
 findProject(':iricom-storage:iricom-storage-file')?.name = 'iricom-storage-file'
+include 'iricom-storage:iricom-storage-s3'
+findProject(':iricom-storage:iricom-storage-s3')?.name = 'iricom-storage-s3'
 
