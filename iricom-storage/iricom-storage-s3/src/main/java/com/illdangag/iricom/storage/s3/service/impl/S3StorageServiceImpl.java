@@ -11,8 +11,10 @@ import com.amazonaws.regions.Region;
 import com.amazonaws.regions.Regions;
 import com.amazonaws.services.s3.AmazonS3;
 import com.amazonaws.services.s3.AmazonS3ClientBuilder;
+import com.amazonaws.services.s3.model.GetObjectRequest;
 import com.amazonaws.services.s3.model.ObjectMetadata;
 import com.amazonaws.services.s3.model.PutObjectRequest;
+import com.amazonaws.services.s3.model.S3Object;
 import com.illdangag.iricom.server.data.entity.Account;
 import com.illdangag.iricom.server.exception.IricomException;
 import com.illdangag.iricom.storage.data.entity.FileMetadata;
@@ -27,6 +29,8 @@ import org.springframework.stereotype.Service;
 
 import java.io.InputStream;
 import java.time.LocalDateTime;
+import java.util.Optional;
+import java.util.UUID;
 
 @Slf4j
 @Service
@@ -85,7 +89,24 @@ public class S3StorageServiceImpl implements StorageService {
 
     @Override
     public InputStream downloadFile(String id) {
-        return null;
+        UUID fileMetadataId = null;
+
+        try {
+            fileMetadataId = UUID.fromString(id);
+        } catch (Exception exception) {
+            throw new IricomException(IricomS3StorageErrorCode.NOT_EXIST_FILE);
+        }
+
+        Optional<FileMetadata> fileMetadataOptional = this.fileRepository.getFileMetadata(fileMetadataId);
+        FileMetadata fileMetadata = fileMetadataOptional.orElseThrow(() -> new IricomException(IricomS3StorageErrorCode.NOT_EXIST_FILE));
+
+        String path = this.getPath(fileMetadata);
+
+        AmazonS3 amazonS3 = this.getAmazonS3();
+
+        GetObjectRequest getObjectRequest = new GetObjectRequest(this.BUCKET, path);
+        S3Object s3Object = amazonS3.getObject(getObjectRequest);
+        return s3Object.getObjectContent();
     }
 
     private AmazonS3 getAmazonS3() {

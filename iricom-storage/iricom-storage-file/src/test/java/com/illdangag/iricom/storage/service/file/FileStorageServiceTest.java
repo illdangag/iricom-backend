@@ -31,6 +31,7 @@ public class FileStorageServiceTest extends IricomTestSuite {
 
         FileMetadataInfo fileMetadataInfo = this.fileStorageServiceImpl.uploadFile(account, IMAGE_FILE_NAME, sampleImageInputStream);
 
+        Assertions.assertNotNull(fileMetadataInfo);
         Assertions.assertNotNull(fileMetadataInfo.getId());
         Assertions.assertEquals(IMAGE_FILE_NAME, fileMetadataInfo.getName());
     }
@@ -46,6 +47,7 @@ public class FileStorageServiceTest extends IricomTestSuite {
 
         try (InputStream inputStream = this.fileStorageServiceImpl.downloadFile(id)) {
             Assertions.assertNotNull(inputStream);
+            Assertions.assertNotEquals(0, inputStream.available());
         } catch (Exception exception) {
             log.error("error", exception);
         }
