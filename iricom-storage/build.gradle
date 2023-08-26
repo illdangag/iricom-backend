@@ -30,6 +30,9 @@ dependencies {
     compileOnly 'org.projectlombok:lombok'
     annotationProcessor 'org.projectlombok:lombok'
 
+    implementation 'commons-io:commons-io:2.13.0'
+
+
     testImplementation('org.springframework.boot:spring-boot-starter-test') { // spring 테스트
         exclude group: 'junit', module: 'junit' // junit 특정 버전을 사용하기 위해서 기본 junit을 포함하지 않도록 함
     }

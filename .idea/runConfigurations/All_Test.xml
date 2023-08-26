@@ -12,6 +12,8 @@
         <list>
           <option value="iricom-server:test" />
           <option value="iricom-storage:test" />
+          <option value="iricom-storage:iricom-storage-file:test" />
+          <option value="iricom-storage:iricom-storage-s3:test" />
         </list>
       </option>
       <option name="vmOptions" />

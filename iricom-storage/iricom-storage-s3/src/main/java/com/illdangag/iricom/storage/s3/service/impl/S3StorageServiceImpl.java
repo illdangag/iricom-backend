@@ -2,12 +2,9 @@ package com.illdangag.iricom.storage.s3.service.impl;
 
 import com.amazonaws.ClientConfiguration;
 import com.amazonaws.Protocol;
-import com.amazonaws.auth.AWSCredentials;
-import com.amazonaws.auth.AWSCredentialsProvider;
 import com.amazonaws.auth.AWSStaticCredentialsProvider;
 import com.amazonaws.auth.BasicAWSCredentials;
 import com.amazonaws.client.builder.AwsClientBuilder;
-import com.amazonaws.regions.Region;
 import com.amazonaws.regions.Regions;
 import com.amazonaws.services.s3.AmazonS3;
 import com.amazonaws.services.s3.AmazonS3ClientBuilder;
@@ -17,6 +14,7 @@ import com.amazonaws.services.s3.model.PutObjectRequest;
 import com.amazonaws.services.s3.model.S3Object;
 import com.illdangag.iricom.server.data.entity.Account;
 import com.illdangag.iricom.server.exception.IricomException;
+import com.illdangag.iricom.storage.data.IricomFileInputStream;
 import com.illdangag.iricom.storage.data.entity.FileMetadata;
 import com.illdangag.iricom.storage.data.response.FileMetadataInfo;
 import com.illdangag.iricom.storage.repository.FileRepository;
@@ -59,7 +57,7 @@ public class S3StorageServiceImpl implements StorageService {
     }
 
     @Override
-    public FileMetadataInfo uploadFile(Account account, String fileName, InputStream inputStream) {
+    public FileMetadataInfo uploadFile(Account account, String fileName, String contentType, InputStream inputStream) {
         int fileSize = 0;
 
         try {
@@ -68,9 +66,12 @@ public class S3StorageServiceImpl implements StorageService {
             throw new IricomException(IricomS3StorageErrorCode.INVALID_UPLOAD_FILE);
         }
 
+        String newFileName = this.createNewFileName(fileName);
+
         FileMetadata fileMetadata = FileMetadata.builder()
                 .account(account)
-                .name(fileName)
+                .name(newFileName)
+                .contentType(contentType)
                 .size((long) fileSize)
                 .build();
 
@@ -88,7 +89,7 @@ public class S3StorageServiceImpl implements StorageService {
     }
 
     @Override
-    public InputStream downloadFile(String id) {
+    public IricomFileInputStream downloadFile(String id) {
         UUID fileMetadataId = null;
 
         try {
@@ -106,7 +107,7 @@ public class S3StorageServiceImpl implements StorageService {
 
         GetObjectRequest getObjectRequest = new GetObjectRequest(this.BUCKET, path);
         S3Object s3Object = amazonS3.getObject(getObjectRequest);
-        return s3Object.getObjectContent();
+        return new IricomFileInputStream(s3Object.getObjectContent(), fileMetadata);
     }
 
     private AmazonS3 getAmazonS3() {

@@ -11,8 +11,7 @@ public enum IricomFileStorageErrorCode implements IricomError {
     INVALID_UPLOAD_FILE("09010001", 400, ""), // TODO
     FAIL_TO_SAVE_LOCAL_FILE("09010002", 400, ""), // TODO
     NOT_EXIST_FILE("09010003", 400, ""), // TODO
-    INVALID_READ_LOCAL_FILE("09010004", 400, ""), // TODO
-    ;
+    INVALID_READ_LOCAL_FILE("09010004", 400, ""); // TODO
 
     private final String code;
     private final int httpStatusCode;

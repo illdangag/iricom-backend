@@ -1,5 +1,6 @@
 package com.illdangag.iricom.storage.controller.v1;
 
+import com.illdangag.iricom.storage.data.response.FileMetadataInfo;
 import com.illdangag.iricom.storage.test.IricomTestSuiteEx;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.DisplayName;
@@ -12,13 +13,13 @@ import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilde
 
 import java.io.InputStream;
 
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.multipart;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @Slf4j
-@DisplayName("controller: 파일")
+@DisplayName("controller: 파일 저장소")
 public class StorageControllerTest extends IricomTestSuiteEx {
     private final String IMAGE_FILE_NAME = "spring_boot_icon.png";
 
@@ -31,22 +32,32 @@ public class StorageControllerTest extends IricomTestSuiteEx {
     }
 
     @Test
-    @DisplayName("업로드")
-    public void uploadFileTest() throws Exception {
+    @DisplayName("업로드 다운로드")
+    public void uploadDownloadFileTest() throws Exception {
         InputStream inputStream = this.getSampleImageInputStream();
         MockMultipartFile multipartFile = new MockMultipartFile("file", IMAGE_FILE_NAME, "image/png", inputStream);
 
-        MockHttpServletRequestBuilder multipart = multipart("/v1/file")
+        MockHttpServletRequestBuilder uploadRequestBuilder = multipart("/v1/file")
                 .file(multipartFile);
-        setAuthToken(multipart, common00);
+        setAuthToken(uploadRequestBuilder, common00);
 
-        mockMvc.perform(multipart)
+        String responseBody = mockMvc.perform(uploadRequestBuilder)
                 .andExpect(status().is(200))
                 .andExpect(jsonPath("$.id").exists())
                 .andExpect(jsonPath("$.size").isNumber())
                 .andExpect(jsonPath("$.name").exists())
                 .andExpect(jsonPath("$.name").isString())
-                .andExpect(jsonPath("$.name").value(IMAGE_FILE_NAME))
+                .andDo(print())
+                .andReturn().getResponse().getContentAsString();
+
+        FileMetadataInfo fileMetadataInfo = this.getObject(responseBody, FileMetadataInfo.class);
+
+        String fileId = fileMetadataInfo.getId();
+        MockHttpServletRequestBuilder downloadRequestBuilder = get("/v1/file/{fileId}", fileId);
+
+        mockMvc.perform(downloadRequestBuilder)
+                .andExpect(status().is(200))
+                .andExpect(header().exists("Content-Disposition"))
                 .andDo(print());
     }
 

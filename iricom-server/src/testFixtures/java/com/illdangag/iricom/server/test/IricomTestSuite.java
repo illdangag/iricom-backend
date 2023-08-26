@@ -624,6 +624,11 @@ public abstract class IricomTestSuite {
         return objectMapper.writeValueAsString(map);
     }
 
+    protected <T> T getObject(String jsonString, Class<T> classType) throws Exception {
+        ObjectMapper objectMapper = new ObjectMapper();
+        return objectMapper.readValue(jsonString, classType);
+    }
+
     protected Account getAccount(TestAccountInfo testAccountInfo) {
         return accountMap.get(testAccountInfo);
     }

@@ -39,6 +39,9 @@ public class FileMetadata {
     @Size(max = 50)
     private String name;
 
+    @Size(max = 50)
+    private String contentType;
+
     @Builder.Default
     private Boolean deleted = false;
 }

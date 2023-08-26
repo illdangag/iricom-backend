@@ -2,6 +2,7 @@ package com.illdangag.iricom.storage.file.service.impl;
 
 import com.illdangag.iricom.server.data.entity.Account;
 import com.illdangag.iricom.server.exception.IricomException;
+import com.illdangag.iricom.storage.data.IricomFileInputStream;
 import com.illdangag.iricom.storage.data.entity.FileMetadata;
 import com.illdangag.iricom.storage.data.response.FileMetadataInfo;
 import com.illdangag.iricom.storage.file.exception.IricomFileStorageErrorCode;
@@ -53,7 +54,7 @@ public class FileStorageServiceImpl implements StorageService {
     }
 
     @Override
-    public FileMetadataInfo uploadFile(Account account, String fileName, InputStream inputStream) {
+    public FileMetadataInfo uploadFile(Account account, String fileName, String contentType, InputStream inputStream) {
         int fileSize = 0;
 
         try {
@@ -62,9 +63,12 @@ public class FileStorageServiceImpl implements StorageService {
             throw new IricomException(IricomFileStorageErrorCode.INVALID_UPLOAD_FILE);
         }
 
+        String newFileName = this.createNewFileName(fileName);
+
         FileMetadata fileMetadata = FileMetadata.builder()
                 .account(account)
-                .name(fileName)
+                .name(newFileName)
+                .contentType(contentType)
                 .size((long) fileSize)
                 .build();
 
@@ -83,7 +87,7 @@ public class FileStorageServiceImpl implements StorageService {
     }
 
     @Override
-    public InputStream downloadFile(String id) {
+    public IricomFileInputStream downloadFile(String id) {
         UUID fileMetadataId = null;
 
         try {
@@ -111,7 +115,7 @@ public class FileStorageServiceImpl implements StorageService {
             throw new IricomException(IricomFileStorageErrorCode.INVALID_READ_LOCAL_FILE);
         }
 
-        return fileInputStream;
+        return new IricomFileInputStream(fileInputStream, fileMetadata);
     }
 
     private String getPath(FileMetadata fileMetadata) {
