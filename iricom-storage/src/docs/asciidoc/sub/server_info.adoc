@@ -1,0 +1,5 @@
+== 서버
+=== 정보 조회
+서버의 버전 및 상태 조회
+
+operation::STORAGE_INFO[snippets='curl-request,http-response,response-fields']

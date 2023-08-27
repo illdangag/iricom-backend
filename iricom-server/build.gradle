@@ -10,11 +10,15 @@ plugins {
     id "org.asciidoctor.jvm.convert" version "3.3.2" // spring rest docs의 asciidoc을 지원 하기 위함
 }
 
+version = '0.8.4'
+
+repositories {
+    mavenCentral()
+}
+
 ext {
     snippetsDir = file('build/generated-snippets') // restdocs에서 생성 될 파일의 경로
 }
-
-version = '0.8.4'
 
 configurations {
     asciidoctorExtensions
@@ -24,11 +28,8 @@ configurations {
     }
 }
 
-repositories {
-    mavenCentral()
-}
-
 dependencies {
+    // spring 의존성
     developmentOnly 'org.springframework.boot:spring-boot-devtools' // classpath의 파일이 변경된 경우 서버 자동 재시작 기능
     implementation 'org.springframework.boot:spring-boot-starter-web' // spring MVC를 위한 기본적인 종속, 내장 Tomcat 포함
     testFixturesImplementation 'org.springframework.boot:spring-boot-starter-web'
@@ -36,15 +37,14 @@ dependencies {
     testFixturesImplementation 'org.springframework.boot:spring-boot-starter-data-jpa'
     implementation 'org.springframework.boot:spring-boot-starter-validation' // annotation 기반의 데이터 검증 자동화
 
-    // annotation 기반의 자동 코드 생성
-    compileOnly 'org.projectlombok:lombok'
-    annotationProcessor 'org.projectlombok:lombok'
-
+    // 프로젝트 의존성
+    compileOnly 'org.projectlombok:lombok' // lombok
+    annotationProcessor 'org.projectlombok:lombok' // lombok
     runtimeOnly 'org.mariadb.jdbc:mariadb-java-client:3.1.0' // mariadb 접속
     implementation 'com.google.firebase:firebase-admin:9.1.1' // 계정의 인증
 
-    // spring 테스트
-    testImplementation('org.springframework.boot:spring-boot-starter-test') {
+    // 프로젝트 테스트 의존성
+    testImplementation('org.springframework.boot:spring-boot-starter-test') { // spring 테스트
         exclude group: 'junit', module: 'junit' // junit 특정 버전을 사용하기 위해서 기본 junit을 포함하지 않도록 함
     }
     testImplementation "org.junit.jupiter:junit-jupiter:5.8.1" // junit
@@ -52,24 +52,20 @@ dependencies {
         exclude group: 'junit', module: 'junit' // junit 특정 버전을 사용하기 위해서 기본 junit을 포함하지 않도록 함
     }
     testFixturesImplementation "org.junit.jupiter:junit-jupiter:5.8.1" // junit
-
-    // 테스트 코드에서 lombok을 사용하기 위함
-    testCompileOnly 'org.projectlombok:lombok'
-    testFixturesCompileOnly 'org.projectlombok:lombok'
-    testAnnotationProcessor 'org.projectlombok:lombok'
-    testFixturesAnnotationProcessor 'org.projectlombok:lombok'
-
+    testCompileOnly 'org.projectlombok:lombok' // lombok
+    testFixturesCompileOnly 'org.projectlombok:lombok' // lombok
+    testAnnotationProcessor 'org.projectlombok:lombok' // lombok
+    testFixturesAnnotationProcessor 'org.projectlombok:lombok' // lombok
     testImplementation 'com.h2database:h2:2.1.214' // 테스트 환경에서 사용 할 데이터베이스
+    testFixturesImplementation 'org.apache.httpcomponents:httpclient:4.5.14'
 
     // restdocs
     asciidoctorExtensions 'org.springframework.restdocs:spring-restdocs-asciidoctor'
     testImplementation 'org.springframework.restdocs:spring-restdocs-mockmvc'
     testFixturesImplementation 'org.springframework.restdocs:spring-restdocs-mockmvc'
-
-    testFixturesImplementation 'org.apache.httpcomponents:httpclient:4.5.14'
 }
 
-processResources.doLast {
+processResources.doLast { // 프로젝트 버전
     SimpleDateFormat sdf = new SimpleDateFormat('yyyy-MM-dd HH:mm:ss:SSS');
     def contents =
             'server.version=' + version + '\n' +
@@ -78,22 +74,15 @@ processResources.doLast {
     file('./build/resources/main/version.properties').text += contents
 }
 
-// code convention
-checkstyle {
+checkstyle { // code convention
     ignoreFailures = true
     configFile = file("../checkstyle.xml")
     reportsDir = file("${buildDir}/checkstyle-output")
 }
 
-test {
-    dependsOn checkstyleMain, checkstyleTest
-
-    outputs.dir snippetsDir
-    useJUnitPlatform()
-}
-
 asciidoctor {
     dependsOn test
+
     configurations 'asciidoctorExtensions'
     inputs.dir snippetsDir
 
@@ -111,6 +100,13 @@ asciidoctor {
     doFirst {
         delete file('src/main/resources/static/docs')
     }
+}
+
+test {
+    dependsOn checkstyleMain, checkstyleTest
+
+    outputs.dir snippetsDir
+    useJUnitPlatform()
 }
 
 bootJar {

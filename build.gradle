@@ -24,8 +24,7 @@ dependencies {
     implementation project(':iricom-storage')
     implementation project(':iricom-storage:iricom-storage-file')
 
-    // classpath의 파일이 변경된 경우 서버 자동 재시작 기능
-    developmentOnly 'org.springframework.boot:spring-boot-devtools'
-    // spring MVC를 위한 기본적인 종속, 내장 Tomcat 포함
-    implementation 'org.springframework.boot:spring-boot-starter-web'
+    // spring 의존성
+    developmentOnly 'org.springframework.boot:spring-boot-devtools' // classpath의 파일이 변경된 경우 서버 자동 재시작 기능
+    implementation 'org.springframework.boot:spring-boot-starter-web' // spring MVC를 위한 기본적인 종속, 내장 Tomcat 포함
 }

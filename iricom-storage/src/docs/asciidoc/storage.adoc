@@ -1,0 +1,10 @@
+= Iricom Storage
+REST API
+:doctype: book
+:icons: font
+:source-highlighter: highlightjs
+:toc: left
+:toclevels: 2
+:sectlinks:
+
+include::sub/server_info.adoc[]

@@ -186,8 +186,8 @@ gradle-app.setting
 
 # End of https://www.toptal.com/developers/gitignore/api/macos,wintersmith,java,gradle,intellij+all
 
-log
-storage
+/log
+/storage
 src/main/resources/firebase-adminsdk.json
 src/test/resources/firebase-adminsdk.json
 src/main/resources/static/docs

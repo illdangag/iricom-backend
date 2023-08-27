@@ -5,44 +5,38 @@ plugins {
     id 'checkstyle' // code convention
 }
 
-version = '0.0.0-SNAPSHOT'
+version = '0.0.1'
 
 repositories {
     mavenCentral()
 }
 
 dependencies {
+    // 상위 프로젝트 의존성
     implementation project(':iricom-server')
     testImplementation(testFixtures(project(':iricom-server')))
     implementation project(':iricom-storage')
 
-    // spring MVC를 위한 기본적인 종속, 내장 Tomcat 포함
-    implementation 'org.springframework.boot:spring-boot-starter-web'
-    // annotation 기반의 데이터 검증 자동화
-    implementation 'org.springframework.boot:spring-boot-starter-validation'
+    // spring 의존성
+    implementation 'org.springframework.boot:spring-boot-starter-web' // spring MVC를 위한 기본적인 종속, 내장 Tomcat 포함
+    implementation 'org.springframework.boot:spring-boot-starter-validation' // annotation 기반의 데이터 검증 자동화
 
-    // annotation 기반의 자동 코드 생성
-    compileOnly 'org.projectlombok:lombok'
-    annotationProcessor 'org.projectlombok:lombok'
-
+    // 프로젝트 의존성
+    compileOnly 'org.projectlombok:lombok' // lombok
+    annotationProcessor 'org.projectlombok:lombok' // lombok
     implementation 'commons-io:commons-io:2.13.0'
 
-    // spring 테스트
+    // 프로젝트 테스트 의존성
     testImplementation('org.springframework.boot:spring-boot-starter-test') {
         exclude group: 'junit', module: 'junit' // junit 특정 버전을 사용하기 위해서 기본 junit을 포함하지 않도록 함
     }
-    // junit
     testImplementation "org.junit.jupiter:junit-jupiter:5.8.1"
-
-    // 테스트 코드에서 lombok을 사용하기 위함
-    testCompileOnly 'org.projectlombok:lombok'
-    testAnnotationProcessor 'org.projectlombok:lombok'
-
+    testCompileOnly 'org.projectlombok:lombok' // lombok
+    testAnnotationProcessor 'org.projectlombok:lombok' // lombok
     testImplementation 'com.h2database:h2:2.1.214' // 테스트 환경에서 사용 할 데이터베이스
 }
 
-// code convention
-checkstyle {
+checkstyle { // code convention
     ignoreFailures = true
     configFile = file("../../checkstyle.xml")
     reportsDir = file("${buildDir}/checkstyle-output")
