@@ -44,7 +44,6 @@ public class AccountControllerTest extends IricomTestSuite {
                 .param("skip", "0")
                 .param("limit", "5")
                 .param("keyword", "common");
-
         setAuthToken(requestBuilder, systemAdmin);
 
         List<FieldDescriptor> fieldDescriptorList = new LinkedList<>();

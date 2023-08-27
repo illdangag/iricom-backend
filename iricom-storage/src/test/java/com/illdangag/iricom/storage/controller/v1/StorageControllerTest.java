@@ -21,8 +21,6 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @Slf4j
 @DisplayName("controller: 파일 저장소")
 public class StorageControllerTest extends IricomTestSuiteEx {
-    private final String IMAGE_FILE_NAME = "spring_boot_icon.png";
-
     @Autowired
     MockMvc mockMvc;
 
@@ -35,7 +33,7 @@ public class StorageControllerTest extends IricomTestSuiteEx {
     @DisplayName("업로드 다운로드")
     public void uploadDownloadFileTest() throws Exception {
         InputStream inputStream = this.getSampleImageInputStream();
-        MockMultipartFile multipartFile = new MockMultipartFile("file", IMAGE_FILE_NAME, "image/png", inputStream);
+        MockMultipartFile multipartFile = new MockMultipartFile("file", IMAGE_FILE_NAME, IMAGE_FILE_CONTENT_TYPE, inputStream);
 
         MockHttpServletRequestBuilder uploadRequestBuilder = multipart("/v1/file")
                 .file(multipartFile);
@@ -59,9 +57,5 @@ public class StorageControllerTest extends IricomTestSuiteEx {
                 .andExpect(status().is(200))
                 .andExpect(header().exists("Content-Disposition"))
                 .andDo(print());
-    }
-
-    private InputStream getSampleImageInputStream() {
-        return StorageControllerTest.class.getClassLoader().getResourceAsStream(IMAGE_FILE_NAME);
     }
 }

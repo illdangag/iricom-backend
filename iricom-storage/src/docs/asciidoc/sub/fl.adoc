@@ -1,0 +1,15 @@
+== 파일
+
+=== 업로드
+==== FL_001
+파일 업로드
+
+multipart/form-data
+
+operation::FL_001[snippets='curl-request,http-response,response-fields']
+
+=== 다운로드
+==== FL_002
+파일 다운로드
+
+operation::FL_002[snippets='curl-request,path-parameters,response-body']

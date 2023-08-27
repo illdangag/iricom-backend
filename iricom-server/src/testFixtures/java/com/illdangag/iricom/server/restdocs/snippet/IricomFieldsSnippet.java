@@ -107,7 +107,7 @@ public class IricomFieldsSnippet {
             ResponseField.builder().path("limit").description("조회 할 최대 결과 수").build()
     );
 
-    private IricomFieldsSnippet() {
+    protected IricomFieldsSnippet() {
     }
 
     private static List<FieldDescriptor> getFieldDescriptors(Map<String, String> keyDescriptionMap, String keyPrefix) {
@@ -117,7 +117,7 @@ public class IricomFieldsSnippet {
                 .collect(Collectors.toList());
     }
 
-    private static List<FieldDescriptor> getFieldDescriptors(List<ResponseField> responseFieldList, String keyPrefix) {
+    protected static List<FieldDescriptor> getFieldDescriptors(List<ResponseField> responseFieldList, String keyPrefix) {
         return responseFieldList.stream()
                 .map(item -> {
                     FieldDescriptor fieldDescriptor = fieldWithPath(keyPrefix + item.getPath()).description(item.getDescription());

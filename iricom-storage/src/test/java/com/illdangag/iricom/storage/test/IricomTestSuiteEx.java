@@ -1,15 +1,20 @@
 package com.illdangag.iricom.storage.test;
 
 import com.illdangag.iricom.server.test.IricomTestSuite;
+import com.illdangag.iricom.storage.controller.v1.StorageControllerTest;
 import com.illdangag.iricom.storage.data.entity.FileMetadata;
 import com.illdangag.iricom.storage.repository.FileRepository;
 import com.illdangag.iricom.storage.test.data.wrapper.TestFileMetadataInfo;
 import org.springframework.context.ApplicationContext;
 
+import java.io.InputStream;
 import java.util.*;
 import java.util.stream.Collectors;
 
 public class IricomTestSuiteEx extends IricomTestSuite {
+    protected final String IMAGE_FILE_NAME = "spring_boot_icon.png";
+
+    protected final String IMAGE_FILE_CONTENT_TYPE = "image/png";
 
     private final FileRepository fileRepository;
 
@@ -52,5 +57,9 @@ public class IricomTestSuiteEx extends IricomTestSuite {
             this.fileRepository.saveFileMetadata(fileMetadata);
             this.fileMetadataMap.put(testFileMetadataInfo, fileMetadata);
         });
+    }
+
+    protected InputStream getSampleImageInputStream() {
+        return StorageControllerTest.class.getClassLoader().getResourceAsStream(IMAGE_FILE_NAME);
     }
 }

@@ -18,10 +18,6 @@ import java.io.InputStream;
 public class StorageServiceTest extends IricomTestSuiteEx {
     private final StorageService storageService;
 
-    private final String IMAGE_FILE_NAME = "spring_boot_icon.png";
-
-    private final String IMAGE_FILE_CONTENT_TYPE = "image/png";
-
     @Autowired
     public StorageServiceTest(ApplicationContext context, StorageService storageService) {
         super(context);
@@ -88,9 +84,5 @@ public class StorageServiceTest extends IricomTestSuiteEx {
         String newFileName = this.storageService.createNewFileName(filePathName);
 
         Assertions.assertTrue(newFileName.endsWith("png"));
-    }
-
-    private InputStream getSampleImageInputStream() {
-        return StorageServiceTest.class.getClassLoader().getResourceAsStream(IMAGE_FILE_NAME);
     }
 }
