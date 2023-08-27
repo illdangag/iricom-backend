@@ -40,12 +40,14 @@ public class FileRepositoryTest extends IricomTestSuiteEx {
         TestAccountInfo testAccountInfo = common00;
 
         TestFileMetadataInfo testFileMetadataInfo = TestFileMetadataInfo.builder()
-                .account(testAccountInfo).path("/").size(0L).hash("HASH").build();
+                .account(testAccountInfo)
+                .name(IMAGE_FILE_NAME).contentType(IMAGE_FILE_CONTENT_TYPE).inputStream(this.getSampleImageInputStream())
+                .build();
 
         this.addTestFileMetadataInfo(testFileMetadataInfo);
         this.init();
 
-        String fileMetadataId = this.getFileMetadataId(testFileMetadataInfo);
+        String fileMetadataId = this.getFileMetadataInfo(testFileMetadataInfo);
         log.info("fileMetadata: {}", fileMetadataId);
     }
 }

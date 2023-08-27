@@ -1,24 +1,19 @@
 package com.illdangag.iricom.storage.test.data.wrapper;
 
 import com.illdangag.iricom.server.test.data.wrapper.TestAccountInfo;
-import com.illdangag.iricom.storage.data.entity.FileMetadata;
 import lombok.Builder;
 import lombok.Getter;
+
+import java.io.InputStream;
 
 @Getter
 @Builder
 public class TestFileMetadataInfo {
     private TestAccountInfo account;
 
-    private String path;
+    private String name;
 
-    private String hash;
+    private String contentType;
 
-    private Long size;
-
-    public FileMetadata getFileMetadata() {
-        return FileMetadata.builder()
-                .size(this.size)
-                .build();
-    }
+    private InputStream inputStream;
 }

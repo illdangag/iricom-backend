@@ -29,8 +29,8 @@ public class StorageMainControllerTest extends IricomTestSuiteEx {
     }
 
     @Test
-    @DisplayName("테스트")
-    public void test() throws Exception {
+    @DisplayName("파일 스토리지 서버 정보")
+    public void serverInfo() throws Exception {
         MockHttpServletRequestBuilder requestBuilder = get("/storage");
         mockMvc.perform(requestBuilder)
                 .andExpect(status().is(200))

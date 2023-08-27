@@ -1,31 +1,43 @@
 package com.illdangag.iricom.storage.test;
 
+import com.illdangag.iricom.server.data.entity.Account;
 import com.illdangag.iricom.server.test.IricomTestSuite;
+import com.illdangag.iricom.server.test.data.wrapper.TestAccountInfo;
 import com.illdangag.iricom.storage.controller.v1.StorageControllerTest;
-import com.illdangag.iricom.storage.data.entity.FileMetadata;
+import com.illdangag.iricom.storage.data.response.FileMetadataInfo;
 import com.illdangag.iricom.storage.repository.FileRepository;
+import com.illdangag.iricom.storage.service.StorageService;
 import com.illdangag.iricom.storage.test.data.wrapper.TestFileMetadataInfo;
 import org.springframework.context.ApplicationContext;
 
 import java.io.InputStream;
 import java.util.*;
-import java.util.stream.Collectors;
 
 public class IricomTestSuiteEx extends IricomTestSuite {
     protected final String IMAGE_FILE_NAME = "spring_boot_icon.png";
-
     protected final String IMAGE_FILE_CONTENT_TYPE = "image/png";
+
+    private final StorageService storageService;
 
     private final FileRepository fileRepository;
 
     private final List<TestFileMetadataInfo> testFileMetadataInfoList = new ArrayList<>();
 
-    private final Map<TestFileMetadataInfo, FileMetadata> fileMetadataMap = new HashMap<>();
+    private final Map<TestFileMetadataInfo, FileMetadataInfo> fileMetadataInfoMap = new HashMap<>();
 
     public IricomTestSuiteEx(ApplicationContext context) {
         super(context);
 
+        this.storageService = context.getBean(StorageService.class);
+
         this.fileRepository = context.getBean(FileRepository.class);
+    }
+
+    @Override
+    protected void init() {
+        super.init();
+
+        this.setFileMetadata(this.testFileMetadataInfoList);
     }
 
     protected void addTestFileMetadataInfo(TestFileMetadataInfo ...testFileMetadataInfos) {
@@ -36,26 +48,20 @@ public class IricomTestSuiteEx extends IricomTestSuite {
         this.testFileMetadataInfoList.addAll(testFileMetadataInfoList);
     }
 
-    protected String getFileMetadataId(TestFileMetadataInfo testFileMetadataInfo) {
-        return String.valueOf(this.fileMetadataMap.get(testFileMetadataInfo).getId());
-    }
-
-    @Override
-    protected void init() {
-        super.init();
-
-        this.setFileMetadata(this.testFileMetadataInfoList);
+    protected String getFileMetadataInfo(TestFileMetadataInfo testFileMetadataInfo) {
+        return String.valueOf(this.fileMetadataInfoMap.get(testFileMetadataInfo).getId());
     }
 
     private void setFileMetadata(List<TestFileMetadataInfo> testFileMetadataInfoList) {
-        List<FileMetadata> fileMetadataList = testFileMetadataInfoList.stream()
-                .map(TestFileMetadataInfo::getFileMetadata)
-                .collect(Collectors.toList());
-
         testFileMetadataInfoList.forEach(testFileMetadataInfo -> {
-            FileMetadata fileMetadata = testFileMetadataInfo.getFileMetadata();
-            this.fileRepository.saveFileMetadata(fileMetadata);
-            this.fileMetadataMap.put(testFileMetadataInfo, fileMetadata);
+            TestAccountInfo testAccountInfo = testFileMetadataInfo.getAccount();
+            Account account = this.getAccount(testAccountInfo);
+            String fileName = testFileMetadataInfo.getName();
+            String contentType = testFileMetadataInfo.getContentType();
+            InputStream inputStream = testFileMetadataInfo.getInputStream();
+
+            FileMetadataInfo fileMetadataInfo = this.storageService.uploadFile(account, fileName, contentType, inputStream);
+            this.fileMetadataInfoMap.put(testFileMetadataInfo, fileMetadataInfo);
         });
     }
 

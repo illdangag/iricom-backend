@@ -31,7 +31,7 @@ public class MainControllerTest extends IricomTestSuite {
     @Test
     @Order(0)
     @DisplayName("기본 서버 정보")
-    public void testCase00() throws Exception {
+    public void serverInfo() throws Exception {
         MockHttpServletRequestBuilder requestBuilder = get("/");
         mockMvc.perform(requestBuilder)
                 .andExpect(status().is(200))
