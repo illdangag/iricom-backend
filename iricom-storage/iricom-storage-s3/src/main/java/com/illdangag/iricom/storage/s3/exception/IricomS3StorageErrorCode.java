@@ -7,8 +7,11 @@ import lombok.Getter;
 @AllArgsConstructor
 @Getter
 public enum IricomS3StorageErrorCode implements IricomError {
-    INVALID_UPLOAD_FILE("09020000", 400, ""), // TODO
-    NOT_EXIST_FILE("09020001", 400, ""); // TODO
+    INVALID_UPLOAD_FILE("09020000", 400, "Invalid request file."),
+    FAIL_TO_SAVE_OBJECT_STORAGE("", 400, ""),
+    NOT_EXIST_FILE("09020001", 404, "Not exist file."),
+    INVALID_AUTHORIZATION_TO_DELETE_FILE("09020001", 401, "Invalid authorization.");
+
     private final String code;
     private final int httpStatusCode;
     private final String message;

@@ -7,6 +7,7 @@ import com.illdangag.iricom.storage.data.response.FileMetadataInfo;
 import com.illdangag.iricom.storage.s3.service.impl.S3StorageServiceImpl;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
@@ -14,6 +15,7 @@ import org.springframework.context.ApplicationContext;
 import java.io.InputStream;
 
 @Slf4j
+@DisplayName("service: S3StorageService")
 public class S3StorageServiceTest extends IricomTestSuite {
     private final S3StorageServiceImpl s3StorageServiceImpl;
 
@@ -56,6 +58,19 @@ public class S3StorageServiceTest extends IricomTestSuite {
         } catch (Exception exception) {
             log.error("error", exception);
         }
+    }
+
+    @Test
+    public void deleteFileTest() {
+        Account account = getAccount(common00);
+        InputStream sampleImageInputStream = this.getSampleImageInputStream();
+
+        FileMetadataInfo fileMetadataInfo = this.s3StorageServiceImpl.uploadFile(account, IMAGE_FILE_NAME, IMAGE_FILE_CONTENT_TYPE, sampleImageInputStream);
+
+        String id = fileMetadataInfo.getId();
+
+        FileMetadataInfo deleteFileMetadataInfo = this.s3StorageServiceImpl.deleteFile(account, id);
+        Assertions.assertNotNull(deleteFileMetadataInfo);
     }
 
     private InputStream getSampleImageInputStream() {

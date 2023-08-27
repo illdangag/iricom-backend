@@ -8,11 +8,9 @@ import com.amazonaws.client.builder.AwsClientBuilder;
 import com.amazonaws.regions.Regions;
 import com.amazonaws.services.s3.AmazonS3;
 import com.amazonaws.services.s3.AmazonS3ClientBuilder;
-import com.amazonaws.services.s3.model.GetObjectRequest;
-import com.amazonaws.services.s3.model.ObjectMetadata;
-import com.amazonaws.services.s3.model.PutObjectRequest;
-import com.amazonaws.services.s3.model.S3Object;
+import com.amazonaws.services.s3.model.*;
 import com.illdangag.iricom.server.data.entity.Account;
+import com.illdangag.iricom.server.data.entity.type.AccountAuth;
 import com.illdangag.iricom.server.exception.IricomException;
 import com.illdangag.iricom.storage.data.IricomFileInputStream;
 import com.illdangag.iricom.storage.data.entity.FileMetadata;
@@ -78,12 +76,17 @@ public class S3StorageServiceImpl implements StorageService {
         this.fileRepository.saveFileMetadata(fileMetadata);
 
         String path = this.getPath(fileMetadata);
-
         AmazonS3 amazonS3 = this.getAmazonS3();
+
         ObjectMetadata metadata = new ObjectMetadata();
         metadata.setContentLength(fileSize);
         PutObjectRequest putObjectRequest = new PutObjectRequest(this.BUCKET, path, inputStream, metadata);
-        amazonS3.putObject(putObjectRequest);
+
+        try {
+            amazonS3.putObject(putObjectRequest);
+        } catch (Exception exception) {
+            throw new IricomException(IricomS3StorageErrorCode.FAIL_TO_SAVE_OBJECT_STORAGE);
+        }
 
         return new FileMetadataInfo(fileMetadata);
     }
@@ -101,13 +104,53 @@ public class S3StorageServiceImpl implements StorageService {
         Optional<FileMetadata> fileMetadataOptional = this.fileRepository.getFileMetadata(fileMetadataId);
         FileMetadata fileMetadata = fileMetadataOptional.orElseThrow(() -> new IricomException(IricomS3StorageErrorCode.NOT_EXIST_FILE));
 
-        String path = this.getPath(fileMetadata);
-
+        String filePath = this.getPath(fileMetadata);
         AmazonS3 amazonS3 = this.getAmazonS3();
 
-        GetObjectRequest getObjectRequest = new GetObjectRequest(this.BUCKET, path);
-        S3Object s3Object = amazonS3.getObject(getObjectRequest);
+        GetObjectRequest getObjectRequest = new GetObjectRequest(this.BUCKET, filePath);
+        S3Object s3Object;
+
+        try {
+            s3Object = amazonS3.getObject(getObjectRequest);
+        } catch (Exception exception) {
+            throw new IricomException(IricomS3StorageErrorCode.NOT_EXIST_FILE);
+        }
+
         return new IricomFileInputStream(s3Object.getObjectContent(), fileMetadata);
+    }
+
+    @Override
+    public FileMetadataInfo deleteFile(Account account, String id) {
+        UUID fileMetadataId = null;
+
+        try {
+            fileMetadataId = UUID.fromString(id);
+        } catch (Exception exception) {
+            throw new IricomException(IricomS3StorageErrorCode.NOT_EXIST_FILE);
+        }
+
+        Optional<FileMetadata> fileMetadataOptional = this.fileRepository.getFileMetadata(fileMetadataId);
+        FileMetadata fileMetadata = fileMetadataOptional.orElseThrow(() -> new IricomException(IricomS3StorageErrorCode.NOT_EXIST_FILE));
+
+        Account fileOwner = fileMetadata.getAccount();
+        if (account.getAuth() != AccountAuth.SYSTEM_ADMIN && !account.equals(fileOwner)) {
+            // 시스템 관리자도 아니고 파일의 소유자가 아닌 경우 파일 삭제가 불가능
+            throw new IricomException(IricomS3StorageErrorCode.INVALID_AUTHORIZATION_TO_DELETE_FILE);
+        }
+
+        String filePath = this.getPath(fileMetadata);
+        AmazonS3 amazonS3 = this.getAmazonS3();
+        DeleteObjectRequest deleteObjectRequest = new DeleteObjectRequest(this.BUCKET, filePath);
+        try {
+            amazonS3.deleteObject(deleteObjectRequest);
+        } catch (Exception exception) {
+            log.error("Fail to delete file. id: {}, path: {}", id, filePath, exception);
+        }
+
+        fileMetadata.setDeleted(true);
+        this.fileRepository.saveFileMetadata(fileMetadata);
+
+        return new FileMetadataInfo(fileMetadata);
     }
 
     private AmazonS3 getAmazonS3() {

@@ -1,6 +1,7 @@
 package com.illdangag.iricom.storage.file.service.impl;
 
 import com.illdangag.iricom.server.data.entity.Account;
+import com.illdangag.iricom.server.data.entity.type.AccountAuth;
 import com.illdangag.iricom.server.exception.IricomException;
 import com.illdangag.iricom.storage.data.IricomFileInputStream;
 import com.illdangag.iricom.storage.data.entity.FileMetadata;
@@ -116,6 +117,42 @@ public class FileStorageServiceImpl implements StorageService {
         }
 
         return new IricomFileInputStream(fileInputStream, fileMetadata);
+    }
+
+    @Override
+    public FileMetadataInfo deleteFile(Account account, String id) {
+        UUID fileMetadataId = null;
+
+        try {
+            fileMetadataId = UUID.fromString(id);
+        } catch (Exception exception) {
+            throw new IricomException(IricomFileStorageErrorCode.NOT_EXIST_FILE);
+        }
+
+        this.fileRepository.getFileMetadata(fileMetadataId);
+
+        Optional<FileMetadata> fileMetadataOptional = this.fileRepository.getFileMetadata(fileMetadataId);
+        FileMetadata fileMetadata = fileMetadataOptional.orElseThrow(() -> new IricomException(IricomFileStorageErrorCode.NOT_EXIST_FILE));
+
+        Account fileOwner = fileMetadata.getAccount();
+        if (account.getAuth() != AccountAuth.SYSTEM_ADMIN && !account.equals(fileOwner)) {
+            // 시스템 관리자도 아니고 파일의 소유자가 아닌 경우 파일 삭제가 불가능
+            throw new IricomException(IricomFileStorageErrorCode.INVALID_AUTHORIZATION_TO_DELETE_FILE);
+        }
+
+        String filePath = this.getPath(fileMetadata);
+        File file = new File(filePath);
+        try {
+            Files.delete(file.toPath());
+        } catch (Exception exception) {
+            // 파일 삭제 오류
+            log.error("Fail to delete file. id: {}, path: {}", id, filePath, exception);
+        }
+
+        fileMetadata.setDeleted(true);
+        this.fileRepository.saveFileMetadata(fileMetadata);
+
+        return new FileMetadataInfo(fileMetadata);
     }
 
     private String getPath(FileMetadata fileMetadata) {

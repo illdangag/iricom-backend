@@ -7,6 +7,7 @@ import com.illdangag.iricom.storage.data.response.FileMetadataInfo;
 import com.illdangag.iricom.storage.file.service.impl.FileStorageServiceImpl;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
@@ -14,6 +15,7 @@ import org.springframework.context.ApplicationContext;
 import java.io.InputStream;
 
 @Slf4j
+@DisplayName("service: FileStorageService")
 public class FileStorageServiceTest extends IricomTestSuite {
     private final FileStorageServiceImpl fileStorageServiceImpl;
 
@@ -58,6 +60,19 @@ public class FileStorageServiceTest extends IricomTestSuite {
         } catch (Exception exception) {
             log.error("error", exception);
         }
+    }
+
+    @Test
+    public void deleteFileTest() {
+        Account account = getAccount(common00);
+        InputStream sampleImageInputStream = this.getSampleImageInputStream();
+
+        FileMetadataInfo fileMetadataInfo = this.fileStorageServiceImpl.uploadFile(account, IMAGE_FILE_NAME, IMAGE_FILE_CONTENT_TYPE, sampleImageInputStream);
+
+        String id = fileMetadataInfo.getId();
+
+        FileMetadataInfo deleteFileMetadataInfo = this.fileStorageServiceImpl.deleteFile(account, id);
+        Assertions.assertNotNull(deleteFileMetadataInfo);
     }
 
     private InputStream getSampleImageInputStream() {

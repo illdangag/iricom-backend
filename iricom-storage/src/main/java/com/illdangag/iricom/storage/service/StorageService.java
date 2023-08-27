@@ -13,6 +13,8 @@ public interface StorageService {
 
     IricomFileInputStream downloadFile(String id);
 
+    FileMetadataInfo deleteFile(Account account, String id);
+
     default String getFileExtension(String filePathName) {
         return FilenameUtils.getExtension(filePathName);
     }
