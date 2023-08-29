@@ -35,8 +35,6 @@ public class RequestContextResolver implements HandlerMethodArgumentResolver {
         Class targetClass = methodParameter.getParameterType();
         if (targetClass.equals(Account.class)) {
             return nativeWebRequest.getAttribute("account", 0);
-        } else if (targetClass.equals(Board[].class)) {
-            return nativeWebRequest.getAttribute("boards", 0);
         }
         return null;
     }
