@@ -28,9 +28,16 @@ jobs:
         java-version: '11'
         distribution: 'temurin'
 
-    - name: Make firebase-adminsdk.json for JUnit
+    - name: Make iricom-server firebase-adminsdk.json for JUnit
       run: |
         cd ./iricom-server/src/test/resources
+        touch ./firebase-adminsdk.json
+        echo "${{ secrets.TEST_FIREBASE_ADMIN_ADK }}" > ./firebase-adminsdk.json
+      shell: bash
+
+    - name: Make iricom-storage firebase-adminsdk.json for JUnit
+      run: |
+        cd ./iricom-storage/src/test/resources
         touch ./firebase-adminsdk.json
         echo "${{ secrets.TEST_FIREBASE_ADMIN_ADK }}" > ./firebase-adminsdk.json
       shell: bash
