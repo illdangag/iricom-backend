@@ -23,18 +23,21 @@ public class MainController {
     private final String tags;
     private final String version;
     private final String timestamp;
+    private final String profile;
 
     @Autowired
     public MainController(@Value("${git.branch:dev}") String branch,
                           @Value("${git.commit.id:}") String commit,
                           @Value("${git.tags:}") String tags,
                           @Value("${server.version:}") String version,
-                          @Value("${server.timestamp:}") String timestamp) {
+                          @Value("${server.timestamp:}") String timestamp,
+                          @Value("${server.profile:}") String profile) {
         this.branch = branch;
         this.commit = commit;
         this.tags = tags;
         this.version = version;
         this.timestamp = timestamp;
+        this.profile = profile;
     }
 
     @RequestMapping(method = RequestMethod.GET, value = "")
@@ -46,6 +49,7 @@ public class MainController {
                 .tags(tags)
                 .version(version)
                 .timestamp(timestamp)
+                .profile(profile)
                 .build();
 
         return ResponseEntity.status(HttpStatus.OK).body(serverInfo);

@@ -11,6 +11,7 @@ plugins {
 }
 
 version = '0.8.5'
+String profile = project.hasProperty('profile') ? project.property('profile') : 'local'
 
 repositories {
     mavenCentral()
@@ -65,13 +66,26 @@ dependencies {
     testFixturesImplementation 'org.springframework.restdocs:spring-restdocs-mockmvc'
 }
 
-processResources.doLast { // 프로젝트 버전
-    SimpleDateFormat sdf = new SimpleDateFormat('yyyy-MM-dd HH:mm:ss:SSS');
-    def contents =
-            'server.version=' + version + '\n' +
-            'server.timestamp=' + sdf.format(new Date()) + '\n'
-    println contents
-    file('./build/resources/main/version.properties').text += contents
+processResources {
+    duplicatesStrategy = org.gradle.api.file.DuplicatesStrategy.INCLUDE
+
+    doLast {
+        SimpleDateFormat sdf = new SimpleDateFormat('yyyy-MM-dd HH:mm:ss:SSS');
+        def contents =
+                'server.version=' + version + '\n' +
+                'server.timestamp=' + sdf.format(new Date()) + '\n' +
+                'server.profile=' + profile
+        println contents
+        file('./build/resources/main/version.properties').text += contents
+    }
+}
+
+sourceSets {
+    main {
+        resources {
+            srcDirs "src/main/resources", "src/main/resources-${profile}"
+        }
+    }
 }
 
 checkstyle { // code convention

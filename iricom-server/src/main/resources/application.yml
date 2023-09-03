@@ -1,6 +1,6 @@
 spring:
   profiles:
-    include: database # 서버 실행 환경과 테스트 환경을 분리 하기 위하여 데이터베이스 설정을 분리
+    include: database, storage # 서버 실행 환경과 테스트 환경을 분리 하기 위하여 설정을 분리
 
 logging:
   level:

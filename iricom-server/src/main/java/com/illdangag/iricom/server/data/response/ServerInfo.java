@@ -15,4 +15,6 @@ public class ServerInfo {
     private String version;
 
     private String timestamp;
+
+    private String profile;
 }

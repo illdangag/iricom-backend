@@ -12,7 +12,6 @@ plugins {
 }
 
 group = 'com.illdangag.iricom'
-
 sourceCompatibility = '11'
 
 repositories {
@@ -22,7 +21,7 @@ repositories {
 dependencies {
     implementation project(':iricom-server')
     implementation project(':iricom-storage')
-    implementation project(':iricom-storage:iricom-storage-file')
+    implementation project(':iricom-storage:iricom-storage-s3')
 
     // spring 의존성
     developmentOnly 'org.springframework.boot:spring-boot-devtools' // classpath의 파일이 변경된 경우 서버 자동 재시작 기능

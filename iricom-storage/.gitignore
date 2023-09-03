@@ -188,6 +188,5 @@ gradle-app.setting
 
 /log
 /storage
-src/main/resources/firebase-adminsdk.json
-src/test/resources/firebase-adminsdk.json
 src/main/resources/static/docs
+application-storage.yml
