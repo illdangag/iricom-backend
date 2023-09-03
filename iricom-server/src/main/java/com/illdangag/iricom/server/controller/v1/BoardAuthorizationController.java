@@ -35,9 +35,10 @@ public class BoardAuthorizationController {
     @ApiCallLog(apiCode = "AT_001")
     @Auth(role = AuthRole.SYSTEM_ADMIN)
     @RequestMapping(method = RequestMethod.POST, value = "/boards")
-    public ResponseEntity<Void> setBoardAdminAuth(@RequestBody @Validated BoardAdminInfoCreate boardAdminInfoCreate) {
-        this.boardAuthorizationService.createBoardAdminAuth(boardAdminInfoCreate);
-        return ResponseEntity.status(HttpStatus.OK).build();
+    public ResponseEntity<BoardAdminInfo> setBoardAdminAuth(@RequestBody @Validated BoardAdminInfoCreate boardAdminInfoCreate) {
+        BoardAdminInfo boardAdminInfo = this.boardAuthorizationService.createBoardAdminAuth(boardAdminInfoCreate);
+        return ResponseEntity.status(HttpStatus.OK)
+                .body(boardAdminInfo);
     }
 
     /**
@@ -109,8 +110,8 @@ public class BoardAuthorizationController {
     @ApiCallLog(apiCode = "AT_004")
     @Auth(role = AuthRole.SYSTEM_ADMIN)
     @RequestMapping(method = RequestMethod.DELETE, value = "/boards")
-    public ResponseEntity<Void> deleteBoardAdminAuth(@RequestBody @Validated BoardAdminInfoDelete boardAdminInfoDelete) {
-        this.boardAuthorizationService.deleteBoardAdminAuth(boardAdminInfoDelete);
-        return ResponseEntity.status(HttpStatus.OK).build();
+    public ResponseEntity<BoardAdminInfo> deleteBoardAdminAuth(@RequestBody @Validated BoardAdminInfoDelete boardAdminInfoDelete) {
+        BoardAdminInfo boardAdminInfo = this.boardAuthorizationService.deleteBoardAdminAuth(boardAdminInfoDelete);
+        return ResponseEntity.status(HttpStatus.OK).body(boardAdminInfo);
     }
 }

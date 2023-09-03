@@ -21,7 +21,7 @@ public enum IricomErrorCode implements IricomError {
     NOT_REGISTERED_SYSTEM_ADMIN("01000004", 401, "Invalid authorization."),
 
     // auth firebase: 0101XXXX
-    NOT_EXIST_FIREBASE_ID_TOKEN("01010000", 401, "Invalid header."),
+    NOT_EXIST_FIREBASE_ID_TOKEN("01010000", 401, "Not exist token."),
     INVALID_FIREBASE_ID_TOKEN("01010001", 401, "Parse token error."),
     EXPIRED_FIREBASE_ID_TOKEN("01010002", 401, "Expired token."),
     // global error: 0102XXXX

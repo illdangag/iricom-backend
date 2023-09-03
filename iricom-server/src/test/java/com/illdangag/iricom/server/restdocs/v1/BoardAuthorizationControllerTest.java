@@ -57,6 +57,10 @@ public class BoardAuthorizationControllerTest extends IricomTestSuite {
                 .contentType(MediaType.APPLICATION_JSON);
         setAuthToken(requestBuilder, systemAdmin);
 
+        List<FieldDescriptor> fieldDescriptorList = new LinkedList<>();
+        fieldDescriptorList.addAll(IricomFieldsSnippet.getBoard(""));
+        fieldDescriptorList.addAll(IricomFieldsSnippet.getAccount("accounts.[]."));
+
         mockMvc.perform(requestBuilder)
                 .andExpect(status().is(200))
                 .andDo(print())
@@ -74,12 +78,13 @@ public class BoardAuthorizationControllerTest extends IricomTestSuite {
                         requestFields(
                                 fieldWithPath("accountId").description("사용자 아이디"),
                                 fieldWithPath("boardId").description("게시판 아이디")
-                        )
+                        ),
+                        responseFields(fieldDescriptorList.toArray(FieldDescriptor[]::new))
                 ));
     }
 
     @Test
-    @DisplayName("게시판 관리자 조회")
+    @DisplayName("게시판 관리자 목록 조회")
     public void at002() throws Exception {
         MockHttpServletRequestBuilder requestBuilder = get("/v1/auth/boards")
                 .param("skip", "0")
@@ -90,12 +95,7 @@ public class BoardAuthorizationControllerTest extends IricomTestSuite {
 
         List<FieldDescriptor> fieldDescriptorList = new LinkedList<>();
         fieldDescriptorList.addAll(IricomFieldsSnippet.getSearchList(""));
-        fieldDescriptorList.add(fieldWithPath("boardAdmins.[].id").description("게시판 아이디"));
-        fieldDescriptorList.add(fieldWithPath("boardAdmins.[].title").description("게시판 제목"));
-        fieldDescriptorList.add(fieldWithPath("boardAdmins.[].description").description("게시판 설명"));
-        fieldDescriptorList.add(fieldWithPath("boardAdmins.[].enabled").description("게시판 활성화 여부"));
-        fieldDescriptorList.add(fieldWithPath("boardAdmins.[].unDisclosed").description("게시판 비공개 여부"));
-        fieldDescriptorList.add(fieldWithPath("boardAdmins.[].notificationOnly").description("게시판 공지 사항 전용 여부"));
+        fieldDescriptorList.addAll(IricomFieldsSnippet.getBoard("boardAdmins.[]."));
         fieldDescriptorList.addAll(IricomFieldsSnippet.getAccount("boardAdmins.[].accounts.[]."));
 
         mockMvc.perform(requestBuilder)
@@ -130,13 +130,7 @@ public class BoardAuthorizationControllerTest extends IricomTestSuite {
         setAuthToken(requestBuilder, systemAdmin);
 
         List<FieldDescriptor> fieldDescriptorList = new LinkedList<>();
-        fieldDescriptorList.add(fieldWithPath("id").description("게시판 아이디"));
-        fieldDescriptorList.add(fieldWithPath("title").description("게시판 제목"));
-        fieldDescriptorList.add(fieldWithPath("description").description("게시판 설명"));
-        fieldDescriptorList.add(fieldWithPath("enabled").description("게시판 활성화 여부"));
-        fieldDescriptorList.add(fieldWithPath("unDisclosed").description("게시판 비공개 여부"));
-        fieldDescriptorList.add(fieldWithPath("notificationOnly").description("게시판 공지 사항 전용 여부"));
-
+        fieldDescriptorList.addAll(IricomFieldsSnippet.getBoard(""));
         fieldDescriptorList.addAll(IricomFieldsSnippet.getAccount("accounts.[]."));
 
         mockMvc.perform(requestBuilder)
@@ -175,6 +169,10 @@ public class BoardAuthorizationControllerTest extends IricomTestSuite {
                 .contentType(MediaType.APPLICATION_JSON);
         setAuthToken(requestBuilder, systemAdmin);
 
+        List<FieldDescriptor> fieldDescriptorList = new LinkedList<>();
+        fieldDescriptorList.addAll(IricomFieldsSnippet.getBoard(""));
+        fieldDescriptorList.addAll(IricomFieldsSnippet.getAccount("accounts.[]."));
+
         mockMvc.perform(requestBuilder)
                 .andExpect(status().is(200))
                 .andDo(print())
@@ -192,7 +190,8 @@ public class BoardAuthorizationControllerTest extends IricomTestSuite {
                         requestFields(
                                 fieldWithPath("accountId").description("사용자 아이디"),
                                 fieldWithPath("boardId").description("게시판 아이디")
-                        )
+                        ),
+                        responseFields(fieldDescriptorList.toArray(FieldDescriptor[]::new))
                 ));
     }
 }
