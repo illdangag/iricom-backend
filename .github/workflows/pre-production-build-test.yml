@@ -49,6 +49,20 @@ jobs:
         echo "${{ secrets.TEST_FIREBASE_ADMIN_ADK }}" > ./firebase-adminsdk.json
       shell: bash
 
+    - name: Make iricom-storage/iricom-storage-s3 firebase-adminsdk.json for JUnit
+      run: |
+        cd ./iricom-storage/iricom-storage-s3/src/test/resources
+        touch ./firebase-adminsdk.json
+        echo "${{ secrets.TEST_FIREBASE_ADMIN_ADK }}" > ./firebase-adminsdk.json
+      shell: bash
+
+    - name: Make iricom-storage/iricom-storage-s3 application.yml for JUnit
+      run: |
+        cd ./iricom-storage/iricom-storage-s3/src/test/resources
+        touch ./firebase-adminsdk.json
+        echo "${{ secrets.TEST_MINIO_APPLICATION_YML }}" > ./application.yml
+      shell: bash
+
     - name: Build with Gradle
       uses: gradle/gradle-build-action@67421db6bd0bf253fb4bd25b31ebb98943c375e1
       with:
