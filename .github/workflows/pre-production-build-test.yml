@@ -30,7 +30,7 @@ jobs:
 
     - name: Make firebase-adminsdk.json for JUnit
       run: |
-        cd ./iricom-service/src/test/resources
+        cd ./iricom-server/src/test/resources
         touch ./firebase-adminsdk.json
         echo "${{ secrets.TEST_FIREBASE_ADMIN_ADK }}" > ./firebase-adminsdk.json
       shell: bash
