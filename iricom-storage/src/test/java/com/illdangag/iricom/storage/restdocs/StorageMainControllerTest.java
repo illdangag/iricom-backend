@@ -39,6 +39,7 @@ public class StorageMainControllerTest extends IricomTestSuiteEx {
                 .andExpect(jsonPath("$.tags").exists())
                 .andExpect(jsonPath("$.version").exists())
                 .andExpect(jsonPath("$.timestamp").exists())
+                .andExpect(jsonPath("$.profile").exists())
                 .andDo(print())
                 .andDo(document("STORAGE_INFO",
                         preprocessRequest(prettyPrint()),
@@ -48,7 +49,8 @@ public class StorageMainControllerTest extends IricomTestSuiteEx {
                                 fieldWithPath("commit").description("git commit"),
                                 fieldWithPath("tags").description("git tags"),
                                 fieldWithPath("version").description("service version"),
-                                fieldWithPath("timestamp").description("timestamp"))
+                                fieldWithPath("timestamp").description("timestamp"),
+                                fieldWithPath("profile").description("profile"))
                 ));
     }
 }

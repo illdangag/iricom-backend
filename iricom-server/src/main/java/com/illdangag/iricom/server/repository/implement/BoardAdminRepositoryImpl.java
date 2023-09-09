@@ -7,12 +7,13 @@ import com.illdangag.iricom.server.repository.BoardAdminRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
-import javax.persistence.EntityManager;
-import javax.persistence.EntityManagerFactory;
-import javax.persistence.EntityTransaction;
-import javax.persistence.TypedQuery;
+import javax.persistence.*;
+import java.time.LocalDateTime;
+import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Repository
 public class BoardAdminRepositoryImpl implements BoardAdminRepository {
@@ -35,6 +36,31 @@ public class BoardAdminRepositoryImpl implements BoardAdminRepository {
         List<BoardAdmin> resultList = query.getResultList();
         entityManager.close();
         return resultList;
+    }
+
+    @Override
+    public List<BoardAdmin> getLastBoardAdminList(Account account) {
+        EntityManager entityManager = this.entityManagerFactory.createEntityManager();
+        final String maxJpql = "SELECT new Map(ba.account AS account, ba.board AS board, MAX(ba.createDate) AS createDate)" +
+                " FROM BoardAdmin ba" +
+                " WHERE ba.account = :account" +
+                " GROUP BY ba.account, ba.board";
+        Query query = entityManager.createQuery(maxJpql)
+                .setParameter("account", account);
+        List<Map<String, Object>> maxCreateDateResultList = query.getResultList();
+        List<LocalDateTime> createDateList =  maxCreateDateResultList.stream().map(item -> (LocalDateTime) item.get("createDate"))
+                .collect(Collectors.toList());
+
+        final String jpql = "SELECT ba" +
+                " FROM BoardAdmin ba" +
+                " WHERE ba.account = :account" +
+                " AND ba.createDate IN :createDateList";
+        query = entityManager.createQuery(jpql, BoardAdmin.class)
+                .setParameter("account", account)
+                .setParameter("createDateList", createDateList);
+        List<BoardAdmin> boardAdminList = query.getResultList();
+        entityManager.close();
+        return boardAdminList;
     }
 
     @Override

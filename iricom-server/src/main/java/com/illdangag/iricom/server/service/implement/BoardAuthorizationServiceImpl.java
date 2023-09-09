@@ -96,9 +96,9 @@ public class BoardAuthorizationServiceImpl implements BoardAuthorizationService 
 
         // 게시판 관리자 권한이 남아 있지 않은 경우
         // 계정 정보를 일반 계정으로 수정
-        AccountAuth accountAuth = account.getAuth();
-        List<BoardAdmin> boardAdminList = this.boardAdminRepository.getBoardAdminList(account, false);
-        if (boardAdminList.isEmpty() && accountAuth == AccountAuth.BOARD_ADMIN) {
+        List<BoardAdmin> boardAdminList = this.boardAdminRepository.getLastBoardAdminList(account);
+        boolean isBoardAdmin = boardAdminList.stream().anyMatch(boardAdmin -> boardAdmin.getDeleted() == false);
+        if (!isBoardAdmin) {
             account.setAuth(AccountAuth.ACCOUNT);
             this.accountService.saveAccount(account);
         }

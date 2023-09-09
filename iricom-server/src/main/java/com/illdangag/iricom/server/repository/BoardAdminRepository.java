@@ -16,6 +16,8 @@ public interface BoardAdminRepository {
 
     Optional<BoardAdmin> getEnableBoardAdmin(Board board, Account account);
 
+    List<BoardAdmin> getLastBoardAdminList(Account account);
+
     Optional<BoardAdmin> getBoardAdmin(Board board, Account account);
 
     void save(BoardAdmin boardAdmin);
