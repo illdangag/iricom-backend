@@ -190,3 +190,5 @@ src/main/resources/static/docs
 /log
 /storage
 firebase-adminsdk.json
+application-database.yml
+application-storage.yml

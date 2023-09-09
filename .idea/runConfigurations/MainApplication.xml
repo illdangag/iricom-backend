@@ -1,8 +1,8 @@
 <component name="ProjectRunConfigurationManager">
-  <configuration default="false" name="MainApplication" type="SpringBootApplicationConfigurationType" factoryName="Spring Boot" nameIsGenerated="true">
+  <configuration default="false" name="MainApplication" type="SpringBootApplicationConfigurationType" factoryName="Spring Boot">
     <module name="iricom-backend.main" />
     <option name="SPRING_BOOT_MAIN_CLASS" value="com.illdangag.iricom.MainApplication" />
-    <option name="VM_PARAMETERS" value="-Dspring.datasource.url=jdbc:mariadb://choiyb2.iptime.org:33306/iricom_local -Dspring.datasource.username=root -Dspring.datasource.password=dudqja12! -Dstorage.path=./storage/local" />
+    <option name="VM_PARAMETERS" value="-Dspring.profiles.active=local" />
     <method v="2">
       <option name="Make" enabled="true" />
     </method>
