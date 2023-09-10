@@ -30,7 +30,7 @@ dependencies {
 }
 
 if (profile.equals('local')) {
-    project.dependencies.add('implementation', project(':iricom-storage:iricom-storage-file'))
+    project.dependencies.add('implementation', project(':iricom-storage:iricom-storage-s3'))
 } else if (profile.contains('pre-production')) {
     project.dependencies.add('implementation', project(':iricom-storage:iricom-storage-s3'))
 }
