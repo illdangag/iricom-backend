@@ -488,6 +488,9 @@ public class PostServiceImpl implements PostService {
         return this.getPostInfo(account, post, PostState.PUBLISH, true);
     }
 
+    /**
+     * 게시물 목록 조회
+     */
     @Override
     public PostInfoList getPostInfoList(Account account, PostInfoSearch postInfoSearch) {
         List<Long> accessibleBoardIdList = this.boardRepository.getAccessibleBoardIdList(account);
@@ -507,6 +510,7 @@ public class PostServiceImpl implements PostService {
             long reportCount = this.reportRepository.getPortReportCount(post);
             boolean isBan = this.isBanPost(post);
 
+            // 게시물의 목록을 조회 하므로 게시물의 내용을 포함 하지 않음
             return new PostInfo(post, false, responsePostState, commentCount, upvote, downvote, reportCount, isBan);
         }).collect(Collectors.toList());
 

@@ -9,7 +9,6 @@ import org.springframework.stereotype.Repository;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
-import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -38,9 +37,7 @@ public class BoardAdminRepositoryImpl implements BoardAdminRepository {
         return resultList;
     }
 
-    @Override
-    public List<BoardAdmin> getLastBoardAdminList(Account account) {
-        EntityManager entityManager = this.entityManagerFactory.createEntityManager();
+    private List<LocalDateTime> getLastBoardAdminCreateDateList(EntityManager entityManager, Account account) {
         final String maxJpql = "SELECT new Map(ba.account AS account, ba.board AS board, MAX(ba.createDate) AS createDate)" +
                 " FROM BoardAdmin ba" +
                 " WHERE ba.account = :account" +
@@ -48,19 +45,61 @@ public class BoardAdminRepositoryImpl implements BoardAdminRepository {
         Query query = entityManager.createQuery(maxJpql)
                 .setParameter("account", account);
         List<Map<String, Object>> maxCreateDateResultList = query.getResultList();
-        List<LocalDateTime> createDateList =  maxCreateDateResultList.stream().map(item -> (LocalDateTime) item.get("createDate"))
+        return maxCreateDateResultList.stream().map(item -> (LocalDateTime) item.get("createDate"))
                 .collect(Collectors.toList());
+    }
+
+    @Override
+    public List<BoardAdmin> getLastBoardAdminList(Account account) {
+        EntityManager entityManager = this.entityManagerFactory.createEntityManager();
+        List<LocalDateTime> createDateList = this.getLastBoardAdminCreateDateList(entityManager, account);
 
         final String jpql = "SELECT ba" +
                 " FROM BoardAdmin ba" +
                 " WHERE ba.account = :account" +
                 " AND ba.createDate IN :createDateList";
-        query = entityManager.createQuery(jpql, BoardAdmin.class)
+        TypedQuery<BoardAdmin> query = entityManager.createQuery(jpql, BoardAdmin.class)
                 .setParameter("account", account)
                 .setParameter("createDateList", createDateList);
         List<BoardAdmin> boardAdminList = query.getResultList();
         entityManager.close();
         return boardAdminList;
+    }
+
+    @Override
+    public List<BoardAdmin> getLastBoardAdminList(Account account, int offset, int limit) {
+        EntityManager entityManager = this.entityManagerFactory.createEntityManager();
+        List<LocalDateTime> createDateList = this.getLastBoardAdminCreateDateList(entityManager, account);
+
+        final String jpql = "SELECT ba" +
+                " FROM BoardAdmin ba" +
+                " WHERE ba.account = :account" +
+                " AND ba.createDate IN :createDateList";
+        TypedQuery<BoardAdmin> query = entityManager.createQuery(jpql, BoardAdmin.class)
+                .setParameter("account", account)
+                .setParameter("createDateList", createDateList)
+                .setFirstResult(offset)
+                .setMaxResults(limit);
+        List<BoardAdmin> boardAdminList = query.getResultList();
+        entityManager.close();
+        return boardAdminList;
+    }
+
+    @Override
+    public long getLastBoardAdminCount(Account account) {
+        EntityManager entityManager = this.entityManagerFactory.createEntityManager();
+        List<LocalDateTime> createDateList = this.getLastBoardAdminCreateDateList(entityManager, account);
+
+        final String jpql = "SELECT COUNT(*)" +
+                " FROM BoardAdmin ba" +
+                " WHERE ba.account = :account" +
+                " AND ba.createDate IN :createDateList";
+        TypedQuery<Long> countQuery = entityManager.createQuery(jpql, Long.class)
+                .setParameter("account", account)
+                .setParameter("createDateList", createDateList);
+        long result = countQuery.getSingleResult();
+        entityManager.close();
+        return result;
     }
 
     @Override

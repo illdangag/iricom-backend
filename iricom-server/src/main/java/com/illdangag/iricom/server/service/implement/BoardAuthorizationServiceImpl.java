@@ -7,9 +7,8 @@ import com.illdangag.iricom.server.data.entity.BoardAdmin;
 import com.illdangag.iricom.server.data.request.BoardAdminInfoCreate;
 import com.illdangag.iricom.server.data.request.BoardAdminInfoDelete;
 import com.illdangag.iricom.server.data.request.BoardAdminInfoSearch;
-import com.illdangag.iricom.server.data.response.AccountInfo;
-import com.illdangag.iricom.server.data.response.BoardAdminInfo;
-import com.illdangag.iricom.server.data.response.BoardAdminInfoList;
+import com.illdangag.iricom.server.data.request.BoardInfoByBoardAdminSearch;
+import com.illdangag.iricom.server.data.response.*;
 import com.illdangag.iricom.server.exception.IricomErrorCode;
 import com.illdangag.iricom.server.exception.IricomException;
 import com.illdangag.iricom.server.repository.AccountRepository;
@@ -155,6 +154,27 @@ public class BoardAuthorizationServiceImpl implements BoardAuthorizationService 
     public BoardAdminInfo getBoardAdminInfo(String boardId) {
         Board board = this.getBoard(boardId);
         return this.getBoardAdminInfo(board);
+    }
+
+    @Override
+    public BoardInfoList getBoardInfoListByBoardAdmin(Account account, @Valid BoardInfoByBoardAdminSearch boardInfoByBoardAdminSearch) {
+        int skip = boardInfoByBoardAdminSearch.getSkip();
+        int limit = boardInfoByBoardAdminSearch.getLimit();
+
+        List<BoardAdmin> boardAdminList = this.boardAdminRepository.getLastBoardAdminList(account, skip, limit);
+        long total = this.boardAdminRepository.getLastBoardAdminCount(account);
+
+        List<BoardInfo> boardInfoList = boardAdminList.stream()
+                .map(BoardAdmin::getBoard)
+                .map(BoardInfo::new)
+                .collect(Collectors.toList());
+
+        return BoardInfoList.builder()
+                .boardInfoList(boardInfoList)
+                .total(total)
+                .skip(skip)
+                .limit(limit)
+                .build();
     }
 
     private BoardAdminInfo getBoardAdminInfo(Board board) {

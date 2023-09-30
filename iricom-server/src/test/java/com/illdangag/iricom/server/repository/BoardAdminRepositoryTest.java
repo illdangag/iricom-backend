@@ -36,13 +36,19 @@ public class BoardAdminRepositoryTest extends IricomTestSuite {
                 .title("testBoardInfo01").isEnabled(true).undisclosed(false)
                 .adminList(Collections.singletonList(common00))
                 .build();
-        addTestBoardInfo(testBoardInfo00, testBoardInfo01);
+        TestBoardInfo testBoardInfo02 = TestBoardInfo.builder()
+                .title("testBoardInfo02").isEnabled(true).undisclosed(false)
+                .adminList(Collections.singletonList(common00))
+                .build();
+        addTestBoardInfo(testBoardInfo00, testBoardInfo01, testBoardInfo02);
         init();
 
         Account account = getAccount(common00);
 
-        List<BoardAdmin> boardAdminList = boardAdminRepository.getLastBoardAdminList(account);
+        List<BoardAdmin> boardAdminList = boardAdminRepository.getLastBoardAdminList(account, 0, 20);
+        long boardAdminCount = this.boardAdminRepository.getLastBoardAdminCount(account);
 
         Assertions.assertNotNull(boardAdminList);
+        Assertions.assertEquals(boardAdminCount, boardAdminList.size());
     }
 }

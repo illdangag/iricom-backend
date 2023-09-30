@@ -2,6 +2,7 @@ package com.illdangag.iricom.server.restdocs.v1;
 
 import com.illdangag.iricom.server.restdocs.snippet.IricomFieldsSnippet;
 import com.illdangag.iricom.server.test.IricomTestSuite;
+import com.illdangag.iricom.server.test.data.wrapper.TestBoardInfo;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -10,6 +11,7 @@ import org.springframework.restdocs.payload.FieldDescriptor;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilder;
 
+import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -77,6 +79,56 @@ public class InformationControllerTest extends IricomTestSuite {
                 .andExpect(status().is(200))
                 .andDo(print())
                 .andDo(document("IF_002",
+                        preprocessRequest(
+                                removeHeaders("Authorization"),
+                                prettyPrint()
+                        ),
+                        preprocessResponse(
+                                prettyPrint()
+                        ),
+                        requestHeaders(
+//                                headerWithName("Authorization").description("firebase 토큰")
+                        ),
+                        requestParameters(
+                                parameterWithName("skip").description("건너 뛸 수"),
+                                parameterWithName("limit").description("최대 조회 수")
+                        ),
+                        responseFields(fieldDescriptorList.toArray(FieldDescriptor[]::new))
+                ));
+    }
+
+    @Test
+    @DisplayName("내 계정이 관리자로 등록된 게시판 목록 조회")
+    public void if003() throws Exception {
+        // 게시판
+        TestBoardInfo testBoardInfo00 = TestBoardInfo.builder()
+                .title("testBoardInfo00").isEnabled(true).undisclosed(false)
+                .adminList(Collections.singletonList(common00))
+                .build();
+        TestBoardInfo testBoardInfo01 = TestBoardInfo.builder()
+                .title("testBoardInfo01").isEnabled(true).undisclosed(false)
+                .adminList(Collections.singletonList(common00))
+                .build();
+        TestBoardInfo testBoardInfo02 = TestBoardInfo.builder()
+                .title("testBoardInfo02").isEnabled(true).undisclosed(false)
+                .adminList(Collections.singletonList(common00))
+                .build();
+        addTestBoardInfo(testBoardInfo00, testBoardInfo01, testBoardInfo02);
+        init();
+
+        List<FieldDescriptor> fieldDescriptorList = new LinkedList<>();
+        fieldDescriptorList.addAll(IricomFieldsSnippet.getSearchList(""));
+        fieldDescriptorList.addAll(IricomFieldsSnippet.getBoard("boards.[]."));
+
+        MockHttpServletRequestBuilder requestBuilder = get("/v1/infos/admin/boards")
+                .param("skip", "0")
+                .param("limit", "20");
+        setAuthToken(requestBuilder, common00);
+
+        mockMvc.perform(requestBuilder)
+                .andExpect(status().is(200))
+                .andDo(print())
+                .andDo(document("IF_003",
                         preprocessRequest(
                                 removeHeaders("Authorization"),
                                 prettyPrint()

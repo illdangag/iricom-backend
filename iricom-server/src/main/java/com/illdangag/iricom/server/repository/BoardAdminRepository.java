@@ -20,5 +20,9 @@ public interface BoardAdminRepository {
 
     Optional<BoardAdmin> getBoardAdmin(Board board, Account account);
 
+    List<BoardAdmin> getLastBoardAdminList(Account account, int offset, int limit);
+
+    long getLastBoardAdminCount(Account account);
+
     void save(BoardAdmin boardAdmin);
 }
