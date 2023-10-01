@@ -25,7 +25,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 @Slf4j
 @RestController
-@RequestMapping(value = "/v1/infos")
+@RequestMapping(value = "/v1")
 public class InformationController {
     private final PostService postService;
     private final BoardAuthorizationService boardAuthorizationService;
@@ -41,7 +41,7 @@ public class InformationController {
      */
     @ApiCallLog(apiCode = "IF_001")
     @Auth(role = AuthRole.UNREGISTERED_ACCOUNT)
-    @RequestMapping(method = RequestMethod.GET, value = "")
+    @RequestMapping(method = RequestMethod.GET, value = "/infos")
     public ResponseEntity<AccountInfo> getMyAccountInfo(@RequestContext Account account) {
         AccountInfo accountInfo = new AccountInfo(account);
         return ResponseEntity.status(HttpStatus.OK).body(accountInfo);
@@ -52,7 +52,7 @@ public class InformationController {
      */
     @ApiCallLog(apiCode = "IF_002")
     @Auth(role = AuthRole.UNREGISTERED_ACCOUNT)
-    @RequestMapping(method = RequestMethod.GET, value = "/posts")
+    @RequestMapping(method = RequestMethod.GET, value = "/infos/posts")
     public ResponseEntity<PostInfoList> getMyPostInfoList(@RequestParam(name = "skip", defaultValue = "0", required = false) String skipVariable,
                                                           @RequestParam(name = "limit", defaultValue = "20", required = false) String limitVariable,
                                                           @RequestParam(name = "title", defaultValue = "", required = false) String title,
@@ -87,7 +87,7 @@ public class InformationController {
      */
     @ApiCallLog(apiCode = "IF_003")
     @Auth(role = AuthRole.UNREGISTERED_ACCOUNT)
-    @RequestMapping(method = RequestMethod.GET, value = "/admin/boards")
+    @RequestMapping(method = RequestMethod.GET, value = "/infos/admin/boards")
     public ResponseEntity<BoardInfoList> getBoardInfoListByBoardAdmin(@RequestParam(name = "skip", defaultValue = "0", required = false) String skipVariable,
                                                                       @RequestParam(name = "limit", defaultValue = "20", required = false) String limitVariable,
                                                                       @RequestContext Account account) {

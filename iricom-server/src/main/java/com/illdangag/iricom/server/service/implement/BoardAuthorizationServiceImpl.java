@@ -161,13 +161,24 @@ public class BoardAuthorizationServiceImpl implements BoardAuthorizationService 
         int skip = boardInfoByBoardAdminSearch.getSkip();
         int limit = boardInfoByBoardAdminSearch.getLimit();
 
-        List<BoardAdmin> boardAdminList = this.boardAdminRepository.getLastBoardAdminList(account, skip, limit);
-        long total = this.boardAdminRepository.getLastBoardAdminCount(account);
+        List<BoardInfo> boardInfoList = null;
+        long total = 0;
+        if (account.getAuth() == AccountAuth.SYSTEM_ADMIN) {
+            List<Board> boardList = this.boardRepository.getBoardList(null, skip, limit);
+            total = this.boardRepository.getBoardCount(null);
 
-        List<BoardInfo> boardInfoList = boardAdminList.stream()
-                .map(BoardAdmin::getBoard)
-                .map(BoardInfo::new)
-                .collect(Collectors.toList());
+            boardInfoList = boardList.stream()
+                    .map(BoardInfo::new)
+                    .collect(Collectors.toList());
+        } else {
+            List<BoardAdmin> boardAdminList = this.boardAdminRepository.getLastBoardAdminList(account, skip, limit);
+            total = this.boardAdminRepository.getLastBoardAdminCount(account);
+
+            boardInfoList = boardAdminList.stream()
+                    .map(BoardAdmin::getBoard)
+                    .map(BoardInfo::new)
+                    .collect(Collectors.toList());
+        }
 
         return BoardInfoList.builder()
                 .boardInfoList(boardInfoList)
