@@ -19,6 +19,9 @@ public class PostReportInfo {
 
     private String reason;
 
+    @JsonProperty("reporter")
+    private AccountInfo accountInfo;
+
     @JsonProperty("post")
     private PostInfo postInfo;
 
@@ -28,6 +31,7 @@ public class PostReportInfo {
         this.updateDate = DateTimeUtils.getLong(postReport.getUpdateDate());
         this.type = postReport.getType().getText();
         this.reason = postReport.getReason();
+        this.accountInfo = new AccountInfo(postReport.getAccount());
         this.postInfo = postInfo;
     }
 }

@@ -113,6 +113,7 @@ public class ReportControllerTest extends IricomTestSuite {
 
         List<FieldDescriptor> fieldDescriptorList = new LinkedList<>();
         fieldDescriptorList.addAll(IricomFieldsSnippet.getPostReport(""));
+        fieldDescriptorList.addAll(IricomFieldsSnippet.getAccount("reporter."));
         fieldDescriptorList.addAll(IricomFieldsSnippet.getPost("post."));
         fieldDescriptorList.addAll(IricomFieldsSnippet.getAccount("post.account."));
 
@@ -157,6 +158,7 @@ public class ReportControllerTest extends IricomTestSuite {
         List<FieldDescriptor> fieldDescriptorList = new LinkedList<>();
         fieldDescriptorList.addAll(IricomFieldsSnippet.getSearchList(""));
         fieldDescriptorList.addAll(IricomFieldsSnippet.getPostReport("reports.[]."));
+        fieldDescriptorList.addAll(IricomFieldsSnippet.getAccount("reports.[].reporter."));
         fieldDescriptorList.addAll(IricomFieldsSnippet.getPost("reports.[].post."));
         fieldDescriptorList.addAll(IricomFieldsSnippet.getAccount("reports.[].post.account."));
 
@@ -205,6 +207,7 @@ public class ReportControllerTest extends IricomTestSuite {
         List<FieldDescriptor> fieldDescriptorList = new LinkedList<>();
         fieldDescriptorList.addAll(IricomFieldsSnippet.getSearchList(""));
         fieldDescriptorList.addAll(IricomFieldsSnippet.getPostReport("reports.[]."));
+        fieldDescriptorList.addAll(IricomFieldsSnippet.getAccount("reports.[].reporter."));
         fieldDescriptorList.addAll(IricomFieldsSnippet.getPost("reports.[].post."));
         fieldDescriptorList.addAll(IricomFieldsSnippet.getAccount("reports.[].post.account."));
 
@@ -250,6 +253,7 @@ public class ReportControllerTest extends IricomTestSuite {
 
         List<FieldDescriptor> fieldDescriptorList = new LinkedList<>();
         fieldDescriptorList.addAll(IricomFieldsSnippet.getPostReport(""));
+        fieldDescriptorList.addAll(IricomFieldsSnippet.getAccount("reporter."));
         fieldDescriptorList.addAll(IricomFieldsSnippet.getPost("post."));
         fieldDescriptorList.addAll(IricomFieldsSnippet.getAccount("post.account."));
 
@@ -296,6 +300,7 @@ public class ReportControllerTest extends IricomTestSuite {
 
         List<FieldDescriptor> fieldDescriptorList = new LinkedList<>();
         fieldDescriptorList.addAll(IricomFieldsSnippet.getCommentReport(""));
+        fieldDescriptorList.addAll(IricomFieldsSnippet.getAccount("reporter."));
         fieldDescriptorList.addAll(IricomFieldsSnippet.getComment("comment."));
         fieldDescriptorList.addAll(IricomFieldsSnippet.getAccount("comment.account."));
 
@@ -343,6 +348,7 @@ public class ReportControllerTest extends IricomTestSuite {
         List<FieldDescriptor> fieldDescriptorList = new LinkedList<>();
         fieldDescriptorList.addAll(IricomFieldsSnippet.getSearchList(""));
         fieldDescriptorList.addAll(IricomFieldsSnippet.getCommentReport("reports.[]."));
+        fieldDescriptorList.addAll(IricomFieldsSnippet.getAccount("reports.[].reporter."));
         fieldDescriptorList.addAll(IricomFieldsSnippet.getComment("reports.[].comment."));
         fieldDescriptorList.addAll(IricomFieldsSnippet.getAccount("reports.[].comment.account."));
 
@@ -391,6 +397,7 @@ public class ReportControllerTest extends IricomTestSuite {
         List<FieldDescriptor> fieldDescriptorList = new LinkedList<>();
         fieldDescriptorList.addAll(IricomFieldsSnippet.getSearchList(""));
         fieldDescriptorList.addAll(IricomFieldsSnippet.getCommentReport("reports.[]."));
+        fieldDescriptorList.addAll(IricomFieldsSnippet.getAccount("reports.[].reporter."));
         fieldDescriptorList.addAll(IricomFieldsSnippet.getComment("reports.[].comment."));
         fieldDescriptorList.addAll(IricomFieldsSnippet.getAccount("reports.[].comment.account."));
 
@@ -441,6 +448,7 @@ public class ReportControllerTest extends IricomTestSuite {
         List<FieldDescriptor> fieldDescriptorList = new LinkedList<>();
         fieldDescriptorList.addAll(IricomFieldsSnippet.getSearchList(""));
         fieldDescriptorList.addAll(IricomFieldsSnippet.getCommentReport("reports.[]."));
+        fieldDescriptorList.addAll(IricomFieldsSnippet.getAccount("reports.[].reporter."));
         fieldDescriptorList.addAll(IricomFieldsSnippet.getComment("reports.[].comment."));
         fieldDescriptorList.addAll(IricomFieldsSnippet.getAccount("reports.[].comment.account."));
 
@@ -488,6 +496,7 @@ public class ReportControllerTest extends IricomTestSuite {
 
         List<FieldDescriptor> fieldDescriptorList = new LinkedList<>();
         fieldDescriptorList.addAll(IricomFieldsSnippet.getCommentReport(""));
+        fieldDescriptorList.addAll(IricomFieldsSnippet.getAccount("reporter."));
         fieldDescriptorList.addAll(IricomFieldsSnippet.getComment("comment."));
         fieldDescriptorList.addAll(IricomFieldsSnippet.getAccount("comment.account."));
 

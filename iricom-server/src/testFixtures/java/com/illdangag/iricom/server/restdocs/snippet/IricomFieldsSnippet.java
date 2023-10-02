@@ -73,6 +73,7 @@ public class IricomFieldsSnippet {
             ResponseField.builder().path("updateDate").description("수정일").build(),
             ResponseField.builder().path("type").description("종류").build(),
             ResponseField.builder().path("reason").description("종류").build(),
+            ResponseField.builder().path("reporter").description("신고자").build(),
             ResponseField.builder().path("post").description("신고 게시물").build()
     );
 
@@ -82,6 +83,7 @@ public class IricomFieldsSnippet {
             ResponseField.builder().path("updateDate").description("수정일").build(),
             ResponseField.builder().path("type").description("종류").build(),
             ResponseField.builder().path("reason").description("사유").build(),
+            ResponseField.builder().path("reporter").description("신고자").build(),
             ResponseField.builder().path("comment").description("신고 댓글").build()
     );
 

@@ -17,6 +17,9 @@ public class CommentReportInfo {
 
     private String reason;
 
+    @JsonProperty("reporter")
+    private AccountInfo accountInfo;
+
     @JsonProperty("comment")
     private CommentInfo commentInfo;
 
@@ -26,6 +29,7 @@ public class CommentReportInfo {
         this.updateDate = DateTimeUtils.getLong(commentReport.getUpdateDate());
         this.type = commentReport.getType().getText();
         this.reason = commentReport.getReason();
+        this.accountInfo = new AccountInfo(commentReport.getAccount());
         this.commentInfo = commentInfo;
     }
 }
