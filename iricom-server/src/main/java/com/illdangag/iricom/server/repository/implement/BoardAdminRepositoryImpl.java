@@ -67,36 +67,42 @@ public class BoardAdminRepositoryImpl implements BoardAdminRepository {
     }
 
     @Override
-    public List<BoardAdmin> getLastBoardAdminList(Account account, int offset, int limit) {
+    public List<BoardAdmin> getLastBoardAdminList(Account account, boolean deleted, int offset, int limit) {
         EntityManager entityManager = this.entityManagerFactory.createEntityManager();
         List<LocalDateTime> createDateList = this.getLastBoardAdminCreateDateList(entityManager, account);
 
         final String jpql = "SELECT ba" +
                 " FROM BoardAdmin ba" +
                 " WHERE ba.account = :account" +
-                " AND ba.createDate IN :createDateList";
+                " AND ba.createDate IN :createDateList" +
+                " AND ba.deleted = :deleted";
         TypedQuery<BoardAdmin> query = entityManager.createQuery(jpql, BoardAdmin.class)
                 .setParameter("account", account)
                 .setParameter("createDateList", createDateList)
+                .setParameter("deleted", deleted)
                 .setFirstResult(offset)
                 .setMaxResults(limit);
+
         List<BoardAdmin> boardAdminList = query.getResultList();
         entityManager.close();
         return boardAdminList;
     }
 
     @Override
-    public long getLastBoardAdminCount(Account account) {
+    public long getLastBoardAdminCount(Account account, boolean deleted) {
         EntityManager entityManager = this.entityManagerFactory.createEntityManager();
         List<LocalDateTime> createDateList = this.getLastBoardAdminCreateDateList(entityManager, account);
 
         final String jpql = "SELECT COUNT(*)" +
                 " FROM BoardAdmin ba" +
                 " WHERE ba.account = :account" +
-                " AND ba.createDate IN :createDateList";
+                " AND ba.createDate IN :createDateList" +
+                " AND ba.deleted = :deleted";
         TypedQuery<Long> countQuery = entityManager.createQuery(jpql, Long.class)
                 .setParameter("account", account)
-                .setParameter("createDateList", createDateList);
+                .setParameter("createDateList", createDateList)
+                .setParameter("deleted", deleted);
+
         long result = countQuery.getSingleResult();
         entityManager.close();
         return result;

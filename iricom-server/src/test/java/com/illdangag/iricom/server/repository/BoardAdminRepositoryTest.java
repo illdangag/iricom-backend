@@ -45,8 +45,8 @@ public class BoardAdminRepositoryTest extends IricomTestSuite {
 
         Account account = getAccount(common00);
 
-        List<BoardAdmin> boardAdminList = boardAdminRepository.getLastBoardAdminList(account, 0, 20);
-        long boardAdminCount = this.boardAdminRepository.getLastBoardAdminCount(account);
+        List<BoardAdmin> boardAdminList = boardAdminRepository.getLastBoardAdminList(account, false, 0, 20);
+        long boardAdminCount = this.boardAdminRepository.getLastBoardAdminCount(account, false);
 
         Assertions.assertNotNull(boardAdminList);
         Assertions.assertEquals(boardAdminCount, boardAdminList.size());

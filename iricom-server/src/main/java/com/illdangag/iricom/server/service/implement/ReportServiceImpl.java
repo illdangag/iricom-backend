@@ -76,7 +76,7 @@ public class ReportServiceImpl implements ReportService {
             throw new IricomException(IricomErrorCode.NOT_EXIST_POST_REPORT);
         }
 
-        PostInfo postInfo = this.postService.getPostInfo(account, post, PostState.PUBLISH, false);
+        PostInfo postInfo = this.postService.getPostInfo(account, post, PostState.PUBLISH, true);
         return new PostReportInfo(postReport, postInfo);
     }
 

@@ -163,7 +163,8 @@ public class BoardAuthorizationServiceImpl implements BoardAuthorizationService 
 
         List<BoardInfo> boardInfoList = null;
         long total = 0;
-        if (account.getAuth() == AccountAuth.SYSTEM_ADMIN) {
+        if (account.getAuth() == AccountAuth.SYSTEM_ADMIN) { // 시스템 관리자인 경우
+            // 모든 게시판을 반환
             List<Board> boardList = this.boardRepository.getBoardList(null, skip, limit);
             total = this.boardRepository.getBoardCount(null);
 
@@ -171,8 +172,8 @@ public class BoardAuthorizationServiceImpl implements BoardAuthorizationService 
                     .map(BoardInfo::new)
                     .collect(Collectors.toList());
         } else {
-            List<BoardAdmin> boardAdminList = this.boardAdminRepository.getLastBoardAdminList(account, skip, limit);
-            total = this.boardAdminRepository.getLastBoardAdminCount(account);
+            List<BoardAdmin> boardAdminList = this.boardAdminRepository.getLastBoardAdminList(account, false, skip, limit);
+            total = this.boardAdminRepository.getLastBoardAdminCount(account, false);
 
             boardInfoList = boardAdminList.stream()
                     .map(BoardAdmin::getBoard)
