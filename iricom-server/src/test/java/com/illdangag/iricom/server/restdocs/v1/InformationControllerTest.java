@@ -1,8 +1,11 @@
 package com.illdangag.iricom.server.restdocs.v1;
 
+import com.illdangag.iricom.server.data.entity.type.PostState;
+import com.illdangag.iricom.server.data.entity.type.PostType;
 import com.illdangag.iricom.server.restdocs.snippet.IricomFieldsSnippet;
 import com.illdangag.iricom.server.test.IricomTestSuite;
 import com.illdangag.iricom.server.test.data.wrapper.TestBoardInfo;
+import com.illdangag.iricom.server.test.data.wrapper.TestPostInfo;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,8 +23,7 @@ import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.docu
 import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.get;
 import static org.springframework.restdocs.operation.preprocess.Preprocessors.*;
 import static org.springframework.restdocs.payload.PayloadDocumentation.responseFields;
-import static org.springframework.restdocs.request.RequestDocumentation.parameterWithName;
-import static org.springframework.restdocs.request.RequestDocumentation.requestParameters;
+import static org.springframework.restdocs.request.RequestDocumentation.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -65,6 +67,17 @@ public class InformationControllerTest extends IricomTestSuite {
     @Test
     @DisplayName("작성한 게시물 조회")
     public void if002() throws Exception {
+        TestBoardInfo testBoardInfo00 = TestBoardInfo.builder()
+                .title("testBoardInfo00").isEnabled(true).adminList(Collections.singletonList(allBoardAdmin)).build();
+
+        TestPostInfo testPostInfo00 = TestPostInfo.builder()
+                .title("testPostInfo00").content("content").isAllowComment(true)
+                .postType(PostType.POST).postState(PostState.PUBLISH)
+                .creator(common00).board(testBoardInfo00).build();
+        super.setBoard(Collections.singletonList(testBoardInfo00));
+        super.setPost(Collections.singletonList(testPostInfo00));
+        init();
+
         MockHttpServletRequestBuilder requestBuilder = get("/v1/infos/posts")
                 .param("skip", "0")
                 .param("limit", "2");

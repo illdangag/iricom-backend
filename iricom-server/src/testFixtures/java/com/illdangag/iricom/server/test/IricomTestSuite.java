@@ -385,7 +385,7 @@ public abstract class IricomTestSuite {
                 .undisclosed(testBoardInfo.isUndisclosed())
                 .build();
 
-        BoardInfo boardInfo = this.boardService.createBoardInfo(boardInfoCreate);
+        BoardInfo boardInfo = this.boardService.createBoardInfo(getAccount(systemAdmin), boardInfoCreate);
         return this.getBoard(boardInfo.getId());
     }
 
@@ -409,14 +409,14 @@ public abstract class IricomTestSuite {
         BoardInfoUpdate boardInfoUpdate = BoardInfoUpdate.builder()
                 .enabled(false)
                 .build();
-        this.boardService.updateBoardInfo(board, boardInfoUpdate);
+        this.boardService.updateBoardInfo(getAccount(systemAdmin), board, boardInfoUpdate);
     }
 
     private void notificationOnlyBoard(Board board) {
         BoardInfoUpdate boardInfoUpdate = BoardInfoUpdate.builder()
                 .notificationOnly(true)
                 .build();
-        this.boardService.updateBoardInfo(board, boardInfoUpdate);
+        this.boardService.updateBoardInfo(getAccount(systemAdmin), board, boardInfoUpdate);
     }
 
     private Post getPost(String id) {

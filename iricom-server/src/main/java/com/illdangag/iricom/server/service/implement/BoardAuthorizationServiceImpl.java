@@ -169,7 +169,9 @@ public class BoardAuthorizationServiceImpl implements BoardAuthorizationService 
             total = this.boardRepository.getBoardCount(null);
 
             boardInfoList = boardList.stream()
-                    .map(BoardInfo::new)
+                    .map((board) -> {
+                        return new BoardInfo(board, null);
+                    })
                     .collect(Collectors.toList());
         } else {
             List<BoardAdmin> boardAdminList = this.boardAdminRepository.getLastBoardAdminList(account, false, skip, limit);
@@ -177,7 +179,9 @@ public class BoardAuthorizationServiceImpl implements BoardAuthorizationService 
 
             boardInfoList = boardAdminList.stream()
                     .map(BoardAdmin::getBoard)
-                    .map(BoardInfo::new)
+                    .map((board) -> {
+                        return new BoardInfo(board, null);
+                    })
                     .collect(Collectors.toList());
         }
 
@@ -217,13 +221,12 @@ public class BoardAuthorizationServiceImpl implements BoardAuthorizationService 
             return true;
         }
 
-        Optional<BoardAdmin> boardAdminOptional = this.boardAdminRepository.getBoardAdmin(board, account);
+        Optional<BoardAdmin> boardAdminOptional = this.boardAdminRepository.getLastBoardAdmin(account, board);
         if (boardAdminOptional.isEmpty()) {
             return false;
+        } else {
+            return true;
         }
-
-        BoardAdmin boardAdmin = boardAdminOptional.get();
-        return !boardAdmin.getDeleted();
     }
 
     private Board getBoard(String id) {

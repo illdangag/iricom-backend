@@ -14,6 +14,7 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+// TODO 유효한 게시판 관리자 목록 메서드 정리
 @Repository
 public class BoardAdminRepositoryImpl implements BoardAdminRepository {
     private final EntityManagerFactory entityManagerFactory;
@@ -64,6 +65,28 @@ public class BoardAdminRepositoryImpl implements BoardAdminRepository {
         List<BoardAdmin> boardAdminList = query.getResultList();
         entityManager.close();
         return boardAdminList;
+    }
+
+    @Override
+    public Optional<BoardAdmin> getLastBoardAdmin(Account account, Board board) {
+        EntityManager entityManager = this.entityManagerFactory.createEntityManager();
+        List<LocalDateTime> createDateList = this.getLastBoardAdminCreateDateList(entityManager, account);
+
+        final String jpql = "SELECT ba" +
+                " FROM BoardAdmin ba" +
+                " WHERE ba.account = :account" +
+                " AND ba.board = :board " +
+                " AND ba.createDate IN :createDateList";
+        TypedQuery<BoardAdmin> query = entityManager.createQuery(jpql, BoardAdmin.class)
+                .setParameter("account", account)
+                .setParameter("board", board)
+                .setParameter("createDateList", createDateList);
+        List<BoardAdmin> boardAdminList = query.getResultList();
+        if (boardAdminList.isEmpty()) {
+            return Optional.empty();
+        } else {
+            return Optional.of(boardAdminList.get(0));
+        }
     }
 
     @Override

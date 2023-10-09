@@ -14,7 +14,7 @@ public interface BoardService {
     /**
      * 게시판 생성
      */
-    BoardInfo createBoardInfo(@Valid BoardInfoCreate boardInfoCreate);
+    BoardInfo createBoardInfo(Account account, @Valid BoardInfoCreate boardInfoCreate);
 
     /**
      * 게시판 정보 반환
@@ -33,7 +33,7 @@ public interface BoardService {
     /**
      * 게시판 정보 수정
      */
-    BoardInfo updateBoardInfo(String id, @Valid BoardInfoUpdate boardInfoUpdate);
+    BoardInfo updateBoardInfo(Account account, String id, @Valid BoardInfoUpdate boardInfoUpdate);
 
-    BoardInfo updateBoardInfo(Board board, @Valid BoardInfoUpdate boardInfoUpdate);
+    BoardInfo updateBoardInfo(Account account, Board board, @Valid BoardInfoUpdate boardInfoUpdate);
 }

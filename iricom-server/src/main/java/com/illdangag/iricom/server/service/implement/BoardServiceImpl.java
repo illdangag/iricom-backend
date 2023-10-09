@@ -10,12 +10,14 @@ import com.illdangag.iricom.server.data.response.BoardInfoList;
 import com.illdangag.iricom.server.exception.IricomErrorCode;
 import com.illdangag.iricom.server.exception.IricomException;
 import com.illdangag.iricom.server.repository.BoardRepository;
+import com.illdangag.iricom.server.service.BoardAuthorizationService;
 import com.illdangag.iricom.server.service.BoardService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.validation.annotation.Validated;
 
+import javax.validation.Valid;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -26,13 +28,16 @@ import java.util.stream.Collectors;
 public class BoardServiceImpl implements BoardService {
     private final BoardRepository boardRepository;
 
+    private final BoardAuthorizationService boardAuthorizationService;
+
     @Autowired
-    public BoardServiceImpl(BoardRepository boardRepository) {
+    public BoardServiceImpl(BoardRepository boardRepository, BoardAuthorizationService boardAuthorizationService) {
         this.boardRepository = boardRepository;
+        this.boardAuthorizationService = boardAuthorizationService;
     }
 
     @Override
-    public BoardInfo createBoardInfo(BoardInfoCreate boardInfoCreate) {
+    public BoardInfo createBoardInfo(Account account, @Valid BoardInfoCreate boardInfoCreate) {
         Board board = Board.builder()
                 .title(boardInfoCreate.getTitle())
                 .description(boardInfoCreate.getDescription())
@@ -42,21 +47,25 @@ public class BoardServiceImpl implements BoardService {
                 .build();
 
         this.boardRepository.save(board);
-        return new BoardInfo(board);
+
+        boolean isAdmin = this.boardAuthorizationService.hasAuthorization(account, board);
+        return new BoardInfo(board, isAdmin);
     }
 
     @Override
     public BoardInfo getBoardInfo(String id) {
         Board board = this.getBoard(id);
         this.validate(null, board);
-        return new BoardInfo(board);
+        return new BoardInfo(board, false);
     }
 
     @Override
     public BoardInfo getBoardInfo(Account account, String id) {
         Board board = this.getBoard(id);
         this.validate(account, board);
-        return new BoardInfo(board);
+
+        boolean isAdmin = this.boardAuthorizationService.hasAuthorization(account, board);
+        return new BoardInfo(board, isAdmin);
     }
 
     @Override
@@ -72,7 +81,9 @@ public class BoardServiceImpl implements BoardService {
             totalBoardCount = this.boardRepository.getBoardCount(boardInfoSearch.getKeyword());
         }
 
-        List<BoardInfo> boardInfoList = boardList.stream().map(BoardInfo::new).collect(Collectors.toList());
+        List<BoardInfo> boardInfoList = boardList.stream().map((board) -> {
+            return new BoardInfo(board, false);
+        }).collect(Collectors.toList());
 
         return BoardInfoList.builder()
                 .total(totalBoardCount)
@@ -95,7 +106,10 @@ public class BoardServiceImpl implements BoardService {
             totalBoardCount = this.boardRepository.getBoardCount(account, boardInfoSearch.getKeyword());
         }
 
-        List<BoardInfo> boardInfoList = boardList.stream().map(BoardInfo::new).collect(Collectors.toList());
+        List<BoardInfo> boardInfoList = boardList.stream().map((board) -> {
+            boolean isAdmin = this.boardAuthorizationService.hasAuthorization(account, board);
+            return new BoardInfo(board, isAdmin);
+        }).collect(Collectors.toList());
 
         return BoardInfoList.builder()
                 .total(totalBoardCount)
@@ -106,13 +120,13 @@ public class BoardServiceImpl implements BoardService {
     }
 
     @Override
-    public BoardInfo updateBoardInfo(String id, BoardInfoUpdate boardInfoUpdate) {
+    public BoardInfo updateBoardInfo(Account account, String id, BoardInfoUpdate boardInfoUpdate) {
         Board board = this.getBoard(id);
-        return this.updateBoardInfo(board, boardInfoUpdate);
+        return this.updateBoardInfo(account, board, boardInfoUpdate);
     }
 
     @Override
-    public BoardInfo updateBoardInfo(Board board, BoardInfoUpdate boardInfoUpdate) {
+    public BoardInfo updateBoardInfo(Account account, Board board, BoardInfoUpdate boardInfoUpdate) {
         if (boardInfoUpdate.getTitle() != null) {
             board.setTitle(boardInfoUpdate.getTitle());
         }
@@ -134,7 +148,8 @@ public class BoardServiceImpl implements BoardService {
         }
 
         this.boardRepository.save(board);
-        return new BoardInfo(board);
+        boolean isAdmin = this.boardAuthorizationService.hasAuthorization(account, board);
+        return new BoardInfo(board, isAdmin);
     }
 
     private Board getBoard(String id) {

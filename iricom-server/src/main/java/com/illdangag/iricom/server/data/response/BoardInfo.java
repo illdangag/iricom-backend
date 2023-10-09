@@ -23,13 +23,16 @@ public class BoardInfo {
 
     private Boolean notificationOnly;
 
-    public BoardInfo(Board board) {
+    private Boolean boardAdmin;
+
+    public BoardInfo(Board board, Boolean isBoardAdmin) {
         this.id = String.valueOf(board.getId());
         this.title = board.getTitle();
         this.description = board.getDescription();
         this.enabled = board.getEnabled();
         this.unDisclosed = board.getUndisclosed();
         this.notificationOnly = board.getNotificationOnly();
+        this.boardAdmin = isBoardAdmin;
     }
 }
 

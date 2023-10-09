@@ -2,7 +2,10 @@ package com.illdangag.iricom.server.service;
 
 import com.illdangag.iricom.server.data.entity.Account;
 import com.illdangag.iricom.server.data.entity.Board;
-import com.illdangag.iricom.server.data.request.*;
+import com.illdangag.iricom.server.data.request.BoardAdminInfoCreate;
+import com.illdangag.iricom.server.data.request.BoardAdminInfoDelete;
+import com.illdangag.iricom.server.data.request.BoardAdminInfoSearch;
+import com.illdangag.iricom.server.data.request.BoardInfoByBoardAdminSearch;
 import com.illdangag.iricom.server.data.response.BoardAdminInfo;
 import com.illdangag.iricom.server.data.response.BoardAdminInfoList;
 import com.illdangag.iricom.server.data.response.BoardInfoList;

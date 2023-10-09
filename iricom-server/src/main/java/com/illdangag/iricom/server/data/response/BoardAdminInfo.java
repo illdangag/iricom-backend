@@ -14,7 +14,7 @@ import java.util.List;
 public class BoardAdminInfo extends BoardInfo {
 
     public BoardAdminInfo(Board board) {
-        super(board);
+        super(board, null);
     }
 
     @JsonProperty("accounts")

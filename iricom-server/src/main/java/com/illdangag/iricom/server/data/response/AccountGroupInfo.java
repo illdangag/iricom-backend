@@ -40,7 +40,9 @@ public class AccountGroupInfo {
                 .map(AccountInfo::new)
                 .collect(Collectors.toList());
         this.boardInfoList = boardList.stream()
-                .map(BoardInfo::new)
+                .map((board) -> {
+                    return new BoardInfo(board, null);
+                })
                 .collect(Collectors.toList());
     }
 }

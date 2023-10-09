@@ -39,8 +39,9 @@ public class BoardController {
     @ApiCallLog(apiCode = "BD_001")
     @Auth(role = AuthRole.SYSTEM_ADMIN)
     @RequestMapping(method = RequestMethod.POST, value = "")
-    public ResponseEntity<BoardInfo> createBoard(@RequestBody @Valid BoardInfoCreate boardInfoCreate) {
-        BoardInfo boardInfo = this.boardService.createBoardInfo(boardInfoCreate);
+    public ResponseEntity<BoardInfo> createBoard(@RequestBody @Valid BoardInfoCreate boardInfoCreate,
+                                                 @RequestContext Account account) {
+        BoardInfo boardInfo = this.boardService.createBoardInfo(account, boardInfoCreate);
         return ResponseEntity.status(HttpStatus.OK).body(boardInfo);
     }
 
@@ -130,8 +131,9 @@ public class BoardController {
     @Auth(role = AuthRole.SYSTEM_ADMIN)
     @RequestMapping(method = RequestMethod.PATCH, value = "/{board_id}")
     public ResponseEntity<BoardInfo> updateBoard(@PathVariable(value = "board_id") String boardId,
-                                                 @RequestBody @Valid BoardInfoUpdate boardInfoUpdate) {
-        BoardInfo boardInfo = this.boardService.updateBoardInfo(boardId, boardInfoUpdate);
+                                                 @RequestBody @Valid BoardInfoUpdate boardInfoUpdate,
+                                                 @RequestContext Account account) {
+        BoardInfo boardInfo = this.boardService.updateBoardInfo(account, boardId, boardInfoUpdate);
         return ResponseEntity.status(HttpStatus.OK).body(boardInfo);
     }
 }

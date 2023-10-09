@@ -18,10 +18,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @Slf4j
 @RestController
@@ -86,7 +83,7 @@ public class InformationController {
      * 내 계정이 관리자로 등록된 게시판 목록 조회
      */
     @ApiCallLog(apiCode = "IF_003")
-    @Auth(role = AuthRole.UNREGISTERED_ACCOUNT)
+    @Auth(role = AuthRole.BOARD_ADMIN)
     @RequestMapping(method = RequestMethod.GET, value = "/infos/admin/boards")
     public ResponseEntity<BoardInfoList> getBoardInfoListByBoardAdmin(@RequestParam(name = "skip", defaultValue = "0", required = false) String skipVariable,
                                                                       @RequestParam(name = "limit", defaultValue = "20", required = false) String limitVariable,

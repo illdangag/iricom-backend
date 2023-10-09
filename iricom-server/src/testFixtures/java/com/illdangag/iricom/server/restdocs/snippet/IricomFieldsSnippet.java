@@ -28,7 +28,8 @@ public class IricomFieldsSnippet {
             ResponseField.builder().path("description").description("설명").build(),
             ResponseField.builder().path("enabled").description("활성화 여부").build(),
             ResponseField.builder().path("unDisclosed").description("비공개 여부").build(),
-            ResponseField.builder().path("notificationOnly").description("공지사항 전용 여부").build()
+            ResponseField.builder().path("notificationOnly").description("공지사항 전용 여부").build(),
+            ResponseField.builder().path("boardAdmin").description("게시판 관리자 여부").isOptional(true).type(JsonFieldType.BOOLEAN).build()
     );
 
     private static final List<ResponseField> postResponseFieldList = Arrays.asList(
