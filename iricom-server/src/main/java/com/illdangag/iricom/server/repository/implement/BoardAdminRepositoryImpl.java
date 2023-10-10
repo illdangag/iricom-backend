@@ -68,7 +68,7 @@ public class BoardAdminRepositoryImpl implements BoardAdminRepository {
     }
 
     @Override
-    public Optional<BoardAdmin> getLastBoardAdmin(Account account, Board board) {
+    public Optional<BoardAdmin> getLastBoardAdmin(Account account, Board board, boolean deleted) {
         EntityManager entityManager = this.entityManagerFactory.createEntityManager();
         List<LocalDateTime> createDateList = this.getLastBoardAdminCreateDateList(entityManager, account);
 
@@ -76,12 +76,15 @@ public class BoardAdminRepositoryImpl implements BoardAdminRepository {
                 " FROM BoardAdmin ba" +
                 " WHERE ba.account = :account" +
                 " AND ba.board = :board " +
+                " AND ba.deleted = :deleted" +
                 " AND ba.createDate IN :createDateList";
         TypedQuery<BoardAdmin> query = entityManager.createQuery(jpql, BoardAdmin.class)
                 .setParameter("account", account)
                 .setParameter("board", board)
+                .setParameter("deleted", deleted)
                 .setParameter("createDateList", createDateList);
         List<BoardAdmin> boardAdminList = query.getResultList();
+        entityManager.close();
         if (boardAdminList.isEmpty()) {
             return Optional.empty();
         } else {

@@ -20,7 +20,7 @@ public interface BoardAdminRepository {
 
     Optional<BoardAdmin> getBoardAdmin(Board board, Account account);
 
-    Optional<BoardAdmin> getLastBoardAdmin(Account account, Board board);
+    Optional<BoardAdmin> getLastBoardAdmin(Account account, Board board, boolean deleted);
 
     List<BoardAdmin> getLastBoardAdminList(Account account, boolean deleted, int offset, int limit);
 

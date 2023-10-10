@@ -221,7 +221,7 @@ public class BoardAuthorizationServiceImpl implements BoardAuthorizationService 
             return true;
         }
 
-        Optional<BoardAdmin> boardAdminOptional = this.boardAdminRepository.getLastBoardAdmin(account, board);
+        Optional<BoardAdmin> boardAdminOptional = this.boardAdminRepository.getLastBoardAdmin(account, board, false);
         if (boardAdminOptional.isEmpty()) {
             return false;
         } else {
