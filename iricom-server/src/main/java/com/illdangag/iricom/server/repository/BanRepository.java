@@ -25,4 +25,6 @@ public interface BanRepository {
     Optional<PostBan> getPostBan(String id);
 
     Optional<PostBan> getPostBan(long id);
+
+    Optional<PostBan> getPostBan(Post post);
 }

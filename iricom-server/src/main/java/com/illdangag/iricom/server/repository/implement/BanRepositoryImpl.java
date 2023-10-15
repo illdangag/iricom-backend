@@ -161,4 +161,22 @@ public class BanRepositoryImpl implements BanRepository {
         entityManager.close();
         return result;
     }
+
+    @Override
+    public Optional<PostBan> getPostBan(Post post) {
+        EntityManager entityManager = this.entityManagerFactory.createEntityManager();
+        final String jpql = "SELECT pb FROM PostBan pb" +
+                " WHERE pb.post = :post";
+
+        TypedQuery<PostBan> query = entityManager.createQuery(jpql, PostBan.class)
+                .setParameter("post", post);
+
+        List<PostBan> resultList = query.getResultList();
+        entityManager.close();
+        if (resultList.isEmpty()) {
+            return Optional.empty();
+        } else {
+            return Optional.of(resultList.get(0));
+        }
+    }
 }

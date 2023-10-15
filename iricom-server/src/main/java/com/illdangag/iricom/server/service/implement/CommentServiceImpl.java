@@ -33,17 +33,19 @@ public class CommentServiceImpl implements CommentService {
     private final BoardRepository boardRepository;
     private final PostRepository postRepository;
     private final ReportRepository reportRepository;
+    private final BanRepository banRepository;
 
     private final AccountService accountService;
 
     @Autowired
-    public CommentServiceImpl(CommentRepository commentRepository, CommentVoteRepository commentVoteRepository, BoardRepository boardRepository,
+    public CommentServiceImpl(CommentRepository commentRepository, CommentVoteRepository commentVoteRepository, BoardRepository boardRepository, BanRepository banRepository,
                               PostRepository postRepository, ReportRepository reportRepository, AccountService accountService) {
         this.commentRepository = commentRepository;
         this.commentVoteRepository = commentVoteRepository;
         this.boardRepository = boardRepository;
         this.postRepository = postRepository;
         this.reportRepository = reportRepository;
+        this.banRepository = banRepository;
 
         this.accountService = accountService;
     }
@@ -233,7 +235,6 @@ public class CommentServiceImpl implements CommentService {
         return new CommentInfo(comment, accountInfo, upvote, downvote, reportCount);
     }
 
-
     @Override
     public CommentInfo deleteComment(Account account, String boardId, String postId, String commentId) {
         Board board = this.getBoard(boardId);
@@ -344,6 +345,14 @@ public class CommentServiceImpl implements CommentService {
 
         if (!post.isPublish()) { // 발행되지 않은 게시물
             throw new IricomException(IricomErrorCode.NOT_EXIST_PUBLISH_CONTENT);
+        }
+
+        Optional<PostBan> postBanOptional = this.banRepository.getPostBan(post);
+        if (postBanOptional.isPresent()) {
+            PostBan postBan= postBanOptional.get();
+            if (postBan.getEnabled()) {
+                throw new IricomException(IricomErrorCode.COMMENT_ON_BAN_POST);
+            }
         }
     }
 
