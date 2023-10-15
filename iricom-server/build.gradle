@@ -10,7 +10,7 @@ plugins {
     id "org.asciidoctor.jvm.convert" version "3.3.2" // spring rest docs의 asciidoc을 지원 하기 위함
 }
 
-version = '0.8.8-SNAPSHOT'
+version = '0.8.9'
 String profile = project.hasProperty('profile') ? project.property('profile') : 'local'
 
 repositories {
