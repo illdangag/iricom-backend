@@ -4,6 +4,7 @@ import com.illdangag.iricom.server.test.data.ResponseField;
 import org.springframework.restdocs.payload.FieldDescriptor;
 import org.springframework.restdocs.payload.JsonFieldType;
 
+import java.io.FileDescriptor;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
@@ -38,7 +39,7 @@ public class IricomFieldsSnippet {
             ResponseField.builder().path("createDate").description("생성일").build(),
             ResponseField.builder().path("updateDate").description("수정일").build(),
             ResponseField.builder().path("status").description("상태").build(),
-            ResponseField.builder().path("title").description("제목").build(),
+            ResponseField.builder().path("title").description("제목").isOptional(true).type(JsonFieldType.STRING).build(),
             ResponseField.builder().path("content").description("내용").isOptional(true).type(JsonFieldType.STRING).build(),
             ResponseField.builder().path("viewCount").description("조회수").build(),
             ResponseField.builder().path("upvote").description("좋아요").build(),

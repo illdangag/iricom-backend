@@ -64,7 +64,7 @@ public enum IricomErrorCode implements IricomError {
     INVALID_AUTHORIZATION_TO_DELETE_COMMENT("05000004", 401, "Invalid authorization."),
     ALREADY_VOTE_COMMENT("05000005", 400, "Already vote comment."),
     INVALID_VOTE_COMMENT("05000006", 400, "Invalid vote type."),
-    COMMENT_ON_BAN_POST("", 400, "This comment on a blocked post."),
+    COMMENT_ON_BAN_POST("05000007", 400, "This comment on a blocked post."),
 
     // report: 06XXXXXX
     // report post: 0600XXXX
