@@ -102,7 +102,8 @@ public class PostInfo {
         this.report = reportCount >= 10;
         this.ban = isBan;
 
-        if (this.report || this.ban) {
+        if (this.report || this.ban) { // 신고된 게시물이거나 차단된 게시물인 경우
+            this.title = null;
             this.content = null;
         }
     }
