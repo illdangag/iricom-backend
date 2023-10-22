@@ -51,13 +51,12 @@ public class CommentInfo {
         this.downvote = downvote;
         this.hasNestedComment = comment.getHasNestedComment();
         this.deleted = comment.getDeleted();
+        this.account = accountInfo;
 
         if (!this.deleted) {
             this.content = comment.getContent();
-            this.account = accountInfo;
         } else {
             this.content = null;
-            this.account = null;
         }
 
         this.report = reportCount >= 10;
