@@ -28,11 +28,8 @@ import java.util.stream.Collectors;
 
 @Slf4j
 @Service
-public class ReportServiceImpl implements ReportService {
+public class ReportServiceImpl extends IricomService implements ReportService {
     private final ReportRepository reportRepository;
-    private final PostRepository postRepository;
-    private final BoardRepository boardRepository;
-    private final CommentRepository commentRepository;
 
     private final PostService postService;
     private final CommentService commentService;
@@ -42,10 +39,8 @@ public class ReportServiceImpl implements ReportService {
     private ReportServiceImpl(ReportRepository reportRepository, PostRepository postRepository, BoardRepository boardRepository,
                               CommentRepository commentRepository,
                               PostService postService, CommentService commentService, BoardAuthorizationService boardAuthorizationService) {
+        super(boardRepository, postRepository, commentRepository);
         this.reportRepository = reportRepository;
-        this.postRepository = postRepository;
-        this.boardRepository = boardRepository;
-        this.commentRepository = commentRepository;
 
         this.postService = postService;
         this.commentService = commentService;
@@ -414,27 +409,6 @@ public class ReportServiceImpl implements ReportService {
 
         CommentInfo commentInfo = this.commentService.getComment(board, post, comment);
         return new CommentReportInfo(commentReport, commentInfo);
-    }
-
-    private Board getBoard(String id) {
-        long boardId = -1;
-        try {
-            boardId = Long.parseLong(id);
-        } catch (Exception exception) {
-            throw new IricomException(IricomErrorCode.NOT_EXIST_BOARD);
-        }
-        Optional<Board> boardOptional = this.boardRepository.getBoard(boardId);
-        return boardOptional.orElseThrow(() -> new IricomException(IricomErrorCode.NOT_EXIST_BOARD));
-    }
-
-    private Post getPost(String id) {
-        Optional<Post> postOptional = this.postRepository.getPost(id);
-        return postOptional.orElseThrow(() -> new IricomException(IricomErrorCode.NOT_EXIST_POST));
-    }
-
-    private Comment getComment(String id) {
-        Optional<Comment> commentOptional = this.commentRepository.getComment(id);
-        return commentOptional.orElseThrow(() -> new IricomException(IricomErrorCode.NOT_EXIST_COMMENT));
     }
 
     private void validate(Account account, Board board) {

@@ -27,11 +27,8 @@ import java.util.stream.Collectors;
 @Slf4j
 @Validated
 @Service
-public class PostServiceImpl implements PostService {
-    private final PostRepository postRepository;
+public class PostServiceImpl extends IricomService implements PostService {
     private final PostVoteRepository postVoteRepository;
-    private final CommentRepository commentRepository;
-    private final BoardRepository boardRepository;
     private final BoardAdminRepository boardAdminRepository;
     private final ReportRepository reportRepository;
     private final BanRepository banRepository;
@@ -40,10 +37,8 @@ public class PostServiceImpl implements PostService {
     public PostServiceImpl(PostRepository postRepository, PostVoteRepository postVoteRepository, CommentRepository commentRepository,
                            BoardRepository boardRepository, BoardAdminRepository boardAdminRepository, ReportRepository reportRepository,
                            BanRepository banRepository) {
-        this.postRepository = postRepository;
+        super(boardRepository, postRepository, commentRepository);
         this.postVoteRepository = postVoteRepository;
-        this.commentRepository = commentRepository;
-        this.boardRepository = boardRepository;
         this.boardAdminRepository = boardAdminRepository;
         this.reportRepository = reportRepository;
         this.banRepository = banRepository;
@@ -539,25 +534,9 @@ public class PostServiceImpl implements PostService {
         return !boardAdmin.getDeleted();
     }
 
-    private Post getPost(String id) {
-        Optional<Post> postOptional = this.postRepository.getPost(id);
-        return postOptional.orElseThrow(() -> new IricomException(IricomErrorCode.NOT_EXIST_POST));
-    }
-
     private boolean isBanPost(Post post) {
         long postBanCount = this.banRepository.getPostBanCount(post);
         return postBanCount > 0;
-    }
-
-    private Board getBoard(String id) {
-        long boardId = -1;
-        try {
-            boardId = Long.parseLong(id);
-        } catch (Exception exception) {
-            throw new IricomException(IricomErrorCode.NOT_EXIST_BOARD);
-        }
-        Optional<Board> boardOptional = this.boardRepository.getBoard(boardId);
-        return boardOptional.orElseThrow(() -> new IricomException(IricomErrorCode.NOT_EXIST_BOARD));
     }
 
     private void validate(Account account, Board board) {

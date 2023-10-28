@@ -2,10 +2,13 @@ package com.illdangag.iricom.server.service;
 
 import com.illdangag.iricom.server.data.entity.Account;
 import com.illdangag.iricom.server.data.entity.Board;
+import com.illdangag.iricom.server.data.entity.Comment;
 import com.illdangag.iricom.server.data.entity.Post;
+import com.illdangag.iricom.server.data.request.CommentBanInfoCreate;
 import com.illdangag.iricom.server.data.request.PostBanInfoCreate;
 import com.illdangag.iricom.server.data.request.PostBanInfoSearch;
 import com.illdangag.iricom.server.data.request.PostBanInfoUpdate;
+import com.illdangag.iricom.server.data.response.CommentBanInfo;
 import com.illdangag.iricom.server.data.response.PostBanInfo;
 import com.illdangag.iricom.server.data.response.PostBanInfoList;
 
@@ -48,4 +51,11 @@ public interface BanService {
     PostBanInfo updatePostBanInfo(Account account, String boardId, String postId, @Valid PostBanInfoUpdate postBanInfoUpdate);
 
     PostBanInfo updatePostBanInfo(Account account, Board board, Post post, @Valid PostBanInfoUpdate postBanInfoUpdate);
+
+    /**
+     * 댓글 차단
+     */
+    CommentBanInfo banComment(Account account, String boardId, String postId, String commentId, @Valid CommentBanInfoCreate commentBanInfoCreate);
+
+    CommentBanInfo banComment(Account account, Board board, Post post, Comment comment, @Valid CommentBanInfoCreate commentBanInfoCreate);
 }

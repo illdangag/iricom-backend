@@ -3,9 +3,11 @@ package com.illdangag.iricom.server.service.implement;
 import com.illdangag.iricom.server.data.entity.*;
 import com.illdangag.iricom.server.data.entity.type.AccountAuth;
 import com.illdangag.iricom.server.data.entity.type.PostState;
+import com.illdangag.iricom.server.data.request.CommentBanInfoCreate;
 import com.illdangag.iricom.server.data.request.PostBanInfoCreate;
 import com.illdangag.iricom.server.data.request.PostBanInfoSearch;
 import com.illdangag.iricom.server.data.request.PostBanInfoUpdate;
+import com.illdangag.iricom.server.data.response.CommentBanInfo;
 import com.illdangag.iricom.server.data.response.PostBanInfo;
 import com.illdangag.iricom.server.data.response.PostBanInfoList;
 import com.illdangag.iricom.server.data.response.PostInfo;
@@ -13,6 +15,7 @@ import com.illdangag.iricom.server.exception.IricomErrorCode;
 import com.illdangag.iricom.server.exception.IricomException;
 import com.illdangag.iricom.server.repository.BanRepository;
 import com.illdangag.iricom.server.repository.BoardRepository;
+import com.illdangag.iricom.server.repository.CommentRepository;
 import com.illdangag.iricom.server.repository.PostRepository;
 import com.illdangag.iricom.server.service.BanService;
 import com.illdangag.iricom.server.service.BoardAuthorizationService;
@@ -21,26 +24,23 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import javax.validation.Valid;
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Slf4j
 @Service
-public class BanServiceImpl implements BanService {
-    private final PostRepository postRepository;
+public class BanServiceImpl extends IricomService implements BanService {
     private final BanRepository banRepository;
-    private final BoardRepository boardRepository;
 
     private final BoardAuthorizationService boardAuthorizationService;
     private final PostService postService;
 
     @Autowired
     public BanServiceImpl(PostRepository postRepository, BanRepository banRepository, BoardRepository boardRepository,
-                          BoardAuthorizationService boardAuthorizationService, PostService postService) {
-        this.postRepository = postRepository;
+                          BoardAuthorizationService boardAuthorizationService, PostService postService, CommentRepository commentRepository) {
+        super(boardRepository, postRepository, commentRepository);
         this.banRepository = banRepository;
-        this.boardRepository = boardRepository;
         this.boardAuthorizationService = boardAuthorizationService;
         this.postService = postService;
     }
@@ -238,19 +238,18 @@ public class BanServiceImpl implements BanService {
         return new PostBanInfo(postBan, postInfo);
     }
 
-    private Board getBoard(String id) {
-        long boardId = -1;
-        try {
-            boardId = Long.parseLong(id);
-        } catch (Exception exception) {
-            throw new IricomException(IricomErrorCode.NOT_EXIST_BOARD);
-        }
-        Optional<Board> boardOptional = this.boardRepository.getBoard(boardId);
-        return boardOptional.orElseThrow(() -> new IricomException(IricomErrorCode.NOT_EXIST_BOARD));
+    @Override
+    public CommentBanInfo banComment(Account account, String boardId, String postId, String commentId, @Valid CommentBanInfoCreate commentBanInfoCreate) {
+        Board board = this.getBoard(boardId);
+        Post post = this.getPost(postId);
+        Comment comment = this.getComment(commentId);
+
+        return this.banComment(account, board, post, comment, commentBanInfoCreate);
     }
 
-    private Post getPost(String id) {
-        Optional<Post> postOptional = this.postRepository.getPost(id);
-        return postOptional.orElseThrow(() -> new IricomException(IricomErrorCode.NOT_EXIST_POST));
+    @Override
+    public CommentBanInfo banComment(Account account, Board board, Post post, Comment comment, @Valid CommentBanInfoCreate commentBanInfoCreate) {
+
+        return null;
     }
 }

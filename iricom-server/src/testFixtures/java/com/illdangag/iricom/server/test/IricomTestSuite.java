@@ -420,7 +420,13 @@ public abstract class IricomTestSuite {
     }
 
     private Post getPost(String id) {
-        Optional<Post> postOptional = this.postRepository.getPost(id);
+        long postId = -1;
+        try {
+            postId = Long.parseLong(id);
+        } catch (Exception exception) {
+            throw new IricomException(IricomErrorCode.NOT_EXIST_POST);
+        }
+        Optional<Post> postOptional = this.postRepository.getPost(postId);
         return postOptional.orElseThrow(() -> new IricomException(IricomErrorCode.NOT_EXIST_POST));
     }
 
@@ -462,7 +468,13 @@ public abstract class IricomTestSuite {
     }
 
     private Comment getComment(String id) {
-        Optional<Comment> commentOptional = this.commentRepository.getComment(id);
+        long commentId = -1;
+        try {
+            commentId = Long.parseLong(id);
+        } catch (Exception exception) {
+            throw new IricomException(IricomErrorCode.NOT_EXIST_COMMENT);
+        }
+        Optional<Comment> commentOptional = this.commentRepository.getComment(commentId);
         return commentOptional.orElseThrow(() -> new IricomException(IricomErrorCode.NOT_EXIST_COMMENT));
     }
 

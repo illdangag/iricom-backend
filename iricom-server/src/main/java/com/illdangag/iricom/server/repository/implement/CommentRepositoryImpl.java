@@ -23,19 +23,6 @@ public class CommentRepositoryImpl implements CommentRepository {
     }
 
     @Override
-    public Optional<Comment> getComment(String id) {
-        long commentId = -1;
-
-        try {
-            commentId = Long.parseLong(id);
-        } catch (Exception exception) {
-            return Optional.empty();
-        }
-
-        return this.getComment(commentId);
-    }
-
-    @Override
     public Optional<Comment> getComment(long id) {
         EntityManager entityManager = this.entityManagerFactory.createEntityManager();
         final String jpql = "SELECT c FROM Comment c" +

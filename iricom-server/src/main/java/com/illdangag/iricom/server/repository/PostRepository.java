@@ -9,8 +9,6 @@ import java.util.Optional;
 public interface PostRepository {
     Optional<Post> getPost(long id);
 
-    Optional<Post> getPost(String id);
-
     List<Post> getPublishPostList(Board board, PostType postType, String containTitle, int offset, int limit);
 
     List<Post> getPublishPostList(Board board, PostType postType, int offset, int limit);
