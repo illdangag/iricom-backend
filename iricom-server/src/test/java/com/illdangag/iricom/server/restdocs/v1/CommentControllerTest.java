@@ -259,6 +259,7 @@ public class CommentControllerTest extends IricomTestSuite {
 
         List<FieldDescriptor> fieldDescriptorList = new LinkedList<>();
         fieldDescriptorList.addAll(IricomFieldsSnippet.getComment(""));
+        fieldDescriptorList.addAll(IricomFieldsSnippet.getAccount("account."));
 
         mockMvc.perform(requestBuilder)
                 .andExpect(status().is(200))
