@@ -26,5 +26,8 @@ public interface BoardAuthorizationService {
      */
     BoardInfoList getBoardInfoListByBoardAdmin(Account account, @Valid BoardInfoByBoardAdminSearch boardInfoByBoardAdminSearch);
 
+    /**
+     * 게시판 관리자 권한 여부 조회
+     */
     boolean hasAuthorization(Account account, Board board);
 }

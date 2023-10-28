@@ -44,12 +44,18 @@ public class PostServiceImpl extends IricomService implements PostService {
         this.banRepository = banRepository;
     }
 
+    /**
+     * 게시물 생성
+     */
     @Override
     public PostInfo createPostInfo(Account account, String boardId, PostInfoCreate postInfoCreate) {
         Board board = this.getBoard(boardId);
         return this.createPostInfo(account, board, postInfoCreate);
     }
 
+    /**
+     * 게시물 생성
+     */
     @Override
     public PostInfo createPostInfo(Account account, Board board, PostInfoCreate postInfoCreate) {
         this.validate(account, board);
@@ -60,19 +66,17 @@ public class PostServiceImpl extends IricomService implements PostService {
             throw new IricomException(IricomErrorCode.NOT_EXIST_ACCOUNT_NICKNAME_TO_POST);
         }
 
-        // 활성화된 게시판에만 게시물 작성 가능
-        if (!board.getEnabled()) {
+        if (!board.getEnabled()) { // 비활성화 게시판인 경우
             throw new IricomException(IricomErrorCode.DISABLED_BOARD);
         }
 
-        // 공지 사항인 경우 시스템 관리자 또는 해당 게시판 관리자만 작성 가능
-        if (postInfoCreate.getType() == PostType.NOTIFICATION) {
-            if (!this.hasAuthorization(account, board)) {
+        if (postInfoCreate.getType() == PostType.NOTIFICATION) { // 공지 사항인 경우
+            if (!this.hasAuthorization(account, board)) { // 시스템 관리자 또는 게시판 관리자가 아닌 경우
                 throw new IricomException(IricomErrorCode.INVALID_AUTHORIZATION_TO_NOTIFICATION);
             }
         }
 
-        if (postInfoCreate.getType() == PostType.POST && board.getNotificationOnly()) {
+        if (postInfoCreate.getType() == PostType.POST && board.getNotificationOnly()) { // 게시물이 일반 게시물이면서  게시판이 공지 사항 전용인 경우
             throw new IricomException(IricomErrorCode.INVALID_AUTHORIZATION_TO_POST_ONLY_NOTIFICATION_BOARD);
         }
 
@@ -92,21 +96,23 @@ public class PostServiceImpl extends IricomService implements PostService {
         return new PostInfo(post, true, PostState.TEMPORARY, 0, 0, 0, 0, false);
     }
 
+    /**
+     * 게시물 수정
+     */
     @Override
     public PostInfo updatePostInfo(Account account, String boardId, String postId, PostInfoUpdate postInfoUpdate) {
         Board board = this.getBoard(boardId);
         Post post = this.getPost(postId);
+
         return this.updatePostInfo(account, board, post, postInfoUpdate);
     }
 
+    /**
+     * 게시물 수정
+     */
     @Override
     public PostInfo updatePostInfo(Account account, Board board, Post post, PostInfoUpdate postInfoUpdate) {
         this.validate(account, board, post);
-
-        // 게시판에 존재하는 게시물인지 확인
-        if (!board.equals(post.getBoard())) {
-            throw new IricomException(IricomErrorCode.NOT_EXIST_POST);
-        }
 
         // 활성화된 게시판에만 게시물 수정 가능
         if (!board.getEnabled()) {
@@ -156,9 +162,11 @@ public class PostServiceImpl extends IricomService implements PostService {
         if (postInfoUpdate.getTitle() != null) {
             temporaryPostContent.setTitle(postInfoUpdate.getTitle());
         }
+
         if (postInfoUpdate.getContent() != null) {
             temporaryPostContent.setContent(postInfoUpdate.getContent());
         }
+
         if (postInfoUpdate.getAllowComment() != null) {
             temporaryPostContent.setAllowComment(postInfoUpdate.getAllowComment());
         }
@@ -168,12 +176,9 @@ public class PostServiceImpl extends IricomService implements PostService {
         return this.getPostInfo(account, post, PostState.TEMPORARY, true);
     }
 
-    @Override
-    public PostInfo getPostInfo(Account account, String postId, PostState postState, boolean includeContent) {
-        Post post = this.getPost(postId);
-        return this.getPostInfo(account, post, postState, includeContent);
-    }
-
+    /**
+     * 게시물 조회
+     */
     @Override
     public PostInfo getPostInfo(Account account, Post post, PostState postState, boolean includeContent) {
         Board board = post.getBoard();
@@ -188,16 +193,22 @@ public class PostServiceImpl extends IricomService implements PostService {
         return new PostInfo(post, includeContent, postState, commentCount, upvote, downvote, reportCount, isBan);
     }
 
+    /**
+     * 게시물 조회
+     */
     @Override
-    public PostInfo getPostInfo(String postId, PostState postState, boolean includeContent) {
+    public PostInfo getPostInfo(String boardId, String postId, PostState postState, boolean includeContent) {
+        Board board = this.getBoard(boardId);
         Post post = this.getPost(postId);
-        return this.getPostInfo(post, postState, includeContent);
+
+        return this.getPostInfo(board, post, postState, includeContent);
     }
 
+    /**
+     * 게시물 조회
+     */
     @Override
-    public PostInfo getPostInfo(Post post, PostState postState, boolean includeContent) {
-        Board board = post.getBoard();
-
+    public PostInfo getPostInfo(Board board, Post post, PostState postState, boolean includeContent) {
         this.validate(null, board);
 
         long commentCount = this.commentRepository.getCommentListSize(post);
@@ -209,6 +220,9 @@ public class PostServiceImpl extends IricomService implements PostService {
         return new PostInfo(post, includeContent, postState, commentCount, upvote, downvote, reportCount, isBan);
     }
 
+    /**
+     * 게시물 조회
+     */
     @Override
     public PostInfo getPostInfo(Account account, String boardId, String postId, PostState postState) {
         Board board = this.getBoard(boardId);
@@ -217,22 +231,19 @@ public class PostServiceImpl extends IricomService implements PostService {
         return this.getPostInfo(account, board, post, postState);
     }
 
+    /**
+     * 게시물 조회
+     */
     @Override
     public PostInfo getPostInfo(Account account, Board board, Post post, PostState postState) {
         this.validate(account, board, post);
 
-        if (!board.getEnabled()) {
+        if (!board.getEnabled()) { // 비활성화 게시판인 경우
             throw new IricomException(IricomErrorCode.DISABLED_BOARD);
         }
 
-        // 게시판에 존재하는 게시물인지 확인
-        if (!board.equals(post.getBoard())) {
-            throw new IricomException(IricomErrorCode.NOT_EXIST_POST);
-        }
-
-        if (postState == PostState.TEMPORARY) {
-            if (!post.getAccount().equals(account)) {
-                // 임시 저장한 내용을 조회하는 경우에는 본인이 작성한 게시물만 가능
+        if (postState == PostState.TEMPORARY) { // 임시 저장 내용을 조회 하는 경우
+            if (!post.getAccount().equals(account)) { // 본인이 작성한 게시물이 아닌 경우
                 throw new IricomException(IricomErrorCode.INVALID_AUTHORIZATION_TO_GET_TEMPORARY_CONTENT);
             }
         } else {
@@ -244,6 +255,9 @@ public class PostServiceImpl extends IricomService implements PostService {
         return this.getPostInfo(account, post, postState, true);
     }
 
+    /**
+     * 게시물 조회
+     */
     @Override
     public PostInfo getPostInfo(String boardId, String postId, PostState postState) {
         Board board = this.getBoard(boardId);
@@ -252,6 +266,9 @@ public class PostServiceImpl extends IricomService implements PostService {
         return this.getPostInfo(board, post, postState);
     }
 
+    /**
+     * 게시물 조회
+     */
     @Override
     public PostInfo getPostInfo(Board board, Post post, PostState postState) {
         this.validate(null, board, post);
@@ -260,22 +277,19 @@ public class PostServiceImpl extends IricomService implements PostService {
             throw new IricomException(IricomErrorCode.DISABLED_BOARD);
         }
 
-        // 게시판에 존재하는 게시물인지 확인
-        if (!board.equals(post.getBoard())) {
-            throw new IricomException(IricomErrorCode.NOT_EXIST_POST);
-        }
-
-        if (postState == PostState.TEMPORARY) {
+        if (postState == PostState.TEMPORARY) { // 임시 저장 내용을 조회 하는 경우
             throw new IricomException(IricomErrorCode.INVALID_AUTHORIZATION_TO_GET_TEMPORARY_CONTENT);
-        } else {
-            post.setViewCount(post.getViewCount() + 1);
         }
 
+        post.setViewCount(post.getViewCount() + 1);
         this.postRepository.save(post);
 
-        return this.getPostInfo(post, postState, true);
+        return this.getPostInfo(board, post, postState, true);
     }
 
+    /**
+     * 게시물 발행
+     */
     @Override
     public PostInfo publishPostInfo(Account account, String boardId, String postId) {
         Board board = this.getBoard(boardId);
@@ -283,14 +297,12 @@ public class PostServiceImpl extends IricomService implements PostService {
         return this.publishPostInfo(account, board, post);
     }
 
+    /**
+     * 게시물 발행
+     */
     @Override
     public PostInfo publishPostInfo(Account account, Board board, Post post) {
         this.validate(account, board, post);
-
-        // 게시판에 포함된 게시물인지 확인
-        if (!board.equals(post.getBoard())) {
-            throw new IricomException(IricomErrorCode.NOT_EXIST_POST);
-        }
 
         // 활성화된 게시판에만 게시물 발행 가능
         if (!board.getEnabled()) {
@@ -307,38 +319,47 @@ public class PostServiceImpl extends IricomService implements PostService {
             throw new IricomException(IricomErrorCode.NOT_EXIST_TEMPORARY_CONTENT);
         }
 
-        // 공지 사항인 경우 시스템 관리자 또는 해당 게시판 관리자만 수정 가능
+        // 공지 사항인 경우 시스템 관리자 또는 해당 게시판 관리자만 발행 가능
         if (post.getTemporaryContent().getType() == PostType.NOTIFICATION) {
             if (!this.hasAuthorization(account, board)) {
                 throw new IricomException(IricomErrorCode.INVALID_AUTHORIZATION_TO_NOTIFICATION);
             }
         }
 
-        // 발행: 임시 저장 내용을 본문으로 옮기고 임시 저장 내용을 삭제
+        // 임시 저장 내용을 본문으로 옮기고 임시 저장 내용을 삭제
         PostContent temporaryPostContent = post.getTemporaryContent();
-        if (temporaryPostContent != null) {
-            temporaryPostContent.setState(PostState.PUBLISH);
-            post.setContent(temporaryPostContent);
-            post.setTemporaryContent(null);
-        }
+        temporaryPostContent.setState(PostState.PUBLISH);
+        post.setContent(temporaryPostContent);
+        post.setTemporaryContent(null);
 
         this.postRepository.save(post);
 
         return this.getPostInfo(account, post, PostState.PUBLISH, true);
     }
 
+    /**
+     * 발행된 게시물 목록 조회
+     */
     @Override
     public PostInfoList getPublishPostInfoList(String boardId, @Valid PostInfoSearch postInfoSearch) {
         Board board = this.getBoard(boardId);
+
         return this.getPublishPostInfoList(null, board, postInfoSearch);
     }
 
+    /**
+     * 발행된 게시물 목록 조회
+     */
     @Override
     public PostInfoList getPublishPostInfoList(Account account, String boardId, @Valid PostInfoSearch postInfoSearch) {
         Board board = this.getBoard(boardId);
+
         return this.getPublishPostInfoList(account, board, postInfoSearch);
     }
 
+    /**
+     * 발행된 게시물 목록 조회
+     */
     @Override
     public PostInfoList getPublishPostInfoList(Account account, Board board, @Valid PostInfoSearch postInfoSearch) {
         this.validate(account, board);
@@ -346,7 +367,7 @@ public class PostServiceImpl extends IricomService implements PostService {
         List<Post> postList;
         long totalPostCount;
 
-        if (postInfoSearch.getTitle().isEmpty()) {
+        if (postInfoSearch.getTitle().isEmpty()) { // 검색어가 존재하지 않는 경우
             if (postInfoSearch.getType() != null) {
                 // 제목 없음, 게시물 종류 있음
                 postList = this.postRepository.getPublishPostList(board, postInfoSearch.getType(), postInfoSearch.getSkip(), postInfoSearch.getLimit());
@@ -356,7 +377,7 @@ public class PostServiceImpl extends IricomService implements PostService {
                 postList = this.postRepository.getPublishPostList(board,  postInfoSearch.getSkip(), postInfoSearch.getLimit());
                 totalPostCount = this.postRepository.getPublishPostCount(board);
             }
-        } else {
+        } else { // 검색어가 존재하는 경우
             if (postInfoSearch.getType() != null) {
                 // 제목 있음, 게시물 종류 있음
                 postList = this.postRepository.getPublishPostList(board, postInfoSearch.getType(), postInfoSearch.getTitle(), postInfoSearch.getSkip(), postInfoSearch.getLimit());
@@ -372,7 +393,7 @@ public class PostServiceImpl extends IricomService implements PostService {
             if (account != null) {
                 return this.getPostInfo(account, post, PostState.PUBLISH, false);
             } else {
-                return this.getPostInfo(post, PostState.PUBLISH, false);
+                return this.getPostInfo(board, post, PostState.PUBLISH, false);
             }
         }).collect(Collectors.toList());
 
@@ -384,39 +405,38 @@ public class PostServiceImpl extends IricomService implements PostService {
                 .build();
     }
 
+    /**
+     * 게시물 삭제
+     */
     @Override
     public PostInfo deletePostInfo(Account account, String boardId, String postId) {
         Board board = this.getBoard(boardId);
         Post post = this.getPost(postId);
+
         return this.deletePostInfo(account, board, post);
     }
 
+    /**
+     * 게시물 삭제
+     */
     @Override
     public PostInfo deletePostInfo(Account account, Board board, Post post) {
         this.validate(account, board, post);
 
-        // 게시판에 포함된 게시물인지 확인
-        if (!board.equals(post.getBoard())) {
-            throw new IricomException(IricomErrorCode.NOT_EXIST_POST);
-        }
-
-        // 활성화된 게시판에만 게시물 삭제 가능
         if (!board.getEnabled()) {
             throw new IricomException(IricomErrorCode.DISABLED_BOARD);
         }
 
         if (post.getDeleted()) { // 이미 삭제된 게시물인 경우
-            // 존재하지 않은 게시물로 간주
             throw new IricomException(IricomErrorCode.NOT_EXIST_POST);
         }
 
-        // 본인이 작성한 게시물만 삭제 가능
-        if (!post.getAccount().equals(account)) {
+        if (!post.getAccount().equals(account)) { // 본인이 작성한 게시물이 아닌 경우
             throw new IricomException(IricomErrorCode.INVALID_AUTHORIZATION_TO_UPDATE_POST_OR_NOTIFICATION);
         }
 
         PostContent content;
-        if (post.getContent() != null) {
+        if (post.isPublish()) {
             content = post.getContent();
         } else {
             content = post.getTemporaryContent();
@@ -429,10 +449,8 @@ public class PostServiceImpl extends IricomService implements PostService {
             }
         }
 
-        if (!post.getDeleted()) {
-            post.setDeleted(true);
-            this.postRepository.save(post);
-        }
+        post.setDeleted(true);
+        this.postRepository.save(post);
 
         PostState responsePostState;
         if (post.isPublish()) {
@@ -440,23 +458,27 @@ public class PostServiceImpl extends IricomService implements PostService {
         } else {
             responsePostState = PostState.TEMPORARY;
         }
+
         return this.getPostInfo(account, post, responsePostState, false);
     }
 
+    /**
+     * 게시물 추천 비추천
+     */
+    @Override
     public PostInfo votePost(Account account, String boardId, String postId, VoteType voteType) {
         Board board = this.getBoard(boardId);
         Post post = this.getPost(postId);
+
         return this.votePost(account, board, post, voteType);
     }
 
+    /**
+     * 게시물 추천 비추천
+     */
     @Override
     public PostInfo votePost(Account account, Board board, Post post, VoteType voteType) {
         this.validate(account, board, post);
-
-        // 게시판에 포함된 게시물인지 확인
-        if (!board.equals(post.getBoard())) {
-            throw new IricomException(IricomErrorCode.NOT_EXIST_POST);
-        }
 
         if (!board.getEnabled()) {
             throw new IricomException(IricomErrorCode.DISABLED_BOARD);
@@ -496,12 +518,14 @@ public class PostServiceImpl extends IricomService implements PostService {
             long commentCount = this.commentRepository.getCommentCount(post);
             long upvote = this.postVoteRepository.getPostVoteCount(post, VoteType.UPVOTE);
             long downvote = this.postVoteRepository.getPostVoteCount(post, VoteType.DOWNVOTE);
+
             PostState responsePostState;
             if (post.isPublish()) {
                 responsePostState = PostState.PUBLISH;
             } else {
                 responsePostState = PostState.TEMPORARY;
             }
+
             long reportCount = this.reportRepository.getPortReportCount(post);
             boolean isBan = this.isBanPost(post);
 
@@ -534,6 +558,9 @@ public class PostServiceImpl extends IricomService implements PostService {
         return !boardAdmin.getDeleted();
     }
 
+    /**
+     * 게시물의 차단 여부
+     */
     private boolean isBanPost(Post post) {
         long postBanCount = this.banRepository.getPostBanCount(post);
         return postBanCount > 0;

@@ -41,17 +41,23 @@ public class CommentServiceImpl extends IricomService implements CommentService 
         this.commentVoteRepository = commentVoteRepository;
         this.reportRepository = reportRepository;
         this.banRepository = banRepository;
-
         this.accountService = accountService;
     }
 
+    /**
+     * 댓글 생성
+     */
     @Override
     public CommentInfo createCommentInfo(Account account, String boardId, String postId, @Valid CommentInfoCreate commentInfoCreate) {
         Board board = this.getBoard(boardId);
         Post post = this.getPost(postId);
+
         return this.createCommentInfo(account, board, post, commentInfoCreate);
     }
 
+    /**
+     * 댓글 생성
+     */
     @Override
     public CommentInfo createCommentInfo(Account account, Board board, Post post, @Valid CommentInfoCreate commentInfoCreate) {
         this.validate(account, board, post);
@@ -64,12 +70,12 @@ public class CommentServiceImpl extends IricomService implements CommentService 
             throw new IricomException(IricomErrorCode.NOT_EXIST_POST);
         }
 
-        if (!post.getContent().getAllowComment()) { // 댓글을 허용하지 않은 게시물인 경우
-            throw new IricomException(IricomErrorCode.NOT_ALLOW_COMMENT);
+        if (this.isBanPost(post)) { // 차단된 게시물인 경우
+            throw new IricomException(IricomErrorCode.BANNED_POST);
         }
 
-        if (this.isBanPost(post)) { // 차단된 게시물인 경우
-            throw new IricomException(IricomErrorCode.COMMENT_ON_BAN_POST);
+        if (!post.getContent().getAllowComment()) { // 댓글을 허용하지 않은 게시물인 경우
+            throw new IricomException(IricomErrorCode.NOT_ALLOW_COMMENT);
         }
 
         Comment referenceComment = null;
@@ -99,6 +105,9 @@ public class CommentServiceImpl extends IricomService implements CommentService 
         return new CommentInfo(comment, accountInfo, 0, 0, 0);
     }
 
+    /**
+     * 댓글 수정
+     */
     @Override
     public CommentInfo updateComment(Account account, String boardId, String postId, String commentId, @Valid CommentInfoUpdate commentInfoUpdate) {
         Board board = this.getBoard(boardId);
@@ -107,6 +116,9 @@ public class CommentServiceImpl extends IricomService implements CommentService 
         return this.updateComment(account, board, post, comment, commentInfoUpdate);
     }
 
+    /**
+     * 댓글 수정
+     */
     @Override
     public CommentInfo updateComment(Account account, Board board, Post post, Comment comment, @Valid CommentInfoUpdate commentInfoUpdate) {
         this.validate(account, board, post, comment);
@@ -115,16 +127,16 @@ public class CommentServiceImpl extends IricomService implements CommentService 
             throw new IricomException(IricomErrorCode.DISABLED_BOARD);
         }
 
-        if (!board.equals(post.getBoard()) || post.getContent() == null) { // 게시판에 게시물이 존재하지 않거나 발행되지 않은 게시물인 경우
+        if (!post.isPublish()) { // 발행되지 않은 게시물인 경우
             throw new IricomException(IricomErrorCode.NOT_EXIST_POST);
+        }
+
+        if (this.isBanPost(post)) { // 차단된 게시물인 경우
+            throw new IricomException(IricomErrorCode.BANNED_POST);
         }
 
         if (!post.getContent().getAllowComment()) { // 댓글을 허용하지 않은 게시물인 경우
             throw new IricomException(IricomErrorCode.NOT_ALLOW_COMMENT);
-        }
-
-        if (this.isBanPost(post)) { // 차단된 게시물인 경우
-            throw new IricomException(IricomErrorCode.COMMENT_ON_BAN_POST);
         }
 
         if (!comment.getAccount().equals(account)) { // 다른 계정의 댓글을 수정하는 경우
@@ -143,39 +155,61 @@ public class CommentServiceImpl extends IricomService implements CommentService 
         return new CommentInfo(comment, accountInfo, upvote, downvote, reportCount);
     }
 
+    /**
+     * 댓글 목록 조회
+     */
     @Override
     public CommentInfoList getComment(String boardId, String postId, @Valid CommentInfoSearch commentInfoSearch) {
         Board board = this.getBoard(boardId);
         Post post = this.getPost(postId);
+
         return this.getComment(board, post, commentInfoSearch);
     }
 
+    /**
+     * 댓글 목록 조회
+     */
     @Override
     public CommentInfoList getComment(Account account, String boardId, String postId, CommentInfoSearch commentInfoSearch) {
         Board board = this.getBoard(boardId);
         Post post = this.getPost(postId);
+
         return this.getComment(account, board, post, commentInfoSearch);
     }
 
+    /**
+     * 댓글 목록 조회
+     */
     @Override
     public CommentInfoList getComment(Board board, Post post, @Valid CommentInfoSearch commentInfoSearch) {
         return this.getComment(null, board, post, commentInfoSearch);
     }
 
+    /**
+     * 댓글 목록 조회
+     */
     @Override
     public CommentInfoList getComment(Account account, Board board, Post post, CommentInfoSearch commentInfoSearch) {
         this.validate(account, board, post);
 
+        if (!board.getEnabled()) { // 비활성화 게시판인 경우
+            throw new IricomException(IricomErrorCode.DISABLED_BOARD);
+        }
+
+        if (!post.isPublish()) { // 발행되지 않은 게시물인 경우
+            throw new IricomException(IricomErrorCode.NOT_EXIST_POST);
+        }
+
         if (this.isBanPost(post)) { // 차단된 게시물인 경우
-            throw new IricomException(IricomErrorCode.COMMENT_ON_BAN_POST);
+            throw new IricomException(IricomErrorCode.BANNED_POST);
         }
 
         long total;
         List<Comment> commentList;
-        if (commentInfoSearch.getReferenceCommentId() == null || commentInfoSearch.getReferenceCommentId().isEmpty()) {
+        if (commentInfoSearch.getReferenceCommentId() == null || commentInfoSearch.getReferenceCommentId().isEmpty()) { // 대댓글 조회가 아닌 경우
             commentList = this.commentRepository.getCommentList(post, commentInfoSearch.getSkip(), commentInfoSearch.getLimit());
             total = this.commentRepository.getCommentCount(post);
-        } else {
+        } else { // 대댓글 조회인 경우
             Comment referenceComment = this.getComment(commentInfoSearch.getReferenceCommentId());
             commentList = this.commentRepository.getCommentList(post, referenceComment, commentInfoSearch.getSkip(), commentInfoSearch.getLimit());
             total = this.commentRepository.getCommentListSize(post, referenceComment);
@@ -206,30 +240,57 @@ public class CommentServiceImpl extends IricomService implements CommentService 
                 .build();
     }
 
+    /**
+     * 댓글 조회
+     */
     @Override
     public CommentInfo getComment(String boardId, String postId, String commentId) {
         Board board = this.getBoard(boardId);
         Post post = this.getPost(postId);
         Comment comment = this.getComment(commentId);
+
         return this.getComment(null, board, post, comment);
     }
 
+    /**
+     * 댓글 조회
+     */
     @Override
     public CommentInfo getComment(Account account, String boardId, String postId, String commentId) {
         Board board = this.getBoard(boardId);
         Post post = this.getPost(postId);
         Comment comment = this.getComment(commentId);
+
         return this.getComment(account, board, post, comment);
     }
 
+    /**
+     * 댓글 조회
+     */
     @Override
     public CommentInfo getComment(Board board, Post post, Comment comment) {
         return this.getComment(null, board, post, comment);
     }
 
+    /**
+     * 댓글 조회
+     */
     @Override
     public CommentInfo getComment(Account account, Board board, Post post, Comment comment) {
         this.validate(account, board, post, comment);
+
+        if (!board.getEnabled()) { // 비활성화 게시판인 경우
+            throw new IricomException(IricomErrorCode.DISABLED_BOARD);
+        }
+
+        if (!post.isPublish()) { // 발행되지 않은 게시물인 경우
+            throw new IricomException(IricomErrorCode.NOT_EXIST_POST);
+        }
+
+        if (this.isBanPost(post)) { // 차단된 게시물인 경우
+            throw new IricomException(IricomErrorCode.BANNED_POST);
+        }
+
         return this.getCommentInfo(comment);
     }
 
@@ -241,17 +302,36 @@ public class CommentServiceImpl extends IricomService implements CommentService 
         return new CommentInfo(comment, accountInfo, upvote, downvote, reportCount);
     }
 
+    /**
+     * 댓글 삭제
+     */
     @Override
     public CommentInfo deleteComment(Account account, String boardId, String postId, String commentId) {
         Board board = this.getBoard(boardId);
         Post post = this.getPost(postId);
         Comment comment = this.getComment(commentId);
+
         return this.deleteComment(account, board, post, comment);
     }
 
+    /**
+     * 댓글 삭제
+     */
     @Override
     public CommentInfo deleteComment(Account account, Board board, Post post, Comment comment) {
         this.validate(account, board, post, comment);
+
+        if (!board.getEnabled()) { // 비활성화 게시판인 경우
+            throw new IricomException(IricomErrorCode.DISABLED_BOARD);
+        }
+
+        if (!post.isPublish()) { // 발행되지 않은 게시물인 경우
+            throw new IricomException(IricomErrorCode.NOT_EXIST_POST);
+        }
+
+        if (this.isBanPost(post)) { // 차단된 게시물인 경우
+            throw new IricomException(IricomErrorCode.BANNED_POST);
+        }
 
         if (!comment.getAccount().equals(account)) {
             // 다른 계정의 댓글을 삭제 하는 경우
@@ -267,20 +347,35 @@ public class CommentServiceImpl extends IricomService implements CommentService 
         return new CommentInfo(comment, accountInfo, upvote, downvote, reportCount);
     }
 
+    /**
+     * 댓글 좋아요 싫어요
+     */
     @Override
     public CommentInfo voteComment(Account account, String boardId, String postId, String commentId, VoteType voteType) {
         Board board = this.getBoard(boardId);
         Post post = this.getPost(postId);
         Comment comment = this.getComment(commentId);
+
         return this.voteComment(account, board, post, comment, voteType);
     }
 
+    /**
+     * 댓글 좋아요 싫어요
+     */
     @Override
     public CommentInfo voteComment(Account account, Board board, Post post, Comment comment, VoteType voteType) {
         this.validate(account, board, post, comment);
 
-        if (!board.getEnabled()) {
+        if (!board.getEnabled()) { // 비활성화 게시판인 경우
             throw new IricomException(IricomErrorCode.DISABLED_BOARD);
+        }
+
+        if (!post.isPublish()) { // 발행되지 않은 게시물인 경우
+            throw new IricomException(IricomErrorCode.NOT_EXIST_POST);
+        }
+
+        if (this.isBanPost(post)) { // 차단된 게시물인 경우
+            throw new IricomException(IricomErrorCode.BANNED_POST);
         }
 
         if (!post.getContent().getAllowComment()) {

@@ -33,12 +33,13 @@ public enum IricomErrorCode implements IricomError {
     // account: 02XXXXXX
     NOT_EXIST_ACCOUNT("02000000", 404, "Not exist account."),
     NOT_EXIST_ACCOUNT_DETAIL_INFO("02000001", 404, "Not exist account detail info."),
-    MISSING_ACCOUNT_NICKNAME_FILED("02000002", 400, "Missing required fields: nickname"),
+    MISSING_ACCOUNT_NICKNAME_FILED("02000002", 400, "Missing required fields: nickname."),
     ALREADY_ACCOUNT_NICKNAME("02000002", 400, "Already exists nickname."),
 
     // board: 03XXXXXX
     NOT_EXIST_BOARD("03000000", 404, "Not exist board."),
     DISABLED_BOARD("03000001", 400, "Board is disabled."),
+    INVALID_AUTHORIZATION_TO_CREATE_BOARD("03000002", 401, "Invalid authorization."),
 
     // post: 04XXXXXX
     NOT_EXIST_POST("04000000", 404, "Not exist post."), // 존재하지 않는 게시물
@@ -55,6 +56,7 @@ public enum IricomErrorCode implements IricomError {
     ALREADY_UNBAN_POST("04000011", 400, "Already unban post."),
     INVALID_AUTHORIZATION_TO_POST_ONLY_NOTIFICATION_BOARD("04000012", 400, "Board is for notification only."),
     INVALID_UPDATE_POST_IN_NOTIFICATION_ONLY_BOARD("04000013", 400, "Board is for notification only."),
+    BANNED_POST("04000014", 400, "This is a banned post."),
 
     // comment: 05XXXXXX
     NOT_EXIST_COMMENT("05000000", 404, "Not exist comment."),

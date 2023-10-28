@@ -2,6 +2,7 @@ package com.illdangag.iricom.server.service.implement;
 
 import com.illdangag.iricom.server.data.entity.Account;
 import com.illdangag.iricom.server.data.entity.Board;
+import com.illdangag.iricom.server.data.entity.type.AccountAuth;
 import com.illdangag.iricom.server.data.request.BoardInfoCreate;
 import com.illdangag.iricom.server.data.request.BoardInfoSearch;
 import com.illdangag.iricom.server.data.request.BoardInfoUpdate;
@@ -21,7 +22,6 @@ import org.springframework.validation.annotation.Validated;
 
 import javax.validation.Valid;
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Slf4j
@@ -37,8 +37,15 @@ public class BoardServiceImpl extends IricomService implements BoardService {
         this.boardAuthorizationService = boardAuthorizationService;
     }
 
+    /**
+     * 게시판 생성
+     */
     @Override
     public BoardInfo createBoardInfo(Account account, @Valid BoardInfoCreate boardInfoCreate) {
+        if (account.getAuth() != AccountAuth.SYSTEM_ADMIN) { // 시스템 관리자가 아닌 경우
+            throw new IricomException(IricomErrorCode.INVALID_AUTHORIZATION_TO_CREATE_BOARD);
+        }
+
         Board board = Board.builder()
                 .title(boardInfoCreate.getTitle())
                 .description(boardInfoCreate.getDescription())
@@ -53,6 +60,9 @@ public class BoardServiceImpl extends IricomService implements BoardService {
         return new BoardInfo(board, isAdmin);
     }
 
+    /**
+     * 게시판 정보 조회
+     */
     @Override
     public BoardInfo getBoardInfo(String id) {
         Board board = this.getBoard(id);
@@ -60,17 +70,22 @@ public class BoardServiceImpl extends IricomService implements BoardService {
         return new BoardInfo(board, false);
     }
 
+    /**
+     * 게시판 정보 조회
+     */
     @Override
     public BoardInfo getBoardInfo(Account account, String id) {
         Board board = this.getBoard(id);
         this.validate(account, board);
-
         boolean isAdmin = this.boardAuthorizationService.hasAuthorization(account, board);
         return new BoardInfo(board, isAdmin);
     }
 
+    /**
+     * 공개 게시판 목록 조회
+     */
     @Override
-    public BoardInfoList getBoardInfoList(BoardInfoSearch boardInfoSearch) {
+    public BoardInfoList getBoardInfoList(@Valid BoardInfoSearch boardInfoSearch) {
         List<Board> boardList;
         long totalBoardCount;
 
@@ -94,8 +109,11 @@ public class BoardServiceImpl extends IricomService implements BoardService {
                 .build();
     }
 
+    /**
+     * 공개, 비공개 게시판 목록 조회
+     */
     @Override
-    public BoardInfoList getBoardInfoList(Account account, BoardInfoSearch boardInfoSearch) {
+    public BoardInfoList getBoardInfoList(Account account, @Valid BoardInfoSearch boardInfoSearch) {
         List<Board> boardList;
         long totalBoardCount;
 
@@ -120,14 +138,24 @@ public class BoardServiceImpl extends IricomService implements BoardService {
                 .build();
     }
 
+    /**
+     * 게시판 정보 수정
+     */
     @Override
-    public BoardInfo updateBoardInfo(Account account, String id, BoardInfoUpdate boardInfoUpdate) {
+    public BoardInfo updateBoardInfo(Account account, String id, @Valid BoardInfoUpdate boardInfoUpdate) {
         Board board = this.getBoard(id);
         return this.updateBoardInfo(account, board, boardInfoUpdate);
     }
 
+    /**
+     * 게시판 정보 수정
+     */
     @Override
-    public BoardInfo updateBoardInfo(Account account, Board board, BoardInfoUpdate boardInfoUpdate) {
+    public BoardInfo updateBoardInfo(Account account, Board board, @Valid BoardInfoUpdate boardInfoUpdate) {
+        if (account.getAuth() != AccountAuth.SYSTEM_ADMIN) { // 시스템 관리자가 아닌 경우
+            throw new IricomException(IricomErrorCode.INVALID_AUTHORIZATION_TO_CREATE_BOARD);
+        }
+
         if (boardInfoUpdate.getTitle() != null) {
             board.setTitle(boardInfoUpdate.getTitle());
         }
@@ -149,6 +177,7 @@ public class BoardServiceImpl extends IricomService implements BoardService {
         }
 
         this.boardRepository.save(board);
+
         boolean isAdmin = this.boardAuthorizationService.hasAuthorization(account, board);
         return new BoardInfo(board, isAdmin);
     }

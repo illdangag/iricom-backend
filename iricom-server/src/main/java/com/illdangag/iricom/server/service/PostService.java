@@ -33,13 +33,11 @@ public interface PostService {
 
     PostInfo getPostInfo(Account account, Board board, Post post, PostState postState);
 
-    PostInfo getPostInfo(Account account, String postId, PostState postState, boolean includeContent);
-
     PostInfo getPostInfo(Account account, Post post, PostState postState, boolean includeContent);
 
-    PostInfo getPostInfo(String postId, PostState postState, boolean includeContent);
+    PostInfo getPostInfo(String boardId, String postId, PostState postState, boolean includeContent);
 
-    PostInfo getPostInfo(Post post, PostState postState, boolean includeContent);
+    PostInfo getPostInfo(Board board, Post post, PostState postState, boolean includeContent);
 
     PostInfo getPostInfo(String boardId, String postId, PostState postState);
 

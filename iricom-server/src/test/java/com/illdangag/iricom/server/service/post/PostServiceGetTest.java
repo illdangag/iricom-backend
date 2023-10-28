@@ -46,8 +46,9 @@ public class PostServiceGetTest extends IricomTestSuite {
         addTestPostInfo(testPostInfo);
         init();
 
+        String boardId = getBoardId(testBoardInfo);
         String postId = getPostId(testPostInfo);
-        PostInfo postInfo = postService.getPostInfo(postId, PostState.PUBLISH, true);
+        PostInfo postInfo = postService.getPostInfo(boardId, postId, PostState.PUBLISH, true);
 
         Assertions.assertNotNull(postInfo);
     }
@@ -75,76 +76,11 @@ public class PostServiceGetTest extends IricomTestSuite {
         addTestAccountGroupInfo(testAccountGroupInfo);
         init();
 
+        String boardId = getBoardId(testBoardInfo);
         String postId = getPostId(testPostInfo);
 
         Assertions.assertThrows(IricomException.class, () -> {
-            postService.getPostInfo(postId, PostState.PUBLISH, true);
+            postService.getPostInfo(boardId, postId, PostState.PUBLISH, true);
         });
-    }
-
-    @Test
-    @DisplayName("계정 그룹에 포함된 게시판의 게시물을 조회")
-    public void getPostInAccountGroup() {
-        TestBoardInfo testBoardInfo = TestBoardInfo.builder()
-                .title("testBoardInfo").isEnabled(true).undisclosed(true)
-                .adminList(Collections.singletonList(allBoardAdmin)).build();
-
-        TestPostInfo testPostInfo = TestPostInfo.builder()
-                .title("testPostInfo").content("content").isAllowComment(true)
-                .postType(PostType.POST).postState(PostState.PUBLISH)
-                .creator(common00).board(testBoardInfo).build();
-
-        TestAccountGroupInfo testAccountGroupInfo = TestAccountGroupInfo.builder()
-                .title("testAccountGroupInfo").description("description")
-                .accountList(Collections.singletonList(common00))
-                .boardList(Collections.singletonList(testBoardInfo))
-                .build();
-
-        addTestBoardInfo(testBoardInfo);
-        addTestPostInfo(testPostInfo);
-        addTestAccountGroupInfo(testAccountGroupInfo);
-        init();
-
-        Account account = getAccount(common00);
-        String postId = getPostId(testPostInfo);
-
-        PostInfo postInfo = postService.getPostInfo(account, postId, PostState.PUBLISH, true);
-
-        Assertions.assertNotNull(postInfo);
-        Assertions.assertEquals(postId, postInfo.getId());
-    }
-
-    @Test
-    @DisplayName("삭제된 계정 그룹에 포함된 게시판")
-    public void getUndisclosedBoardPostInDeletedAccountGroup() {
-        TestBoardInfo testBoardInfo = TestBoardInfo.builder()
-                .title("testBoardInfo").isEnabled(true).undisclosed(true)
-                .adminList(Collections.singletonList(allBoardAdmin)).build();
-
-        TestPostInfo testPostInfo = TestPostInfo.builder()
-                .title("testPostInfo").content("content").isAllowComment(true)
-                .postType(PostType.POST).postState(PostState.PUBLISH)
-                .creator(common00).board(testBoardInfo).build();
-
-        TestAccountGroupInfo testAccountGroupInfo = TestAccountGroupInfo.builder()
-                .title("testAccountGroupInfo").description("description").deleted(true)
-                .accountList(Collections.singletonList(common00))
-                .boardList(Collections.singletonList(testBoardInfo))
-                .build();
-
-        addTestBoardInfo(testBoardInfo);
-        addTestPostInfo(testPostInfo);
-        addTestAccountGroupInfo(testAccountGroupInfo);
-        init();
-
-        Account account = getAccount(common00);
-        String postId = getPostId(testPostInfo);
-
-        IricomException iricomException = Assertions.assertThrows(IricomException.class, () -> {
-            postService.getPostInfo(account, postId, PostState.PUBLISH, true);
-        });
-
-        Assertions.assertEquals("03000000", iricomException.getErrorCode());
-        Assertions.assertEquals("Not exist board.", iricomException.getMessage());
     }
 }
