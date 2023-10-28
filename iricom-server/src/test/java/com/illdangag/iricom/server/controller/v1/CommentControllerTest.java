@@ -224,7 +224,7 @@ public class CommentControllerTest extends IricomTestSuite {
 
             mockMvc.perform(requestBuilder)
                     .andExpect(status().is(404))
-                    .andExpect(jsonPath("$.code").value("04000005"))
+                    .andExpect(jsonPath("$.code").value("04000000"))
                     .andDo(print());
         }
 

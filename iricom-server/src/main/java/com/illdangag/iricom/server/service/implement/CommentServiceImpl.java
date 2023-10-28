@@ -60,12 +60,16 @@ public class CommentServiceImpl extends IricomService implements CommentService 
             throw new IricomException(IricomErrorCode.DISABLED_BOARD);
         }
 
-        if (!board.equals(post.getBoard()) || post.getContent() == null) { // 게시판에 게시물이 존재하지 않거나 발행되지 않은 게시물인 경우
+        if (!post.isPublish()) { // 발행되지 않은 게시물인 경우
             throw new IricomException(IricomErrorCode.NOT_EXIST_POST);
         }
 
         if (!post.getContent().getAllowComment()) { // 댓글을 허용하지 않은 게시물인 경우
             throw new IricomException(IricomErrorCode.NOT_ALLOW_COMMENT);
+        }
+
+        if (this.isBanPost(post)) { // 차단된 게시물인 경우
+            throw new IricomException(IricomErrorCode.COMMENT_ON_BAN_POST);
         }
 
         Comment referenceComment = null;
@@ -119,8 +123,11 @@ public class CommentServiceImpl extends IricomService implements CommentService 
             throw new IricomException(IricomErrorCode.NOT_ALLOW_COMMENT);
         }
 
-        if (!comment.getAccount().equals(account)) {
-            // 다른 계정의 댓글을 수정하는 경우
+        if (this.isBanPost(post)) { // 차단된 게시물인 경우
+            throw new IricomException(IricomErrorCode.COMMENT_ON_BAN_POST);
+        }
+
+        if (!comment.getAccount().equals(account)) { // 다른 계정의 댓글을 수정하는 경우
             throw new IricomException(IricomErrorCode.INVALID_AUTHORIZATION_TO_UPDATE_COMMENT);
         }
 
@@ -158,6 +165,10 @@ public class CommentServiceImpl extends IricomService implements CommentService 
     @Override
     public CommentInfoList getComment(Account account, Board board, Post post, CommentInfoSearch commentInfoSearch) {
         this.validate(account, board, post);
+
+        if (this.isBanPost(post)) { // 차단된 게시물인 경우
+            throw new IricomException(IricomErrorCode.COMMENT_ON_BAN_POST);
+        }
 
         long total;
         List<Comment> commentList;
@@ -301,40 +312,14 @@ public class CommentServiceImpl extends IricomService implements CommentService 
         return new CommentInfo(comment, accountInfo, upvote, downvote, reportCount);
     }
 
-    private void validate(Account account, Board board, Post post) {
-        if (board.getUndisclosed()) {
-            if (account == null) {
-                throw new IricomException(IricomErrorCode.NOT_EXIST_BOARD);
-            }
-
-            List<Long> accessibleBoardIdList = this.boardRepository.getAccessibleBoardIdList(account);
-            if (!accessibleBoardIdList.contains(board.getId())) {
-                throw new IricomException(IricomErrorCode.NOT_EXIST_BOARD);
-            }
-        }
-
-        if (!post.getBoard().equals(board)) { // 해당 개시판에서 발행되지 않은 게시물
-            throw new IricomException(IricomErrorCode.NOT_EXIST_POST);
-        }
-
-        if (!post.isPublish()) { // 발행되지 않은 게시물
-            throw new IricomException(IricomErrorCode.NOT_EXIST_PUBLISH_CONTENT);
-        }
-
+    private boolean isBanPost(Post post) {
         Optional<PostBan> postBanOptional = this.banRepository.getPostBan(post);
-        if (postBanOptional.isPresent()) {
-            PostBan postBan = postBanOptional.get();
-            if (postBan.getEnabled()) {
-                throw new IricomException(IricomErrorCode.COMMENT_ON_BAN_POST);
-            }
-        }
-    }
 
-    private void validate(Account account, Board board, Post post, Comment comment) {
-        this.validate(account, board, post);
-
-        if (!comment.getPost().equals(post)) { // 해당 게시물에 작성된 댓글이 아닌 경우
-            throw new IricomException(IricomErrorCode.NOT_EXIST_COMMENT);
+        if (postBanOptional.isEmpty()) {
+            return false;
         }
+
+        PostBan postBan = postBanOptional.get();
+        return postBan.getEnabled();
     }
 }

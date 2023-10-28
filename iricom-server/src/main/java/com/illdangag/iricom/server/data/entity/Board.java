@@ -64,5 +64,4 @@ public class Board {
     public int hashCode() {
         return Objects.hashCode(this.id);
     }
-
 }

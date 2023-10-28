@@ -410,33 +410,4 @@ public class ReportServiceImpl extends IricomService implements ReportService {
         CommentInfo commentInfo = this.commentService.getComment(board, post, comment);
         return new CommentReportInfo(commentReport, commentInfo);
     }
-
-    private void validate(Account account, Board board) {
-        if (board.getUndisclosed()) {
-            if (account == null) {
-                throw new IricomException(IricomErrorCode.NOT_EXIST_BOARD);
-            }
-
-            List<Long> accessibleBoardIdList = this.boardRepository.getAccessibleBoardIdList(account);
-            if (!accessibleBoardIdList.contains(board.getId())) {
-                throw new IricomException(IricomErrorCode.NOT_EXIST_BOARD);
-            }
-        }
-    }
-
-    private void validate(Account account, Board board, Post post) {
-        this.validate(account, board);
-
-        if (!post.getBoard().equals(board)) { // 해당 개시판에서 발행되지 않은 게시물
-            throw new IricomException(IricomErrorCode.NOT_EXIST_POST);
-        }
-    }
-
-    private void validate(Account account, Board board, Post post, Comment comment) {
-        this.validate(account, board, post);
-
-        if (!comment.getPost().equals(post)) {
-            throw new IricomException(IricomErrorCode.NOT_EXIST_COMMENT);
-        }
-    }
 }

@@ -538,25 +538,4 @@ public class PostServiceImpl extends IricomService implements PostService {
         long postBanCount = this.banRepository.getPostBanCount(post);
         return postBanCount > 0;
     }
-
-    private void validate(Account account, Board board) {
-        if (board.getUndisclosed()) {
-            if (account == null) {
-                throw new IricomException(IricomErrorCode.NOT_EXIST_BOARD);
-            }
-
-            List<Long> accessibleBoardIdList = this.boardRepository.getAccessibleBoardIdList(account);
-            if (!accessibleBoardIdList.contains(board.getId())) {
-                throw new IricomException(IricomErrorCode.NOT_EXIST_BOARD);
-            }
-        }
-    }
-
-    private void validate(Account account, Board board, Post post) {
-        this.validate(account, board);
-
-        if (!post.getBoard().equals(board)) { // 해당 개시판에서 발행되지 않은 게시물
-            throw new IricomException(IricomErrorCode.NOT_EXIST_POST);
-        }
-    }
 }

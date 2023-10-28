@@ -10,6 +10,8 @@ import com.illdangag.iricom.server.data.response.BoardInfoList;
 import com.illdangag.iricom.server.exception.IricomErrorCode;
 import com.illdangag.iricom.server.exception.IricomException;
 import com.illdangag.iricom.server.repository.BoardRepository;
+import com.illdangag.iricom.server.repository.CommentRepository;
+import com.illdangag.iricom.server.repository.PostRepository;
 import com.illdangag.iricom.server.service.BoardAuthorizationService;
 import com.illdangag.iricom.server.service.BoardService;
 import lombok.extern.slf4j.Slf4j;
@@ -25,14 +27,13 @@ import java.util.stream.Collectors;
 @Slf4j
 @Validated
 @Service
-public class BoardServiceImpl implements BoardService {
-    private final BoardRepository boardRepository;
-
+public class BoardServiceImpl extends IricomService implements BoardService {
     private final BoardAuthorizationService boardAuthorizationService;
 
     @Autowired
-    public BoardServiceImpl(BoardRepository boardRepository, BoardAuthorizationService boardAuthorizationService) {
-        this.boardRepository = boardRepository;
+    public BoardServiceImpl(BoardRepository boardRepository, PostRepository postRepository, CommentRepository commentRepository,
+                            BoardAuthorizationService boardAuthorizationService) {
+        super(boardRepository, postRepository, commentRepository);
         this.boardAuthorizationService = boardAuthorizationService;
     }
 
@@ -150,30 +151,5 @@ public class BoardServiceImpl implements BoardService {
         this.boardRepository.save(board);
         boolean isAdmin = this.boardAuthorizationService.hasAuthorization(account, board);
         return new BoardInfo(board, isAdmin);
-    }
-
-    private Board getBoard(String id) {
-        long boardId = -1;
-        try {
-            boardId = Long.parseLong(id);
-        } catch (Exception exception) {
-            throw new IricomException(IricomErrorCode.NOT_EXIST_BOARD);
-        }
-
-        Optional<Board> boardOptional = this.boardRepository.getBoard(boardId);
-        return boardOptional.orElseThrow(() -> new IricomException(IricomErrorCode.NOT_EXIST_BOARD));
-    }
-
-    private void validate(Account account, Board board) {
-        if (board.getUndisclosed()) {
-            if (account == null) {
-                throw new IricomException(IricomErrorCode.NOT_EXIST_BOARD);
-            }
-
-            List<Long> accessibleBoardIdList = this.boardRepository.getAccessibleBoardIdList(account);
-            if (!accessibleBoardIdList.contains(board.getId())) {
-                throw new IricomException(IricomErrorCode.NOT_EXIST_BOARD);
-            }
-        }
     }
 }
