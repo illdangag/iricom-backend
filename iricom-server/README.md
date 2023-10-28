@@ -27,14 +27,6 @@ firebase에서 프로젝트를 생성 후 프로젝트 설정 페이지의 서�
 }
 ```
 
-### VM Option
-
-```
--Dspring.datasource.url=jdbc:mariadb://{HOST}:{PORT}/{DATABASE}
--Dspring.datasource.username={USERNAME}
--Dspring.datasource.password={PASSWORD}
-```
-
 ## 실행
 
 ```shell

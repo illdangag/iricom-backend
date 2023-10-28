@@ -349,7 +349,7 @@ public class CommentServiceImpl implements CommentService {
 
         Optional<PostBan> postBanOptional = this.banRepository.getPostBan(post);
         if (postBanOptional.isPresent()) {
-            PostBan postBan= postBanOptional.get();
+            PostBan postBan = postBanOptional.get();
             if (postBan.getEnabled()) {
                 throw new IricomException(IricomErrorCode.COMMENT_ON_BAN_POST);
             }

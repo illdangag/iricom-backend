@@ -4,7 +4,6 @@ import com.illdangag.iricom.server.test.data.ResponseField;
 import org.springframework.restdocs.payload.FieldDescriptor;
 import org.springframework.restdocs.payload.JsonFieldType;
 
-import java.io.FileDescriptor;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
