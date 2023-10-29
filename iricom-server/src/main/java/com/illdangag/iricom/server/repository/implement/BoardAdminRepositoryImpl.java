@@ -74,7 +74,7 @@ public class BoardAdminRepositoryImpl implements BoardAdminRepository {
         EntityManager entityManager = this.entityManagerFactory.createEntityManager();
 
         String jpql = "SELECT COUNT(*)" +
-                " FROM BoardAdmin ba" ;
+                " FROM BoardAdmin ba";
 
         if (account != null) {
             jpql += " WHERE ba.account = :account";
