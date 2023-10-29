@@ -18,6 +18,9 @@ import java.util.Objects;
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 @Entity
 @Table(indexes = {
+        @Index(name = "PostContent_title", columnList = "title"),
+        @Index(name = "PostContent_type", columnList = "type"),
+        @Index(name = "PostContent_titleAndType", columnList = "title,type"),
 })
 public class PostContent {
     @Id

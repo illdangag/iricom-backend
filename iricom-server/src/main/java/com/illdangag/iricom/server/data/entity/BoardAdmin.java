@@ -18,7 +18,6 @@ import java.time.LocalDateTime;
 @Entity
 @Audited
 @Table(indexes = {
-        @Index(name = "BoardAdmin_createDate", columnList = "createDate"),
 })
 public class BoardAdmin {
     @Id
