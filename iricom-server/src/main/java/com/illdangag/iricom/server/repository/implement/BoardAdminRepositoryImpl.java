@@ -117,6 +117,7 @@ public class BoardAdminRepositoryImpl implements BoardAdminRepository {
     public void save(BoardAdmin boardAdmin) {
         EntityManager entityManager = this.entityManagerFactory.createEntityManager();
         EntityTransaction transaction = entityManager.getTransaction();
+
         transaction.begin();
         if (boardAdmin.getId() == null) {
             entityManager.persist(boardAdmin);

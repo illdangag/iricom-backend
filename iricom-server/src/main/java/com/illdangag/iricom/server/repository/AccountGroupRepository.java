@@ -21,4 +21,6 @@ public interface AccountGroupRepository {
     List<AccountGroup> getAccountGroupList(int skip, int limit);
 
     long getAccountGroupCount();
+
+    void removeAccountGroup(AccountGroup accountGroup);
 }

@@ -12,9 +12,9 @@ import java.util.Objects;
 @Getter
 @Setter
 @Builder
+@ToString
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
-@ToString
 @Entity
 @Table(indexes = {
         @Index(name = "Board_createDate", columnList = "createDate"),

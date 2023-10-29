@@ -12,9 +12,9 @@ import java.time.LocalDateTime;
 @Getter
 @Setter
 @Builder
+@ToString
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
-@ToString
 @Entity
 @Table(indexes = {
         @Index(name = "PostReport_account_and_post", columnList = "report_account_id,post_id"),

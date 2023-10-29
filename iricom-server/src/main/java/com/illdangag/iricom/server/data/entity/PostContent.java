@@ -14,6 +14,7 @@ import java.util.Objects;
 @Getter
 @Setter
 @Builder(builderMethodName = "innerBuilder")
+@ToString
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 @Entity

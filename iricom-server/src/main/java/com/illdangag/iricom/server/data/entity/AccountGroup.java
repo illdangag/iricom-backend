@@ -3,6 +3,7 @@ package com.illdangag.iricom.server.data.entity;
 import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
+import org.hibernate.envers.Audited;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
@@ -11,13 +12,13 @@ import java.util.Objects;
 @Getter
 @Setter
 @Builder
+@ToString
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
-@ToString
 @Entity
+@Audited
 @Table(indexes = {
         @Index(name = "AccountGroup_enabled", columnList = "enabled"),
-        @Index(name = "AccountGroup_deleted", columnList = "deleted")
 })
 public class AccountGroup {
     @Id
@@ -40,9 +41,6 @@ public class AccountGroup {
 
     @Builder.Default
     private Boolean enabled = true;
-
-    @Builder.Default
-    private Boolean deleted = false;
 
     @Override
     public boolean equals(Object object) {

@@ -590,7 +590,6 @@ public abstract class IricomTestSuite {
                 .title(testAccountGroupInfo.getTitle())
                 .description(testAccountGroupInfo.getDescription())
                 .enabled(testAccountGroupInfo.getEnabled())
-                .deleted(false)
                 .build();
         List<AccountInAccountGroup> accountInAccountGroupList = testAccountGroupInfo.getAccountList().stream()
                 .map(this::getAccount)

@@ -178,7 +178,7 @@ public class AccountGroupRepositoryImpl implements AccountGroupRepository {
     @Override
     public List<AccountGroup> getAccountGroupList(int skip, int limit) {
         EntityManager entityManager = this.entityManagerFactory.createEntityManager();
-        final String jpql = "SELECT ag FROM AccountGroup ag WHERE ag.deleted = false";
+        final String jpql = "SELECT ag FROM AccountGroup ag";
 
         TypedQuery<AccountGroup> query = entityManager.createQuery(jpql, AccountGroup.class)
                 .setFirstResult(skip)
@@ -191,11 +191,31 @@ public class AccountGroupRepositoryImpl implements AccountGroupRepository {
     @Override
     public long getAccountGroupCount() {
         EntityManager entityManager = this.entityManagerFactory.createEntityManager();
-        final String jpql = "SELECT COUNT(*) FROM AccountGroup ag WHERE ag.deleted = false";
+        final String jpql = "SELECT COUNT(*) FROM AccountGroup ag";
 
         TypedQuery<Long> query = entityManager.createQuery(jpql, Long.class);
         long result = query.getSingleResult();
         entityManager.close();
         return result;
+    }
+
+    @Override
+    public void removeAccountGroup(AccountGroup accountGroup) {
+        EntityManager entityManager = this.entityManagerFactory.createEntityManager();
+
+        List<AccountInAccountGroup> dbAccountInAccountGroupList = this.getAccountInAccountGroupList(entityManager, accountGroup);
+        List<BoardInAccountGroup> dbBoardInAccountGroupList = this.getBoardInAccountGroupList(entityManager, accountGroup);
+
+        EntityTransaction entityTransaction = entityManager.getTransaction();
+        entityTransaction.begin();
+
+        dbAccountInAccountGroupList.forEach(entityManager::remove);
+        dbBoardInAccountGroupList.forEach(entityManager::remove);
+
+        AccountGroup dbAccountGroup = entityManager.find(AccountGroup.class, accountGroup.getId());
+        entityManager.remove(dbAccountGroup);
+
+        entityTransaction.commit();
+        entityManager.close();
     }
 }
