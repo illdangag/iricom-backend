@@ -17,7 +17,7 @@ public interface BoardAuthorizationService {
 
     BoardAdminInfo deleteBoardAdminAuth(@Valid BoardAdminInfoDelete boardAdminInfoDelete);
 
-    BoardAdminInfoList getBoardAdminInfoList(@Valid BoardAdminInfoSearch boardAdminInfoSearch);
+    BoardAdminInfoList getBoardAdminInfoList(Account account, @Valid BoardAdminInfoSearch boardAdminInfoSearch);
 
     BoardAdminInfo getBoardAdminInfo(String boardId);
 

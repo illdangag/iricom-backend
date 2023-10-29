@@ -3,6 +3,8 @@ package com.illdangag.iricom.server.controller.v1;
 import com.illdangag.iricom.server.configuration.annotation.ApiCallLog;
 import com.illdangag.iricom.server.configuration.annotation.Auth;
 import com.illdangag.iricom.server.configuration.annotation.AuthRole;
+import com.illdangag.iricom.server.configuration.annotation.RequestContext;
+import com.illdangag.iricom.server.data.entity.Account;
 import com.illdangag.iricom.server.data.request.BoardAdminInfoCreate;
 import com.illdangag.iricom.server.data.request.BoardAdminInfoDelete;
 import com.illdangag.iricom.server.data.request.BoardAdminInfoSearch;
@@ -51,7 +53,8 @@ public class BoardAuthorizationController {
     public ResponseEntity<BoardAdminInfoList> getBoardAdminAuthList(@RequestParam(name = "skip", defaultValue = "0", required = false) String skipVariable,
                                                                     @RequestParam(name = "limit", defaultValue = "20", required = false) String limitVariable,
                                                                     @RequestParam(name = "keyword", defaultValue = "", required = false) String keyword,
-                                                                    @RequestParam(name = "enabled", defaultValue = "", required = false) String enabledVariable) {
+                                                                    @RequestParam(name = "enabled", defaultValue = "", required = false) String enabledVariable,
+                                                                    @RequestContext Account account) {
         int skip;
         int limit;
         Boolean enabled = null;
@@ -89,7 +92,7 @@ public class BoardAuthorizationController {
                 .enabled(enabled)
                 .build();
 
-        BoardAdminInfoList boardAdminInfoList = this.boardAuthorizationService.getBoardAdminInfoList(boardAdminInfoSearch);
+        BoardAdminInfoList boardAdminInfoList = this.boardAuthorizationService.getBoardAdminInfoList(account, boardAdminInfoSearch);
         return ResponseEntity.status(HttpStatus.OK).body(boardAdminInfoList);
     }
 

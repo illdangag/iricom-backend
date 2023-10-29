@@ -224,12 +224,13 @@ public class AccountGroupServiceImpl implements AccountGroupService {
     private boolean validateBoard(List<String> idList) {
         List<Long> boardIdList;
         try {
-            boardIdList = idList.stream().map(Long::parseLong).collect(Collectors.toList());
+            boardIdList = idList.stream().map(Long::parseLong).distinct().collect(Collectors.toList());
         } catch (Exception exception) {
             throw new IricomException(IricomErrorCode.NOT_EXIST_BOARD);
         }
 
-        return this.boardRepository.existBoard(boardIdList);
+        List<Board> boardList = this.boardRepository.getBoardList(boardIdList);
+        return boardIdList.size() == boardList.size();
     }
 
     /**

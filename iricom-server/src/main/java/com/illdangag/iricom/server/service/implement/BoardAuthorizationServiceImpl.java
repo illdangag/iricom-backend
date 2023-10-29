@@ -109,18 +109,12 @@ public class BoardAuthorizationServiceImpl implements BoardAuthorizationService 
      * 게시판 관리자 목록 조회
      */
     @Override
-    public BoardAdminInfoList getBoardAdminInfoList(@Valid BoardAdminInfoSearch boardAdminInfoSearch) {
+    public BoardAdminInfoList getBoardAdminInfoList(Account account, @Valid BoardAdminInfoSearch boardAdminInfoSearch) {
         // 게시판 조회
         List<Board> boardList;
         long totalBoardCount;
-
-        if (boardAdminInfoSearch.getEnabled() != null) {
-            boardList = this.boardRepository.getBoardList(boardAdminInfoSearch.getKeyword(), boardAdminInfoSearch.getEnabled(), boardAdminInfoSearch.getSkip(), boardAdminInfoSearch.getLimit());
-            totalBoardCount = this.boardRepository.getBoardCount(boardAdminInfoSearch.getKeyword(), boardAdminInfoSearch.getEnabled());
-        } else {
-            boardList = this.boardRepository.getBoardList(boardAdminInfoSearch.getKeyword(), boardAdminInfoSearch.getSkip(), boardAdminInfoSearch.getLimit());
-            totalBoardCount = this.boardRepository.getBoardCount(boardAdminInfoSearch.getKeyword());
-        }
+        boardList = this.boardRepository.getBoardList(account, boardAdminInfoSearch.getKeyword(), boardAdminInfoSearch.getEnabled(), boardAdminInfoSearch.getSkip(), boardAdminInfoSearch.getLimit());
+        totalBoardCount = this.boardRepository.getBoardCount(account, boardAdminInfoSearch.getKeyword(), boardAdminInfoSearch.getEnabled());
 
         List<BoardAdmin> boardAdminList = this.boardAdminRepository.getBoardAdminList(boardList);
 
@@ -134,8 +128,8 @@ public class BoardAuthorizationServiceImpl implements BoardAuthorizationService 
             List<AccountInfo> accountInfoList = filteredBoardList.stream()
                     .filter(boardAdmin -> boardAdmin.getBoard().equals(board))
                     .map(boardAdmin -> {
-                        Account account = boardAdmin.getAccount();
-                        return this.accountService.getAccountInfo(account);
+                        Account boardAdminAccount = boardAdmin.getAccount();
+                        return this.accountService.getAccountInfo(boardAdminAccount);
                     }).sorted(Comparator.comparing(AccountInfo::getEmail)).collect(Collectors.toList());
             BoardAdminInfo boardAdminInfo = new BoardAdminInfo(board);
             boardAdminInfo.setAccountInfoList(accountInfoList);
@@ -163,27 +157,14 @@ public class BoardAuthorizationServiceImpl implements BoardAuthorizationService 
 
         List<BoardInfo> boardInfoList = null;
         long total = 0;
-        if (account.getAuth() == AccountAuth.SYSTEM_ADMIN) { // 시스템 관리자인 경우
-            // 모든 게시판을 반환
-            List<Board> boardList = this.boardRepository.getBoardList(null, skip, limit);
-            total = this.boardRepository.getBoardCount(null);
 
-            boardInfoList = boardList.stream()
-                    .map((board) -> {
-                        return new BoardInfo(board, null);
-                    })
-                    .collect(Collectors.toList());
-        } else {
-            List<BoardAdmin> boardAdminList = this.boardAdminRepository.getLastBoardAdminList(account, false, skip, limit);
-            total = this.boardAdminRepository.getLastBoardAdminCount(account, false);
-
-            boardInfoList = boardAdminList.stream()
-                    .map(BoardAdmin::getBoard)
-                    .map((board) -> {
-                        return new BoardInfo(board, null);
-                    })
-                    .collect(Collectors.toList());
-        }
+        List<Board> boardList = this.boardRepository.getBoardList(account, null, null, skip, limit);
+        total = this.boardRepository.getBoardCount(account, null, null);
+        boardInfoList = boardList.stream()
+                .map((board) -> {
+                    return new BoardInfo(board, null);
+                })
+                .collect(Collectors.toList());
 
         return BoardInfoList.builder()
                 .boardInfoList(boardInfoList)

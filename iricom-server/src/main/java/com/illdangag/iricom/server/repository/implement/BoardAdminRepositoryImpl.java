@@ -7,12 +7,13 @@ import com.illdangag.iricom.server.repository.BoardAdminRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
-import javax.persistence.*;
+import javax.persistence.EntityManager;
+import javax.persistence.EntityManagerFactory;
+import javax.persistence.EntityTransaction;
+import javax.persistence.TypedQuery;
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.Map;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 // TODO 유효한 게시판 관리자 목록 메서드 정리
 @Repository
@@ -39,15 +40,13 @@ public class BoardAdminRepositoryImpl implements BoardAdminRepository {
     }
 
     private List<LocalDateTime> getLastBoardAdminCreateDateList(EntityManager entityManager, Account account) {
-        final String maxJpql = "SELECT new Map(ba.account AS account, ba.board AS board, MAX(ba.createDate) AS createDate)" +
+        final String maxJpql = "SELECT MAX(ba.createDate) AS createDate" +
                 " FROM BoardAdmin ba" +
                 " WHERE ba.account = :account" +
                 " GROUP BY ba.account, ba.board";
-        Query query = entityManager.createQuery(maxJpql)
+        TypedQuery<LocalDateTime> query = entityManager.createQuery(maxJpql, LocalDateTime.class)
                 .setParameter("account", account);
-        List<Map<String, Object>> maxCreateDateResultList = query.getResultList();
-        return maxCreateDateResultList.stream().map(item -> (LocalDateTime) item.get("createDate"))
-                .collect(Collectors.toList());
+        return query.getResultList();
     }
 
     @Override

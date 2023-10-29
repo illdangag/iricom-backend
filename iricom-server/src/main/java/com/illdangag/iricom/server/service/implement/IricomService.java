@@ -81,8 +81,8 @@ public abstract class IricomService {
             }
 
             // 계정이 접근 가능한 게시판 목록을 조회
-            List<Long> accessibleBoardIdList = this.boardRepository.getAccessibleBoardIdList(account);
-            if (!accessibleBoardIdList.contains(board.getId())) {
+            List<Board> accessibleBoardList = this.boardRepository.getBoardList(account, null, null, null, null);
+            if (!accessibleBoardList.contains(board)) {
                 throw new IricomException(IricomErrorCode.NOT_EXIST_BOARD);
             }
         }

@@ -8,39 +8,24 @@ import java.util.Optional;
 
 public interface BoardRepository {
     /**
-     * 게시판 상태와 무관하게 게시판을 조회
+     * 게시판 조회
      */
-    Optional<Board> getBoard(long id);
+    Optional<Board> getBoard(Long id);
+
+    List<Board> getBoardList(List<Long> idList);
 
     /**
-     * 공개 게시판 기준으로 게시판 조회
+     * 게시판 저장
      */
-    Optional<Board> getDisclosedBoard(long id);
-
-    /**
-     * 공개 게시판과 사용자가 접근 가능한 게시판 조회
-     */
-    Optional<Board> getDisclosedBoard(Account account, long id);
-
-    List<Board> getBoardList(String title, int offset, int limit);
-
-    long getBoardCount(String title);
-
-    List<Board> getBoardList(String title, boolean enabled, int offset, int limit);
-
-    long getBoardCount(String title, boolean enabled);
-
-    List<Board> getBoardList(Account account, String title, boolean enabled, int offset, int limit);
-
-    long getBoardCount(Account account, String title, boolean enabled);
-
-    List<Board> getBoardList(Account account, String title, int offset, int limit);
-
-    long getBoardCount(Account account, String title);
-
-    List<Long> getAccessibleBoardIdList(Account account);
-
-    boolean existBoard(List<Long> boardIdList);
-
     void save(Board board);
+
+    /**
+     * 게시판 목록 조회
+     */
+    List<Board> getBoardList(Account account, String title, Boolean enabled, Integer offset, Integer limit);
+
+    /**
+     * 게시판 목록 수
+     */
+    long getBoardCount(Account account, String title, Boolean enabled);
 }

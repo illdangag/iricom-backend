@@ -508,7 +508,10 @@ public class PostServiceImpl extends IricomService implements PostService {
      */
     @Override
     public PostInfoList getPostInfoList(Account account, PostInfoSearch postInfoSearch) {
-        List<Long> accessibleBoardIdList = this.boardRepository.getAccessibleBoardIdList(account);
+        List<Board> accessibleBoardList = this.boardRepository.getBoardList(account, null, null, null, null);
+        List<Long> accessibleBoardIdList = accessibleBoardList.stream()
+                .map(Board::getId)
+                .collect(Collectors.toList());
         List<Post> postList = this.postRepository.getPostList(account, accessibleBoardIdList, postInfoSearch.getSkip(), postInfoSearch.getLimit());
         long totalPostCount = this.postRepository.getPostCount(account, accessibleBoardIdList);
 

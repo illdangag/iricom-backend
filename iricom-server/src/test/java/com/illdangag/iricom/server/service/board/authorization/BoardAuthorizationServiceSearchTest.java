@@ -1,5 +1,6 @@
 package com.illdangag.iricom.server.service.board.authorization;
 
+import com.illdangag.iricom.server.data.entity.Account;
 import com.illdangag.iricom.server.data.request.BoardAdminInfoSearch;
 import com.illdangag.iricom.server.data.response.BoardAdminInfoList;
 import com.illdangag.iricom.server.service.BoardAuthorizationService;
@@ -47,11 +48,12 @@ public class BoardAuthorizationServiceSearchTest extends IricomTestSuite {
     @Test
     @DisplayName("검색")
     public void searchBoardAdmin() {
+        Account account = getAccount(systemAdmin);
         BoardAdminInfoSearch boardAdminInfoSearch = BoardAdminInfoSearch.builder()
                 .keyword("search test 00 keyword")
                 .build();
 
-        BoardAdminInfoList boardAdminInfoList = this.boardAuthorizationService.getBoardAdminInfoList(boardAdminInfoSearch);
+        BoardAdminInfoList boardAdminInfoList = this.boardAuthorizationService.getBoardAdminInfoList(account, boardAdminInfoSearch);
 
         Assertions.assertNotEquals(0, boardAdminInfoList.getTotal());
     }
@@ -59,11 +61,12 @@ public class BoardAuthorizationServiceSearchTest extends IricomTestSuite {
     @Test
     @DisplayName("keyword 빈 문자열")
     public void emptyKeyword() {
+        Account account = getAccount(systemAdmin);
         BoardAdminInfoSearch boardAdminInfoSearch = BoardAdminInfoSearch.builder()
                 .keyword("")
                 .build();
 
-        BoardAdminInfoList boardAdminInfoList = this.boardAuthorizationService.getBoardAdminInfoList(boardAdminInfoSearch);
+        BoardAdminInfoList boardAdminInfoList = this.boardAuthorizationService.getBoardAdminInfoList(account, boardAdminInfoSearch);
 
         Assertions.assertNotEquals(0, boardAdminInfoList.getTotal());
     }
