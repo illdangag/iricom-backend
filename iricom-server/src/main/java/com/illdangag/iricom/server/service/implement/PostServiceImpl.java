@@ -555,8 +555,7 @@ public class PostServiceImpl extends IricomService implements PostService {
             return false;
         }
 
-        BoardAdmin boardAdmin = boardAdminOptional.get();
-        return !boardAdmin.getDeleted();
+        return boardAdminOptional.isPresent();
     }
 
     /**

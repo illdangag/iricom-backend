@@ -55,11 +55,10 @@ public class BoardAuthorizationServiceImpl implements BoardAuthorizationService 
 
         // 해당 게시판에 관리자로 이미 추가된 경우에는 추가로 등록하지 않도록 함
         Optional<BoardAdmin> boardAdminOptional = this.boardAdminRepository.getBoardAdmin(board, account);
-        if (boardAdminOptional.isEmpty() || boardAdminOptional.get().getDeleted()) { // 이전에 해당 게시판에 권한을 추가한 적이 없거나 해당 게시판의 권한이 삭제 되었다면
+        if (boardAdminOptional.isEmpty()) {
             BoardAdmin boardAdmin = BoardAdmin.builder()
                     .account(account)
                     .board(board)
-                    .deleted(false)
                     .build();
             this.boardAdminRepository.save(boardAdmin);
         }
@@ -83,22 +82,17 @@ public class BoardAuthorizationServiceImpl implements BoardAuthorizationService 
 
         // 이미 동일 계정과 게시판으로 권한이 있는 경우 권한을 삭제
         Optional<BoardAdmin> boardAdminOptional = this.boardAdminRepository.getBoardAdmin(board, account);
-        if (boardAdminOptional.isPresent() && !boardAdminOptional.get().getDeleted()) {
-            // 이전에 해당 게시판에 권한이 추가 되었다면
-            BoardAdmin boardAdmin = BoardAdmin.builder()
-                    .account(account)
-                    .board(board)
-                    .deleted(true)
-                    .build();
-            this.boardAdminRepository.save(boardAdmin);
+        if (boardAdminOptional.isPresent()) {
+            BoardAdmin boardAdmin = boardAdminOptional.get();
+            this.boardAdminRepository.delete(boardAdmin);
         }
 
-        // 게시판 관리자 권한이 남아 있지 않은 경우
-        // 계정 정보를 일반 계정으로 수정
-        List<BoardAdmin> boardAdminList = this.boardAdminRepository.getLastBoardAdminList(account);
-        boolean isBoardAdmin = boardAdminList.stream().anyMatch(boardAdmin -> boardAdmin.getDeleted() == false);
-        if (!isBoardAdmin) {
+        List<BoardAdmin> boardAdminList = this.boardAdminRepository.getBoardAdminList(account, null, null);
+        if (boardAdminList.isEmpty()) { // 관리자 권한이 남아 있지 않은 경우
             account.setAuth(AccountAuth.ACCOUNT);
+            this.accountService.saveAccount(account);
+        } else if (account.getAuth() == AccountAuth.ACCOUNT) { // 관리자 권한이 남아 있는데 계정 권한이 일반 계정인 경우
+            account.setAuth(AccountAuth.BOARD_ADMIN);
             this.accountService.saveAccount(account);
         }
 
@@ -118,14 +112,9 @@ public class BoardAuthorizationServiceImpl implements BoardAuthorizationService 
 
         List<BoardAdmin> boardAdminList = this.boardAdminRepository.getBoardAdminList(boardList);
 
-        Set<BoardAdmin> filteredBoardAdminSet = new LinkedHashSet<>(boardAdminList);
-        List<BoardAdmin> filteredBoardList = filteredBoardAdminSet.stream()
-                .filter(boardAdmin -> !boardAdmin.getDeleted())
-                .collect(Collectors.toList()); // 유효한 게시판 관리자 목록
-
         List<BoardAdminInfo> boardAdminInfoList = new LinkedList<>();
         for (Board board : boardList) {
-            List<AccountInfo> accountInfoList = filteredBoardList.stream()
+            List<AccountInfo> accountInfoList = boardAdminList.stream()
                     .filter(boardAdmin -> boardAdmin.getBoard().equals(board))
                     .map(boardAdmin -> {
                         Account boardAdminAccount = boardAdmin.getAccount();
@@ -184,7 +173,6 @@ public class BoardAuthorizationServiceImpl implements BoardAuthorizationService 
                         return item1.getCreateDate().compareTo(item2.getCreateDate()) * -1;
                     }).collect(Collectors.toSet());
             List<AccountInfo> accountInfoList = boardAdminSet.stream()
-                    .filter(boardAdmin -> !boardAdmin.getDeleted())
                     .map(BoardAdmin::getAccount)
                     .map(this.accountService::getAccountInfo)
                     .collect(Collectors.toList());
@@ -202,7 +190,7 @@ public class BoardAuthorizationServiceImpl implements BoardAuthorizationService 
             return true;
         }
 
-        Optional<BoardAdmin> boardAdminOptional = this.boardAdminRepository.getLastBoardAdmin(account, board, false);
+        Optional<BoardAdmin> boardAdminOptional = this.boardAdminRepository.getBoardAdmin(board, account);
         if (boardAdminOptional.isEmpty()) {
             return false;
         } else {

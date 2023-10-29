@@ -75,7 +75,7 @@ public abstract class IricomService {
                 return;
             }
 
-            Optional<BoardAdmin> boardAdminOptional = this.boardAdminRepository.getEnableBoardAdmin(board, account);
+            Optional<BoardAdmin> boardAdminOptional = this.boardAdminRepository.getBoardAdmin(board, account);
             if (boardAdminOptional.isPresent()) {
                 return;
             }

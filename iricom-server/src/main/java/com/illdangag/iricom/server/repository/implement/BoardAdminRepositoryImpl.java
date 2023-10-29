@@ -11,11 +11,9 @@ import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.EntityTransaction;
 import javax.persistence.TypedQuery;
-import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
-// TODO 유효한 게시판 관리자 목록 메서드 정리
 @Repository
 public class BoardAdminRepositoryImpl implements BoardAdminRepository {
     private final EntityManagerFactory entityManagerFactory;
@@ -28,85 +26,43 @@ public class BoardAdminRepositoryImpl implements BoardAdminRepository {
     @Override
     public List<BoardAdmin> getBoardAdminList(List<Board> boardList) {
         EntityManager entityManager = this.entityManagerFactory.createEntityManager();
+
         final String jpql = "SELECT ba FROM BoardAdmin ba" +
                 " WHERE ba.board IN :boards" +
                 " ORDER BY ba.board.title ASC, ba.account.email ASC, ba.createDate DESC";
 
-        TypedQuery<BoardAdmin> query = entityManager.createQuery(jpql, BoardAdmin.class);
-        query.setParameter("boards", boardList);
+        TypedQuery<BoardAdmin> query = entityManager.createQuery(jpql, BoardAdmin.class)
+                .setParameter("boards", boardList);
+
         List<BoardAdmin> resultList = query.getResultList();
         entityManager.close();
         return resultList;
     }
 
-    private List<LocalDateTime> getLastBoardAdminCreateDateList(EntityManager entityManager, Account account) {
-        final String maxJpql = "SELECT MAX(ba.createDate) AS createDate" +
-                " FROM BoardAdmin ba" +
-                " WHERE ba.account = :account" +
-                " GROUP BY ba.account, ba.board";
-        TypedQuery<LocalDateTime> query = entityManager.createQuery(maxJpql, LocalDateTime.class)
-                .setParameter("account", account);
-        return query.getResultList();
-    }
-
     @Override
-    public List<BoardAdmin> getLastBoardAdminList(Account account) {
+    public List<BoardAdmin> getBoardAdminList(Account account, Integer offset, Integer limit) {
         EntityManager entityManager = this.entityManagerFactory.createEntityManager();
-        List<LocalDateTime> createDateList = this.getLastBoardAdminCreateDateList(entityManager, account);
 
-        final String jpql = "SELECT ba" +
-                " FROM BoardAdmin ba" +
-                " WHERE ba.account = :account" +
-                " AND ba.createDate IN :createDateList";
-        TypedQuery<BoardAdmin> query = entityManager.createQuery(jpql, BoardAdmin.class)
-                .setParameter("account", account)
-                .setParameter("createDateList", createDateList);
-        List<BoardAdmin> boardAdminList = query.getResultList();
-        entityManager.close();
-        return boardAdminList;
-    }
+        String jpql = "SELECT ba" +
+                " FROM BoardAdmin ba";
 
-    @Override
-    public Optional<BoardAdmin> getLastBoardAdmin(Account account, Board board, boolean deleted) {
-        EntityManager entityManager = this.entityManagerFactory.createEntityManager();
-        List<LocalDateTime> createDateList = this.getLastBoardAdminCreateDateList(entityManager, account);
-
-        final String jpql = "SELECT ba" +
-                " FROM BoardAdmin ba" +
-                " WHERE ba.account = :account" +
-                " AND ba.board = :board " +
-                " AND ba.deleted = :deleted" +
-                " AND ba.createDate IN :createDateList";
-        TypedQuery<BoardAdmin> query = entityManager.createQuery(jpql, BoardAdmin.class)
-                .setParameter("account", account)
-                .setParameter("board", board)
-                .setParameter("deleted", deleted)
-                .setParameter("createDateList", createDateList);
-        List<BoardAdmin> boardAdminList = query.getResultList();
-        entityManager.close();
-        if (boardAdminList.isEmpty()) {
-            return Optional.empty();
-        } else {
-            return Optional.of(boardAdminList.get(0));
+        if (account != null) {
+            jpql += " WHERE ba.account = :account";
         }
-    }
 
-    @Override
-    public List<BoardAdmin> getLastBoardAdminList(Account account, boolean deleted, int offset, int limit) {
-        EntityManager entityManager = this.entityManagerFactory.createEntityManager();
-        List<LocalDateTime> createDateList = this.getLastBoardAdminCreateDateList(entityManager, account);
+        TypedQuery<BoardAdmin> query = entityManager.createQuery(jpql, BoardAdmin.class);
 
-        final String jpql = "SELECT ba" +
-                " FROM BoardAdmin ba" +
-                " WHERE ba.account = :account" +
-                " AND ba.createDate IN :createDateList" +
-                " AND ba.deleted = :deleted";
-        TypedQuery<BoardAdmin> query = entityManager.createQuery(jpql, BoardAdmin.class)
-                .setParameter("account", account)
-                .setParameter("createDateList", createDateList)
-                .setParameter("deleted", deleted)
-                .setFirstResult(offset)
-                .setMaxResults(limit);
+        if (account != null) {
+            query.setParameter("account", account);
+        }
+
+        if (offset != null) {
+            query.setFirstResult(offset);
+        }
+
+        if (limit != null) {
+            query.setMaxResults(limit);
+        }
 
         List<BoardAdmin> boardAdminList = query.getResultList();
         entityManager.close();
@@ -114,39 +70,25 @@ public class BoardAdminRepositoryImpl implements BoardAdminRepository {
     }
 
     @Override
-    public long getLastBoardAdminCount(Account account, boolean deleted) {
+    public long getBoardAdminCount(Account account) {
         EntityManager entityManager = this.entityManagerFactory.createEntityManager();
-        List<LocalDateTime> createDateList = this.getLastBoardAdminCreateDateList(entityManager, account);
 
-        final String jpql = "SELECT COUNT(*)" +
-                " FROM BoardAdmin ba" +
-                " WHERE ba.account = :account" +
-                " AND ba.createDate IN :createDateList" +
-                " AND ba.deleted = :deleted";
-        TypedQuery<Long> countQuery = entityManager.createQuery(jpql, Long.class)
-                .setParameter("account", account)
-                .setParameter("createDateList", createDateList)
-                .setParameter("deleted", deleted);
+        String jpql = "SELECT COUNT(*)" +
+                " FROM BoardAdmin ba" ;
+
+        if (account != null) {
+            jpql += " WHERE ba.account = :account";
+        }
+
+        TypedQuery<Long> countQuery = entityManager.createQuery(jpql, Long.class);
+
+        if (account != null) {
+            countQuery.setParameter("account", account);
+        }
 
         long result = countQuery.getSingleResult();
         entityManager.close();
         return result;
-    }
-
-    @Override
-    public List<BoardAdmin> getBoardAdminList(Account account, boolean deleted) {
-        EntityManager entityManager = this.entityManagerFactory.createEntityManager();
-        final String jpql = "SELECT ba FROM BoardAdmin ba" +
-                " WHERE ba.account = :account" +
-                " AND ba.deleted = :deleted" +
-                " ORDER BY ba.createDate DESC";
-
-        TypedQuery<BoardAdmin> query = entityManager.createQuery(jpql, BoardAdmin.class)
-                .setParameter("account", account)
-                .setParameter("deleted", deleted);
-        List<BoardAdmin> resultList = query.getResultList();
-        entityManager.close();
-        return resultList;
     }
 
     @Override
@@ -166,19 +108,6 @@ public class BoardAdminRepositoryImpl implements BoardAdminRepository {
     }
 
     @Override
-    public Optional<BoardAdmin> getEnableBoardAdmin(Board board, Account account) {
-        BoardAdmin boardAdmin = null;
-
-        List<BoardAdmin> boardAdminList = this.getBoardAdminList(board, account);
-
-        if (!boardAdminList.isEmpty() && !boardAdminList.get(0).getDeleted()) {
-            boardAdmin = boardAdminList.get(0);
-        }
-
-        return Optional.ofNullable(boardAdmin);
-    }
-
-    @Override
     public Optional<BoardAdmin> getBoardAdmin(Board board, Account account) {
         List<BoardAdmin> boardAdminList = this.getBoardAdminList(board, account);
         return boardAdminList.isEmpty() ? Optional.empty() : Optional.of(boardAdminList.get(0));
@@ -194,6 +123,18 @@ public class BoardAdminRepositoryImpl implements BoardAdminRepository {
         } else {
             entityManager.merge(boardAdmin);
         }
+        transaction.commit();
+        entityManager.close();
+    }
+
+    @Override
+    public void delete(BoardAdmin boardAdmin) {
+        EntityManager entityManager = this.entityManagerFactory.createEntityManager();
+        EntityTransaction transaction = entityManager.getTransaction();
+
+        transaction.begin();
+        BoardAdmin entity = entityManager.find(BoardAdmin.class, boardAdmin.getId());
+        entityManager.remove(entity);
         transaction.commit();
         entityManager.close();
     }

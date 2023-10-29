@@ -119,7 +119,7 @@ public class FirebaseAuthInterceptor implements HandlerInterceptor {
     }
 
     private List<Board> checkBoardAdmin(Account account) {
-        List<BoardAdmin> boardAdminList = this.boardAdminRepository.getBoardAdminList(account, false);
+        List<BoardAdmin> boardAdminList = this.boardAdminRepository.getBoardAdminList(account, null, null);
         Set<BoardAdmin> set = new LinkedHashSet<>(boardAdminList);
         List<Board> boardList = set.stream()
                 .map(BoardAdmin::getBoard)

@@ -13,7 +13,6 @@ import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.EntityTransaction;
 import javax.persistence.TypedQuery;
-import java.time.LocalDateTime;
 import java.util.*;
 
 @Slf4j
@@ -201,27 +200,14 @@ public class BoardRepositoryImpl implements BoardRepository {
     }
 
     private List<Long> getBoardAdminBoardIdList(EntityManager entityManager, Account account) {
-        List<LocalDateTime> createDateList = this.getLastBoardAdminCreateDateList(entityManager, account);
 
         final String jpql = "SELECT ba.board.id" +
                 " FROM BoardAdmin ba" +
-                " WHERE ba.account = :account" +
-                " AND ba.createDate IN :createDateList" +
-                " AND ba.deleted = false";
+                " WHERE ba.account = :account";
 
         TypedQuery<Long> query = entityManager.createQuery(jpql, Long.class)
-                .setParameter("account", account)
-                .setParameter("createDateList", createDateList);
-        return query.getResultList();
-    }
-
-    private List<LocalDateTime> getLastBoardAdminCreateDateList(EntityManager entityManager, Account account) {
-        final String maxJpql = "SELECT MAX(ba.createDate) AS createDate" +
-                " FROM BoardAdmin ba" +
-                " WHERE ba.account = :account" +
-                " GROUP BY ba.account, ba.board";
-        TypedQuery<LocalDateTime> query = entityManager.createQuery(maxJpql, LocalDateTime.class)
                 .setParameter("account", account);
+
         return query.getResultList();
     }
 

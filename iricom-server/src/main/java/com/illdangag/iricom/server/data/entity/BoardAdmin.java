@@ -3,6 +3,9 @@ package com.illdangag.iricom.server.data.entity;
 import com.google.common.base.Objects;
 import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.UpdateTimestamp;
+import org.hibernate.envers.Audited;
+import org.hibernate.envers.NotAudited;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
@@ -13,19 +16,21 @@ import java.time.LocalDateTime;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 @Entity
+@Audited
 @Table(indexes = {
         @Index(name = "BoardAdmin_createDate", columnList = "createDate"),
-        @Index(name = "BoardAdmin_deleted", columnList = "deleted"),
 })
 public class BoardAdmin {
     @Id
     @GeneratedValue
     private Long id;
 
+    @NotAudited
     @OneToOne
     @JoinColumn(name = "account_id")
     private Account account;
 
+    @NotAudited
     @OneToOne
     @JoinColumn(name = "board_id")
     private Board board;
@@ -35,7 +40,8 @@ public class BoardAdmin {
     private LocalDateTime createDate = LocalDateTime.now();
 
     @Builder.Default
-    private Boolean deleted = false;
+    @UpdateTimestamp
+    private LocalDateTime updateDate = LocalDateTime.now();
 
     @Override
     public boolean equals(Object object) {
