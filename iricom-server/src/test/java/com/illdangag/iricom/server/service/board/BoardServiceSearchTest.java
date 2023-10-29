@@ -15,6 +15,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -27,14 +28,20 @@ public class BoardServiceSearchTest extends IricomTestSuite {
 
     // 공개 게시판 목록
     private final TestBoardInfo disclosedBoard00 = TestBoardInfo.builder()
-            .title("disclosedBoard00").isEnabled(true).undisclosed(false).adminList(Collections.singletonList(allBoardAdmin)).build();
+            .title("disclosedBoard00").isEnabled(true).undisclosed(false)
+            .adminList(Collections.singletonList(allBoardAdmin)).build();
+
     // 비공게 게시판 목록
     private final TestBoardInfo undisclosedBoard00 = TestBoardInfo.builder()
-            .title("undisclosedBoard00").isEnabled(true).undisclosed(true).adminList(Collections.singletonList(allBoardAdmin)).build();
+            .title("undisclosedBoard00").isEnabled(true).undisclosed(true)
+            .adminList(Arrays.asList(allBoardAdmin, common01)).build();
     private final TestBoardInfo undisclosedBoard01 = TestBoardInfo.builder()
-            .title("undisclosedBoard01").isEnabled(true).undisclosed(true).adminList(Collections.singletonList(allBoardAdmin)).build();
+            .title("undisclosedBoard01").isEnabled(true).undisclosed(true)
+            .adminList(Collections.singletonList(allBoardAdmin)).build();
     private final TestBoardInfo undisclosedBoard02 = TestBoardInfo.builder()
-            .title("undisclosedBoard02").isEnabled(true).undisclosed(true).adminList(Collections.singletonList(allBoardAdmin)).build();
+            .title("undisclosedBoard02").isEnabled(true).undisclosed(true)
+            .adminList(Collections.singletonList(allBoardAdmin)).build();
+
     // 계정 그룹
     private final TestAccountGroupInfo testAccountGroupInfo00 = TestAccountGroupInfo.builder()
             .title("testAccountGroupInfo00").description("description").deleted(false)
@@ -95,7 +102,7 @@ public class BoardServiceSearchTest extends IricomTestSuite {
     @DisplayName("삭제된 계정 그룹에 포함된 게시판 목록 조회")
     public void searchDisclosedBoardAndDeletedAccountGroupBoardList() throws Exception {
         Account account = getAccount(common01);
-        String undisclosedBoardId = String.valueOf(getBoardId(undisclosedBoard02));
+        String undisclosedBoardId = getBoardId(undisclosedBoard02);
 
         List<String> list = getAllList(BoardInfoSearch.builder().build(), searchRequest -> {
             BoardInfoSearch boardInfoSearch = (BoardInfoSearch) searchRequest;
@@ -106,5 +113,22 @@ public class BoardServiceSearchTest extends IricomTestSuite {
         });
 
         Assertions.assertFalse(list.contains(undisclosedBoardId));
+    }
+
+    @Test
+    @DisplayName("비공개 게시판 관리자가 비공개 게시판 목록 조회")
+    public void searchDisclosedBoardListByBoardAdmin() throws Exception {
+        Account account = getAccount(common01);
+        String undisclosedBoardId = getBoardId(undisclosedBoard00);
+
+        List<String> list = getAllList(BoardInfoSearch.builder().build(), searchRequest -> {
+            BoardInfoSearch boardInfoSearch = (BoardInfoSearch) searchRequest;
+            BoardInfoList boardInfoList = boardService.getBoardInfoList(account, boardInfoSearch);
+            return boardInfoList.getBoardInfoList().stream()
+                    .map(BoardInfo::getId)
+                    .collect(Collectors.toList());
+        });
+
+        Assertions.assertTrue(list.contains(undisclosedBoardId));
     }
 }

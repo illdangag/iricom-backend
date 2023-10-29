@@ -13,10 +13,7 @@ import com.illdangag.iricom.server.data.response.PostBanInfoList;
 import com.illdangag.iricom.server.data.response.PostInfo;
 import com.illdangag.iricom.server.exception.IricomErrorCode;
 import com.illdangag.iricom.server.exception.IricomException;
-import com.illdangag.iricom.server.repository.BanRepository;
-import com.illdangag.iricom.server.repository.BoardRepository;
-import com.illdangag.iricom.server.repository.CommentRepository;
-import com.illdangag.iricom.server.repository.PostRepository;
+import com.illdangag.iricom.server.repository.*;
 import com.illdangag.iricom.server.service.BanService;
 import com.illdangag.iricom.server.service.BoardAuthorizationService;
 import com.illdangag.iricom.server.service.PostService;
@@ -38,8 +35,9 @@ public class BanServiceImpl extends IricomService implements BanService {
 
     @Autowired
     public BanServiceImpl(PostRepository postRepository, BanRepository banRepository, BoardRepository boardRepository,
-                          BoardAuthorizationService boardAuthorizationService, PostService postService, CommentRepository commentRepository) {
-        super(boardRepository, postRepository, commentRepository);
+                          BoardAuthorizationService boardAuthorizationService, PostService postService, CommentRepository commentRepository,
+                          BoardAdminRepository boardAdminRepository) {
+        super(boardRepository, postRepository, commentRepository, boardAdminRepository);
         this.banRepository = banRepository;
         this.boardAuthorizationService = boardAuthorizationService;
         this.postService = postService;

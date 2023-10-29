@@ -10,10 +10,7 @@ import com.illdangag.iricom.server.data.request.PostReportInfoSearch;
 import com.illdangag.iricom.server.data.response.*;
 import com.illdangag.iricom.server.exception.IricomErrorCode;
 import com.illdangag.iricom.server.exception.IricomException;
-import com.illdangag.iricom.server.repository.BoardRepository;
-import com.illdangag.iricom.server.repository.CommentRepository;
-import com.illdangag.iricom.server.repository.PostRepository;
-import com.illdangag.iricom.server.repository.ReportRepository;
+import com.illdangag.iricom.server.repository.*;
 import com.illdangag.iricom.server.service.BoardAuthorizationService;
 import com.illdangag.iricom.server.service.CommentService;
 import com.illdangag.iricom.server.service.PostService;
@@ -37,9 +34,9 @@ public class ReportServiceImpl extends IricomService implements ReportService {
 
     @Autowired
     private ReportServiceImpl(ReportRepository reportRepository, PostRepository postRepository, BoardRepository boardRepository,
-                              CommentRepository commentRepository,
+                              CommentRepository commentRepository, BoardAdminRepository boardAdminRepository,
                               PostService postService, CommentService commentService, BoardAuthorizationService boardAuthorizationService) {
-        super(boardRepository, postRepository, commentRepository);
+        super(boardRepository, postRepository, commentRepository, boardAdminRepository);
         this.reportRepository = reportRepository;
 
         this.postService = postService;

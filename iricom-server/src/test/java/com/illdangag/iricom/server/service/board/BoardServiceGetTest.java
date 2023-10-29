@@ -22,6 +22,7 @@ import java.util.Collections;
 public class BoardServiceGetTest extends IricomTestSuite {
     @Autowired
     private BoardService boardService;
+
     // 게시판
     private final TestBoardInfo disclosedBoard00 = TestBoardInfo.builder()
             .title("disclosedBoard00").isEnabled(true).undisclosed(false)
@@ -29,12 +30,13 @@ public class BoardServiceGetTest extends IricomTestSuite {
     private final TestBoardInfo undisclosedBoard00 = TestBoardInfo.builder()
             .title("undisclosedBoard00").isEnabled(true).undisclosed(true)
             .adminList(Collections.singletonList(allBoardAdmin)).build();
-    private final TestBoardInfo undisclosedBoard03 = TestBoardInfo.builder()
-            .title("undisclosedBoard03").isEnabled(true).undisclosed(true)
-            .adminList(Collections.singletonList(allBoardAdmin)).build();
     private final TestBoardInfo undisclosedBoard01 = TestBoardInfo.builder()
             .title("undisclosedBoard01").isEnabled(true).undisclosed(true)
             .adminList(Collections.singletonList(allBoardAdmin)).build();
+    private final TestBoardInfo undisclosedBoard02 = TestBoardInfo.builder()
+            .title("undisclosedBoard03").isEnabled(true).undisclosed(true)
+            .adminList(Collections.singletonList(allBoardAdmin)).build();
+
     // 게정 그룹
     private final TestAccountGroupInfo testAccountGroupInfo00 = TestAccountGroupInfo.builder()
             .title("testAccountGroupInfo00").description("description")
@@ -45,7 +47,7 @@ public class BoardServiceGetTest extends IricomTestSuite {
     public BoardServiceGetTest(ApplicationContext context) {
         super(context);
 
-        addTestBoardInfo(disclosedBoard00, undisclosedBoard00, undisclosedBoard01, undisclosedBoard03);
+        addTestBoardInfo(disclosedBoard00, undisclosedBoard00, undisclosedBoard01, undisclosedBoard02);
         addTestAccountGroupInfo(testAccountGroupInfo00);
         init();
     }
@@ -95,10 +97,32 @@ public class BoardServiceGetTest extends IricomTestSuite {
     @DisplayName("삭제된 계정 그룹에 포함된 비공개 게시판 조회")
     public void getUndisclosedBoardAndDeletedAccountGroup() throws Exception {
         Account account = getAccount(common00);
-        String boardId = getBoardId(undisclosedBoard03);
+        String boardId = getBoardId(undisclosedBoard02);
 
         Assertions.assertThrows(IricomException.class, () -> {
             boardService.getBoardInfo(account, boardId);
         });
+    }
+
+    @Test
+    @DisplayName("시스템 관리자가 비공개 게시판 조회")
+    public void getUndisclosedBoardBySystemAdmin() throws Exception {
+        Account account = getAccount(systemAdmin);
+        String boardId = getBoardId(undisclosedBoard00);
+
+        BoardInfo boardInfo = boardService.getBoardInfo(account, boardId);
+
+        Assertions.assertNotNull(boardInfo);
+    }
+
+    @Test
+    @DisplayName("게시판 관리자가 비공개 게시판 조회")
+    public void getUndisclosedBoardByBoardAdmin() throws Exception {
+        Account account = getAccount(allBoardAdmin);
+        String boardId = getBoardId(undisclosedBoard01);
+
+        BoardInfo boardInfo = boardService.getBoardInfo(account, boardId);
+
+        Assertions.assertNotNull(boardInfo);
     }
 }

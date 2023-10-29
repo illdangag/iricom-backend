@@ -29,7 +29,6 @@ import java.util.stream.Collectors;
 @Service
 public class PostServiceImpl extends IricomService implements PostService {
     private final PostVoteRepository postVoteRepository;
-    private final BoardAdminRepository boardAdminRepository;
     private final ReportRepository reportRepository;
     private final BanRepository banRepository;
 
@@ -37,9 +36,8 @@ public class PostServiceImpl extends IricomService implements PostService {
     public PostServiceImpl(PostRepository postRepository, PostVoteRepository postVoteRepository, CommentRepository commentRepository,
                            BoardRepository boardRepository, BoardAdminRepository boardAdminRepository, ReportRepository reportRepository,
                            BanRepository banRepository) {
-        super(boardRepository, postRepository, commentRepository);
+        super(boardRepository, postRepository, commentRepository, boardAdminRepository);
         this.postVoteRepository = postVoteRepository;
-        this.boardAdminRepository = boardAdminRepository;
         this.reportRepository = reportRepository;
         this.banRepository = banRepository;
     }

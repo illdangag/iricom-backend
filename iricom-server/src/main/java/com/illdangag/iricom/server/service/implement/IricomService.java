@@ -1,28 +1,29 @@
 package com.illdangag.iricom.server.service.implement;
 
-import com.illdangag.iricom.server.data.entity.Account;
-import com.illdangag.iricom.server.data.entity.Board;
-import com.illdangag.iricom.server.data.entity.Comment;
-import com.illdangag.iricom.server.data.entity.Post;
+import com.illdangag.iricom.server.data.entity.*;
+import com.illdangag.iricom.server.data.entity.type.AccountAuth;
 import com.illdangag.iricom.server.exception.IricomErrorCode;
 import com.illdangag.iricom.server.exception.IricomException;
+import com.illdangag.iricom.server.repository.BoardAdminRepository;
 import com.illdangag.iricom.server.repository.BoardRepository;
 import com.illdangag.iricom.server.repository.CommentRepository;
 import com.illdangag.iricom.server.repository.PostRepository;
-import org.checkerframework.checker.units.qual.A;
 
 import java.util.List;
 import java.util.Optional;
 
 public abstract class IricomService {
-    final protected BoardRepository boardRepository;
-    final protected PostRepository postRepository;
-    final protected CommentRepository commentRepository;
+    protected final BoardRepository boardRepository;
+    protected final PostRepository postRepository;
+    protected final CommentRepository commentRepository;
+    protected final BoardAdminRepository boardAdminRepository;
 
-    public IricomService(BoardRepository boardRepository, PostRepository postRepository, CommentRepository commentRepository) {
+    public IricomService(BoardRepository boardRepository, PostRepository postRepository, CommentRepository commentRepository,
+                         BoardAdminRepository boardAdminRepository) {
         this.boardRepository = boardRepository;
         this.postRepository = postRepository;
         this.commentRepository = commentRepository;
+        this.boardAdminRepository = boardAdminRepository;
     }
 
     protected Board getBoard(String id) {
@@ -68,6 +69,15 @@ public abstract class IricomService {
             // 계정에 대해서 권한 확인
             if (account == null) { // 계정이 올바르지 않은 경우
                 throw new IricomException(IricomErrorCode.NOT_EXIST_BOARD);
+            }
+
+            if (account.getAuth() == AccountAuth.SYSTEM_ADMIN) {
+                return;
+            }
+
+            Optional<BoardAdmin> boardAdminOptional = this.boardAdminRepository.getEnableBoardAdmin(board, account);
+            if (boardAdminOptional.isPresent()) {
+                return;
             }
 
             // 계정이 접근 가능한 게시판 목록을 조회

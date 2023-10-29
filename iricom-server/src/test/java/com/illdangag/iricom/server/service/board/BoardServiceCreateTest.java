@@ -3,8 +3,10 @@ package com.illdangag.iricom.server.service.board;
 import com.illdangag.iricom.server.data.entity.Account;
 import com.illdangag.iricom.server.data.request.BoardInfoCreate;
 import com.illdangag.iricom.server.data.response.BoardInfo;
+import com.illdangag.iricom.server.exception.IricomException;
 import com.illdangag.iricom.server.service.BoardService;
 import com.illdangag.iricom.server.test.IricomTestSuite;
+import com.illdangag.iricom.server.test.data.wrapper.TestBoardInfo;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
@@ -13,6 +15,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 
 import javax.validation.ConstraintViolationException;
+import java.util.Collections;
 
 @Slf4j
 @DisplayName("service: 게시판 - 생성")
@@ -148,5 +151,28 @@ public class BoardServiceCreateTest extends IricomTestSuite {
         BoardInfo boardInfo = boardService.createBoardInfo(account, boardInfoCreate);
 
         Assertions.assertTrue(boardInfo.getNotificationOnly());
+    }
+
+    @Test
+    @DisplayName("게시판 관리자 권한으로 게시판 생성")
+    public void createBoardByBoardAdmin() throws Exception {
+        TestBoardInfo testBoardInfo = TestBoardInfo.builder()
+                .title("testBoardInfo").isEnabled(true)
+                .adminList(Collections.singletonList(common00))
+                .build();
+
+        addTestBoardInfo(testBoardInfo);
+        init();
+
+        Account account = getAccount(common00);
+        BoardInfoCreate boardInfoCreate = BoardInfoCreate.builder()
+                .title("new create")
+                .description("")
+                .notificationOnly(true)
+                .build();
+
+        Assertions.assertThrows(IricomException.class, () -> {
+            boardService.createBoardInfo(account, boardInfoCreate);
+        });
     }
 }

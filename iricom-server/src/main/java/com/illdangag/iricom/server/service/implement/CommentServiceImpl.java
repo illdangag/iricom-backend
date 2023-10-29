@@ -35,9 +35,10 @@ public class CommentServiceImpl extends IricomService implements CommentService 
     private final AccountService accountService;
 
     @Autowired
-    public CommentServiceImpl(CommentRepository commentRepository, CommentVoteRepository commentVoteRepository, BoardRepository boardRepository, BanRepository banRepository,
+    public CommentServiceImpl(CommentRepository commentRepository, CommentVoteRepository commentVoteRepository, BoardRepository boardRepository,
+                              BanRepository banRepository, BoardAdminRepository boardAdminRepository,
                               PostRepository postRepository, ReportRepository reportRepository, AccountService accountService) {
-        super(boardRepository, postRepository, commentRepository);
+        super(boardRepository, postRepository, commentRepository, boardAdminRepository);
         this.commentVoteRepository = commentVoteRepository;
         this.reportRepository = reportRepository;
         this.banRepository = banRepository;

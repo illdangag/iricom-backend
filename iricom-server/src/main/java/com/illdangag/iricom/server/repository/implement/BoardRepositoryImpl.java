@@ -1,22 +1,18 @@
 package com.illdangag.iricom.server.repository.implement;
 
 import com.illdangag.iricom.server.data.entity.Account;
-import com.illdangag.iricom.server.data.entity.type.AccountAuth;
 import com.illdangag.iricom.server.data.entity.Board;
+import com.illdangag.iricom.server.data.entity.type.AccountAuth;
 import com.illdangag.iricom.server.repository.BoardRepository;
 import com.illdangag.iricom.server.util.StringUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
-import javax.persistence.EntityManager;
-import javax.persistence.EntityManagerFactory;
-import javax.persistence.EntityTransaction;
-import javax.persistence.TypedQuery;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Optional;
-import java.util.Set;
+import javax.persistence.*;
+import java.time.LocalDateTime;
+import java.util.*;
+import java.util.stream.Collectors;
 
 @Slf4j
 @Repository
@@ -88,6 +84,16 @@ public class BoardRepositoryImpl implements BoardRepository {
     }
 
     private List<Long> getAccessibleBoardIdList(EntityManager entityManager, Account account) {
+        List<Long> accountGroupBoardIdList = this.getAccountGroupBoardIdList(entityManager, account);
+        List<Long> boardAdminBoardIdList = this.getBoardAdminBoardIdList(entityManager, account);
+
+        Set<Long> set = new HashSet<>();
+        set.addAll(accountGroupBoardIdList);
+        set.addAll(boardAdminBoardIdList);
+        return new ArrayList<>(set);
+    }
+
+    private List<Long> getAccountGroupBoardIdList(EntityManager entityManager, Account account) {
         List<Long> accountGroupIdList = null;
 
         if (account.getAuth() == AccountAuth.SYSTEM_ADMIN) {
@@ -101,8 +107,34 @@ public class BoardRepositoryImpl implements BoardRepository {
 
         TypedQuery<Long> query = entityManager.createQuery(jpql, Long.class)
                 .setParameter("accountGroupId", accountGroupIdList);
-
         return query.getResultList();
+    }
+
+    private List<Long> getBoardAdminBoardIdList(EntityManager entityManager, Account account) {
+        List<LocalDateTime> createDateList = this.getLastBoardAdminCreateDateList(entityManager, account);
+
+        final String jpql = "SELECT ba.board.id" +
+                " FROM BoardAdmin ba" +
+                " WHERE ba.account = :account" +
+                " AND ba.createDate IN :createDateList" +
+                " AND ba.deleted = false";
+
+        TypedQuery<Long> query = entityManager.createQuery(jpql, Long.class)
+                .setParameter("account", account)
+                .setParameter("createDateList", createDateList);
+        return query.getResultList();
+    }
+
+    private List<LocalDateTime> getLastBoardAdminCreateDateList(EntityManager entityManager, Account account) {
+        final String maxJpql = "SELECT new Map(ba.account AS account, ba.board AS board, MAX(ba.createDate) AS createDate)" +
+                " FROM BoardAdmin ba" +
+                " WHERE ba.account = :account" +
+                " GROUP BY ba.account, ba.board";
+        Query query = entityManager.createQuery(maxJpql)
+                .setParameter("account", account);
+        List<Map<String, Object>> maxCreateDateResultList = query.getResultList();
+        return maxCreateDateResultList.stream().map(item -> (LocalDateTime) item.get("createDate"))
+                .collect(Collectors.toList());
     }
 
     private List<Long> getAccountGroupId(EntityManager entityManager, Account account) {
