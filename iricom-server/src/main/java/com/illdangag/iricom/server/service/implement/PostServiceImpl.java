@@ -34,9 +34,9 @@ public class PostServiceImpl extends IricomService implements PostService {
 
     @Autowired
     public PostServiceImpl(PostRepository postRepository, PostVoteRepository postVoteRepository, CommentRepository commentRepository,
-                           BoardRepository boardRepository, BoardAdminRepository boardAdminRepository, ReportRepository reportRepository,
+                           BoardRepository boardRepository, ReportRepository reportRepository,
                            BanRepository banRepository) {
-        super(boardRepository, postRepository, commentRepository, boardAdminRepository);
+        super(boardRepository, postRepository, commentRepository);
         this.postVoteRepository = postVoteRepository;
         this.reportRepository = reportRepository;
         this.banRepository = banRepository;
@@ -550,12 +550,8 @@ public class PostServiceImpl extends IricomService implements PostService {
             return true;
         }
 
-        Optional<BoardAdmin> boardAdminOptional = this.boardAdminRepository.getBoardAdmin(board, account);
-        if (boardAdminOptional.isEmpty()) {
-            return false;
-        }
-
-        return boardAdminOptional.isPresent();
+        List<BoardAdmin> boardAdminList = this.boardRepository.getBoardAdminList(board, account);
+        return !boardAdminList.isEmpty();
     }
 
     /**

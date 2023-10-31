@@ -35,9 +35,8 @@ public class BanServiceImpl extends IricomService implements BanService {
 
     @Autowired
     public BanServiceImpl(PostRepository postRepository, BanRepository banRepository, BoardRepository boardRepository,
-                          BoardAuthorizationService boardAuthorizationService, PostService postService, CommentRepository commentRepository,
-                          BoardAdminRepository boardAdminRepository) {
-        super(boardRepository, postRepository, commentRepository, boardAdminRepository);
+                          BoardAuthorizationService boardAuthorizationService, PostService postService, CommentRepository commentRepository) {
+        super(boardRepository, postRepository, commentRepository);
         this.banRepository = banRepository;
         this.boardAuthorizationService = boardAuthorizationService;
         this.postService = postService;

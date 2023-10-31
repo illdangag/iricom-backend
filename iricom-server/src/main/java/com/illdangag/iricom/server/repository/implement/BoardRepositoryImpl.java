@@ -2,6 +2,7 @@ package com.illdangag.iricom.server.repository.implement;
 
 import com.illdangag.iricom.server.data.entity.Account;
 import com.illdangag.iricom.server.data.entity.Board;
+import com.illdangag.iricom.server.data.entity.BoardAdmin;
 import com.illdangag.iricom.server.data.entity.type.AccountAuth;
 import com.illdangag.iricom.server.repository.BoardRepository;
 import com.illdangag.iricom.server.util.StringUtils;
@@ -31,6 +32,7 @@ public class BoardRepositoryImpl implements BoardRepository {
     @Override
     public Optional<Board> getBoard(Long id) {
         EntityManager entityManager = this.entityManagerFactory.createEntityManager();
+
         final String jpql = "SELECT b FROM Board b" +
                 " WHERE b.id = :id";
 
@@ -172,6 +174,71 @@ public class BoardRepositoryImpl implements BoardRepository {
         entityManager.close();
     }
 
+    /**
+     * 게시판 목록에 대해서 게시판 관리자 조회
+     */
+    @Override
+    public List<BoardAdmin> getBoardAdminList(List<Board> boardList) {
+        EntityManager entityManager = this.entityManagerFactory.createEntityManager();
+
+        final String jpql = "SELECT ba FROM BoardAdmin ba" +
+                " WHERE ba.board IN :boards" +
+                " ORDER BY ba.board.title ASC, ba.account.email ASC, ba.createDate DESC";
+
+        TypedQuery<BoardAdmin> query = entityManager.createQuery(jpql, BoardAdmin.class)
+                .setParameter("boards", boardList);
+
+        List<BoardAdmin> resultList = query.getResultList();
+        entityManager.close();
+        return resultList;
+    }
+
+    /**
+     * 계정이 게시판 관리자로 등록된 게시판 관리자 조회
+     */
+    @Override
+    public List<BoardAdmin> getBoardAdminList(Account account) {
+        EntityManager entityManager = this.entityManagerFactory.createEntityManager();
+
+        String jpql = "SELECT ba" +
+                " FROM BoardAdmin ba";
+
+        if (account != null) {
+            jpql += " WHERE ba.account = :account";
+        }
+
+        TypedQuery<BoardAdmin> query = entityManager.createQuery(jpql, BoardAdmin.class);
+
+        if (account != null) {
+            query.setParameter("account", account);
+        }
+
+        List<BoardAdmin> boardAdminList = query.getResultList();
+        entityManager.close();
+        return boardAdminList;
+    }
+
+    /**
+     * 게시판에 계정이 게시판 관리자 여부 조회
+     */
+    @Override
+    public List<BoardAdmin> getBoardAdminList(Board board, Account account) {
+        EntityManager entityManager = this.entityManagerFactory.createEntityManager();
+
+        final String jpql = "SELECT ba FROM BoardAdmin ba" +
+                " WHERE ba.board = :board" +
+                " AND ba.account = :account" +
+                " ORDER BY ba.createDate DESC";
+
+        TypedQuery<BoardAdmin> query = entityManager.createQuery(jpql, BoardAdmin.class)
+                .setParameter("board", board)
+                .setParameter("account", account);
+
+        List<BoardAdmin> resultList = query.getResultList();
+        entityManager.close();
+        return resultList;
+    }
+
     private List<Long> getAccessibleBoardIdList(EntityManager entityManager, Account account) {
         List<Long> accountGroupBoardIdList = this.getAccountGroupBoardIdList(entityManager, account);
         List<Long> boardAdminBoardIdList = this.getBoardAdminBoardIdList(entityManager, account);
@@ -200,7 +267,6 @@ public class BoardRepositoryImpl implements BoardRepository {
     }
 
     private List<Long> getBoardAdminBoardIdList(EntityManager entityManager, Account account) {
-
         final String jpql = "SELECT ba.board.id" +
                 " FROM BoardAdmin ba" +
                 " WHERE ba.account = :account";
@@ -223,5 +289,32 @@ public class BoardRepositoryImpl implements BoardRepository {
         final String jpql = "SELECT ag.id FROM AccountGroup ag";
         TypedQuery<Long> query = entityManager.createQuery(jpql, Long.class);
         return query.getResultList();
+    }
+
+    @Override
+    public void save(BoardAdmin boardAdmin) {
+        EntityManager entityManager = this.entityManagerFactory.createEntityManager();
+        EntityTransaction transaction = entityManager.getTransaction();
+
+        transaction.begin();
+        if (boardAdmin.getId() == null) {
+            entityManager.persist(boardAdmin);
+        } else {
+            entityManager.merge(boardAdmin);
+        }
+        transaction.commit();
+        entityManager.close();
+    }
+
+    @Override
+    public void delete(BoardAdmin boardAdmin) {
+        EntityManager entityManager = this.entityManagerFactory.createEntityManager();
+        EntityTransaction transaction = entityManager.getTransaction();
+
+        transaction.begin();
+        BoardAdmin entity = entityManager.find(BoardAdmin.class, boardAdmin.getId());
+        entityManager.remove(entity);
+        transaction.commit();
+        entityManager.close();
     }
 }

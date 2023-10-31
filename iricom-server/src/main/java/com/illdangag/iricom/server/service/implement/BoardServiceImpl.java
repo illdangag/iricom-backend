@@ -10,7 +10,6 @@ import com.illdangag.iricom.server.data.response.BoardInfo;
 import com.illdangag.iricom.server.data.response.BoardInfoList;
 import com.illdangag.iricom.server.exception.IricomErrorCode;
 import com.illdangag.iricom.server.exception.IricomException;
-import com.illdangag.iricom.server.repository.BoardAdminRepository;
 import com.illdangag.iricom.server.repository.BoardRepository;
 import com.illdangag.iricom.server.repository.CommentRepository;
 import com.illdangag.iricom.server.repository.PostRepository;
@@ -33,9 +32,8 @@ public class BoardServiceImpl extends IricomService implements BoardService {
 
     @Autowired
     public BoardServiceImpl(BoardRepository boardRepository, PostRepository postRepository, CommentRepository commentRepository,
-                            BoardAdminRepository boardAdminRepository,
                             BoardAuthorizationService boardAuthorizationService) {
-        super(boardRepository, postRepository, commentRepository, boardAdminRepository);
+        super(boardRepository, postRepository, commentRepository);
         this.boardAuthorizationService = boardAuthorizationService;
     }
 

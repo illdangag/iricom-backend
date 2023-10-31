@@ -4,7 +4,6 @@ import com.illdangag.iricom.server.data.entity.*;
 import com.illdangag.iricom.server.data.entity.type.AccountAuth;
 import com.illdangag.iricom.server.exception.IricomErrorCode;
 import com.illdangag.iricom.server.exception.IricomException;
-import com.illdangag.iricom.server.repository.BoardAdminRepository;
 import com.illdangag.iricom.server.repository.BoardRepository;
 import com.illdangag.iricom.server.repository.CommentRepository;
 import com.illdangag.iricom.server.repository.PostRepository;
@@ -16,14 +15,11 @@ public abstract class IricomService {
     protected final BoardRepository boardRepository;
     protected final PostRepository postRepository;
     protected final CommentRepository commentRepository;
-    protected final BoardAdminRepository boardAdminRepository;
 
-    public IricomService(BoardRepository boardRepository, PostRepository postRepository, CommentRepository commentRepository,
-                         BoardAdminRepository boardAdminRepository) {
+    public IricomService(BoardRepository boardRepository, PostRepository postRepository, CommentRepository commentRepository) {
         this.boardRepository = boardRepository;
         this.postRepository = postRepository;
         this.commentRepository = commentRepository;
-        this.boardAdminRepository = boardAdminRepository;
     }
 
     protected Board getBoard(String id) {
@@ -75,8 +71,8 @@ public abstract class IricomService {
                 return;
             }
 
-            Optional<BoardAdmin> boardAdminOptional = this.boardAdminRepository.getBoardAdmin(board, account);
-            if (boardAdminOptional.isPresent()) {
+            List<BoardAdmin> boardAdminList = this.boardRepository.getBoardAdminList(board, account);
+            if (!boardAdminList.isEmpty()) {
                 return;
             }
 

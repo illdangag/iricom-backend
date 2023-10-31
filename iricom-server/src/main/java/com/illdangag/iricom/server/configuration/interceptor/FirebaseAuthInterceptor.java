@@ -12,7 +12,7 @@ import com.illdangag.iricom.server.data.entity.type.AccountAuth;
 import com.illdangag.iricom.server.exception.IricomErrorCode;
 import com.illdangag.iricom.server.exception.IricomException;
 import com.illdangag.iricom.server.repository.AccountRepository;
-import com.illdangag.iricom.server.repository.BoardAdminRepository;
+import com.illdangag.iricom.server.repository.BoardRepository;
 import com.illdangag.iricom.server.repository.FirebaseAuthenticationRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -34,17 +34,17 @@ public class FirebaseAuthInterceptor implements HandlerInterceptor {
     private final FirebaseInitializer firebaseInitializer;
     private final AccountRepository accountRepository;
     private final FirebaseAuthenticationRepository firebaseAuthenticationRepository;
-    private final BoardAdminRepository boardAdminRepository;
+    private final BoardRepository boardRepository;
 
     @Autowired
     public FirebaseAuthInterceptor(FirebaseInitializer firebaseInitializer,
                                    FirebaseAuthenticationRepository firebaseAuthenticationRepository,
                                    AccountRepository accountRepository,
-                                   BoardAdminRepository boardAdminRepository) {
+                                   BoardRepository boardRepository) {
         this.firebaseInitializer = firebaseInitializer;
         this.firebaseAuthenticationRepository = firebaseAuthenticationRepository;
         this.accountRepository = accountRepository;
-        this.boardAdminRepository = boardAdminRepository;
+        this.boardRepository = boardRepository;
     }
 
     @ElapseLoggable
@@ -119,7 +119,7 @@ public class FirebaseAuthInterceptor implements HandlerInterceptor {
     }
 
     private List<Board> checkBoardAdmin(Account account) {
-        List<BoardAdmin> boardAdminList = this.boardAdminRepository.getBoardAdminList(account, null, null);
+        List<BoardAdmin> boardAdminList = this.boardRepository.getBoardAdminList(account);
         Set<BoardAdmin> set = new LinkedHashSet<>(boardAdminList);
         List<Board> boardList = set.stream()
                 .map(BoardAdmin::getBoard)
