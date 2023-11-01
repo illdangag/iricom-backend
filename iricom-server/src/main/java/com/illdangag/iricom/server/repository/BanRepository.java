@@ -1,8 +1,6 @@
 package com.illdangag.iricom.server.repository;
 
-import com.illdangag.iricom.server.data.entity.Board;
-import com.illdangag.iricom.server.data.entity.Post;
-import com.illdangag.iricom.server.data.entity.PostBan;
+import com.illdangag.iricom.server.data.entity.*;
 
 import java.util.List;
 import java.util.Optional;
@@ -12,7 +10,7 @@ public interface BanRepository {
 
     long getPostBanCount(Post post);
 
-    void savePostBan(PostBan postBan);
+    void save(PostBan postBan);
 
     List<PostBan> getPostBanList(String reason, int offset, int limit);
 
@@ -27,4 +25,10 @@ public interface BanRepository {
     Optional<PostBan> getPostBan(long id);
 
     Optional<PostBan> getPostBan(Post post);
+
+    Optional<CommentBan> getCommentBan(long id);
+
+    List<CommentBan> getCommentBanList(Comment comment, Integer skip, Integer limit);
+
+    void save(CommentBan commentBan);
 }

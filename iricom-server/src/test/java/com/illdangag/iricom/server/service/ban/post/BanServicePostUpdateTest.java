@@ -1,8 +1,9 @@
-package com.illdangag.iricom.server.service.ban;
+package com.illdangag.iricom.server.service.ban.post;
 
 import com.illdangag.iricom.server.data.entity.Account;
 import com.illdangag.iricom.server.data.entity.type.PostState;
 import com.illdangag.iricom.server.data.entity.type.PostType;
+import com.illdangag.iricom.server.data.request.PostBanInfoUpdate;
 import com.illdangag.iricom.server.data.response.PostBanInfo;
 import com.illdangag.iricom.server.exception.IricomException;
 import com.illdangag.iricom.server.service.BanService;
@@ -19,19 +20,17 @@ import org.springframework.context.ApplicationContext;
 
 import java.util.Collections;
 
-@DisplayName("service: 차단 - 조회")
+@DisplayName("service: 차단 - 수정")
 @Slf4j
-public class BanServiceGetTest extends IricomTestSuite {
+public class BanServicePostUpdateTest extends IricomTestSuite {
     @Autowired
     private BanService banService;
 
     private final TestBoardInfo boardInfo00 = TestBoardInfo.builder()
             .title("boardInfo00").isEnabled(true).adminList(Collections.singletonList(allBoardAdmin)).build();
-    private final TestBoardInfo boardInfo01 = TestBoardInfo.builder()
-            .title("boardInfo01").isEnabled(true).adminList(Collections.singletonList(allBoardAdmin)).build();
 
     private final TestPostInfo alreadyBanPostInfo00 = TestPostInfo.builder()
-            .title("alreadyBanPostInfo00").content("alreadyBanPostInfo00").isAllowComment(true)
+            .title("alreadyBanPostInfo01").content("alreadyBanPostInfo01").isAllowComment(true)
             .postType(PostType.POST).postState(PostState.PUBLISH)
             .creator(allBoardAdmin).board(boardInfo00)
             .build();
@@ -40,10 +39,10 @@ public class BanServiceGetTest extends IricomTestSuite {
             .banAccount(systemAdmin).post(alreadyBanPostInfo00).reason("BAN")
             .build();
 
-    public BanServiceGetTest(ApplicationContext context) {
+    public BanServicePostUpdateTest(ApplicationContext context) {
         super(context);
 
-        addTestBoardInfo(boardInfo00, boardInfo01);
+        addTestBoardInfo(boardInfo00);
         addTestPostInfo(alreadyBanPostInfo00);
         addTestPostBanInfo(postBanInfo00);
 
@@ -52,71 +51,81 @@ public class BanServiceGetTest extends IricomTestSuite {
 
     @Test
     @DisplayName("시스템 관리자")
-    public void getPostBanInfoSystemAdmin() throws Exception {
+    public void updateSystemAdmin() throws Exception {
         Account account = getAccount(systemAdmin);
         String boardId = getBoardId(alreadyBanPostInfo00.getBoard());
         String postId = getPostId(alreadyBanPostInfo00);
 
-        PostBanInfo postBanInfo = banService.getPostBanInfo(account, boardId, postId);
-        Assertions.assertTrue(postBanInfo.getEnabled());
+        PostBanInfoUpdate postBanInfoUpdate = PostBanInfoUpdate.builder()
+                .reason("UPDATE_SYSTEM_ADMIN")
+                .build();
+
+        PostBanInfo postBanInfo = banService.updatePostBanInfo(account, boardId, postId, postBanInfoUpdate);
+
+        Assertions.assertEquals("UPDATE_SYSTEM_ADMIN", postBanInfo.getReason());
     }
 
     @Test
     @DisplayName("게시판 관리자")
-    public void getPostBanInfoBoardAdmin() throws Exception {
+    public void updateBoardAdmin() throws Exception {
         Account account = getAccount(allBoardAdmin);
         String boardId = getBoardId(alreadyBanPostInfo00.getBoard());
         String postId = getPostId(alreadyBanPostInfo00);
 
-        PostBanInfo postBanInfo = banService.getPostBanInfo(account, boardId, postId);
-        Assertions.assertTrue(postBanInfo.getEnabled());
+        PostBanInfoUpdate postBanInfoUpdate = PostBanInfoUpdate.builder()
+                .reason("UPDATE_BOARD_ADMIN")
+                .build();
+
+        PostBanInfo postBanInfo = banService.updatePostBanInfo(account, boardId, postId, postBanInfoUpdate);
+
+        Assertions.assertEquals("UPDATE_BOARD_ADMIN", postBanInfo.getReason());
     }
 
     @Test
     @DisplayName("다른 게시판 관리자")
-    public void getPostBanInfoOtherBoardAdmin() throws Exception {
+    public void updateOtherBoardAdmin() throws Exception {
         Account account = getAccount(enableBoardAdmin);
         String boardId = getBoardId(alreadyBanPostInfo00.getBoard());
         String postId = getPostId(alreadyBanPostInfo00);
 
+        PostBanInfoUpdate postBanInfoUpdate = PostBanInfoUpdate.builder()
+                .reason("UPDATE_OTHER_BOARD_ADMIN")
+                .build();
+
         Assertions.assertThrows(IricomException.class, () -> {
-            banService.getPostBanInfo(account, boardId, postId);
+            banService.updatePostBanInfo(account, boardId, postId, postBanInfoUpdate);
         });
     }
 
     @Test
     @DisplayName("일반 사용자")
-    public void getPostBanInfoAccount() throws Exception {
+    public void updateAccount() throws Exception {
         Account account = getAccount(common00);
         String boardId = getBoardId(alreadyBanPostInfo00.getBoard());
         String postId = getPostId(alreadyBanPostInfo00);
 
+        PostBanInfoUpdate postBanInfoUpdate = PostBanInfoUpdate.builder()
+                .reason("UPDATE_ACCOUNT")
+                .build();
+
         Assertions.assertThrows(IricomException.class, () -> {
-            banService.getPostBanInfo(account, boardId, postId);
+            banService.updatePostBanInfo(account, boardId, postId, postBanInfoUpdate);
         });
     }
 
     @Test
     @DisplayName("등록되지 않은 사용자")
-    public void getPostBanInfoUnknown() throws Exception {
+    public void updateUnknown() throws Exception {
         Account account = getAccount(unknown00);
         String boardId = getBoardId(alreadyBanPostInfo00.getBoard());
         String postId = getPostId(alreadyBanPostInfo00);
 
-        Assertions.assertThrows(IricomException.class, () -> {
-            banService.getPostBanInfo(account, boardId, postId);
-        });
-    }
-
-    @Test
-    @DisplayName("시스템 관리자")
-    public void getPostInOtherBoard() throws Exception {
-        Account account = getAccount(systemAdmin);
-        String boardId = getBoardId(boardInfo01);
-        String postId = getPostId(alreadyBanPostInfo00);
+        PostBanInfoUpdate postBanInfoUpdate = PostBanInfoUpdate.builder()
+                .reason("UPDATE_UNKNOWN")
+                .build();
 
         Assertions.assertThrows(IricomException.class, () -> {
-            banService.getPostBanInfo(account, boardId, postId);
+            banService.updatePostBanInfo(account, boardId, postId, postBanInfoUpdate);
         });
     }
 }

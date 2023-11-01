@@ -1,4 +1,4 @@
-package com.illdangag.iricom.server.service.ban;
+package com.illdangag.iricom.server.service.ban.post;
 
 import com.illdangag.iricom.server.data.entity.Account;
 import com.illdangag.iricom.server.data.entity.type.PostState;
@@ -21,7 +21,7 @@ import java.util.Collections;
 
 @DisplayName("service: 차단 - 차단 해제")
 @Slf4j
-public class BanServiceUnbanTest extends IricomTestSuite {
+public class BanServicePostUnbanTest extends IricomTestSuite {
     @Autowired
     private BanService banService;
 
@@ -64,7 +64,7 @@ public class BanServiceUnbanTest extends IricomTestSuite {
             .banAccount(systemAdmin).post(alreadyBanPostInfo03).reason("BAN")
             .build();
 
-    public BanServiceUnbanTest(ApplicationContext context) {
+    public BanServicePostUnbanTest(ApplicationContext context) {
         super(context);
 
         addTestBoardInfo(boardInfo00, boardInfo01);

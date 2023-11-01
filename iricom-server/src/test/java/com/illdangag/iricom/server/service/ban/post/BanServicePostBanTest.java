@@ -1,4 +1,4 @@
-package com.illdangag.iricom.server.service.ban;
+package com.illdangag.iricom.server.service.ban.post;
 
 import com.illdangag.iricom.server.data.entity.Account;
 import com.illdangag.iricom.server.data.entity.type.PostState;
@@ -20,9 +20,9 @@ import org.springframework.context.ApplicationContext;
 
 import java.util.Collections;
 
-@DisplayName("service: 차단 - 차단")
+@DisplayName("service: 차단 - 게시물 차단")
 @Slf4j
-public class BanServiceBanTest extends IricomTestSuite {
+public class BanServicePostBanTest extends IricomTestSuite {
     @Autowired
     private BanService banService;
 
@@ -69,7 +69,7 @@ public class BanServiceBanTest extends IricomTestSuite {
             .banAccount(systemAdmin).post(alreadyBanPostInfo01).reason("BAN")
             .build();
 
-    public BanServiceBanTest(ApplicationContext context) {
+    public BanServicePostBanTest(ApplicationContext context) {
         super(context);
 
         addTestBoardInfo(boardInfo00, boardInfo01);
@@ -159,9 +159,11 @@ public class BanServiceBanTest extends IricomTestSuite {
                 .reason("BAN")
                 .build();
 
-        Assertions.assertThrows(IricomException.class, () -> {
+        IricomException exception = Assertions.assertThrows(IricomException.class, () -> {
             banService.banPost(account, boardId, postId, postBanInfoCreate);
         });
+
+        Assertions.assertEquals("04000009", exception.getErrorCode());
     }
 
     @Test

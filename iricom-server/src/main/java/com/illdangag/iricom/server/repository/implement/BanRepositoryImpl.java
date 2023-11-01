@@ -1,8 +1,6 @@
 package com.illdangag.iricom.server.repository.implement;
 
-import com.illdangag.iricom.server.data.entity.Board;
-import com.illdangag.iricom.server.data.entity.Post;
-import com.illdangag.iricom.server.data.entity.PostBan;
+import com.illdangag.iricom.server.data.entity.*;
 import com.illdangag.iricom.server.repository.BanRepository;
 import com.illdangag.iricom.server.util.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -120,7 +118,7 @@ public class BanRepositoryImpl implements BanRepository {
     }
 
     @Override
-    public void savePostBan(PostBan postBan) {
+    public void save(PostBan postBan) {
         EntityManager entityManager = this.entityManagerFactory.createEntityManager();
         EntityTransaction transaction = entityManager.getTransaction();
         transaction.begin();
@@ -178,5 +176,53 @@ public class BanRepositoryImpl implements BanRepository {
         } else {
             return Optional.of(resultList.get(0));
         }
+    }
+
+    @Override
+    public Optional<CommentBan> getCommentBan(long id) {
+        EntityManager entityManager = this.entityManagerFactory.createEntityManager();
+        try {
+            CommentBan commentBan = entityManager.find(CommentBan.class, id);
+            return Optional.of(commentBan);
+        } catch (Exception exception) {
+            return Optional.empty();
+        }
+    }
+
+    @Override
+    public List<CommentBan> getCommentBanList(Comment comment, Integer skip, Integer limit) {
+        EntityManager entityManager = this.entityManagerFactory.createEntityManager();
+
+        String jpql = "SELECT cb FROM CommentBan cb" +
+                " WHERE cb.comment = :comment";
+
+        TypedQuery<CommentBan> query = entityManager.createQuery(jpql, CommentBan.class)
+                .setParameter("comment", comment);
+
+        if (skip != null) {
+            query.setFirstResult(skip);
+        }
+
+        if (limit != null) {
+            query.setMaxResults(limit);
+        }
+
+        List<CommentBan> resultList = query.getResultList();
+        entityManager.close();
+        return resultList;
+    }
+
+    @Override
+    public void save(CommentBan commentBan) {
+        EntityManager entityManager = this.entityManagerFactory.createEntityManager();
+        EntityTransaction transaction = entityManager.getTransaction();
+        transaction.begin();
+        if (commentBan.getId() == null) {
+            entityManager.persist(commentBan);
+        } else {
+            entityManager.merge(commentBan);
+        }
+        transaction.commit();
+        entityManager.close();
     }
 }

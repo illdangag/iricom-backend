@@ -67,6 +67,8 @@ public enum IricomErrorCode implements IricomError {
     ALREADY_VOTE_COMMENT("05000005", 400, "Already vote comment."),
     INVALID_VOTE_COMMENT("05000006", 400, "Invalid vote type."),
     COMMENT_ON_BAN_POST("05000007", 400, "This comment on a blocked post."),
+    ALREADY_BAN_COMMENT("05000008", 400, "Already ban comment."),
+
 
     // report: 06XXXXXX
     // report post: 0600XXXX
@@ -81,6 +83,8 @@ public enum IricomErrorCode implements IricomError {
     // ban: 07XXXXXX
     // ban post: 0700XXXX
     NOT_EXIST_POST_BAN("07000000", 404, "Not exist post ban."),
+    // comment post: 0701XXXX
+    NOT_EXIST_COMMENT_BAN("07010000", 404, "Not exist comment ban."),
 
     // account group: 08XXXXXX
     NOT_EXIST_ACCOUNT_GROUP("08000000", 404, "Not exist account group."),

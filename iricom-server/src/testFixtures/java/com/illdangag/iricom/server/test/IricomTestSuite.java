@@ -110,6 +110,7 @@ public abstract class IricomTestSuite {
     private final List<TestPostReportInfo> testPostReportInfoList = new ArrayList<>();
     private final List<TestCommentReportInfo> testCommentReportInfoList = new ArrayList<>();
     private final List<TestPostBanInfo> testPostBanInfoList = new ArrayList<>();
+    private final List<TestCommentBanInfo> testCommentBanInfoList = new ArrayList<>();
 
     private static final Map<TestAccountInfo, Account> accountMap = new HashMap<>();
     private static final Map<TestBoardInfo, Board> boardMap = new HashMap<>();
@@ -120,6 +121,7 @@ public abstract class IricomTestSuite {
     private static final Map<TestCommentReportInfo, CommentReport> commentReportMap = new HashMap<>();
     private static final Map<TestPostBanInfo, PostBan> postBanMap = new HashMap<>();
     private static final Map<TestAccountGroupInfo, AccountGroup> accountGroupMap = new HashMap<>();
+    private static final Map<TestCommentBanInfo, CommentBan> commentBanMap = new HashMap<>();
 
     private static boolean isAccountInit = false;
 
@@ -322,6 +324,16 @@ public abstract class IricomTestSuite {
         });
     }
 
+    /**
+     * 댓글 차단
+     */
+    protected void setBanComment(List<TestCommentBanInfo> testCommentBanInfoList) {
+        testCommentBanInfoList.forEach(item -> {
+            CommentBan commentBan = this.banComment(item);
+            commentBanMap.put(item, commentBan);
+        });
+    }
+
     protected void init() {
         this.setBoard(testBoardInfoList);
         this.setAccountGroup(testAccountGroupInfoList);
@@ -331,6 +343,7 @@ public abstract class IricomTestSuite {
         this.setCommentReport(testCommentReportInfoList);
 
         this.setBanPost(testPostBanInfoList);
+        this.setBanComment(testCommentBanInfoList);
         this.setDeletedComment(testCommentInfoList);
         this.setDisabledCommentBoard(testPostInfoList);
         this.setDisabledBoard(testBoardInfoList);
@@ -524,6 +537,18 @@ public abstract class IricomTestSuite {
         return postBanOptional.orElseThrow(() -> new IricomException(IricomErrorCode.NOT_EXIST_POST_BAN));
     }
 
+    private CommentBan getCommentBan(String id) {
+        long commentBanId = -1;
+
+        try {
+            commentBanId = Long.parseLong(id);
+        } catch (Exception exception) {
+            throw new IricomException(IricomErrorCode.NOT_EXIST_COMMENT_BAN);
+        }
+
+        return this.banRepository.getCommentBan(commentBanId).orElseThrow(() -> new IricomException(IricomErrorCode.NOT_EXIST_COMMENT_BAN));
+    }
+
     private CommentReport getCommentReport(String id) {
         Optional<CommentReport> commentReportOptional = this.reportRepository.getCommentReport(id);
         return commentReportOptional.orElseThrow(() -> new IricomException(IricomErrorCode.NOT_EXIST_COMMENT_REPORT));
@@ -583,6 +608,22 @@ public abstract class IricomTestSuite {
                 .build();
         PostBanInfo postBanInfo = banService.banPost(banAccount, board, post, postBanInfoCreate);
         return this.getPostBan(postBanInfo.getId());
+    }
+
+    private CommentBan banComment(TestCommentBanInfo testCommentBanInfo) {
+        TestAccountInfo banTestAccountInfo = testCommentBanInfo.getBanAccount();
+        TestCommentInfo testCommentInfo = testCommentBanInfo.getComment();
+
+        Account banAccount = accountMap.get(banTestAccountInfo);
+        String commentId = getCommentId(testCommentInfo);
+        String postId = getPostId(testCommentInfo.getPost());
+        String boardId = getBoardId(testCommentInfo.getPost().getBoard());
+
+        CommentBanInfoCreate commentBanInfoCreate = CommentBanInfoCreate.builder()
+                .reason(testCommentBanInfo.getReason())
+                .build();
+        CommentBanInfo commentBanInfo = banService.banComment(banAccount, boardId, postId, commentId, commentBanInfoCreate);
+        return this.getCommentBan(commentBanInfo.getId());
     }
 
     private AccountGroup setAccountGroup(TestAccountGroupInfo testAccountGroupInfo) {
@@ -784,6 +825,10 @@ public abstract class IricomTestSuite {
 
     protected void addTestPostBanInfo(List<TestPostBanInfo> testPostBanInfoList) {
         this.testPostBanInfoList.addAll(testPostBanInfoList);
+    }
+
+    protected void addTestCommentBanInfo(TestCommentBanInfo ...testCommentBanInfos) {
+        this.testCommentBanInfoList.addAll(Arrays.asList(testCommentBanInfos));
     }
 
     protected <T> List<T> getAllList(SearchRequest searchRequest, SearchAllListResponse<T> response) {

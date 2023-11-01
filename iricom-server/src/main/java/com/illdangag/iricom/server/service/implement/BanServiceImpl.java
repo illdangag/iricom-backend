@@ -7,15 +7,13 @@ import com.illdangag.iricom.server.data.request.CommentBanInfoCreate;
 import com.illdangag.iricom.server.data.request.PostBanInfoCreate;
 import com.illdangag.iricom.server.data.request.PostBanInfoSearch;
 import com.illdangag.iricom.server.data.request.PostBanInfoUpdate;
-import com.illdangag.iricom.server.data.response.CommentBanInfo;
-import com.illdangag.iricom.server.data.response.PostBanInfo;
-import com.illdangag.iricom.server.data.response.PostBanInfoList;
-import com.illdangag.iricom.server.data.response.PostInfo;
+import com.illdangag.iricom.server.data.response.*;
 import com.illdangag.iricom.server.exception.IricomErrorCode;
 import com.illdangag.iricom.server.exception.IricomException;
 import com.illdangag.iricom.server.repository.*;
 import com.illdangag.iricom.server.service.BanService;
 import com.illdangag.iricom.server.service.BoardAuthorizationService;
+import com.illdangag.iricom.server.service.CommentService;
 import com.illdangag.iricom.server.service.PostService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -32,14 +30,17 @@ public class BanServiceImpl extends IricomService implements BanService {
 
     private final BoardAuthorizationService boardAuthorizationService;
     private final PostService postService;
+    private final CommentService commentService;
 
     @Autowired
     public BanServiceImpl(PostRepository postRepository, BanRepository banRepository, BoardRepository boardRepository,
-                          BoardAuthorizationService boardAuthorizationService, PostService postService, CommentRepository commentRepository) {
+                          BoardAuthorizationService boardAuthorizationService, PostService postService, CommentRepository commentRepository,
+                          CommentService commentService) {
         super(boardRepository, postRepository, commentRepository);
         this.banRepository = banRepository;
         this.boardAuthorizationService = boardAuthorizationService;
         this.postService = postService;
+        this.commentService = commentService;
     }
 
     @Override
@@ -51,16 +52,14 @@ public class BanServiceImpl extends IricomService implements BanService {
 
     @Override
     public PostBanInfo banPost(Account account, Board board, Post post, PostBanInfoCreate postBanInfoCreate) {
-        if (!this.boardAuthorizationService.hasAuthorization(account, board)) {
+        this.validate(account, board, post);
+
+        if (!this.boardAuthorizationService.hasAuthorization(account, board)) { // 계정이 게시판에 관리자 권한이 있는지 확인
             throw new IricomException(IricomErrorCode.INVALID_AUTHORIZATION_TO_BAN_POST);
         }
 
-        if (!post.getBoard().equals(board)) {
-            throw new IricomException(IricomErrorCode.NOT_EXIST_POST);
-        }
-
-        if (!post.isPublish()) {
-            // 발행되지 않은 게시물인 경우, 밴 처리를 하지 않음
+        if (!post.isPublish()) { // 발행되지 않은 게시물인 경우
+            // 게시물 차단을 할 수 없음
             throw new IricomException(IricomErrorCode.NOT_EXIST_PUBLISH_CONTENT);
         }
 
@@ -76,7 +75,8 @@ public class BanServiceImpl extends IricomService implements BanService {
                 .reason(postBanInfoCreate.getReason())
                 .enabled(true)
                 .build();
-        this.banRepository.savePostBan(postBan);
+
+        this.banRepository.save(postBan);
 
         PostInfo postInfo = this.postService.getPostInfo(account, post, PostState.PUBLISH, false);
         return new PostBanInfo(postBan, postInfo);
@@ -106,7 +106,7 @@ public class BanServiceImpl extends IricomService implements BanService {
         }
 
         postBanList.forEach(item -> item.setEnabled(false));
-        postBanList.forEach(this.banRepository::savePostBan);
+        postBanList.forEach(this.banRepository::save);
 
         PostBan postBan = postBanList.get(0);
         PostInfo postInfo = this.postService.getPostInfo(account, post, PostState.PUBLISH, false);
@@ -229,7 +229,7 @@ public class BanServiceImpl extends IricomService implements BanService {
 
         String reason = postBanInfoUpdate.getReason();
         postBan.setReason(reason);
-        this.banRepository.savePostBan(postBan);
+        this.banRepository.save(postBan);
 
         PostInfo postInfo = this.postService.getPostInfo(account, post, PostState.PUBLISH, false);
         return new PostBanInfo(postBan, postInfo);
@@ -246,7 +246,39 @@ public class BanServiceImpl extends IricomService implements BanService {
 
     @Override
     public CommentBanInfo banComment(Account account, Board board, Post post, Comment comment, @Valid CommentBanInfoCreate commentBanInfoCreate) {
+        this.validate(account, board, post, comment);
 
-        return null;
+        if (!this.boardAuthorizationService.hasAuthorization(account, board)) { // 계정이 게시판에 관리자 권한이 있는지 확인
+            throw new IricomException(IricomErrorCode.INVALID_AUTHORIZATION_TO_BAN_POST);
+        }
+
+        if (!post.isPublish()) { // 발행되지 않은 게시물인 경우
+            // 게시물 차단을 할 수 없음
+            throw new IricomException(IricomErrorCode.NOT_EXIST_PUBLISH_CONTENT);
+        }
+
+        // 이미 차단 처리 된 게시물인지 확인
+        List<PostBan> postBanList = this.banRepository.getPostBanList(post);
+        if (!postBanList.isEmpty()) {
+            throw new IricomException(IricomErrorCode.ALREADY_BAN_POST);
+        }
+
+        // 이미 차단 처리 된 댓글인지 확인
+        List<CommentBan> commentBanList = this.banRepository.getCommentBanList(comment, null, null);
+        if (!commentBanList.isEmpty()) {
+            throw new IricomException(IricomErrorCode.ALREADY_BAN_COMMENT);
+        }
+
+        CommentBan commentBan = CommentBan.builder()
+                .comment(comment)
+                .adminAccount(account)
+                .reason(commentBanInfoCreate.getReason())
+                .enabled(true)
+                .build();
+
+        this.banRepository.save(commentBan);
+
+        CommentInfo commentInfo = this.commentService.getComment(account, board, post, comment);
+        return new CommentBanInfo(commentBan, commentInfo);
     }
 }
