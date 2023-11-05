@@ -34,6 +34,9 @@ public class BanController {
         this.banService = banService;
     }
 
+    /**
+     * 게시물 차단
+     */
     @ApiCallLog(apiCode = "BP_001")
     @Auth(role = AuthRole.BOARD_ADMIN)
     @RequestMapping(method = RequestMethod.POST, value = "/ban/post/boards/{board_id}/posts/{post_id}")
@@ -45,6 +48,9 @@ public class BanController {
         return ResponseEntity.status(HttpStatus.OK).body(postBanInfo);
     }
 
+    /**
+     * 차단된 게시물 조회
+     */
     @ApiCallLog(apiCode = "BP_002")
     @Auth(role = AuthRole.SYSTEM_ADMIN)
     @RequestMapping(method = RequestMethod.GET, value = "/ban/post/boards")
@@ -74,6 +80,9 @@ public class BanController {
         return ResponseEntity.status(HttpStatus.OK).body(postBanInfoList);
     }
 
+    /**
+     * 게시판 기준으로 차단된 게시물 조회
+     */
     @ApiCallLog(apiCode = "BP_003")
     @Auth(role = AuthRole.BOARD_ADMIN)
     @RequestMapping(method = RequestMethod.GET, value = "/ban/post/boards/{board_id}")
@@ -104,6 +113,9 @@ public class BanController {
         return ResponseEntity.status(HttpStatus.OK).body(postBanInfoList);
     }
 
+    /**
+     * 차단된 게시물 정보 조회
+     */
     @ApiCallLog(apiCode = "BP_004")
     @Auth(role = AuthRole.BOARD_ADMIN)
     @RequestMapping(method = RequestMethod.GET, value = "/ban/post/boards/{board_id}/posts/{post_id}")
@@ -114,6 +126,9 @@ public class BanController {
         return ResponseEntity.status(HttpStatus.OK).body(postBanInfo);
     }
 
+    /**
+     * 차단된 게시물의 차단 정보 수정
+     */
     @ApiCallLog(apiCode = "BP_005")
     @Auth(role = AuthRole.BOARD_ADMIN)
     @RequestMapping(method = RequestMethod.PATCH, value = "/ban/post/boards/{board_id}/posts/{post_id}")
@@ -125,6 +140,9 @@ public class BanController {
         return ResponseEntity.status(HttpStatus.OK).body(postBanInfo);
     }
 
+    /**
+     * 차단된 게시물의 차단 해제
+     */
     @ApiCallLog(apiCode = "BP_006")
     @Auth(role = AuthRole.BOARD_ADMIN)
     @RequestMapping(method = RequestMethod.DELETE, value = "/ban/post/boards/{board_id}/posts/{post_id}")
@@ -135,6 +153,9 @@ public class BanController {
         return ResponseEntity.status(HttpStatus.OK).body(postBanInfo);
     }
 
+    /**
+     * 댓글 차단
+     */
     @ApiCallLog(apiCode =  "BC_001")
     @Auth(role = AuthRole.BOARD_ADMIN)
     @RequestMapping(method = RequestMethod.POST, value = "/ban/comment/boards/{boardId}/posts/{postId}/comments/{commentId}")
