@@ -96,6 +96,14 @@ public class IricomFieldsSnippet {
             ResponseField.builder().path("enabled").description("활성화 여부").build()
     );
 
+    private static final List<ResponseField> commentBanResponseFieldList = Arrays.asList(
+            ResponseField.builder().path("id").description("아이디").build(),
+            ResponseField.builder().path("createDate").description("생성일").build(),
+            ResponseField.builder().path("updateDate").description("수정일").build(),
+            ResponseField.builder().path("reason").description("사유").build(),
+            ResponseField.builder().path("enabled").description("활성화 여부").build()
+    );
+
     private static final List<ResponseField> accountGroupResponseFieldList = Arrays.asList(
             ResponseField.builder().path("id").description("아이디").build(),
             ResponseField.builder().path("title").description("제목").build(),
@@ -164,6 +172,10 @@ public class IricomFieldsSnippet {
 
     public static List<FieldDescriptor> getPostBan(String keyPrefix) {
         return getFieldDescriptors(postBanResponseFieldList, keyPrefix);
+    }
+
+    public static List<FieldDescriptor> getCommentBan(String keyPrefix) {
+        return getFieldDescriptors(commentBanResponseFieldList, keyPrefix);
     }
 
     public static List<FieldDescriptor> getAccountGroup(String keyPrefix) {

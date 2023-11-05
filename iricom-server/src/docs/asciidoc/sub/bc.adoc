@@ -1,0 +1,6 @@
+== 댓글 차단
+
+=== 댓글 차단
+==== CP_001
+
+operation::BC_001[snippets='curl-request,path-parameters,request-fields,http-response,response-fields']

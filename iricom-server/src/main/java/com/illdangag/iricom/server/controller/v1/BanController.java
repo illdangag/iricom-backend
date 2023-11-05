@@ -5,9 +5,11 @@ import com.illdangag.iricom.server.configuration.annotation.Auth;
 import com.illdangag.iricom.server.configuration.annotation.AuthRole;
 import com.illdangag.iricom.server.configuration.annotation.RequestContext;
 import com.illdangag.iricom.server.data.entity.Account;
+import com.illdangag.iricom.server.data.request.CommentBanInfoCreate;
 import com.illdangag.iricom.server.data.request.PostBanInfoCreate;
 import com.illdangag.iricom.server.data.request.PostBanInfoSearch;
 import com.illdangag.iricom.server.data.request.PostBanInfoUpdate;
+import com.illdangag.iricom.server.data.response.CommentBanInfo;
 import com.illdangag.iricom.server.data.response.PostBanInfo;
 import com.illdangag.iricom.server.data.response.PostBanInfoList;
 import com.illdangag.iricom.server.exception.IricomErrorCode;
@@ -131,5 +133,17 @@ public class BanController {
                                                  @RequestContext Account account) {
         PostBanInfo postBanInfo = this.banService.unbanPost(account, boardId, postId);
         return ResponseEntity.status(HttpStatus.OK).body(postBanInfo);
+    }
+
+    @ApiCallLog(apiCode =  "BC_001")
+    @Auth(role = AuthRole.BOARD_ADMIN)
+    @RequestMapping(method = RequestMethod.POST, value = "/ban/comment/boards/{boardId}/posts/{postId}/comments/{commentId}")
+    public ResponseEntity<CommentBanInfo> unbanComment(@PathVariable(value = "boardId") String boardId,
+                                                       @PathVariable(value = "postId") String postId,
+                                                       @PathVariable(value = "commentId") String commentId,
+                                                       @RequestBody @Valid CommentBanInfoCreate commentBanInfoCreate,
+                                                       @RequestContext Account account) {
+        CommentBanInfo commentBanInfo = this.banService.banComment(account, boardId, postId, commentId, commentBanInfoCreate);
+        return ResponseEntity.status(HttpStatus.OK).body(commentBanInfo);
     }
 }
