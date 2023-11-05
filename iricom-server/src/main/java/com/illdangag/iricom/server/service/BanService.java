@@ -58,4 +58,11 @@ public interface BanService {
     CommentBanInfo banComment(Account account, String boardId, String postId, String commentId, @Valid CommentBanInfoCreate commentBanInfoCreate);
 
     CommentBanInfo banComment(Account account, Board board, Post post, Comment comment, @Valid CommentBanInfoCreate commentBanInfoCreate);
+
+    /**
+     * 댓글 차단 해제
+     */
+    CommentBanInfo unbanComment(Account account, String boardId, String postId, String commentId);
+
+    CommentBanInfo unbanComment(Account account, Board board, Post post, Comment comment);
 }

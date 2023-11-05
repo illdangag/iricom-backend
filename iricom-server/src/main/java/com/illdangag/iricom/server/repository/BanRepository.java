@@ -28,7 +28,7 @@ public interface BanRepository {
 
     Optional<CommentBan> getCommentBan(long id);
 
-    List<CommentBan> getCommentBanList(Comment comment, Integer skip, Integer limit);
+    List<CommentBan> getCommentBanList(Comment comment, Boolean enabled, Integer skip, Integer limit);
 
     void save(CommentBan commentBan);
 }

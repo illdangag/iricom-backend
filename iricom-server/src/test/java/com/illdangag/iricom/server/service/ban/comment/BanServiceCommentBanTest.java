@@ -135,7 +135,7 @@ public class BanServiceCommentBanTest extends IricomTestSuite {
             this.banService.banComment(account, boardId, postId, commentId, commentBanInfoCreate);
         });
 
-        Assertions.assertEquals("04000009", exception.getErrorCode());
+        Assertions.assertEquals("05000009", exception.getErrorCode());
     }
 
     @Test
@@ -170,7 +170,7 @@ public class BanServiceCommentBanTest extends IricomTestSuite {
             this.banService.banComment(account, boardId, postId, commentId, commentBanInfoCreate);
         });
 
-        Assertions.assertEquals("04000009", exception.getErrorCode());
+        Assertions.assertEquals("05000009", exception.getErrorCode());
     }
 
     @Test
@@ -205,7 +205,7 @@ public class BanServiceCommentBanTest extends IricomTestSuite {
             this.banService.banComment(account, boardId, postId, commentId, commentBanInfoCreate);
         });
 
-        Assertions.assertEquals("04000009", exception.getErrorCode());
+        Assertions.assertEquals("05000009", exception.getErrorCode());
     }
 
     @Test

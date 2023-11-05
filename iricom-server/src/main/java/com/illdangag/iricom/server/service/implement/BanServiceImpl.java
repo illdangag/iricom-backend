@@ -91,18 +91,15 @@ public class BanServiceImpl extends IricomService implements BanService {
 
     @Override
     public PostBanInfo unbanPost(Account account, Board board, Post post) {
+        this.validate(account, board, post);
+
         if (!this.boardAuthorizationService.hasAuthorization(account, board)) {
             throw new IricomException(IricomErrorCode.INVALID_AUTHORIZATION_TO_BAN_POST);
         }
 
-        if (!post.getBoard().equals(board)) {
-            throw new IricomException(IricomErrorCode.NOT_EXIST_POST);
-        }
-
         List<PostBan> postBanList = this.banRepository.getPostBanList(post);
-
         if (postBanList.isEmpty()) {
-            throw new IricomException(IricomErrorCode.ALREADY_UNBAN_POST);
+            throw new IricomException(IricomErrorCode.NOT_BANED_POST);
         }
 
         postBanList.forEach(item -> item.setEnabled(false));
@@ -249,7 +246,7 @@ public class BanServiceImpl extends IricomService implements BanService {
         this.validate(account, board, post, comment);
 
         if (!this.boardAuthorizationService.hasAuthorization(account, board)) { // 계정이 게시판에 관리자 권한이 있는지 확인
-            throw new IricomException(IricomErrorCode.INVALID_AUTHORIZATION_TO_BAN_POST);
+            throw new IricomException(IricomErrorCode.INVALID_AUTHORIZATION_TO_BAN_COMMENT);
         }
 
         if (!post.isPublish()) { // 발행되지 않은 게시물인 경우
@@ -264,7 +261,7 @@ public class BanServiceImpl extends IricomService implements BanService {
         }
 
         // 이미 차단 처리 된 댓글인지 확인
-        List<CommentBan> commentBanList = this.banRepository.getCommentBanList(comment, null, null);
+        List<CommentBan> commentBanList = this.banRepository.getCommentBanList(comment, true, null, null);
         if (!commentBanList.isEmpty()) {
             throw new IricomException(IricomErrorCode.ALREADY_BAN_COMMENT);
         }
@@ -276,6 +273,48 @@ public class BanServiceImpl extends IricomService implements BanService {
                 .enabled(true)
                 .build();
 
+        this.banRepository.save(commentBan);
+
+        CommentInfo commentInfo = this.commentService.getComment(account, board, post, comment);
+        return new CommentBanInfo(commentBan, commentInfo);
+    }
+
+    @Override
+    public CommentBanInfo unbanComment(Account account, String boardId, String postId, String commentId) {
+        Board board = this.getBoard(boardId);
+        Post post = this.getPost(postId);
+        Comment comment = this.getComment(commentId);
+
+        return this.unbanComment(account, board, post, comment);
+    }
+
+    @Override
+    public CommentBanInfo unbanComment(Account account, Board board, Post post, Comment comment) {
+        this.validate(account, board, post, comment);
+
+        if (!this.boardAuthorizationService.hasAuthorization(account, board)) { // 계정이 게시판에 관리자 권한이 있는지 확인
+            throw new IricomException(IricomErrorCode.INVALID_AUTHORIZATION_TO_BAN_COMMENT);
+        }
+
+        if (!post.isPublish()) { // 발행되지 않은 게시물인 경우
+            // 게시물 차단을 할 수 없음
+            throw new IricomException(IricomErrorCode.NOT_EXIST_PUBLISH_CONTENT);
+        }
+
+        // 이미 차단 처리 된 게시물인지 확인
+        List<PostBan> postBanList = this.banRepository.getPostBanList(post);
+        if (!postBanList.isEmpty()) {
+            throw new IricomException(IricomErrorCode.ALREADY_BAN_POST);
+        }
+
+        // 차단 처리 된 댓글인지 확인
+        List<CommentBan> commentBanList = this.banRepository.getCommentBanList(comment, true, null, null);
+        if (commentBanList.isEmpty()) {
+            throw new IricomException(IricomErrorCode.NOT_BANED_COMMENT);
+        }
+
+        CommentBan commentBan = commentBanList.get(0);
+        commentBan.setEnabled(false);
         this.banRepository.save(commentBan);
 
         CommentInfo commentInfo = this.commentService.getComment(account, board, post, comment);

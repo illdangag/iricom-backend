@@ -190,14 +190,22 @@ public class BanRepositoryImpl implements BanRepository {
     }
 
     @Override
-    public List<CommentBan> getCommentBanList(Comment comment, Integer skip, Integer limit) {
+    public List<CommentBan> getCommentBanList(Comment comment, Boolean enabled, Integer skip, Integer limit) {
         EntityManager entityManager = this.entityManagerFactory.createEntityManager();
 
         String jpql = "SELECT cb FROM CommentBan cb" +
                 " WHERE cb.comment = :comment";
 
+        if (enabled != null) {
+            jpql += " AND cb.enabled = :enabled";
+        }
+
         TypedQuery<CommentBan> query = entityManager.createQuery(jpql, CommentBan.class)
                 .setParameter("comment", comment);
+
+        if (enabled != null) {
+            query.setParameter("enabled", enabled);
+        }
 
         if (skip != null) {
             query.setFirstResult(skip);

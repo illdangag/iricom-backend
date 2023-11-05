@@ -57,6 +57,7 @@ public enum IricomErrorCode implements IricomError {
     INVALID_AUTHORIZATION_TO_POST_ONLY_NOTIFICATION_BOARD("04000012", 400, "Board is for notification only."),
     INVALID_UPDATE_POST_IN_NOTIFICATION_ONLY_BOARD("04000013", 400, "Board is for notification only."),
     BANNED_POST("04000014", 400, "This is a banned post."),
+    NOT_BANED_POST("04000015", 400, "This post has not been blocked."),
 
     // comment: 05XXXXXX
     NOT_EXIST_COMMENT("05000000", 404, "Not exist comment."),
@@ -68,7 +69,8 @@ public enum IricomErrorCode implements IricomError {
     INVALID_VOTE_COMMENT("05000006", 400, "Invalid vote type."),
     COMMENT_ON_BAN_POST("05000007", 400, "This comment on a blocked post."),
     ALREADY_BAN_COMMENT("05000008", 400, "Already ban comment."),
-
+    INVALID_AUTHORIZATION_TO_BAN_COMMENT("05000009", 401, "Invalid authorization."),
+    NOT_BANED_COMMENT("050000010", 400, "This comment has not been blocked."),
 
     // report: 06XXXXXX
     // report post: 0600XXXX
