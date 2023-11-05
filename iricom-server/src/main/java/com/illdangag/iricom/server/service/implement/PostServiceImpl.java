@@ -58,9 +58,7 @@ public class PostServiceImpl extends IricomService implements PostService {
     public PostInfo createPostInfo(Account account, Board board, PostInfoCreate postInfoCreate) {
         this.validate(account, board);
 
-        // 사용자의 닉네임을 등록하지 않은 경우 게시물을 작성 할 수 없음
-        AccountDetail accountDetail = account.getAccountDetail();
-        if (accountDetail == null || accountDetail.getNickname() == null || accountDetail.getNickname().isEmpty()) {
+        if (account.getAuth() == AccountAuth.UNREGISTERED_ACCOUNT) { // 등록 되지 않은 계정
             throw new IricomException(IricomErrorCode.NOT_EXIST_ACCOUNT_NICKNAME_TO_POST);
         }
 
@@ -68,13 +66,11 @@ public class PostServiceImpl extends IricomService implements PostService {
             throw new IricomException(IricomErrorCode.DISABLED_BOARD);
         }
 
-        if (postInfoCreate.getType() == PostType.NOTIFICATION) { // 공지 사항인 경우
-            if (!this.hasAuthorization(account, board)) { // 시스템 관리자 또는 게시판 관리자가 아닌 경우
-                throw new IricomException(IricomErrorCode.INVALID_AUTHORIZATION_TO_NOTIFICATION);
-            }
+        if (postInfoCreate.getType() == PostType.NOTIFICATION && !this.hasAuthorization(account, board)) { // 게시물이 공지 사항이면서, 작성자가 시스템 관리자 또는 게시판 관리자가 아닌 경우
+            throw new IricomException(IricomErrorCode.INVALID_AUTHORIZATION_TO_NOTIFICATION);
         }
 
-        if (postInfoCreate.getType() == PostType.POST && board.getNotificationOnly()) { // 게시물이 일반 게시물이면서  게시판이 공지 사항 전용인 경우
+        if (postInfoCreate.getType() == PostType.POST && board.getNotificationOnly()) { // 게시물이 일반 게시물이면서 게시판이 공지 사항 전용인 경우
             throw new IricomException(IricomErrorCode.INVALID_AUTHORIZATION_TO_POST_ONLY_NOTIFICATION_BOARD);
         }
 
@@ -112,13 +108,15 @@ public class PostServiceImpl extends IricomService implements PostService {
     public PostInfo updatePostInfo(Account account, Board board, Post post, PostInfoUpdate postInfoUpdate) {
         this.validate(account, board, post);
 
-        // 활성화된 게시판에만 게시물 수정 가능
-        if (!board.getEnabled()) {
+        if (account.getAuth() == AccountAuth.UNREGISTERED_ACCOUNT) { // 등록 되지 않은 계정
+            throw new IricomException(IricomErrorCode.NOT_EXIST_ACCOUNT_NICKNAME_TO_POST);
+        }
+
+        if (!board.getEnabled()) { // 비활성화 게시판인 경우
             throw new IricomException(IricomErrorCode.DISABLED_BOARD);
         }
 
-        // 본인이 작성한 게시물만 수정이 가능
-        if (!post.getAccount().equals(account)) {
+        if (!post.getAccount().equals(account)) { // 본인이 작성한 게시물만 수정이 가능
             throw new IricomException(IricomErrorCode.INVALID_AUTHORIZATION_TO_UPDATE_POST_OR_NOTIFICATION);
         }
 
@@ -249,7 +247,6 @@ public class PostServiceImpl extends IricomService implements PostService {
         }
 
         this.postRepository.save(post);
-
         return this.getPostInfo(account, post, postState, true);
     }
 
@@ -281,7 +278,6 @@ public class PostServiceImpl extends IricomService implements PostService {
 
         post.setViewCount(post.getViewCount() + 1);
         this.postRepository.save(post);
-
         return this.getPostInfo(board, post, postState, true);
     }
 
@@ -331,7 +327,6 @@ public class PostServiceImpl extends IricomService implements PostService {
         post.setTemporaryContent(null);
 
         this.postRepository.save(post);
-
         return this.getPostInfo(account, post, PostState.PUBLISH, true);
     }
 
