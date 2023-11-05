@@ -113,8 +113,8 @@ public class BoardServiceImpl extends IricomService implements BoardService {
         List<Board> boardList;
         long totalBoardCount;
 
-        boardList = this.boardRepository.getBoardList(account, boardInfoSearch.getKeyword(), null, boardInfoSearch.getSkip(), boardInfoSearch.getLimit());
-        totalBoardCount = this.boardRepository.getBoardCount(account, boardInfoSearch.getKeyword(), null);
+        boardList = this.boardRepository.getBoardList(account, boardInfoSearch.getKeyword(), boardInfoSearch.getEnabled(), boardInfoSearch.getSkip(), boardInfoSearch.getLimit());
+        totalBoardCount = this.boardRepository.getBoardCount(account, boardInfoSearch.getKeyword(), boardInfoSearch.getEnabled());
 
         List<BoardInfo> boardInfoList = boardList.stream().map((board) -> {
             boolean isAdmin = this.boardAuthorizationService.hasAuthorization(account, board);
