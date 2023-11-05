@@ -49,8 +49,8 @@ public class BanServiceCommentBanTest extends IricomTestSuite {
         init();
 
         Account account = getAccount(systemAdmin);
-        String boardId = getBoardId(testBoardInfo);
-        String postId = getPostId(testPostInfo);
+        String boardId = getBoardId(testCommentInfo.getPost().getBoard());
+        String postId = getPostId(testCommentInfo.getPost());
         String commentId = getCommentId(testCommentInfo);
 
         CommentBanInfoCreate commentBanInfoCreate = CommentBanInfoCreate.builder()
@@ -85,8 +85,8 @@ public class BanServiceCommentBanTest extends IricomTestSuite {
         init();
 
         Account account = getAccount(allBoardAdmin);
-        String boardId = getBoardId(testBoardInfo);
-        String postId = getPostId(testPostInfo);
+        String boardId = getBoardId(testCommentInfo.getPost().getBoard());
+        String postId = getPostId(testCommentInfo.getPost());
         String commentId = getCommentId(testCommentInfo);
 
         CommentBanInfoCreate commentBanInfoCreate = CommentBanInfoCreate.builder()
@@ -123,8 +123,8 @@ public class BanServiceCommentBanTest extends IricomTestSuite {
         init();
 
         Account account = getAccount(common00);
-        String boardId = getBoardId(testBoardInfo00);
-        String postId = getPostId(testPostInfo);
+        String boardId = getBoardId(testCommentInfo.getPost().getBoard());
+        String postId = getPostId(testCommentInfo.getPost());
         String commentId = getCommentId(testCommentInfo);
 
         CommentBanInfoCreate commentBanInfoCreate = CommentBanInfoCreate.builder()
@@ -158,8 +158,8 @@ public class BanServiceCommentBanTest extends IricomTestSuite {
         init();
 
         Account account = getAccount(common09);
-        String boardId = getBoardId(testBoardInfo00);
-        String postId = getPostId(testPostInfo);
+        String boardId = getBoardId(testCommentInfo.getPost().getBoard());
+        String postId = getPostId(testCommentInfo.getPost());
         String commentId = getCommentId(testCommentInfo);
 
         CommentBanInfoCreate commentBanInfoCreate = CommentBanInfoCreate.builder()
@@ -193,8 +193,8 @@ public class BanServiceCommentBanTest extends IricomTestSuite {
         init();
 
         Account account = getAccount(unknown00);
-        String boardId = getBoardId(testBoardInfo00);
-        String postId = getPostId(testPostInfo);
+        String boardId = getBoardId(testCommentInfo.getPost().getBoard());
+        String postId = getPostId(testCommentInfo.getPost());
         String commentId = getCommentId(testCommentInfo);
 
         CommentBanInfoCreate commentBanInfoCreate = CommentBanInfoCreate.builder()
@@ -232,8 +232,8 @@ public class BanServiceCommentBanTest extends IricomTestSuite {
         init();
 
         Account account = getAccount(systemAdmin);
-        String boardId = getBoardId(testBoardInfo00);
-        String postId = getPostId(testPostInfo);
+        String boardId = getBoardId(testCommentInfo.getPost().getBoard());
+        String postId = getPostId(testCommentInfo.getPost());
         String commentId = getCommentId(testCommentInfo);
 
         CommentBanInfoCreate commentBanInfoCreate = CommentBanInfoCreate.builder()
@@ -272,8 +272,8 @@ public class BanServiceCommentBanTest extends IricomTestSuite {
         init();
 
         Account account = getAccount(systemAdmin);
-        String boardId = getBoardId(testBoardInfo00);
-        String postId = getPostId(testPostInfo);
+        String boardId = getBoardId(testCommentInfo.getPost().getBoard());
+        String postId = getPostId(testCommentInfo.getPost());
         String commentId = getCommentId(testCommentInfo);
 
         CommentBanInfoCreate commentBanInfoCreate = CommentBanInfoCreate.builder()

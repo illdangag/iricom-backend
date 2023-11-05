@@ -134,7 +134,7 @@ public class BanControllerTest extends IricomTestSuite {
     }
 
     @Test
-    @DisplayName("게시물 목록 조회")
+    @DisplayName("차단된 게시물 목록 조회")
     public void bp002() throws Exception {
         MockHttpServletRequestBuilder requestBuilder = get("/v1/ban/post/boards")
                 .param("skip", "0")
@@ -172,7 +172,7 @@ public class BanControllerTest extends IricomTestSuite {
     }
 
     @Test
-    @DisplayName("게시물 목록 조회: 게시판")
+    @DisplayName("차단된 게시물 목록 조회")
     public void bp003() throws Exception {
         String boardId = getBoardId(testBoardInfo00);
 
@@ -215,7 +215,7 @@ public class BanControllerTest extends IricomTestSuite {
     }
 
     @Test
-    @DisplayName("게시물 정보 조회")
+    @DisplayName("차단된 게시물 정보 조회")
     public void bp004() throws Exception {
         String boardId = getBoardId(alreadyPostInfo00.getBoard());
         String postId = getPostId(alreadyPostInfo00);
@@ -251,7 +251,7 @@ public class BanControllerTest extends IricomTestSuite {
     }
 
     @Test
-    @DisplayName("게시물 차단")
+    @DisplayName("게시물 차단 정보 수정")
     public void bp005() throws Exception {
         String boardId = getBoardId(alreadyPostInfo01.getBoard());
         String postId = getPostId(alreadyPostInfo01);

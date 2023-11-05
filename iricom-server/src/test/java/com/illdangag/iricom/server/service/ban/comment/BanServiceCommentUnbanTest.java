@@ -56,8 +56,8 @@ public class BanServiceCommentUnbanTest extends IricomTestSuite {
         init();
 
         Account account = getAccount(systemAdmin);
-        String boardId = getBoardId(testBoardInfo);
-        String postId = getPostId(testPostInfo);
+        String boardId = getBoardId(testCommentInfo.getPost().getBoard());
+        String postId = getPostId(testCommentInfo.getPost());
         String commentId = getCommentId(testCommentInfo);
 
         this.banService.unbanComment(account, boardId, postId, commentId);
@@ -91,8 +91,8 @@ public class BanServiceCommentUnbanTest extends IricomTestSuite {
         init();
 
         Account account = getAccount(allBoardAdmin);
-        String boardId = getBoardId(testBoardInfo);
-        String postId = getPostId(testPostInfo);
+        String boardId = getBoardId(testCommentInfo.getPost().getBoard());
+        String postId = getPostId(testCommentInfo.getPost());
         String commentId = getCommentId(testCommentInfo);
 
         this.banService.unbanComment(account, boardId, postId, commentId);
@@ -130,8 +130,8 @@ public class BanServiceCommentUnbanTest extends IricomTestSuite {
         init();
 
         Account account = getAccount(common00);
-        String boardId = getBoardId(testBoardInfo00);
-        String postId = getPostId(testPostInfo);
+        String boardId = getBoardId(testCommentInfo.getPost().getBoard());
+        String postId = getPostId(testCommentInfo.getPost());
         String commentId = getCommentId(testCommentInfo);
 
         IricomException exception = Assertions.assertThrows(IricomException.class, () -> {
@@ -169,8 +169,8 @@ public class BanServiceCommentUnbanTest extends IricomTestSuite {
         init();
 
         Account account = getAccount(common00);
-        String boardId = getBoardId(testBoardInfo);
-        String postId = getPostId(testPostInfo);
+        String boardId = getBoardId(testCommentInfo.getPost().getBoard());
+        String postId = getPostId(testCommentInfo.getPost());
         String commentId = getCommentId(testCommentInfo);
 
         IricomException exception = Assertions.assertThrows(IricomException.class, () -> {
@@ -208,8 +208,8 @@ public class BanServiceCommentUnbanTest extends IricomTestSuite {
         init();
 
         Account account = getAccount(unknown00);
-        String boardId = getBoardId(testBoardInfo);
-        String postId = getPostId(testPostInfo);
+        String boardId = getBoardId(testCommentInfo.getPost().getBoard());
+        String postId = getPostId(testCommentInfo.getPost());
         String commentId = getCommentId(testCommentInfo);
 
         IricomException exception = Assertions.assertThrows(IricomException.class, () -> {
@@ -242,8 +242,8 @@ public class BanServiceCommentUnbanTest extends IricomTestSuite {
         init();
 
         Account account = getAccount(systemAdmin);
-        String boardId = getBoardId(testBoardInfo);
-        String postId = getPostId(testPostInfo);
+        String boardId = getBoardId(testCommentInfo.getPost().getBoard());
+        String postId = getPostId(testCommentInfo.getPost());
         String commentId = getCommentId(testCommentInfo);
 
         IricomException exception = Assertions.assertThrows(IricomException.class, () -> {
