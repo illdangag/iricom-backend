@@ -51,13 +51,13 @@ public enum IricomErrorCode implements IricomError {
     ALREADY_VOTE_POST("04000006", 400, "Already vote post."),
     INVALID_AUTHORIZATION_TO_GET_TEMPORARY_CONTENT("04000007", 401, "Invalid authorization."),
     NOT_EXIST_ACCOUNT_NICKNAME_TO_POST("04000008", 400, "Not exist nickname."),
-    INVALID_AUTHORIZATION_TO_BAN_POST("04000009", 401, "Invalid authorization."),
-    ALREADY_BAN_POST("04000010", 400, "Already ban post."),
-    ALREADY_UNBAN_POST("04000011", 400, "Already unban post."),
+    INVALID_AUTHORIZATION_TO_BLOCK_POST("04000009", 401, "Invalid authorization."),
+    ALREADY_BLOCK_POST("04000010", 400, "Already blocked post."),
+    ALREADY_UNBLOCK_POST("04000011", 400, "Already unblocked post."),
     INVALID_AUTHORIZATION_TO_POST_ONLY_NOTIFICATION_BOARD("04000012", 400, "Board is for notification only."),
     INVALID_UPDATE_POST_IN_NOTIFICATION_ONLY_BOARD("04000013", 400, "Board is for notification only."),
-    BANNED_POST("04000014", 400, "This is a banned post."),
-    NOT_BANED_POST("04000015", 400, "This post has not been blocked."),
+    BLOCKED_POST("04000014", 400, "This is a blocked post."),
+    NOT_BLOCKED_POST("04000015", 400, "This post has not been blocked."),
 
     // comment: 05XXXXXX
     NOT_EXIST_COMMENT("05000000", 404, "Not exist comment."),
@@ -67,10 +67,10 @@ public enum IricomErrorCode implements IricomError {
     INVALID_AUTHORIZATION_TO_DELETE_COMMENT("05000004", 401, "Invalid authorization."),
     ALREADY_VOTE_COMMENT("05000005", 400, "Already vote comment."),
     INVALID_VOTE_COMMENT("05000006", 400, "Invalid vote type."),
-    COMMENT_ON_BAN_POST("05000007", 400, "This comment on a blocked post."),
-    ALREADY_BAN_COMMENT("05000008", 400, "Already ban comment."),
-    INVALID_AUTHORIZATION_TO_BAN_COMMENT("05000009", 401, "Invalid authorization."),
-    NOT_BANED_COMMENT("050000010", 400, "This comment has not been blocked."),
+    COMMENT_ON_BLOCKED_POST("05000007", 400, "This comment on a blocked post."),
+    ALREADY_BLOCKED_COMMENT("05000008", 400, "Already blocked comment."),
+    INVALID_AUTHORIZATION_TO_BLOCK_COMMENT("05000009", 401, "Invalid authorization."),
+    NOT_BLOCK_COMMENT("050000010", 400, "This comment has not been blocked."),
 
     // report: 06XXXXXX
     // report post: 0600XXXX
@@ -82,11 +82,11 @@ public enum IricomErrorCode implements IricomError {
     ALREADY_REPORT_COMMENT("06010001", 400, "Already report comment."),
     // report account: 0602XXXX
 
-    // ban: 07XXXXXX
-    // ban post: 0700XXXX
-    NOT_EXIST_POST_BAN("07000000", 404, "Not exist post ban."),
+    // block: 07XXXXXX
+    // block post: 0700XXXX
+    NOT_EXIST_POST_BLOCK("07000000", 404, "Not exist post block."),
     // comment post: 0701XXXX
-    NOT_EXIST_COMMENT_BAN("07010000", 404, "Not exist comment ban."),
+    NOT_EXIST_COMMENT_BLOCK("07010000", 404, "Not exist comment block."),
 
     // account group: 08XXXXXX
     NOT_EXIST_ACCOUNT_GROUP("08000000", 404, "Not exist account group."),

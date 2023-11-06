@@ -1,15 +1,15 @@
-package com.illdangag.iricom.server.service.ban.post;
+package com.illdangag.iricom.server.service.block.post;
 
 import com.illdangag.iricom.server.data.entity.Account;
 import com.illdangag.iricom.server.data.entity.type.PostState;
 import com.illdangag.iricom.server.data.entity.type.PostType;
-import com.illdangag.iricom.server.data.request.PostBanInfoSearch;
-import com.illdangag.iricom.server.data.response.PostBanInfoList;
+import com.illdangag.iricom.server.data.request.PostBlockInfoSearch;
+import com.illdangag.iricom.server.data.response.PostBlockInfoList;
 import com.illdangag.iricom.server.exception.IricomException;
-import com.illdangag.iricom.server.service.BanService;
+import com.illdangag.iricom.server.service.BlockService;
 import com.illdangag.iricom.server.test.IricomTestSuite;
 import com.illdangag.iricom.server.test.data.wrapper.TestBoardInfo;
-import com.illdangag.iricom.server.test.data.wrapper.TestPostBanInfo;
+import com.illdangag.iricom.server.test.data.wrapper.TestPostBlockInfo;
 import com.illdangag.iricom.server.test.data.wrapper.TestPostInfo;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.Assertions;
@@ -22,38 +22,38 @@ import java.util.Collections;
 
 @DisplayName("service: 차단 - 검색")
 @Slf4j
-public class BanServicePostSearchTest extends IricomTestSuite {
+public class BlockServicePostSearchTest extends IricomTestSuite {
     @Autowired
-    private BanService banService;
+    private BlockService blockService;
 
     // 게시판
     private final TestBoardInfo boardInfo00 = TestBoardInfo.builder()
             .title("boardInfo00").isEnabled(true).adminList(Collections.singletonList(allBoardAdmin)).build();
     // 게시물
-    private final TestPostInfo alreadyBanPostInfo00 = TestPostInfo.builder()
-            .title("alreadyBanPostInfo00").content("alreadyBanPostInfo00").isAllowComment(true)
+    private final TestPostInfo alreadyBlockPostInfo00 = TestPostInfo.builder()
+            .title("alreadyBlockPostInfo00").content("alreadyBlockPostInfo00").isAllowComment(true)
             .postType(PostType.POST).postState(PostState.PUBLISH)
             .creator(allBoardAdmin).board(boardInfo00)
             .build();
-    private final TestPostInfo alreadyBanPostInfo01 = TestPostInfo.builder()
-            .title("alreadyBanPostInfo00").content("alreadyBanPostInfo00").isAllowComment(true)
+    private final TestPostInfo alreadyBlockPostInfo01 = TestPostInfo.builder()
+            .title("alreadyBlockPostInfo01").content("alreadyBlockPostInfo01").isAllowComment(true)
             .postType(PostType.POST).postState(PostState.PUBLISH)
             .creator(allBoardAdmin).board(boardInfo00)
             .build();
     // 게시물 신고
-    private final TestPostBanInfo postBanInfo00 = TestPostBanInfo.builder()
-            .banAccount(systemAdmin).post(alreadyBanPostInfo00).reason("BAN")
+    private final TestPostBlockInfo postBlockInfo00 = TestPostBlockInfo.builder()
+            .account(systemAdmin).post(alreadyBlockPostInfo00).reason("Block")
             .build();
-    private final TestPostBanInfo postBanInfo01 = TestPostBanInfo.builder()
-            .banAccount(systemAdmin).post(alreadyBanPostInfo01).reason("BAN")
+    private final TestPostBlockInfo postBlockInfo01 = TestPostBlockInfo.builder()
+            .account(systemAdmin).post(alreadyBlockPostInfo01).reason("Block")
             .build();
 
-    public BanServicePostSearchTest(ApplicationContext context) {
+    public BlockServicePostSearchTest(ApplicationContext context) {
         super(context);
 
         addTestBoardInfo(boardInfo00);
-        addTestPostInfo(alreadyBanPostInfo00, alreadyBanPostInfo01);
-        addTestPostBanInfo(postBanInfo00, postBanInfo01);
+        addTestPostInfo(alreadyBlockPostInfo00, alreadyBlockPostInfo01);
+        addTestPostBlockInfo(postBlockInfo00, postBlockInfo01);
 
         init();
     }
@@ -64,17 +64,17 @@ public class BanServicePostSearchTest extends IricomTestSuite {
         Account account = getAccount(systemAdmin);
         String boardId = getBoardId(boardInfo00);
 
-        PostBanInfoSearch postBanInfoSearch = PostBanInfoSearch.builder()
+        PostBlockInfoSearch postBlockInfoSearch = PostBlockInfoSearch.builder()
                 .reason("")
                 .skip(0)
                 .limit(10)
                 .build();
 
-        PostBanInfoList postBanInfoList = banService.getPostBanInfoList(account, boardId, postBanInfoSearch);
+        PostBlockInfoList postBlockInfoList = blockService.getPostBlockInfoList(account, boardId, postBlockInfoSearch);
 
-        Assertions.assertEquals(0, postBanInfoList.getSkip());
-        Assertions.assertEquals(10, postBanInfoList.getLimit());
-        Assertions.assertEquals(2, postBanInfoList.getPostBanInfoList().size());
+        Assertions.assertEquals(0, postBlockInfoList.getSkip());
+        Assertions.assertEquals(10, postBlockInfoList.getLimit());
+        Assertions.assertEquals(2, postBlockInfoList.getPostBlockInfoList().size());
     }
 
     @Test
@@ -83,17 +83,17 @@ public class BanServicePostSearchTest extends IricomTestSuite {
         Account account = getAccount(allBoardAdmin);
         String boardId = getBoardId(boardInfo00);
 
-        PostBanInfoSearch postBanInfoSearch = PostBanInfoSearch.builder()
+        PostBlockInfoSearch postBlockInfoSearch = PostBlockInfoSearch.builder()
                 .reason("")
                 .skip(0)
                 .limit(10)
                 .build();
 
-        PostBanInfoList postBanInfoList = banService.getPostBanInfoList(account, boardId, postBanInfoSearch);
+        PostBlockInfoList postBlockInfoList = blockService.getPostBlockInfoList(account, boardId, postBlockInfoSearch);
 
-        Assertions.assertEquals(0, postBanInfoList.getSkip());
-        Assertions.assertEquals(10, postBanInfoList.getLimit());
-        Assertions.assertEquals(2, postBanInfoList.getPostBanInfoList().size());
+        Assertions.assertEquals(0, postBlockInfoList.getSkip());
+        Assertions.assertEquals(10, postBlockInfoList.getLimit());
+        Assertions.assertEquals(2, postBlockInfoList.getPostBlockInfoList().size());
     }
 
     @Test
@@ -102,14 +102,14 @@ public class BanServicePostSearchTest extends IricomTestSuite {
         Account account = getAccount(enableBoardAdmin);
         String boardId = getBoardId(boardInfo00);
 
-        PostBanInfoSearch postBanInfoSearch = PostBanInfoSearch.builder()
+        PostBlockInfoSearch postBlockInfoSearch = PostBlockInfoSearch.builder()
                 .reason("")
                 .skip(0)
                 .limit(10)
                 .build();
 
         Assertions.assertThrows(IricomException.class, () -> {
-            banService.getPostBanInfoList(account, boardId, postBanInfoSearch);
+            blockService.getPostBlockInfoList(account, boardId, postBlockInfoSearch);
         });
     }
 
@@ -119,14 +119,14 @@ public class BanServicePostSearchTest extends IricomTestSuite {
         Account account = getAccount(common00);
         String boardId = getBoardId(boardInfo00);
 
-        PostBanInfoSearch postBanInfoSearch = PostBanInfoSearch.builder()
+        PostBlockInfoSearch postBlockInfoSearch = PostBlockInfoSearch.builder()
                 .reason("")
                 .skip(0)
                 .limit(10)
                 .build();
 
         Assertions.assertThrows(IricomException.class, () -> {
-            banService.getPostBanInfoList(account, boardId, postBanInfoSearch);
+            blockService.getPostBlockInfoList(account, boardId, postBlockInfoSearch);
         });
     }
 
@@ -136,14 +136,14 @@ public class BanServicePostSearchTest extends IricomTestSuite {
         Account account = getAccount(unknown00);
         String boardId = getBoardId(boardInfo00);
 
-        PostBanInfoSearch postBanInfoSearch = PostBanInfoSearch.builder()
+        PostBlockInfoSearch postBlockInfoSearch = PostBlockInfoSearch.builder()
                 .reason("")
                 .skip(0)
                 .limit(10)
                 .build();
 
         Assertions.assertThrows(IricomException.class, () -> {
-            banService.getPostBanInfoList(account, boardId, postBanInfoSearch);
+            blockService.getPostBlockInfoList(account, boardId, postBlockInfoSearch);
         });
     }
 }

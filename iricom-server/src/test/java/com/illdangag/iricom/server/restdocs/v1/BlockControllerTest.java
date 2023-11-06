@@ -6,7 +6,7 @@ import com.illdangag.iricom.server.restdocs.snippet.IricomFieldsSnippet;
 import com.illdangag.iricom.server.test.IricomTestSuite;
 import com.illdangag.iricom.server.test.data.wrapper.TestBoardInfo;
 import com.illdangag.iricom.server.test.data.wrapper.TestCommentInfo;
-import com.illdangag.iricom.server.test.data.wrapper.TestPostBanInfo;
+import com.illdangag.iricom.server.test.data.wrapper.TestPostBlockInfo;
 import com.illdangag.iricom.server.test.data.wrapper.TestPostInfo;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -29,7 +29,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @DisplayName("restdoc: 차단")
-public class BanControllerTest extends IricomTestSuite {
+public class BlockControllerTest extends IricomTestSuite {
     @Autowired
     MockMvc mockMvc;
 
@@ -64,28 +64,28 @@ public class BanControllerTest extends IricomTestSuite {
             .content("comment")
             .build();
 
-    protected static final TestPostBanInfo postBanInfo00 = TestPostBanInfo.builder()
-            .post(alreadyPostInfo00).banAccount(systemAdmin).reason("Already ban.")
+    protected static final TestPostBlockInfo postBlockInfo00 = TestPostBlockInfo.builder()
+            .post(alreadyPostInfo00).account(systemAdmin).reason("Already blocked.")
             .build();
-    protected static final TestPostBanInfo postBanInfo01 = TestPostBanInfo.builder()
-            .post(alreadyPostInfo01).banAccount(systemAdmin).reason("Already ban.")
+    protected static final TestPostBlockInfo postBlockInfo01 = TestPostBlockInfo.builder()
+            .post(alreadyPostInfo01).account(systemAdmin).reason("Already blocked.")
             .build();
-    protected static final TestPostBanInfo postBanInfo02 = TestPostBanInfo.builder()
-            .post(alreadyPostInfo02).banAccount(systemAdmin).reason("Already ban.")
+    protected static final TestPostBlockInfo postBlockInfo02 = TestPostBlockInfo.builder()
+            .post(alreadyPostInfo02).account(systemAdmin).reason("Already blocked.")
             .build();
 
     @Autowired
-    public BanControllerTest(ApplicationContext context) {
+    public BlockControllerTest(ApplicationContext context) {
         super(context);
 
         List<TestBoardInfo> testBoardInfoList = Arrays.asList(testBoardInfo00);
         List<TestPostInfo> testPostInfoList = Arrays.asList(testPostInfo00, alreadyPostInfo00, alreadyPostInfo01, alreadyPostInfo02);
-        List<TestPostBanInfo> testPostBanInfoList = Arrays.asList(postBanInfo00, postBanInfo01, postBanInfo02);
+        List<TestPostBlockInfo> testPostBlockInfoList = Arrays.asList(postBlockInfo00, postBlockInfo01, postBlockInfo02);
         List<TestCommentInfo> testCommentInfoList = Arrays.asList(testCommentInfo00);
 
         super.setBoard(testBoardInfoList);
         super.setPost(testPostInfoList);
-        super.setBanPost(testPostBanInfoList);
+        super.setBlockPost(testPostBlockInfoList);
         super.setComment(testCommentInfoList);
     }
 
@@ -96,15 +96,15 @@ public class BanControllerTest extends IricomTestSuite {
         String postId = getPostId(testPostInfo00);
 
         Map<String, Object> requestBody = new HashMap<>();
-        requestBody.put("reason", "This is ban.");
+        requestBody.put("reason", "This is blocked.");
 
-        MockHttpServletRequestBuilder requestBuilder = post("/v1/ban/post/boards/{boardId}/posts/{postId}", boardId, postId)
+        MockHttpServletRequestBuilder requestBuilder = post("/v1/block/post/boards/{boardId}/posts/{postId}", boardId, postId)
                 .content(getJsonString(requestBody))
                 .contentType(MediaType.APPLICATION_JSON);
         setAuthToken(requestBuilder, systemAdmin);
 
         List<FieldDescriptor> fieldDescriptorList = new LinkedList<>();
-        fieldDescriptorList.addAll(IricomFieldsSnippet.getPostBan(""));
+        fieldDescriptorList.addAll(IricomFieldsSnippet.getPostBlock(""));
         fieldDescriptorList.addAll(IricomFieldsSnippet.getPost("post."));
         fieldDescriptorList.addAll(IricomFieldsSnippet.getAccount("post.account."));
 
@@ -136,7 +136,7 @@ public class BanControllerTest extends IricomTestSuite {
     @Test
     @DisplayName("차단된 게시물 목록 조회")
     public void bp002() throws Exception {
-        MockHttpServletRequestBuilder requestBuilder = get("/v1/ban/post/boards")
+        MockHttpServletRequestBuilder requestBuilder = get("/v1/block/post/boards")
                 .param("skip", "0")
                 .param("limit", "5")
                 .param("reason", "already");
@@ -144,9 +144,9 @@ public class BanControllerTest extends IricomTestSuite {
 
         List<FieldDescriptor> fieldDescriptorList = new LinkedList<>();
         fieldDescriptorList.addAll(IricomFieldsSnippet.getSearchList(""));
-        fieldDescriptorList.addAll(IricomFieldsSnippet.getPostBan("bans.[]."));
-        fieldDescriptorList.addAll(IricomFieldsSnippet.getPost("bans.[].post."));
-        fieldDescriptorList.addAll(IricomFieldsSnippet.getAccount("bans.[].post.account."));
+        fieldDescriptorList.addAll(IricomFieldsSnippet.getPostBlock("blocks.[]."));
+        fieldDescriptorList.addAll(IricomFieldsSnippet.getPost("blocks.[].post."));
+        fieldDescriptorList.addAll(IricomFieldsSnippet.getAccount("blocks.[].post.account."));
 
         mockMvc.perform(requestBuilder)
                 .andExpect(status().is(200))
@@ -176,7 +176,7 @@ public class BanControllerTest extends IricomTestSuite {
     public void bp003() throws Exception {
         String boardId = getBoardId(testBoardInfo00);
 
-        MockHttpServletRequestBuilder requestBuilder = get("/v1/ban/post/boards/{boardId}", boardId)
+        MockHttpServletRequestBuilder requestBuilder = get("/v1/block/post/boards/{boardId}", boardId)
                 .param("skip", "0")
                 .param("limit", "20")
                 .param("reason", "already");
@@ -184,9 +184,9 @@ public class BanControllerTest extends IricomTestSuite {
 
         List<FieldDescriptor> fieldDescriptorList = new LinkedList<>();
         fieldDescriptorList.addAll(IricomFieldsSnippet.getSearchList(""));
-        fieldDescriptorList.addAll(IricomFieldsSnippet.getPostBan("bans.[]."));
-        fieldDescriptorList.addAll(IricomFieldsSnippet.getPost("bans.[].post."));
-        fieldDescriptorList.addAll(IricomFieldsSnippet.getAccount("bans.[].post.account."));
+        fieldDescriptorList.addAll(IricomFieldsSnippet.getPostBlock("blocks.[]."));
+        fieldDescriptorList.addAll(IricomFieldsSnippet.getPost("blocks.[].post."));
+        fieldDescriptorList.addAll(IricomFieldsSnippet.getAccount("blocks.[].post.account."));
 
         mockMvc.perform(requestBuilder)
                 .andExpect(status().is(200))
@@ -220,11 +220,11 @@ public class BanControllerTest extends IricomTestSuite {
         String boardId = getBoardId(alreadyPostInfo00.getBoard());
         String postId = getPostId(alreadyPostInfo00);
 
-        MockHttpServletRequestBuilder requestBuilder = get("/v1/ban/post/boards/{boardId}/posts/{postId}", boardId, postId);
+        MockHttpServletRequestBuilder requestBuilder = get("/v1/block/post/boards/{boardId}/posts/{postId}", boardId, postId);
         setAuthToken(requestBuilder, systemAdmin);
 
         List<FieldDescriptor> fieldDescriptorList = new LinkedList<>();
-        fieldDescriptorList.addAll(IricomFieldsSnippet.getPostBan(""));
+        fieldDescriptorList.addAll(IricomFieldsSnippet.getPostBlock(""));
         fieldDescriptorList.addAll(IricomFieldsSnippet.getPost("post."));
         fieldDescriptorList.addAll(IricomFieldsSnippet.getAccount("post.account."));
 
@@ -259,13 +259,13 @@ public class BanControllerTest extends IricomTestSuite {
         Map<String, Object> requestBody = new HashMap<>();
         requestBody.put("reason", "Reason update.");
 
-        MockHttpServletRequestBuilder requestBuilder = patch("/v1/ban/post/boards/{boardId}/posts/{postId}", boardId, postId)
+        MockHttpServletRequestBuilder requestBuilder = patch("/v1/block/post/boards/{boardId}/posts/{postId}", boardId, postId)
                 .content(getJsonString(requestBody))
                 .contentType(MediaType.APPLICATION_JSON);
         setAuthToken(requestBuilder, systemAdmin);
 
         List<FieldDescriptor> fieldDescriptorList = new LinkedList<>();
-        fieldDescriptorList.addAll(IricomFieldsSnippet.getPostBan(""));
+        fieldDescriptorList.addAll(IricomFieldsSnippet.getPostBlock(""));
         fieldDescriptorList.addAll(IricomFieldsSnippet.getPost("post."));
         fieldDescriptorList.addAll(IricomFieldsSnippet.getAccount("post.account."));
 
@@ -300,11 +300,11 @@ public class BanControllerTest extends IricomTestSuite {
         String boardId = getBoardId(alreadyPostInfo01.getBoard());
         String postId = getPostId(alreadyPostInfo01);
 
-        MockHttpServletRequestBuilder requestBuilder = delete("/v1/ban/post/boards/{boardId}/posts/{postId}", boardId, postId);
+        MockHttpServletRequestBuilder requestBuilder = delete("/v1/block/post/boards/{boardId}/posts/{postId}", boardId, postId);
         setAuthToken(requestBuilder, systemAdmin);
 
         List<FieldDescriptor> fieldDescriptorList = new LinkedList<>();
-        fieldDescriptorList.addAll(IricomFieldsSnippet.getPostBan(""));
+        fieldDescriptorList.addAll(IricomFieldsSnippet.getPostBlock(""));
         fieldDescriptorList.addAll(IricomFieldsSnippet.getPost("post."));
         fieldDescriptorList.addAll(IricomFieldsSnippet.getAccount("post.account."));
 
@@ -338,15 +338,15 @@ public class BanControllerTest extends IricomTestSuite {
         String commentId = getCommentId(testCommentInfo00);
 
         Map<String, Object> requestBody = new HashMap<>();
-        requestBody.put("reason", "This is ban.");
+        requestBody.put("reason", "This is block.");
 
-        MockHttpServletRequestBuilder requestBuilder = post("/v1/ban/comment/boards/{boardId}/posts/{postId}/comments/{commentId}", boardId, postId, commentId)
+        MockHttpServletRequestBuilder requestBuilder = post("/v1/block/comment/boards/{boardId}/posts/{postId}/comments/{commentId}", boardId, postId, commentId)
                 .content(getJsonString(requestBody))
                 .contentType(MediaType.APPLICATION_JSON);
         setAuthToken(requestBuilder, systemAdmin);
 
         List<FieldDescriptor> fieldDescriptorList = new LinkedList<>();
-        fieldDescriptorList.addAll(IricomFieldsSnippet.getCommentBan(""));
+        fieldDescriptorList.addAll(IricomFieldsSnippet.getCommentBlock(""));
         fieldDescriptorList.addAll(IricomFieldsSnippet.getComment("comment."));
         fieldDescriptorList.addAll(IricomFieldsSnippet.getAccount("comment.account."));
 

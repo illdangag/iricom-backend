@@ -37,7 +37,7 @@ public abstract class IricomTestSuite {
     private final PostService postService;
     private final CommentService commentService;
     private final ReportService reportService;
-    private final BanService banService;
+    private final BlockService blockService;
     private final AccountGroupService accountGroupService;
 
     private final AccountRepository accountRepository;
@@ -45,7 +45,7 @@ public abstract class IricomTestSuite {
     private final PostRepository postRepository;
     private final CommentRepository commentRepository;
     private final ReportRepository reportRepository;
-    private final BanRepository banRepository;
+    private final BlockRepository blockRepository;
     private final AccountGroupRepository accountGroupRepository;
 
     // 계정 설정
@@ -109,8 +109,8 @@ public abstract class IricomTestSuite {
     private final List<TestCommentInfo> testCommentInfoList = new ArrayList<>();
     private final List<TestPostReportInfo> testPostReportInfoList = new ArrayList<>();
     private final List<TestCommentReportInfo> testCommentReportInfoList = new ArrayList<>();
-    private final List<TestPostBanInfo> testPostBanInfoList = new ArrayList<>();
-    private final List<TestCommentBanInfo> testCommentBanInfoList = new ArrayList<>();
+    private final List<TestPostBlockInfo> testPostBlockInfoList = new ArrayList<>();
+    private final List<TestCommentBlockInfo> testCommentBlockInfoList = new ArrayList<>();
 
     private static final Map<TestAccountInfo, Account> accountMap = new HashMap<>();
     private static final Map<TestBoardInfo, Board> boardMap = new HashMap<>();
@@ -119,9 +119,9 @@ public abstract class IricomTestSuite {
     private static final Map<TestCommentInfo, Comment> commentMap = new HashMap<>();
     private static final Map<TestPostReportInfo, PostReport> postReportMap = new HashMap<>();
     private static final Map<TestCommentReportInfo, CommentReport> commentReportMap = new HashMap<>();
-    private static final Map<TestPostBanInfo, PostBan> postBanMap = new HashMap<>();
+    private static final Map<TestPostBlockInfo, PostBlock> postBlockMap = new HashMap<>();
     private static final Map<TestAccountGroupInfo, AccountGroup> accountGroupMap = new HashMap<>();
-    private static final Map<TestCommentBanInfo, CommentBan> commentBanMap = new HashMap<>();
+    private static final Map<TestCommentBlockInfo, CommentBlock> commentBlockMap = new HashMap<>();
 
     private static boolean isAccountInit = false;
 
@@ -132,7 +132,7 @@ public abstract class IricomTestSuite {
         this.postService = context.getBean(PostService.class);
         this.commentService = context.getBean(CommentService.class);
         this.reportService = context.getBean(ReportService.class);
-        this.banService = context.getBean(BanService.class);
+        this.blockService = context.getBean(BlockService.class);
         this.accountGroupService = context.getBean(AccountGroupService.class);
 
         this.accountRepository = context.getBean(AccountRepository.class);
@@ -140,7 +140,7 @@ public abstract class IricomTestSuite {
         this.postRepository = context.getBean(PostRepository.class);
         this.commentRepository = context.getBean(CommentRepository.class);
         this.reportRepository = context.getBean(ReportRepository.class);
-        this.banRepository = context.getBean(BanRepository.class);
+        this.blockRepository = context.getBean(BlockRepository.class);
         this.accountGroupRepository = context.getBean(AccountGroupRepository.class);
 
         if (isAccountInit) {
@@ -283,10 +283,10 @@ public abstract class IricomTestSuite {
     /**
      * 게시물 차단
      */
-    protected void setBanPost(List<TestPostBanInfo> testPostBanInfoList) {
-        testPostBanInfoList.forEach(item -> {
-            PostBan postBan = this.banPost(item);
-            postBanMap.put(item, postBan);
+    protected void setBlockPost(List<TestPostBlockInfo> testPostBlockInfoList) {
+        testPostBlockInfoList.forEach(item -> {
+            PostBlock postBlock = this.blockPost(item);
+            postBlockMap.put(item, postBlock);
         });
     }
 
@@ -327,10 +327,10 @@ public abstract class IricomTestSuite {
     /**
      * 댓글 차단
      */
-    protected void setBanComment(List<TestCommentBanInfo> testCommentBanInfoList) {
-        testCommentBanInfoList.forEach(item -> {
-            CommentBan commentBan = this.banComment(item);
-            commentBanMap.put(item, commentBan);
+    protected void setBlockComment(List<TestCommentBlockInfo> testCommentBlockInfoList) {
+        testCommentBlockInfoList.forEach(item -> {
+            CommentBlock commentBlock = this.blockComment(item);
+            commentBlockMap.put(item, commentBlock);
         });
     }
 
@@ -342,8 +342,8 @@ public abstract class IricomTestSuite {
         this.setPostReport(testPostReportInfoList);
         this.setCommentReport(testCommentReportInfoList);
 
-        this.setBanPost(testPostBanInfoList);
-        this.setBanComment(testCommentBanInfoList);
+        this.setBlockPost(testPostBlockInfoList);
+        this.setBlockComment(testCommentBlockInfoList);
         this.setDeletedComment(testCommentInfoList);
         this.setDisabledCommentBoard(testPostInfoList);
         this.setDisabledBoard(testBoardInfoList);
@@ -532,21 +532,21 @@ public abstract class IricomTestSuite {
         return postReportOptional.orElseThrow(() -> new IricomException(IricomErrorCode.NOT_EXIST_POST_REPORT));
     }
 
-    private PostBan getPostBan(String id) {
-        Optional<PostBan> postBanOptional = this.banRepository.getPostBan(id);
-        return postBanOptional.orElseThrow(() -> new IricomException(IricomErrorCode.NOT_EXIST_POST_BAN));
+    private PostBlock getPostBlock(String id) {
+        Optional<PostBlock> postBlockOptional = this.blockRepository.getPostBlock(id);
+        return postBlockOptional.orElseThrow(() -> new IricomException(IricomErrorCode.NOT_EXIST_POST_BLOCK));
     }
 
-    private CommentBan getCommentBan(String id) {
-        long commentBanId = -1;
+    private CommentBlock getCommentBlock(String id) {
+        long commentBlockId = -1;
 
         try {
-            commentBanId = Long.parseLong(id);
+            commentBlockId = Long.parseLong(id);
         } catch (Exception exception) {
-            throw new IricomException(IricomErrorCode.NOT_EXIST_COMMENT_BAN);
+            throw new IricomException(IricomErrorCode.NOT_EXIST_COMMENT_BLOCK);
         }
 
-        return this.banRepository.getCommentBan(commentBanId).orElseThrow(() -> new IricomException(IricomErrorCode.NOT_EXIST_COMMENT_BAN));
+        return this.blockRepository.getCommentBlock(commentBlockId).orElseThrow(() -> new IricomException(IricomErrorCode.NOT_EXIST_COMMENT_BLOCK));
     }
 
     private CommentReport getCommentReport(String id) {
@@ -595,35 +595,35 @@ public abstract class IricomTestSuite {
         return this.getCommentReport(commentReportInfo.getId());
     }
 
-    private PostBan banPost(TestPostBanInfo testPostBanInfo) {
-        TestAccountInfo banTestAccountInfo = testPostBanInfo.getBanAccount();
-        TestPostInfo testPostInfo = testPostBanInfo.getPost();
+    private PostBlock blockPost(TestPostBlockInfo testPostBlockInfo) {
+        TestAccountInfo blockTestAccountInfo = testPostBlockInfo.getAccount();
+        TestPostInfo testPostInfo = testPostBlockInfo.getPost();
 
-        Account banAccount = accountMap.get(banTestAccountInfo);
+        Account account = accountMap.get(blockTestAccountInfo);
         Post post = postMap.get(testPostInfo);
         Board board = post.getBoard();
 
-        PostBanInfoCreate postBanInfoCreate = PostBanInfoCreate.builder()
-                .reason(testPostBanInfo.getReason())
+        PostBlockInfoCreate postBlockInfoCreate = PostBlockInfoCreate.builder()
+                .reason(testPostBlockInfo.getReason())
                 .build();
-        PostBanInfo postBanInfo = banService.banPost(banAccount, board, post, postBanInfoCreate);
-        return this.getPostBan(postBanInfo.getId());
+        PostBlockInfo postBlockInfo = blockService.blockPost(account, board, post, postBlockInfoCreate);
+        return this.getPostBlock(postBlockInfo.getId());
     }
 
-    private CommentBan banComment(TestCommentBanInfo testCommentBanInfo) {
-        TestAccountInfo banTestAccountInfo = testCommentBanInfo.getBanAccount();
-        TestCommentInfo testCommentInfo = testCommentBanInfo.getComment();
+    private CommentBlock blockComment(TestCommentBlockInfo testCommentBlockInfo) {
+        TestAccountInfo testAccountInfo = testCommentBlockInfo.getAccount();
+        TestCommentInfo testCommentInfo = testCommentBlockInfo.getComment();
 
-        Account banAccount = accountMap.get(banTestAccountInfo);
+        Account account = accountMap.get(testAccountInfo);
         String commentId = getCommentId(testCommentInfo);
         String postId = getPostId(testCommentInfo.getPost());
         String boardId = getBoardId(testCommentInfo.getPost().getBoard());
 
-        CommentBanInfoCreate commentBanInfoCreate = CommentBanInfoCreate.builder()
-                .reason(testCommentBanInfo.getReason())
+        CommentBlockInfoCreate commentBlockInfoCreate = CommentBlockInfoCreate.builder()
+                .reason(testCommentBlockInfo.getReason())
                 .build();
-        CommentBanInfo commentBanInfo = banService.banComment(banAccount, boardId, postId, commentId, commentBanInfoCreate);
-        return this.getCommentBan(commentBanInfo.getId());
+        CommentBlockInfo commentBlockInfo = blockService.blockComment(account, boardId, postId, commentId, commentBlockInfoCreate);
+        return this.getCommentBlock(commentBlockInfo.getId());
     }
 
     private AccountGroup setAccountGroup(TestAccountGroupInfo testAccountGroupInfo) {
@@ -729,12 +729,12 @@ public abstract class IricomTestSuite {
         return String.valueOf(this.getCommentReport(testCommentReportInfo).getId());
     }
 
-    private PostBan getPostBan(TestPostBanInfo testPostBanInfo) {
-        return postBanMap.get(testPostBanInfo);
+    private PostBlock getPostBlock(TestPostBlockInfo testPostBlockInfo) {
+        return postBlockMap.get(testPostBlockInfo);
     }
 
-    protected String getPostBanId(TestPostBanInfo testPostBanInfo) {
-        return String.valueOf(this.getPostBan(testPostBanInfo).getId());
+    protected String getPostBlockId(TestPostBlockInfo testPostBlockInfo) {
+        return String.valueOf(this.getPostBlock(testPostBlockInfo).getId());
     }
 
     protected AccountGroup getAccountGroup(TestAccountGroupInfo testAccountGroupInfo) {
@@ -819,16 +819,16 @@ public abstract class IricomTestSuite {
         this.testCommentReportInfoList.addAll(testCommentReportInfoList);
     }
 
-    protected void addTestPostBanInfo(TestPostBanInfo ...testPostBanInfos) {
-        this.addTestPostBanInfo(Arrays.asList(testPostBanInfos));
+    protected void addTestPostBlockInfo(TestPostBlockInfo... testPostBlockInfos) {
+        this.addTestPostBlockInfo(Arrays.asList(testPostBlockInfos));
     }
 
-    protected void addTestPostBanInfo(List<TestPostBanInfo> testPostBanInfoList) {
-        this.testPostBanInfoList.addAll(testPostBanInfoList);
+    protected void addTestPostBlockInfo(List<TestPostBlockInfo> testPostBlockInfoList) {
+        this.testPostBlockInfoList.addAll(testPostBlockInfoList);
     }
 
-    protected void addTestCommentBanInfo(TestCommentBanInfo ...testCommentBanInfos) {
-        this.testCommentBanInfoList.addAll(Arrays.asList(testCommentBanInfos));
+    protected void addTestCommentBlockInfo(TestCommentBlockInfo... testCommentBlockInfos) {
+        this.testCommentBlockInfoList.addAll(Arrays.asList(testCommentBlockInfos));
     }
 
     protected <T> List<T> getAllList(SearchRequest searchRequest, SearchAllListResponse<T> response) {

@@ -49,7 +49,7 @@ public class IricomFieldsSnippet {
             ResponseField.builder().path("hasTemporary").description("임시 저장 여부").build(),
             ResponseField.builder().path("boardId").description("게시물이 작성된 게시판 아이디").build(),
             ResponseField.builder().path("report").description("신고 여부").build(),
-            ResponseField.builder().path("ban").description("차단 여부").build(),
+            ResponseField.builder().path("blocked").description("차단 여부").build(),
             ResponseField.builder().path("account").description("작성자").build(),
             ResponseField.builder().path("deleted").description("삭제 여부").type(JsonFieldType.BOOLEAN).build()
     );
@@ -88,7 +88,7 @@ public class IricomFieldsSnippet {
             ResponseField.builder().path("comment").description("신고 댓글").build()
     );
 
-    private static final List<ResponseField> postBanResponseFieldList = Arrays.asList(
+    private static final List<ResponseField> postBlockResponseFieldList = Arrays.asList(
             ResponseField.builder().path("id").description("아이디").build(),
             ResponseField.builder().path("createDate").description("생성일").build(),
             ResponseField.builder().path("updateDate").description("수정일").build(),
@@ -96,7 +96,7 @@ public class IricomFieldsSnippet {
             ResponseField.builder().path("enabled").description("활성화 여부").build()
     );
 
-    private static final List<ResponseField> commentBanResponseFieldList = Arrays.asList(
+    private static final List<ResponseField> commentBlockResponseFieldList = Arrays.asList(
             ResponseField.builder().path("id").description("아이디").build(),
             ResponseField.builder().path("createDate").description("생성일").build(),
             ResponseField.builder().path("updateDate").description("수정일").build(),
@@ -170,12 +170,12 @@ public class IricomFieldsSnippet {
         return getFieldDescriptors(commentReportResponseFieldList, keyPrefix);
     }
 
-    public static List<FieldDescriptor> getPostBan(String keyPrefix) {
-        return getFieldDescriptors(postBanResponseFieldList, keyPrefix);
+    public static List<FieldDescriptor> getPostBlock(String keyPrefix) {
+        return getFieldDescriptors(postBlockResponseFieldList, keyPrefix);
     }
 
-    public static List<FieldDescriptor> getCommentBan(String keyPrefix) {
-        return getFieldDescriptors(commentBanResponseFieldList, keyPrefix);
+    public static List<FieldDescriptor> getCommentBlock(String keyPrefix) {
+        return getFieldDescriptors(commentBlockResponseFieldList, keyPrefix);
     }
 
     public static List<FieldDescriptor> getAccountGroup(String keyPrefix) {

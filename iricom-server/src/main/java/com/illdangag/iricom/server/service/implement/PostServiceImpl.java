@@ -30,16 +30,16 @@ import java.util.stream.Collectors;
 public class PostServiceImpl extends IricomService implements PostService {
     private final PostVoteRepository postVoteRepository;
     private final ReportRepository reportRepository;
-    private final BanRepository banRepository;
+    private final BlockRepository blockRepository;
 
     @Autowired
     public PostServiceImpl(PostRepository postRepository, PostVoteRepository postVoteRepository, CommentRepository commentRepository,
                            BoardRepository boardRepository, ReportRepository reportRepository,
-                           BanRepository banRepository) {
+                           BlockRepository blockRepository) {
         super(boardRepository, postRepository, commentRepository);
         this.postVoteRepository = postVoteRepository;
         this.reportRepository = reportRepository;
-        this.banRepository = banRepository;
+        this.blockRepository = blockRepository;
     }
 
     /**
@@ -184,9 +184,9 @@ public class PostServiceImpl extends IricomService implements PostService {
         long upvote = this.postVoteRepository.getPostVoteCount(post, VoteType.UPVOTE);
         long downvote = this.postVoteRepository.getPostVoteCount(post, VoteType.DOWNVOTE);
         long reportCount = this.reportRepository.getPortReportCount(post);
-        boolean isBan = this.isBanPost(post);
+        boolean blocked = this.isBlockPost(post);
 
-        return new PostInfo(post, includeContent, postState, commentCount, upvote, downvote, reportCount, isBan);
+        return new PostInfo(post, includeContent, postState, commentCount, upvote, downvote, reportCount, blocked);
     }
 
     /**
@@ -211,9 +211,9 @@ public class PostServiceImpl extends IricomService implements PostService {
         long upvote = this.postVoteRepository.getPostVoteCount(post, VoteType.UPVOTE);
         long downvote = this.postVoteRepository.getPostVoteCount(post, VoteType.DOWNVOTE);
         long reportCount = this.reportRepository.getPortReportCount(post);
-        boolean isBan = this.isBanPost(post);
+        boolean blocked = this.isBlockPost(post);
 
-        return new PostInfo(post, includeContent, postState, commentCount, upvote, downvote, reportCount, isBan);
+        return new PostInfo(post, includeContent, postState, commentCount, upvote, downvote, reportCount, blocked);
     }
 
     /**
@@ -523,10 +523,10 @@ public class PostServiceImpl extends IricomService implements PostService {
             }
 
             long reportCount = this.reportRepository.getPortReportCount(post);
-            boolean isBan = this.isBanPost(post);
+            boolean blocked = this.isBlockPost(post);
 
             // 게시물의 목록을 조회 하므로 게시물의 내용을 포함 하지 않음
-            return new PostInfo(post, false, responsePostState, commentCount, upvote, downvote, reportCount, isBan);
+            return new PostInfo(post, false, responsePostState, commentCount, upvote, downvote, reportCount, blocked);
         }).collect(Collectors.toList());
 
         return PostInfoList.builder()
@@ -552,8 +552,8 @@ public class PostServiceImpl extends IricomService implements PostService {
     /**
      * 게시물의 차단 여부
      */
-    private boolean isBanPost(Post post) {
-        long postBanCount = this.banRepository.getPostBanCount(post);
-        return postBanCount > 0;
+    private boolean isBlockPost(Post post) {
+        long postBlockCount = this.blockRepository.getPostBlockCount(post);
+        return postBlockCount > 0;
     }
 }

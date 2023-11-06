@@ -1,14 +1,14 @@
-package com.illdangag.iricom.server.service.ban.post;
+package com.illdangag.iricom.server.service.block.post;
 
 import com.illdangag.iricom.server.data.entity.Account;
 import com.illdangag.iricom.server.data.entity.type.PostState;
 import com.illdangag.iricom.server.data.entity.type.PostType;
-import com.illdangag.iricom.server.data.response.PostBanInfo;
+import com.illdangag.iricom.server.data.response.PostBlockInfo;
 import com.illdangag.iricom.server.exception.IricomException;
-import com.illdangag.iricom.server.service.BanService;
+import com.illdangag.iricom.server.service.BlockService;
 import com.illdangag.iricom.server.test.IricomTestSuite;
 import com.illdangag.iricom.server.test.data.wrapper.TestBoardInfo;
-import com.illdangag.iricom.server.test.data.wrapper.TestPostBanInfo;
+import com.illdangag.iricom.server.test.data.wrapper.TestPostBlockInfo;
 import com.illdangag.iricom.server.test.data.wrapper.TestPostInfo;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.Assertions;
@@ -21,92 +21,92 @@ import java.util.Collections;
 
 @DisplayName("service: 차단 - 차단 해제")
 @Slf4j
-public class BanServicePostUnbanTest extends IricomTestSuite {
+public class BlockServicePostUnblockTest extends IricomTestSuite {
     @Autowired
-    private BanService banService;
+    private BlockService blockService;
 
     private final TestBoardInfo boardInfo00 = TestBoardInfo.builder()
             .title("boardInfo00").isEnabled(true).adminList(Collections.singletonList(allBoardAdmin)).build();
     private final TestBoardInfo boardInfo01 = TestBoardInfo.builder()
             .title("boardInfo01").isEnabled(true).adminList(Collections.singletonList(allBoardAdmin)).build();
 
-    private final TestPostInfo alreadyBanPostInfo00 = TestPostInfo.builder()
-            .title("alreadyBanPostInfo00").content("alreadyBanPostInfo00").isAllowComment(true)
+    private final TestPostInfo alreadyBlockPostInfo00 = TestPostInfo.builder()
+            .title("alreadyBlockPostInfo00").content("alreadyBlockPostInfo00").isAllowComment(true)
             .postType(PostType.POST).postState(PostState.PUBLISH)
             .creator(allBoardAdmin).board(boardInfo00)
             .build();
-    private final TestPostInfo alreadyBanPostInfo01 = TestPostInfo.builder()
-            .title("alreadyBanPostInfo01").content("alreadyBanPostInfo01").isAllowComment(true)
+    private final TestPostInfo alreadyBlockPostInfo01 = TestPostInfo.builder()
+            .title("alreadyBlockPostInfo01").content("alreadyBlockPostInfo01").isAllowComment(true)
             .postType(PostType.POST).postState(PostState.PUBLISH)
             .creator(allBoardAdmin).board(boardInfo00)
             .build();
-    private final TestPostInfo alreadyBanPostInfo02 = TestPostInfo.builder()
-            .title("alreadyBanPostInfo02").content("alreadyBanPostInfo02").isAllowComment(true)
+    private final TestPostInfo alreadyBlockPostInfo02 = TestPostInfo.builder()
+            .title("alreadyBlockPostInfo02").content("alreadyBlockPostInfo02").isAllowComment(true)
             .postType(PostType.POST).postState(PostState.PUBLISH)
             .creator(allBoardAdmin).board(boardInfo00)
             .build();
-    private final TestPostInfo alreadyBanPostInfo03 = TestPostInfo.builder()
-            .title("alreadyBanPostInfo03").content("alreadyBanPostInfo03").isAllowComment(true)
+    private final TestPostInfo alreadyBlockPostInfo03 = TestPostInfo.builder()
+            .title("alreadyBlockPostInfo03").content("alreadyBlockPostInfo03").isAllowComment(true)
             .postType(PostType.POST).postState(PostState.PUBLISH)
             .creator(allBoardAdmin).board(boardInfo00)
             .build();
 
-    private final TestPostBanInfo postBanInfo00 = TestPostBanInfo.builder()
-            .banAccount(systemAdmin).post(alreadyBanPostInfo00).reason("BAN")
+    private final TestPostBlockInfo postBlockInfo00 = TestPostBlockInfo.builder()
+            .account(systemAdmin).post(alreadyBlockPostInfo00).reason("block")
             .build();
-    private final TestPostBanInfo postBanInfo01 = TestPostBanInfo.builder()
-            .banAccount(systemAdmin).post(alreadyBanPostInfo01).reason("BAN")
+    private final TestPostBlockInfo postBlockInfo01 = TestPostBlockInfo.builder()
+            .account(systemAdmin).post(alreadyBlockPostInfo01).reason("block")
             .build();
-    private final TestPostBanInfo postBanInfo02 = TestPostBanInfo.builder()
-            .banAccount(systemAdmin).post(alreadyBanPostInfo02).reason("BAN")
+    private final TestPostBlockInfo postBlockInfo02 = TestPostBlockInfo.builder()
+            .account(systemAdmin).post(alreadyBlockPostInfo02).reason("block")
             .build();
-    private final TestPostBanInfo postBanInfo03 = TestPostBanInfo.builder()
-            .banAccount(systemAdmin).post(alreadyBanPostInfo03).reason("BAN")
+    private final TestPostBlockInfo postBlockInfo03 = TestPostBlockInfo.builder()
+            .account(systemAdmin).post(alreadyBlockPostInfo03).reason("block")
             .build();
 
-    public BanServicePostUnbanTest(ApplicationContext context) {
+    public BlockServicePostUnblockTest(ApplicationContext context) {
         super(context);
 
         addTestBoardInfo(boardInfo00, boardInfo01);
-        addTestPostInfo(alreadyBanPostInfo00, alreadyBanPostInfo01, alreadyBanPostInfo02, alreadyBanPostInfo03);
-        addTestPostBanInfo(postBanInfo00, postBanInfo01, postBanInfo02, postBanInfo03);
+        addTestPostInfo(alreadyBlockPostInfo00, alreadyBlockPostInfo01, alreadyBlockPostInfo02, alreadyBlockPostInfo03);
+        addTestPostBlockInfo(postBlockInfo00, postBlockInfo01, postBlockInfo02, postBlockInfo03);
 
         init();
     }
 
     @Test
     @DisplayName("시스템 관리자")
-    public void unbanSystemAdmin() throws Exception {
+    public void unblockSystemAdmin() throws Exception {
         Account account = getAccount(systemAdmin);
-        String boardId = getBoardId(alreadyBanPostInfo02.getBoard());
-        String postId = getPostId(alreadyBanPostInfo02);
+        String boardId = getBoardId(alreadyBlockPostInfo02.getBoard());
+        String postId = getPostId(alreadyBlockPostInfo02);
 
-        PostBanInfo postBanInfo = banService.unbanPost(account, boardId, postId);
+        PostBlockInfo postBlockInfo = blockService.unblockPost(account, boardId, postId);
 
-        Assertions.assertFalse(postBanInfo.getEnabled());
+        Assertions.assertFalse(postBlockInfo.getEnabled());
     }
 
     @Test
     @DisplayName("게시판 관리자")
-    public void unbanBoardAdmin() throws Exception {
+    public void unblockBoardAdmin() throws Exception {
         Account account = getAccount(allBoardAdmin);
-        String boardId = getBoardId(alreadyBanPostInfo03.getBoard());
-        String postId = getPostId(alreadyBanPostInfo03);
+        String boardId = getBoardId(alreadyBlockPostInfo03.getBoard());
+        String postId = getPostId(alreadyBlockPostInfo03);
 
-        PostBanInfo postBanInfo = banService.unbanPost(account, boardId, postId);
+        PostBlockInfo postBlockInfo = blockService.unblockPost(account, boardId, postId);
 
-        Assertions.assertFalse(postBanInfo.getEnabled());
+        Assertions.assertFalse(postBlockInfo.getEnabled());
     }
 
     @Test
     @DisplayName("다른 게시판 관리자")
-    public void unbanOtherBoardAdmin() throws Exception {
+    public void unblockOtherBoardAdmin() throws Exception {
         Account account = getAccount(enableBoardAdmin);
-        String boardId = getBoardId(alreadyBanPostInfo01.getBoard());
-        String postId = getPostId(alreadyBanPostInfo01);
+        String boardId = getBoardId(alreadyBlockPostInfo01.getBoard());
+        String postId = getPostId(alreadyBlockPostInfo01);
 
         IricomException iricomException = Assertions.assertThrows(IricomException.class, () -> {
-            banService.unbanPost(account, boardId, postId);
+            blockService.unblockPost(account, boardId, postId);
         });
 
         Assertions.assertEquals("04000009", iricomException.getErrorCode());
@@ -115,13 +115,13 @@ public class BanServicePostUnbanTest extends IricomTestSuite {
 
     @Test
     @DisplayName("일반 사용자")
-    public void unbanAccount() throws Exception {
+    public void unblockAccount() throws Exception {
         Account account = getAccount(common00);
-        String boardId = getBoardId(alreadyBanPostInfo01.getBoard());
-        String postId = getPostId(alreadyBanPostInfo01);
+        String boardId = getBoardId(alreadyBlockPostInfo01.getBoard());
+        String postId = getPostId(alreadyBlockPostInfo01);
 
         IricomException iricomException = Assertions.assertThrows(IricomException.class, () -> {
-            banService.unbanPost(account, boardId, postId);
+            blockService.unblockPost(account, boardId, postId);
         });
 
         Assertions.assertEquals("04000009", iricomException.getErrorCode());
@@ -130,13 +130,13 @@ public class BanServicePostUnbanTest extends IricomTestSuite {
 
     @Test
     @DisplayName("등록되지 않은 사용자")
-    public void unbanUnknown() throws Exception {
+    public void unblockUnknown() throws Exception {
         Account account = getAccount(unknown00);
-        String boardId = getBoardId(alreadyBanPostInfo01.getBoard());
-        String postId = getPostId(alreadyBanPostInfo01);
+        String boardId = getBoardId(alreadyBlockPostInfo01.getBoard());
+        String postId = getPostId(alreadyBlockPostInfo01);
 
         IricomException iricomException = Assertions.assertThrows(IricomException.class, () -> {
-            banService.unbanPost(account, boardId, postId);
+            blockService.unblockPost(account, boardId, postId);
         });
 
         Assertions.assertEquals("04000009", iricomException.getErrorCode());
@@ -145,13 +145,13 @@ public class BanServicePostUnbanTest extends IricomTestSuite {
 
     @Test
     @DisplayName("게시물이 포함된 게시판이 아닌 다른 게시판")
-    public void unbanPostInOtherBoard() throws Exception {
+    public void unblockPostInOtherBoard() throws Exception {
         Account account = getAccount(systemAdmin);
         String boardId = getBoardId(boardInfo01);
-        String postId = getPostId(alreadyBanPostInfo01);
+        String postId = getPostId(alreadyBlockPostInfo01);
 
         IricomException iricomException = Assertions.assertThrows(IricomException.class, () -> {
-            banService.unbanPost(account, boardId, postId);
+            blockService.unblockPost(account, boardId, postId);
         });
 
         Assertions.assertEquals("04000000", iricomException.getErrorCode());

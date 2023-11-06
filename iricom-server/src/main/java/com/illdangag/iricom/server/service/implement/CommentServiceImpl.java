@@ -30,17 +30,17 @@ import java.util.stream.Collectors;
 public class CommentServiceImpl extends IricomService implements CommentService {
     private final CommentVoteRepository commentVoteRepository;
     private final ReportRepository reportRepository;
-    private final BanRepository banRepository;
+    private final BlockRepository blockRepository;
 
     private final AccountService accountService;
 
     @Autowired
     public CommentServiceImpl(CommentRepository commentRepository, CommentVoteRepository commentVoteRepository, BoardRepository boardRepository,
-                              BanRepository banRepository, PostRepository postRepository, ReportRepository reportRepository, AccountService accountService) {
+                              BlockRepository blockRepository, PostRepository postRepository, ReportRepository reportRepository, AccountService accountService) {
         super(boardRepository, postRepository, commentRepository);
         this.commentVoteRepository = commentVoteRepository;
         this.reportRepository = reportRepository;
-        this.banRepository = banRepository;
+        this.blockRepository = blockRepository;
         this.accountService = accountService;
     }
 
@@ -70,8 +70,8 @@ public class CommentServiceImpl extends IricomService implements CommentService 
             throw new IricomException(IricomErrorCode.NOT_EXIST_POST);
         }
 
-        if (this.isBanPost(post)) { // 차단된 게시물인 경우
-            throw new IricomException(IricomErrorCode.BANNED_POST);
+        if (this.isBlockPost(post)) { // 차단된 게시물인 경우
+            throw new IricomException(IricomErrorCode.BLOCKED_POST);
         }
 
         if (!post.getContent().getAllowComment()) { // 댓글을 허용하지 않은 게시물인 경우
@@ -131,8 +131,8 @@ public class CommentServiceImpl extends IricomService implements CommentService 
             throw new IricomException(IricomErrorCode.NOT_EXIST_POST);
         }
 
-        if (this.isBanPost(post)) { // 차단된 게시물인 경우
-            throw new IricomException(IricomErrorCode.BANNED_POST);
+        if (this.isBlockPost(post)) { // 차단된 게시물인 경우
+            throw new IricomException(IricomErrorCode.BLOCKED_POST);
         }
 
         if (!post.getContent().getAllowComment()) { // 댓글을 허용하지 않은 게시물인 경우
@@ -200,8 +200,8 @@ public class CommentServiceImpl extends IricomService implements CommentService 
             throw new IricomException(IricomErrorCode.NOT_EXIST_POST);
         }
 
-        if (this.isBanPost(post)) { // 차단된 게시물인 경우
-            throw new IricomException(IricomErrorCode.BANNED_POST);
+        if (this.isBlockPost(post)) { // 차단된 게시물인 경우
+            throw new IricomException(IricomErrorCode.BLOCKED_POST);
         }
 
         long total;
@@ -287,8 +287,8 @@ public class CommentServiceImpl extends IricomService implements CommentService 
             throw new IricomException(IricomErrorCode.NOT_EXIST_POST);
         }
 
-        if (this.isBanPost(post)) { // 차단된 게시물인 경우
-            throw new IricomException(IricomErrorCode.BANNED_POST);
+        if (this.isBlockPost(post)) { // 차단된 게시물인 경우
+            throw new IricomException(IricomErrorCode.BLOCKED_POST);
         }
 
         return this.getCommentInfo(comment);
@@ -329,8 +329,8 @@ public class CommentServiceImpl extends IricomService implements CommentService 
             throw new IricomException(IricomErrorCode.NOT_EXIST_POST);
         }
 
-        if (this.isBanPost(post)) { // 차단된 게시물인 경우
-            throw new IricomException(IricomErrorCode.BANNED_POST);
+        if (this.isBlockPost(post)) { // 차단된 게시물인 경우
+            throw new IricomException(IricomErrorCode.BLOCKED_POST);
         }
 
         if (!comment.getAccount().equals(account)) {
@@ -374,8 +374,8 @@ public class CommentServiceImpl extends IricomService implements CommentService 
             throw new IricomException(IricomErrorCode.NOT_EXIST_POST);
         }
 
-        if (this.isBanPost(post)) { // 차단된 게시물인 경우
-            throw new IricomException(IricomErrorCode.BANNED_POST);
+        if (this.isBlockPost(post)) { // 차단된 게시물인 경우
+            throw new IricomException(IricomErrorCode.BLOCKED_POST);
         }
 
         if (!post.getContent().getAllowComment()) {
@@ -407,14 +407,14 @@ public class CommentServiceImpl extends IricomService implements CommentService 
         return new CommentInfo(comment, accountInfo, upvote, downvote, reportCount);
     }
 
-    private boolean isBanPost(Post post) {
-        Optional<PostBan> postBanOptional = this.banRepository.getPostBan(post);
+    private boolean isBlockPost(Post post) {
+        Optional<PostBlock> postBlockOptional = this.blockRepository.getPostBlock(post);
 
-        if (postBanOptional.isEmpty()) {
+        if (postBlockOptional.isEmpty()) {
             return false;
         }
 
-        PostBan postBan = postBanOptional.get();
-        return postBan.getEnabled();
+        PostBlock postBlock = postBlockOptional.get();
+        return postBlock.getEnabled();
     }
 }

@@ -12,7 +12,7 @@ import javax.validation.constraints.Size;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class CommentBanInfoCreate {
+public class CommentBlockInfoCreate {
     @NotNull(message = "The reason is required.")
     @Size(min = 1, max = 1000, message = "The reason must be at least 1 character and less then 1000 characters.")
     private String reason;

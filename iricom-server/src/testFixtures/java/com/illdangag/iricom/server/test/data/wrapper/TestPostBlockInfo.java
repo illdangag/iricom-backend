@@ -5,10 +5,10 @@ import lombok.Getter;
 
 @Getter
 @Builder
-public class TestCommentBanInfo {
-    private TestAccountInfo banAccount;
+public class TestPostBlockInfo {
+    private TestAccountInfo account;
 
-    private TestCommentInfo comment;
+    private TestPostInfo post;
 
     private String reason;
 }

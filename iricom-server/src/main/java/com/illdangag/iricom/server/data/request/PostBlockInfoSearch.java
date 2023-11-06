@@ -8,7 +8,7 @@ import lombok.experimental.SuperBuilder;
 @Getter
 @Setter
 @SuperBuilder
-public class PostBanInfoSearch extends SearchRequest {
+public class PostBlockInfoSearch extends SearchRequest {
     @Builder.Default
     private String reason = "";
 }

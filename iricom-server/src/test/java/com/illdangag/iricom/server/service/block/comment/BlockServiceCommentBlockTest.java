@@ -1,12 +1,12 @@
-package com.illdangag.iricom.server.service.ban.comment;
+package com.illdangag.iricom.server.service.block.comment;
 
 import com.illdangag.iricom.server.data.entity.Account;
 import com.illdangag.iricom.server.data.entity.type.PostState;
 import com.illdangag.iricom.server.data.entity.type.PostType;
-import com.illdangag.iricom.server.data.request.CommentBanInfoCreate;
-import com.illdangag.iricom.server.data.response.CommentBanInfo;
+import com.illdangag.iricom.server.data.request.CommentBlockInfoCreate;
+import com.illdangag.iricom.server.data.response.CommentBlockInfo;
 import com.illdangag.iricom.server.exception.IricomException;
-import com.illdangag.iricom.server.service.BanService;
+import com.illdangag.iricom.server.service.BlockService;
 import com.illdangag.iricom.server.test.IricomTestSuite;
 import com.illdangag.iricom.server.test.data.wrapper.*;
 import lombok.extern.slf4j.Slf4j;
@@ -21,17 +21,17 @@ import java.util.Collections;
 
 @DisplayName("service: 차단 - 댓글 차단")
 @Slf4j
-public class BanServiceCommentBanTest extends IricomTestSuite {
+public class BlockServiceCommentBlockTest extends IricomTestSuite {
     @Autowired
-    private BanService banService;
+    private BlockService blockService;
 
-    public BanServiceCommentBanTest(ApplicationContext context) {
+    public BlockServiceCommentBlockTest(ApplicationContext context) {
         super(context);
     }
 
     @Test
     @DisplayName("시스템 관리자")
-    void banSystemAdmin() {
+    void blockSystemAdmin() {
         TestBoardInfo testBoardInfo = TestBoardInfo.builder()
                 .title("board").isEnabled(true).adminList(Collections.singletonList(allBoardAdmin)).build();
         TestPostInfo testPostInfo = TestPostInfo.builder()
@@ -53,21 +53,21 @@ public class BanServiceCommentBanTest extends IricomTestSuite {
         String postId = getPostId(testCommentInfo.getPost());
         String commentId = getCommentId(testCommentInfo);
 
-        CommentBanInfoCreate commentBanInfoCreate = CommentBanInfoCreate.builder()
-                .reason("ban reason")
+        CommentBlockInfoCreate commentBlockInfoCreate = CommentBlockInfoCreate.builder()
+                .reason("block reason")
                 .build();
 
-        CommentBanInfo commentBanInfo = this.banService.banComment(account, boardId, postId, commentId, commentBanInfoCreate);
+        CommentBlockInfo commentBlockInfo = this.blockService.blockComment(account, boardId, postId, commentId, commentBlockInfoCreate);
 
-        Assertions.assertEquals("ban reason", commentBanInfo.getReason());
-        Assertions.assertNotNull(commentBanInfo.getCommentInfo());
-        Assertions.assertEquals(commentId, commentBanInfo.getCommentInfo().getId());
-        Assertions.assertEquals("comment", commentBanInfo.getCommentInfo().getContent());
+        Assertions.assertEquals("block reason", commentBlockInfo.getReason());
+        Assertions.assertNotNull(commentBlockInfo.getCommentInfo());
+        Assertions.assertEquals(commentId, commentBlockInfo.getCommentInfo().getId());
+        Assertions.assertEquals("comment", commentBlockInfo.getCommentInfo().getContent());
     }
 
     @Test
     @DisplayName("게시판 관리자")
-    void banBoardAdmin() {
+    void blockBoardAdmin() {
         TestBoardInfo testBoardInfo = TestBoardInfo.builder()
                 .title("board").isEnabled(true).adminList(Collections.singletonList(allBoardAdmin)).build();
         TestPostInfo testPostInfo = TestPostInfo.builder()
@@ -89,21 +89,21 @@ public class BanServiceCommentBanTest extends IricomTestSuite {
         String postId = getPostId(testCommentInfo.getPost());
         String commentId = getCommentId(testCommentInfo);
 
-        CommentBanInfoCreate commentBanInfoCreate = CommentBanInfoCreate.builder()
-                .reason("ban reason")
+        CommentBlockInfoCreate commentBlockInfoCreate = CommentBlockInfoCreate.builder()
+                .reason("block reason")
                 .build();
 
-        CommentBanInfo commentBanInfo = this.banService.banComment(account, boardId, postId, commentId, commentBanInfoCreate);
+        CommentBlockInfo commentBlockInfo = this.blockService.blockComment(account, boardId, postId, commentId, commentBlockInfoCreate);
 
-        Assertions.assertEquals("ban reason", commentBanInfo.getReason());
-        Assertions.assertNotNull(commentBanInfo.getCommentInfo());
-        Assertions.assertEquals(commentId, commentBanInfo.getCommentInfo().getId());
-        Assertions.assertEquals("comment", commentBanInfo.getCommentInfo().getContent());
+        Assertions.assertEquals("block reason", commentBlockInfo.getReason());
+        Assertions.assertNotNull(commentBlockInfo.getCommentInfo());
+        Assertions.assertEquals(commentId, commentBlockInfo.getCommentInfo().getId());
+        Assertions.assertEquals("comment", commentBlockInfo.getCommentInfo().getContent());
     }
 
     @Test
     @DisplayName("다른 게시판 관리자")
-    void banOtherBoardAdmin() {
+    void blockOtherBoardAdmin() {
         TestBoardInfo testBoardInfo00 = TestBoardInfo.builder()
                 .title("board").isEnabled(true).adminList(Collections.singletonList(allBoardAdmin)).build();
         TestBoardInfo testBoardInfo01 = TestBoardInfo.builder()
@@ -127,12 +127,12 @@ public class BanServiceCommentBanTest extends IricomTestSuite {
         String postId = getPostId(testCommentInfo.getPost());
         String commentId = getCommentId(testCommentInfo);
 
-        CommentBanInfoCreate commentBanInfoCreate = CommentBanInfoCreate.builder()
-                .reason("ban reason")
+        CommentBlockInfoCreate commentBlockInfoCreate = CommentBlockInfoCreate.builder()
+                .reason("block reason")
                 .build();
 
         IricomException exception = Assertions.assertThrows(IricomException.class, () -> {
-            this.banService.banComment(account, boardId, postId, commentId, commentBanInfoCreate);
+            this.blockService.blockComment(account, boardId, postId, commentId, commentBlockInfoCreate);
         });
 
         Assertions.assertEquals("05000009", exception.getErrorCode());
@@ -140,7 +140,7 @@ public class BanServiceCommentBanTest extends IricomTestSuite {
 
     @Test
     @DisplayName("일반 사용자")
-    void banAccount() {
+    void blockAccount() {
         TestBoardInfo testBoardInfo00 = TestBoardInfo.builder()
                 .title("board").isEnabled(true).adminList(Collections.singletonList(allBoardAdmin)).build();
         TestPostInfo testPostInfo = TestPostInfo.builder()
@@ -162,12 +162,12 @@ public class BanServiceCommentBanTest extends IricomTestSuite {
         String postId = getPostId(testCommentInfo.getPost());
         String commentId = getCommentId(testCommentInfo);
 
-        CommentBanInfoCreate commentBanInfoCreate = CommentBanInfoCreate.builder()
-                .reason("ban reason")
+        CommentBlockInfoCreate commentBlockInfoCreate = CommentBlockInfoCreate.builder()
+                .reason("block reason")
                 .build();
 
         IricomException exception = Assertions.assertThrows(IricomException.class, () -> {
-            this.banService.banComment(account, boardId, postId, commentId, commentBanInfoCreate);
+            this.blockService.blockComment(account, boardId, postId, commentId, commentBlockInfoCreate);
         });
 
         Assertions.assertEquals("05000009", exception.getErrorCode());
@@ -175,7 +175,7 @@ public class BanServiceCommentBanTest extends IricomTestSuite {
 
     @Test
     @DisplayName("등록되지 않은 사용자")
-    void banUnknown() {
+    void blockUnknown() {
         TestBoardInfo testBoardInfo00 = TestBoardInfo.builder()
                 .title("board").isEnabled(true).adminList(Collections.singletonList(allBoardAdmin)).build();
         TestPostInfo testPostInfo = TestPostInfo.builder()
@@ -197,12 +197,12 @@ public class BanServiceCommentBanTest extends IricomTestSuite {
         String postId = getPostId(testCommentInfo.getPost());
         String commentId = getCommentId(testCommentInfo);
 
-        CommentBanInfoCreate commentBanInfoCreate = CommentBanInfoCreate.builder()
-                .reason("ban reason")
+        CommentBlockInfoCreate commentBlockInfoCreate = CommentBlockInfoCreate.builder()
+                .reason("block reason")
                 .build();
 
         IricomException exception = Assertions.assertThrows(IricomException.class, () -> {
-            this.banService.banComment(account, boardId, postId, commentId, commentBanInfoCreate);
+            this.blockService.blockComment(account, boardId, postId, commentId, commentBlockInfoCreate);
         });
 
         Assertions.assertEquals("05000009", exception.getErrorCode());
@@ -210,7 +210,7 @@ public class BanServiceCommentBanTest extends IricomTestSuite {
 
     @Test
     @DisplayName("이미 차단된 게시물")
-    void alreadyBanPost() {
+    void alreadyBlockPost() {
         TestBoardInfo testBoardInfo00 = TestBoardInfo.builder()
                 .title("board").isEnabled(true).adminList(Collections.singletonList(allBoardAdmin)).build();
         TestPostInfo testPostInfo = TestPostInfo.builder()
@@ -221,14 +221,14 @@ public class BanServiceCommentBanTest extends IricomTestSuite {
         TestCommentInfo testCommentInfo = TestCommentInfo.builder()
                 .content("comment").creator(allBoardAdmin).post(testPostInfo)
                 .build();
-        TestPostBanInfo testPostBanInfo = TestPostBanInfo.builder()
-                        .post(testPostInfo).banAccount(systemAdmin)
+        TestPostBlockInfo testPostBlockInfo = TestPostBlockInfo.builder()
+                        .post(testPostInfo).account(systemAdmin)
                         .reason("reason").build();
 
         addTestBoardInfo(testBoardInfo00);
         addTestPostInfo(testPostInfo);
         addTestCommentInfo(testCommentInfo);
-        addTestPostBanInfo(testPostBanInfo);
+        addTestPostBlockInfo(testPostBlockInfo);
         init();
 
         Account account = getAccount(systemAdmin);
@@ -236,12 +236,12 @@ public class BanServiceCommentBanTest extends IricomTestSuite {
         String postId = getPostId(testCommentInfo.getPost());
         String commentId = getCommentId(testCommentInfo);
 
-        CommentBanInfoCreate commentBanInfoCreate = CommentBanInfoCreate.builder()
-                .reason("ban reason")
+        CommentBlockInfoCreate commentBlockInfoCreate = CommentBlockInfoCreate.builder()
+                .reason("block reason")
                 .build();
 
         IricomException exception = Assertions.assertThrows(IricomException.class, () -> {
-            this.banService.banComment(account, boardId, postId, commentId, commentBanInfoCreate);
+            this.blockService.blockComment(account, boardId, postId, commentId, commentBlockInfoCreate);
         });
 
         Assertions.assertEquals("04000010", exception.getErrorCode());
@@ -249,7 +249,7 @@ public class BanServiceCommentBanTest extends IricomTestSuite {
 
     @Test
     @DisplayName("이미 차단된 게시물")
-    void alreadyBanComment() {
+    void alreadyBlockComment() {
         TestBoardInfo testBoardInfo00 = TestBoardInfo.builder()
                 .title("board").isEnabled(true).adminList(Collections.singletonList(allBoardAdmin)).build();
         TestPostInfo testPostInfo = TestPostInfo.builder()
@@ -260,15 +260,15 @@ public class BanServiceCommentBanTest extends IricomTestSuite {
         TestCommentInfo testCommentInfo = TestCommentInfo.builder()
                 .content("comment").creator(allBoardAdmin).post(testPostInfo)
                 .build();
-        TestCommentBanInfo testCommentBanInfo = TestCommentBanInfo.builder()
-                .comment(testCommentInfo).banAccount(systemAdmin)
-                .reason("ban reason")
+        TestCommentBlockInfo testCommentBlockInfo = TestCommentBlockInfo.builder()
+                .comment(testCommentInfo).account(systemAdmin)
+                .reason("block reason")
                 .build();
 
         addTestBoardInfo(testBoardInfo00);
         addTestPostInfo(testPostInfo);
         addTestCommentInfo(testCommentInfo);
-        addTestCommentBanInfo(testCommentBanInfo);
+        addTestCommentBlockInfo(testCommentBlockInfo);
         init();
 
         Account account = getAccount(systemAdmin);
@@ -276,12 +276,12 @@ public class BanServiceCommentBanTest extends IricomTestSuite {
         String postId = getPostId(testCommentInfo.getPost());
         String commentId = getCommentId(testCommentInfo);
 
-        CommentBanInfoCreate commentBanInfoCreate = CommentBanInfoCreate.builder()
-                .reason("ban reason")
+        CommentBlockInfoCreate commentBlockInfoCreate = CommentBlockInfoCreate.builder()
+                .reason("block reason")
                 .build();
 
         IricomException exception = Assertions.assertThrows(IricomException.class, () -> {
-            this.banService.banComment(account, boardId, postId, commentId, commentBanInfoCreate);
+            this.blockService.blockComment(account, boardId, postId, commentId, commentBlockInfoCreate);
         });
 
         Assertions.assertEquals("05000008", exception.getErrorCode());

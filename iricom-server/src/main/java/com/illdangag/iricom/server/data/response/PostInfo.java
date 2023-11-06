@@ -54,11 +54,11 @@ public class PostInfo {
 
     private Boolean report;
 
-    private Boolean ban;
+    private Boolean blocked;
 
     private Boolean deleted;
 
-    public PostInfo(Post post, boolean includeContent, PostState postState, long commentCount, long upvote, long downvote, long reportCount, boolean isBan) {
+    public PostInfo(Post post, boolean includeContent, PostState postState, long commentCount, long upvote, long downvote, long reportCount, boolean blocked) {
         this.id = String.valueOf(post.getId());
         this.createDate = DateTimeUtils.getLong(post.getCreateDate());
         this.updateDate = DateTimeUtils.getLong(post.getUpdateDate());
@@ -100,9 +100,9 @@ public class PostInfo {
         }
 
         this.report = reportCount >= 10;
-        this.ban = isBan;
+        this.blocked = blocked;
 
-        if (this.report || this.ban) { // 신고된 게시물이거나 차단된 게시물인 경우
+        if (this.report || this.blocked) { // 신고된 게시물이거나 차단된 게시물인 경우
             this.title = null;
             this.content = null;
         }

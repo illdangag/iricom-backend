@@ -12,8 +12,8 @@ import java.util.List;
 @Getter
 @SuperBuilder
 @JsonInclude(JsonInclude.Include.NON_NULL)
-public class PostBanInfoList extends SearchList {
+public class PostBlockInfoList extends SearchList {
     @Builder.Default
-    @JsonProperty("bans")
-    private List<PostBanInfo> postBanInfoList = new LinkedList<>();
+    @JsonProperty("blocks")
+    private List<PostBlockInfo> postBlockInfoList = new LinkedList<>();
 }

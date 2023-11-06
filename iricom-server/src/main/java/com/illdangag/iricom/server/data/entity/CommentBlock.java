@@ -16,20 +16,16 @@ import java.time.LocalDateTime;
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 @Entity
 @Table(indexes = {
-        @Index(name = "PostBan_createDate", columnList = "createDate"),
-        @Index(name = "PostBan_reason", columnList = "reason"),
-        @Index(name = "PostBan_post", columnList = "post_id"),
-        @Index(name = "PostBan_adminAccount", columnList = "admin_account_id"),
-        @Index(name = "PostBan_enabled", columnList = "enabled"),
+        @Index(name = "CommentBlock_Comment", columnList = "comment_id"),
 })
-public class PostBan {
+public class CommentBlock {
     @Id
     @GeneratedValue
     private Long id;
 
     @ManyToOne
-    @JoinColumn(name = "post_id")
-    private Post post;
+    @JoinColumn(name = "comment_id")
+    private Comment comment;
 
     @ManyToOne
     @JoinColumn(name = "admin_account_id")
