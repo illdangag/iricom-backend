@@ -53,9 +53,9 @@ public class AccountServiceImpl implements AccountService {
             totalAccountCount = this.accountRepository.getAccountCount(accountInfoSearch.getKeyword());
         }
 
-        List<AccountInfo> accountInfoList = accountList.stream().map(account -> {
-            return new AccountInfo(account);
-        }).collect(Collectors.toList());
+        List<AccountInfo> accountInfoList = accountList.stream()
+                .map(AccountInfo::new)
+                .collect(Collectors.toList());
 
         return AccountInfoList.builder()
                 .skip(accountInfoSearch.getSkip())

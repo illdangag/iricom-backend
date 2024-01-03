@@ -15,8 +15,8 @@ public enum AccountPointType {
     CREATE_COMMENT("createComment", 1),
     EXTERNAL_POINT("externalPoint", 1);
 
-    public String text;
-    public long defaultPoint;
+    private String text;
+    private long defaultPoint;
 
     AccountPointType(String text, long defaultPoint) {
         this.text = text;
