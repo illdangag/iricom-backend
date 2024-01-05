@@ -11,7 +11,7 @@ import java.util.stream.Collectors;
 
 @Getter
 public enum AccountPointType {
-    CREATE_POST("createPost", 1),
+    PUBLISH_POST("publishPost", 1),
     CREATE_COMMENT("createComment", 1),
     EXTERNAL_POINT("externalPoint", 1);
 

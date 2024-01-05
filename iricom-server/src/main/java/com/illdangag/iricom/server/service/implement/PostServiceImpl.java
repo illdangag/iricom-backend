@@ -1,10 +1,7 @@
 package com.illdangag.iricom.server.service.implement;
 
 import com.illdangag.iricom.server.data.entity.*;
-import com.illdangag.iricom.server.data.entity.type.AccountAuth;
-import com.illdangag.iricom.server.data.entity.type.PostState;
-import com.illdangag.iricom.server.data.entity.type.PostType;
-import com.illdangag.iricom.server.data.entity.type.VoteType;
+import com.illdangag.iricom.server.data.entity.type.*;
 import com.illdangag.iricom.server.data.request.PostInfoCreate;
 import com.illdangag.iricom.server.data.request.PostInfoSearch;
 import com.illdangag.iricom.server.data.request.PostInfoUpdate;
@@ -13,6 +10,7 @@ import com.illdangag.iricom.server.data.response.PostInfoList;
 import com.illdangag.iricom.server.exception.IricomErrorCode;
 import com.illdangag.iricom.server.exception.IricomException;
 import com.illdangag.iricom.server.repository.*;
+import com.illdangag.iricom.server.service.AccountPointService;
 import com.illdangag.iricom.server.service.PostService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -31,15 +29,17 @@ public class PostServiceImpl extends IricomService implements PostService {
     private final PostVoteRepository postVoteRepository;
     private final ReportRepository reportRepository;
     private final BlockRepository blockRepository;
+    private final AccountPointService accountPointService;
 
     @Autowired
     public PostServiceImpl(PostRepository postRepository, PostVoteRepository postVoteRepository, CommentRepository commentRepository,
                            BoardRepository boardRepository, ReportRepository reportRepository,
-                           BlockRepository blockRepository) {
+                           BlockRepository blockRepository, AccountPointService accountPointService) {
         super(boardRepository, postRepository, commentRepository);
         this.postVoteRepository = postVoteRepository;
         this.reportRepository = reportRepository;
         this.blockRepository = blockRepository;
+        this.accountPointService = accountPointService;
     }
 
     /**
@@ -327,6 +327,8 @@ public class PostServiceImpl extends IricomService implements PostService {
         post.setTemporaryContent(null);
 
         this.postRepository.save(post);
+
+        this.accountPointService.addAccountPoint(account, AccountPointType.PUBLISH_POST);
         return this.getPostInfo(account, post, PostState.PUBLISH, true);
     }
 

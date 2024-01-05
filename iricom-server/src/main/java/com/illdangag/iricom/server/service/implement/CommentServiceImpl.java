@@ -1,6 +1,7 @@
 package com.illdangag.iricom.server.service.implement;
 
 import com.illdangag.iricom.server.data.entity.*;
+import com.illdangag.iricom.server.data.entity.type.AccountPointType;
 import com.illdangag.iricom.server.data.entity.type.VoteType;
 import com.illdangag.iricom.server.data.request.CommentInfoCreate;
 import com.illdangag.iricom.server.data.request.CommentInfoSearch;
@@ -11,6 +12,7 @@ import com.illdangag.iricom.server.data.response.CommentInfoList;
 import com.illdangag.iricom.server.exception.IricomErrorCode;
 import com.illdangag.iricom.server.exception.IricomException;
 import com.illdangag.iricom.server.repository.*;
+import com.illdangag.iricom.server.service.AccountPointService;
 import com.illdangag.iricom.server.service.AccountService;
 import com.illdangag.iricom.server.service.CommentService;
 import lombok.extern.slf4j.Slf4j;
@@ -31,17 +33,19 @@ public class CommentServiceImpl extends IricomService implements CommentService 
     private final CommentVoteRepository commentVoteRepository;
     private final ReportRepository reportRepository;
     private final BlockRepository blockRepository;
-
     private final AccountService accountService;
+    private final AccountPointService accountPointService;
 
     @Autowired
     public CommentServiceImpl(CommentRepository commentRepository, CommentVoteRepository commentVoteRepository, BoardRepository boardRepository,
-                              BlockRepository blockRepository, PostRepository postRepository, ReportRepository reportRepository, AccountService accountService) {
+                              BlockRepository blockRepository, PostRepository postRepository, ReportRepository reportRepository,
+                              AccountService accountService, AccountPointService accountPointService) {
         super(boardRepository, postRepository, commentRepository);
         this.commentVoteRepository = commentVoteRepository;
         this.reportRepository = reportRepository;
         this.blockRepository = blockRepository;
         this.accountService = accountService;
+        this.accountPointService = accountPointService;
     }
 
     /**
@@ -101,6 +105,8 @@ public class CommentServiceImpl extends IricomService implements CommentService 
         if (referenceComment != null) {
             this.commentRepository.save(referenceComment);
         }
+
+        this.accountPointService.addAccountPoint(account, AccountPointType.CREATE_COMMENT);
 
         return new CommentInfo(comment, accountInfo, 0, 0, 0);
     }
