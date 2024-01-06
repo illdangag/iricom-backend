@@ -3,86 +3,74 @@ package com.illdangag.iricom.server.repository.implement;
 import com.illdangag.iricom.server.data.entity.*;
 import com.illdangag.iricom.server.repository.BlockRepository;
 import com.illdangag.iricom.server.util.StringUtils;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
 import javax.persistence.EntityManager;
-import javax.persistence.EntityManagerFactory;
-import javax.persistence.EntityTransaction;
+import javax.persistence.PersistenceContext;
 import javax.persistence.TypedQuery;
+import javax.transaction.Transactional;
 import java.util.List;
 import java.util.Optional;
 
+@Transactional
 @Repository
 public class BlockRepositoryImpl implements BlockRepository {
-    private final EntityManagerFactory entityManagerFactory;
-
-    @Autowired
-    public BlockRepositoryImpl(EntityManagerFactory entityManagerFactory) {
-        this.entityManagerFactory = entityManagerFactory;
-    }
+    @PersistenceContext
+    private EntityManager entityManager;
 
     @Override
     public List<PostBlock> getPostBlockList(Post post) {
-        EntityManager entityManager = this.entityManagerFactory.createEntityManager();
         final String jpql = "SELECT pb FROM PostBlock pb" +
                 " WHERE pb.post = :post" +
                 " AND pb.enabled = true" +
                 " ORDER BY pb.createDate ASC";
 
-        TypedQuery<PostBlock> query = entityManager.createQuery(jpql, PostBlock.class)
+        TypedQuery<PostBlock> query = this.entityManager.createQuery(jpql, PostBlock.class)
                 .setParameter("post", post);
         List<PostBlock> resultList = query.getResultList();
-        entityManager.close();
         return resultList;
     }
 
     @Override
     public long getPostBlockCount(Post post) {
-        EntityManager entityManager = this.entityManagerFactory.createEntityManager();
         final String jpql = "SELECT COUNT(*) FROM PostBlock pb" +
                 " WHERE pb.post = :post" +
                 " AND pb.enabled = true";
 
-        TypedQuery<Long> query = entityManager.createQuery(jpql, Long.class)
+        TypedQuery<Long> query = this.entityManager.createQuery(jpql, Long.class)
                 .setParameter("post", post);
         long result = query.getSingleResult();
-        entityManager.close();
         return result;
     }
 
     @Override
     public List<PostBlock> getPostBlockList(Board board, String reason, int offset, int limit) {
-        EntityManager entityManager = this.entityManagerFactory.createEntityManager();
         final String jpql = "SELECT pb FROM PostBlock pb" +
                 " WHERE pb.post.board = :board" +
                 " AND pb.enabled = true" +
                 " AND UPPER(pb.reason) LIKE UPPER(:reason)" +
                 " ORDER BY pb.createDate ASC";
 
-        TypedQuery<PostBlock> query = entityManager.createQuery(jpql, PostBlock.class)
+        TypedQuery<PostBlock> query = this.entityManager.createQuery(jpql, PostBlock.class)
                 .setParameter("board", board)
                 .setParameter("reason", "%" + StringUtils.escape(reason) + "%")
                 .setFirstResult(offset)
                 .setMaxResults(limit);
         List<PostBlock> resultList = query.getResultList();
-        entityManager.close();
         return resultList;
     }
 
     @Override
     public long getPostBlockListCount(Board board, String reason) {
-        EntityManager entityManager = this.entityManagerFactory.createEntityManager();
         final String jpql = "SELECT COUNT(*) FROM PostBlock pb" +
                 " WHERE pb.post.board = :board" +
                 " AND pb.enabled = true" +
                 " AND UPPER(pb.reason) LIKE UPPER(:reason)";
 
-        TypedQuery<Long> query = entityManager.createQuery(jpql, Long.class)
+        TypedQuery<Long> query = this.entityManager.createQuery(jpql, Long.class)
                 .setParameter("board", board)
                 .setParameter("reason", "%" + StringUtils.escape(reason) + "%");
         long result = query.getSingleResult();
-        entityManager.close();
         return result;
     }
 
@@ -101,15 +89,13 @@ public class BlockRepositoryImpl implements BlockRepository {
 
     @Override
     public Optional<PostBlock> getPostBlock(long id) {
-        EntityManager entityManager = this.entityManagerFactory.createEntityManager();
         final String jpql = "SELECT pb FROM PostBlock pb" +
                 " WHERE pb.id = :id";
 
-        TypedQuery<PostBlock> query = entityManager.createQuery(jpql, PostBlock.class)
+        TypedQuery<PostBlock> query = this.entityManager.createQuery(jpql, PostBlock.class)
                 .setParameter("id", id);
 
         List<PostBlock> resultList = query.getResultList();
-        entityManager.close();
         if (resultList.isEmpty()) {
             return Optional.empty();
         } else {
@@ -119,58 +105,47 @@ public class BlockRepositoryImpl implements BlockRepository {
 
     @Override
     public void save(PostBlock postBlock) {
-        EntityManager entityManager = this.entityManagerFactory.createEntityManager();
-        EntityTransaction transaction = entityManager.getTransaction();
-        transaction.begin();
         if (postBlock.getId() == null) {
             entityManager.persist(postBlock);
         } else {
             entityManager.merge(postBlock);
         }
-        transaction.commit();
-        entityManager.close();
     }
 
     @Override
     public List<PostBlock> getPostBlockList(String reason, int offset, int limit) {
-        EntityManager entityManager = this.entityManagerFactory.createEntityManager();
         final String jpql = "SELECT pb FROM PostBlock pb" +
                 " WHERE pb.enabled = true" +
                 " AND UPPER(pb.reason) LIKE UPPER(:reason)" +
                 " ORDER BY pb.createDate ASC";
 
-        TypedQuery<PostBlock> query = entityManager.createQuery(jpql, PostBlock.class)
+        TypedQuery<PostBlock> query = this.entityManager.createQuery(jpql, PostBlock.class)
                 .setParameter("reason", "%" + StringUtils.escape(reason) + "%");
         List<PostBlock> resultList = query.getResultList();
-        entityManager.close();
         return resultList;
     }
 
     @Override
     public long getPostBlockListCount(String reason) {
-        EntityManager entityManager = this.entityManagerFactory.createEntityManager();
         final String jpql = "SELECT COUNT(*) FROM PostBlock pb" +
                 " WHERE pb.enabled = true" +
                 " AND UPPER(pb.reason) LIKE UPPER(:reason)";
 
-        TypedQuery<Long> query = entityManager.createQuery(jpql, Long.class)
+        TypedQuery<Long> query = this.entityManager.createQuery(jpql, Long.class)
                 .setParameter("reason", "%" + StringUtils.escape(reason) + "%");
         long result = query.getSingleResult();
-        entityManager.close();
         return result;
     }
 
     @Override
     public Optional<PostBlock> getPostBlock(Post post) {
-        EntityManager entityManager = this.entityManagerFactory.createEntityManager();
         final String jpql = "SELECT pb FROM PostBlock pb" +
                 " WHERE pb.post = :post";
 
-        TypedQuery<PostBlock> query = entityManager.createQuery(jpql, PostBlock.class)
+        TypedQuery<PostBlock> query = this.entityManager.createQuery(jpql, PostBlock.class)
                 .setParameter("post", post);
 
         List<PostBlock> resultList = query.getResultList();
-        entityManager.close();
         if (resultList.isEmpty()) {
             return Optional.empty();
         } else {
@@ -180,7 +155,6 @@ public class BlockRepositoryImpl implements BlockRepository {
 
     @Override
     public Optional<CommentBlock> getCommentBlock(long id) {
-        EntityManager entityManager = this.entityManagerFactory.createEntityManager();
         try {
             CommentBlock commentBlock = entityManager.find(CommentBlock.class, id);
             return Optional.of(commentBlock);
@@ -191,7 +165,6 @@ public class BlockRepositoryImpl implements BlockRepository {
 
     @Override
     public List<CommentBlock> getCommentBlockList(Comment comment, Boolean enabled, Integer skip, Integer limit) {
-        EntityManager entityManager = this.entityManagerFactory.createEntityManager();
 
         String jpql = "SELECT cb FROM CommentBlock cb" +
                 " WHERE cb.comment = :comment";
@@ -200,7 +173,7 @@ public class BlockRepositoryImpl implements BlockRepository {
             jpql += " AND cb.enabled = :enabled";
         }
 
-        TypedQuery<CommentBlock> query = entityManager.createQuery(jpql, CommentBlock.class)
+        TypedQuery<CommentBlock> query = this.entityManager.createQuery(jpql, CommentBlock.class)
                 .setParameter("comment", comment);
 
         if (enabled != null) {
@@ -216,21 +189,15 @@ public class BlockRepositoryImpl implements BlockRepository {
         }
 
         List<CommentBlock> resultList = query.getResultList();
-        entityManager.close();
         return resultList;
     }
 
     @Override
     public void save(CommentBlock commentBlock) {
-        EntityManager entityManager = this.entityManagerFactory.createEntityManager();
-        EntityTransaction transaction = entityManager.getTransaction();
-        transaction.begin();
         if (commentBlock.getId() == null) {
             entityManager.persist(commentBlock);
         } else {
             entityManager.merge(commentBlock);
         }
-        transaction.commit();
-        entityManager.close();
     }
 }

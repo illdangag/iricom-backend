@@ -15,7 +15,9 @@ import java.time.LocalDateTime;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 @Entity
-@Table(indexes = {})
+@Table(indexes = {
+        @Index(name = "AccountPoint_account_id", columnList = "account_id")
+})
 public class AccountPoint {
     @Id
     @GeneratedValue

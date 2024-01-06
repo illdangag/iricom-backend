@@ -19,7 +19,8 @@ public class IricomFieldsSnippet {
             ResponseField.builder().path("lastActivityDate").description("최근 활동일").type(JsonFieldType.NUMBER).build(),
             ResponseField.builder().path("nickname").description("닉네임").type(JsonFieldType.STRING).build(),
             ResponseField.builder().path("description").description("설명").type(JsonFieldType.STRING).build(),
-            ResponseField.builder().path("auth").description("권한").type(JsonFieldType.STRING).build()
+            ResponseField.builder().path("auth").description("권한").type(JsonFieldType.STRING).build(),
+            ResponseField.builder().path("point").description("포인트").type(JsonFieldType.NUMBER).build()
     );
 
     private static final List<ResponseField> boardResponseFieldList = Arrays.asList(

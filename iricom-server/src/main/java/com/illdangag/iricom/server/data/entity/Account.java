@@ -8,6 +8,8 @@ import org.hibernate.annotations.UpdateTimestamp;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 @Getter
 @Setter
@@ -48,6 +50,10 @@ public class Account {
     @Enumerated(EnumType.STRING)
     @Column(name = "auth")
     private AccountAuth auth = AccountAuth.UNREGISTERED_ACCOUNT;
+
+    @Builder.Default
+    @OneToMany(mappedBy = "account", fetch = FetchType.EAGER)
+    private List<AccountPoint> pointList = new ArrayList<>();
 
     @Override
     public boolean equals(Object object) {

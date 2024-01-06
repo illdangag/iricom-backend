@@ -3,9 +3,12 @@ package com.illdangag.iricom.server.data.response;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.illdangag.iricom.server.data.entity.Account;
 import com.illdangag.iricom.server.data.entity.AccountDetail;
+import com.illdangag.iricom.server.data.entity.AccountPoint;
 import com.illdangag.iricom.server.util.DateTimeUtils;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+
+import java.util.List;
 
 @Getter
 @NoArgsConstructor
@@ -25,6 +28,8 @@ public class AccountInfo {
 
     private String auth;
 
+    private Long point;
+
     public AccountInfo(Account account) {
         this.id = account.getId().toString();
         this.email = account.getEmail();
@@ -40,5 +45,10 @@ public class AccountInfo {
         this.nickname = accountDetail.getNickname();
         this.description = accountDetail.getDescription();
         this.auth = account.getAuth().getText();
+        this.point = 0L;
+        List<AccountPoint> accountPointList = account.getPointList();
+        for (AccountPoint accountPoint : accountPointList) {
+            this.point += accountPoint.getPoint();
+        }
     }
 }

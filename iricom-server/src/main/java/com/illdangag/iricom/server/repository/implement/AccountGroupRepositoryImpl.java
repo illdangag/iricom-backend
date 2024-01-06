@@ -4,39 +4,28 @@ import com.illdangag.iricom.server.data.entity.*;
 import com.illdangag.iricom.server.exception.IricomErrorCode;
 import com.illdangag.iricom.server.exception.IricomException;
 import com.illdangag.iricom.server.repository.AccountGroupRepository;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
 import javax.persistence.EntityManager;
-import javax.persistence.EntityManagerFactory;
-import javax.persistence.EntityTransaction;
+import javax.persistence.PersistenceContext;
 import javax.persistence.TypedQuery;
+import javax.transaction.Transactional;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+@Transactional
 @Repository
 public class AccountGroupRepositoryImpl implements AccountGroupRepository {
-    private final EntityManagerFactory entityManagerFactory;
-
-    @Autowired
-    public AccountGroupRepositoryImpl(EntityManagerFactory entityManagerFactory) {
-        this.entityManagerFactory = entityManagerFactory;
-    }
+    @PersistenceContext
+    private EntityManager entityManager;
 
     @Override
     public Optional<AccountGroup> getAccountGroup(long id) {
-        EntityManager entityManager = this.entityManagerFactory.createEntityManager();
-        Optional<AccountGroup> accountGroupOptional = this.getAccountGroup(entityManager, id);
-        entityManager.close();
-        return accountGroupOptional;
-    }
-
-    private Optional<AccountGroup> getAccountGroup(EntityManager entityManager, long id) {
         final String jpql = "SELECT ag FROM AccountGroup ag WHERE ag.id = :id";
 
-        TypedQuery<AccountGroup> query = entityManager.createQuery(jpql, AccountGroup.class)
+        TypedQuery<AccountGroup> query = this.entityManager.createQuery(jpql, AccountGroup.class)
                 .setParameter("id", id);
 
         List<AccountGroup> resultList = query.getResultList();
@@ -50,58 +39,45 @@ public class AccountGroupRepositoryImpl implements AccountGroupRepository {
 
     @Override
     public List<Account> getAccountListInAccountGroup(AccountGroup accountGroup) {
-        EntityManager entityManager = this.entityManagerFactory.createEntityManager();
         final String jpql = "SELECT aiag.account FROM AccountInAccountGroup aiag WHERE aiag.accountGroup = :accountGroup";
 
-        TypedQuery<Account> query = entityManager.createQuery(jpql, Account.class)
+        TypedQuery<Account> query = this.entityManager.createQuery(jpql, Account.class)
                 .setParameter("accountGroup", accountGroup);
 
         List<Account> resultList = query.getResultList();
-        entityManager.close();
         return resultList;
     }
 
     @Override
     public List<Board> getBoardListInAccountGroup(AccountGroup accountGroup) {
-        EntityManager entityManager = this.entityManagerFactory.createEntityManager();
         final String jpql = "SELECT biag.board FROM BoardInAccountGroup biag WHERE biag.accountGroup = :accountGroup";
 
-        TypedQuery<Board> query = entityManager.createQuery(jpql, Board.class)
+        TypedQuery<Board> query = this.entityManager.createQuery(jpql, Board.class)
                 .setParameter("accountGroup", accountGroup);
 
         List<Board> resultList = query.getResultList();
-        entityManager.close();
         return resultList;
     }
 
     @Override
     public void saveAccountGroup(AccountGroup accountGroup, List<AccountInAccountGroup> accountInAccountGroupList, List<BoardInAccountGroup> boardInAccountGroupList) {
-        EntityManager entityManager = this.entityManagerFactory.createEntityManager();
-        EntityTransaction entityTransaction = entityManager.getTransaction();
-        entityTransaction.begin();
-
         // 계정 그룹 저장
-        entityManager.persist(accountGroup);
+        this.entityManager.persist(accountGroup);
 
         // 계정 정보 저장
         accountInAccountGroupList.forEach(entityManager::persist);
 
         // 게시판 정보 저장
         boardInAccountGroupList.forEach(entityManager::persist);
-
-        entityTransaction.commit();
-        entityManager.close();
     }
 
     @Override
     public void updateAccountGroup(AccountGroup accountGroup, List<AccountInAccountGroup> accountInAccountGroupList, List<BoardInAccountGroup> boardInAccountGroupList) {
-        EntityManager entityManager = this.entityManagerFactory.createEntityManager();
-
         if (accountGroup.getId() == null) {
             throw new IricomException(IricomErrorCode.NOT_EXIST_ACCOUNT_GROUP);
         }
 
-        Optional<AccountGroup> accountGroupOptional = this.getAccountGroup(entityManager, accountGroup.getId());
+        Optional<AccountGroup> accountGroupOptional = this.getAccountGroup(accountGroup.getId());
         if (accountGroupOptional.isEmpty()) {
             throw new IricomException(IricomErrorCode.NOT_EXIST_ACCOUNT_GROUP);
         }
@@ -134,35 +110,22 @@ public class AccountGroupRepositoryImpl implements AccountGroupRepository {
             removeBoardInAccountGroupList = Collections.emptyList();
         }
 
-        EntityTransaction entityTransaction = entityManager.getTransaction();
-        entityTransaction.begin();
-
-        entityManager.merge(accountGroup);
-        addAccountInAccountGroupList.forEach(item -> entityManager.persist(item));
-        removeAccountInAccountGroupList.forEach(item -> entityManager.remove(item));
-        addBoardInAccountGroupList.forEach(item -> entityManager.persist(item));
-        removeBoardInAccountGroupList.forEach(item -> entityManager.remove(item));
-
-        entityTransaction.commit();
-        entityManager.close();
+        this.entityManager.merge(accountGroup);
+        addAccountInAccountGroupList.forEach(item -> this.entityManager.persist(item));
+        removeAccountInAccountGroupList.forEach(item -> this.entityManager.remove(item));
+        addBoardInAccountGroupList.forEach(item -> this.entityManager.persist(item));
+        removeBoardInAccountGroupList.forEach(item -> this.entityManager.remove(item));
     }
 
     @Override
     public void updateAccountGroup(AccountGroup accountGroup) {
-        EntityManager entityManager = this.entityManagerFactory.createEntityManager();
-        EntityTransaction entityTransaction = entityManager.getTransaction();
-        entityTransaction.begin();
-
-        entityManager.merge(accountGroup);
-
-        entityTransaction.commit();
-        entityManager.close();
+        this.entityManager.merge(accountGroup);
     }
 
     private List<AccountInAccountGroup> getAccountInAccountGroupList(EntityManager entityManager, AccountGroup accountGroup) {
         final String jpql = "SELECT aiag FROM AccountInAccountGroup aiag WHERE aiag.accountGroup = :accountGroup";
 
-        TypedQuery<AccountInAccountGroup> query = entityManager.createQuery(jpql, AccountInAccountGroup.class)
+        TypedQuery<AccountInAccountGroup> query = this.entityManager.createQuery(jpql, AccountInAccountGroup.class)
                 .setParameter("accountGroup", accountGroup);
         return query.getResultList();
     }
@@ -170,52 +133,40 @@ public class AccountGroupRepositoryImpl implements AccountGroupRepository {
     private List<BoardInAccountGroup> getBoardInAccountGroupList(EntityManager entityManager, AccountGroup accountGroup) {
         final String jpql = "SELECT biag FROM BoardInAccountGroup biag WHERE biag.accountGroup = :accountGroup";
 
-        TypedQuery<BoardInAccountGroup> query = entityManager.createQuery(jpql, BoardInAccountGroup.class)
+        TypedQuery<BoardInAccountGroup> query = this.entityManager.createQuery(jpql, BoardInAccountGroup.class)
                 .setParameter("accountGroup", accountGroup);
         return query.getResultList();
     }
 
     @Override
     public List<AccountGroup> getAccountGroupList(int skip, int limit) {
-        EntityManager entityManager = this.entityManagerFactory.createEntityManager();
         final String jpql = "SELECT ag FROM AccountGroup ag";
 
-        TypedQuery<AccountGroup> query = entityManager.createQuery(jpql, AccountGroup.class)
+        TypedQuery<AccountGroup> query = this.entityManager.createQuery(jpql, AccountGroup.class)
                 .setFirstResult(skip)
                 .setMaxResults(limit);
         List<AccountGroup> resultList = query.getResultList();
-        entityManager.close();
         return resultList;
     }
 
     @Override
     public long getAccountGroupCount() {
-        EntityManager entityManager = this.entityManagerFactory.createEntityManager();
         final String jpql = "SELECT COUNT(*) FROM AccountGroup ag";
 
-        TypedQuery<Long> query = entityManager.createQuery(jpql, Long.class);
+        TypedQuery<Long> query = this.entityManager.createQuery(jpql, Long.class);
         long result = query.getSingleResult();
-        entityManager.close();
         return result;
     }
 
     @Override
     public void removeAccountGroup(AccountGroup accountGroup) {
-        EntityManager entityManager = this.entityManagerFactory.createEntityManager();
-
         List<AccountInAccountGroup> dbAccountInAccountGroupList = this.getAccountInAccountGroupList(entityManager, accountGroup);
         List<BoardInAccountGroup> dbBoardInAccountGroupList = this.getBoardInAccountGroupList(entityManager, accountGroup);
-
-        EntityTransaction entityTransaction = entityManager.getTransaction();
-        entityTransaction.begin();
 
         dbAccountInAccountGroupList.forEach(entityManager::remove);
         dbBoardInAccountGroupList.forEach(entityManager::remove);
 
-        AccountGroup dbAccountGroup = entityManager.find(AccountGroup.class, accountGroup.getId());
-        entityManager.remove(dbAccountGroup);
-
-        entityTransaction.commit();
-        entityManager.close();
+        AccountGroup dbAccountGroup = this.entityManager.find(AccountGroup.class, accountGroup.getId());
+        this.entityManager.remove(dbAccountGroup);
     }
 }

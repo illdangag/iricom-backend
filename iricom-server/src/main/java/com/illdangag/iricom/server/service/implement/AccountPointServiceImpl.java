@@ -33,7 +33,6 @@ public class AccountPointServiceImpl implements AccountPointService {
                 .build();
 
         this.accountPointRepository.save(accountPoint);
-        log.info("Add account point. account: {}, type: {}, point: {}", account.getId(), accountPointType, point);
     }
 
     private long getAccountPoint(AccountPointType accountPointType) {
