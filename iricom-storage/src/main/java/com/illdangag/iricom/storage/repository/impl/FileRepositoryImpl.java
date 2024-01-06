@@ -3,10 +3,11 @@ package com.illdangag.iricom.storage.repository.impl;
 import com.illdangag.iricom.storage.data.entity.FileMetadata;
 import com.illdangag.iricom.storage.repository.FileRepository;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
-import javax.persistence.*;
+import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
+import javax.persistence.TypedQuery;
 import javax.transaction.Transactional;
 import java.util.List;
 import java.util.Optional;

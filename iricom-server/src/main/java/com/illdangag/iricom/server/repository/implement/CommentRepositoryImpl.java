@@ -3,7 +3,6 @@ package com.illdangag.iricom.server.repository.implement;
 import com.illdangag.iricom.server.data.entity.Comment;
 import com.illdangag.iricom.server.data.entity.Post;
 import com.illdangag.iricom.server.repository.CommentRepository;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
 import javax.persistence.*;

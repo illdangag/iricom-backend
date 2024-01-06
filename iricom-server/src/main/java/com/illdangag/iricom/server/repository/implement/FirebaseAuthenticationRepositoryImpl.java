@@ -2,7 +2,6 @@ package com.illdangag.iricom.server.repository.implement;
 
 import com.illdangag.iricom.server.data.entity.FirebaseAuthentication;
 import com.illdangag.iricom.server.repository.FirebaseAuthenticationRepository;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
 import javax.persistence.*;

@@ -5,7 +5,6 @@ import com.illdangag.iricom.server.data.entity.type.PostType;
 import com.illdangag.iricom.server.repository.PostRepository;
 import com.illdangag.iricom.server.util.StringUtils;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
 import javax.persistence.*;

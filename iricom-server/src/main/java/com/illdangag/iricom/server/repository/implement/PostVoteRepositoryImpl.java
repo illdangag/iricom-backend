@@ -6,7 +6,6 @@ import com.illdangag.iricom.server.data.entity.PostVote;
 import com.illdangag.iricom.server.data.entity.type.VoteType;
 import com.illdangag.iricom.server.repository.PostVoteRepository;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
 import javax.persistence.*;
