@@ -6,6 +6,7 @@ import com.illdangag.iricom.server.data.entity.type.PostType;
 import com.illdangag.iricom.server.data.request.CommentInfoCreate;
 import com.illdangag.iricom.server.data.response.CommentInfo;
 import com.illdangag.iricom.server.exception.IricomException;
+import com.illdangag.iricom.server.service.AccountService;
 import com.illdangag.iricom.server.service.CommentService;
 import com.illdangag.iricom.server.test.IricomTestSuite;
 import com.illdangag.iricom.server.test.data.wrapper.TestBoardInfo;
@@ -26,6 +27,8 @@ import java.util.Collections;
 public class CommentServiceCreateTest extends IricomTestSuite {
     @Autowired
     private CommentService commentService;
+    @Autowired
+    private AccountService accountService;
 
     // 게시판
     private final TestBoardInfo testBoardInfo00 = TestBoardInfo.builder()
@@ -140,5 +143,23 @@ public class CommentServiceCreateTest extends IricomTestSuite {
 
         Assertions.assertEquals("05000001", iricomException.getErrorCode());
         Assertions.assertEquals("Not exist reference comment.", iricomException.getMessage());
+    }
+
+    @Test
+    @DisplayName("댓글 작성 후 포인트 추가")
+    public void addPointComment() throws Exception {
+        Account account = getAccount(common00);
+        String boardId = getBoardId(testPostInfo00.getBoard());
+        String postId = getPostId(testPostInfo00);
+
+        long beforePoint = this.accountService.getAccountInfo(String.valueOf(account.getId())).getPoint();
+
+        CommentInfoCreate commentInfoCreate = CommentInfoCreate.builder()
+                .content("댓글 생성")
+                .build();
+        CommentInfo commentInfo = commentService.createCommentInfo(account, boardId, postId, commentInfoCreate);
+
+        long afterPoint = this.accountService.getAccountInfo(String.valueOf(account.getId())).getPoint();
+        Assertions.assertTrue(beforePoint < afterPoint);
     }
 }

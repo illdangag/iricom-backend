@@ -1,4 +1,4 @@
-package com.illdangag.iricom.server.service.account;
+package com.illdangag.iricom.server.service.account.search;
 
 import com.illdangag.iricom.server.data.entity.Account;
 import com.illdangag.iricom.server.data.request.AccountInfoSearch;

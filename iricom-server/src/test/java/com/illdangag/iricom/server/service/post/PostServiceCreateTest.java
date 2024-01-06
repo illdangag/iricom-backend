@@ -3,7 +3,9 @@ package com.illdangag.iricom.server.service.post;
 import com.illdangag.iricom.server.data.entity.Account;
 import com.illdangag.iricom.server.data.entity.type.PostType;
 import com.illdangag.iricom.server.data.request.PostInfoCreate;
+import com.illdangag.iricom.server.data.response.PostInfo;
 import com.illdangag.iricom.server.exception.IricomException;
+import com.illdangag.iricom.server.service.AccountService;
 import com.illdangag.iricom.server.service.PostService;
 import com.illdangag.iricom.server.test.IricomTestSuite;
 import com.illdangag.iricom.server.test.data.wrapper.TestAccountGroupInfo;
@@ -22,6 +24,8 @@ import java.util.Collections;
 public class PostServiceCreateTest extends IricomTestSuite {
     @Autowired
     private PostService postService;
+    @Autowired
+    private AccountService accountService;
 
     @Autowired
     public PostServiceCreateTest(ApplicationContext context) {
@@ -98,5 +102,31 @@ public class PostServiceCreateTest extends IricomTestSuite {
                 .build();
 
         postService.createPostInfo(account, boardId, postInfoCreate);
+    }
+
+    @Test
+    @DisplayName("게시물 발행 후 포인트 추가")
+    public void addPostPoint() {
+        TestBoardInfo testBoardInfo = TestBoardInfo.builder()
+                .title("testBoardInfo").isEnabled(true).undisclosed(false).build();
+
+        addTestBoardInfo(testBoardInfo);
+        init();
+
+        Account account = getAccount(common00);
+        String boardId = getBoardId(testBoardInfo);
+        long beforePoint = this.accountService.getAccountInfo(String.valueOf(account.getId())).getPoint();
+
+        PostInfoCreate postInfoCreate = PostInfoCreate.builder()
+                .title("add point")
+                .content("contents...")
+                .type(PostType.POST)
+                .build();
+
+        PostInfo postInfo = postService.createPostInfo(account, boardId, postInfoCreate);
+        postService.publishPostInfo(account, postInfo.getBoardId(), postInfo.getId());
+
+        long afterPoint = this.accountService.getAccountInfo(String.valueOf(account.getId())).getPoint();
+        Assertions.assertTrue(beforePoint < afterPoint);
     }
 }
