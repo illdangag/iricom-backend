@@ -1,6 +1,9 @@
 package com.illdangag.iricom.server.repository;
 
-import com.illdangag.iricom.server.data.entity.*;
+import com.illdangag.iricom.server.data.entity.Account;
+import com.illdangag.iricom.server.data.entity.Board;
+import com.illdangag.iricom.server.data.entity.Post;
+import com.illdangag.iricom.server.data.entity.PostContent;
 import com.illdangag.iricom.server.data.entity.type.PostType;
 
 import java.util.List;

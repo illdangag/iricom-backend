@@ -5,7 +5,9 @@ import com.illdangag.iricom.server.data.entity.Post;
 import com.illdangag.iricom.server.repository.CommentRepository;
 import org.springframework.stereotype.Repository;
 
-import javax.persistence.*;
+import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
+import javax.persistence.TypedQuery;
 import javax.transaction.Transactional;
 import java.util.List;
 import java.util.Optional;
