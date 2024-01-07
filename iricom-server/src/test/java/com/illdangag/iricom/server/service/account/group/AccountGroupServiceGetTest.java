@@ -1,6 +1,5 @@
 package com.illdangag.iricom.server.service.account.group;
 
-import com.illdangag.iricom.server.data.entity.AccountGroup;
 import com.illdangag.iricom.server.data.response.AccountGroupInfo;
 import com.illdangag.iricom.server.data.response.AccountInfo;
 import com.illdangag.iricom.server.data.response.BoardInfo;
@@ -46,8 +45,8 @@ public class AccountGroupServiceGetTest extends IricomTestSuite {
     @Test
     @DisplayName("그룹 정보 조회")
     public void get() {
-        AccountGroup accountGroup = getAccountGroup(testAccountGroupInfo00);
-        String accountGroupId = String.valueOf(accountGroup.getId());
+        AccountGroupInfo testAccountGroup = getAccountGroup(testAccountGroupInfo00);
+        String accountGroupId = testAccountGroup.getId();
 
         String[] accountIds = testAccountGroupInfo00.getAccountList().stream()
                 .map(AccountGroupServiceGetTest.this::getAccount)
@@ -60,8 +59,8 @@ public class AccountGroupServiceGetTest extends IricomTestSuite {
         AccountGroupInfo accountGroupInfo = accountGroupService.getAccountGroupInfo(accountGroupId);
 
         Assertions.assertNotNull(accountGroupInfo);
-        Assertions.assertEquals(accountGroup.getTitle(), accountGroupInfo.getTitle());
-        Assertions.assertEquals(accountGroup.getDescription(), accountGroupInfo.getDescription());
+        Assertions.assertEquals(testAccountGroup.getTitle(), accountGroupInfo.getTitle());
+        Assertions.assertEquals(testAccountGroup.getDescription(), accountGroupInfo.getDescription());
 
         String[] accountInfoIds = accountGroupInfo.getAccountInfoList().stream()
                 .map(AccountInfo::getId)

@@ -1,7 +1,7 @@
 package com.illdangag.iricom.server.restdocs.v1;
 
 import com.illdangag.iricom.server.data.entity.Account;
-import com.illdangag.iricom.server.data.entity.AccountGroup;
+import com.illdangag.iricom.server.data.response.AccountGroupInfo;
 import com.illdangag.iricom.server.restdocs.snippet.IricomFieldsSnippet;
 import com.illdangag.iricom.server.test.IricomTestSuite;
 import com.illdangag.iricom.server.test.data.wrapper.TestAccountGroupInfo;
@@ -149,9 +149,9 @@ public class AccountGroupControllerTest extends IricomTestSuite {
     @Test
     @DisplayName("계정 그룹 정보 조회")
     public void ag003() throws Exception {
-        AccountGroup accountGroup = getAccountGroup(testAccountGroupInfo00);
+        AccountGroupInfo accountGroupInfo = getAccountGroup(testAccountGroupInfo00);
 
-        MockHttpServletRequestBuilder requestBuilder = get("/v1/group/account/{id}", accountGroup.getId());
+        MockHttpServletRequestBuilder requestBuilder = get("/v1/group/account/{id}", accountGroupInfo.getId());
         setAuthToken(requestBuilder, systemAdmin);
 
         List<FieldDescriptor> fieldDescriptorList = new LinkedList<>();
@@ -186,7 +186,7 @@ public class AccountGroupControllerTest extends IricomTestSuite {
     @Test
     @DisplayName("계정 그룹 정보 수정")
     public void ag004() throws Exception {
-        AccountGroup accountGroup = getAccountGroup(testAccountGroupInfo01);
+        AccountGroupInfo accountGroupInfo = getAccountGroup(testAccountGroupInfo01);
 
         Account account = getAccount(common00);
         String boardId = getBoardId(testBoardInfo00);
@@ -201,7 +201,7 @@ public class AccountGroupControllerTest extends IricomTestSuite {
         List<String> boardIdList = Arrays.asList(String.valueOf(boardId));
         requestBody.put("boardIds", boardIdList);
 
-        MockHttpServletRequestBuilder requestBuilder = patch("/v1/group/account/{id}", accountGroup.getId())
+        MockHttpServletRequestBuilder requestBuilder = patch("/v1/group/account/{id}", accountGroupInfo.getId())
                 .content(getJsonString(requestBody))
                 .contentType(MediaType.APPLICATION_JSON);
         setAuthToken(requestBuilder, systemAdmin);
@@ -243,9 +243,9 @@ public class AccountGroupControllerTest extends IricomTestSuite {
     @Test
     @DisplayName("계정 그룹 정보 삭제")
     public void ag005() throws Exception {
-        AccountGroup accountGroup = getAccountGroup(testAccountGroupInfo02);
+        AccountGroupInfo accountGroupInfo = getAccountGroup(testAccountGroupInfo02);
 
-        MockHttpServletRequestBuilder requestBuilder = delete("/v1/group/account/{id}", accountGroup.getId());
+        MockHttpServletRequestBuilder requestBuilder = delete("/v1/group/account/{id}", accountGroupInfo.getId());
         setAuthToken(requestBuilder, systemAdmin);
 
         List<FieldDescriptor> fieldDescriptorList = new LinkedList<>();

@@ -1,7 +1,6 @@
 package com.illdangag.iricom.server.service.account.group;
 
 import com.illdangag.iricom.server.data.entity.Account;
-import com.illdangag.iricom.server.data.entity.AccountGroup;
 import com.illdangag.iricom.server.data.request.AccountGroupInfoUpdate;
 import com.illdangag.iricom.server.data.response.AccountGroupInfo;
 import com.illdangag.iricom.server.data.response.AccountInfo;
@@ -57,8 +56,8 @@ public class AccountGroupServiceUpdateTest extends IricomTestSuite {
     @Test
     @DisplayName("제목, 설명")
     public void updateTitleDescription() throws Exception {
-        AccountGroup accountGroup = getAccountGroup(testAccountGroupInfo00);
-        String accountGroupId = String.valueOf(accountGroup.getId());
+        AccountGroupInfo testAccountGroup = getAccountGroup(testAccountGroupInfo00);
+        String accountGroupId = testAccountGroup.getId();
 
         String title = "Update account group";
         String description = "update description";
@@ -78,8 +77,8 @@ public class AccountGroupServiceUpdateTest extends IricomTestSuite {
     @Test
     @DisplayName("계정이 등록되지 않은 그룹에 계정 추가")
     public void updateAccountEmptyAccountGroup() throws Exception {
-        AccountGroup accountGroup = getAccountGroup(testAccountGroupInfo01);
-        String accountGroupId = String.valueOf(accountGroup.getId());
+        AccountGroupInfo testAccountGroup = getAccountGroup(testAccountGroupInfo01);
+        String accountGroupId = testAccountGroup.getId();
 
         Account account = getAccount(common00);
 
@@ -97,8 +96,8 @@ public class AccountGroupServiceUpdateTest extends IricomTestSuite {
     @Test
     @DisplayName("게시판이 등록되지 않은 그룹에 게시판 추가")
     public void updateBoardEmptyAccountGroup() throws Exception {
-        AccountGroup accountGroup = getAccountGroup(testAccountGroupInfo01);
-        String accountGroupId = String.valueOf(accountGroup.getId());
+        AccountGroupInfo testAccountGroup = getAccountGroup(testAccountGroupInfo01);
+        String accountGroupId = testAccountGroup.getId();
 
         String boardId = getBoardId(testBoardInfo00);
 
@@ -116,8 +115,8 @@ public class AccountGroupServiceUpdateTest extends IricomTestSuite {
     @Test
     @DisplayName("계정이 등록된 그룹에 다른 계정 목록으로 수정")
     public void updateAccountAlreadyAccountGroup() throws Exception {
-        AccountGroup accountGroup = getAccountGroup(testAccountGroupInfo02);
-        String accountGroupId = String.valueOf(accountGroup.getId());
+        AccountGroupInfo testAccountGroup = getAccountGroup(testAccountGroupInfo02);
+        String accountGroupId = testAccountGroup.getId();
 
         Account account00 = getAccount(testAccountGroupInfo02.getAccountList().get(0));
         Account account01 = getAccount(common02);
@@ -151,8 +150,8 @@ public class AccountGroupServiceUpdateTest extends IricomTestSuite {
     @Test
     @DisplayName("게시판이 등록된 그룹에 다른 게시판 목록으로 수정")
     public void updateBoardAlreadyAccountGroup() throws Exception {
-        AccountGroup accountGroup = getAccountGroup(testAccountGroupInfo02);
-        String accountGroupId = String.valueOf(accountGroup.getId());
+        AccountGroupInfo testAccountGroup = getAccountGroup(testAccountGroupInfo02);
+        String accountGroupId = testAccountGroup.getId();
 
         Account account00 = getAccount(testAccountGroupInfo02.getAccountList().get(0));
         Account account01 = getAccount(testAccountGroupInfo02.getAccountList().get(1));
@@ -201,8 +200,8 @@ public class AccountGroupServiceUpdateTest extends IricomTestSuite {
     @Test
     @DisplayName("존재하지 않는 계정을 추가")
     public void updateNotExistAccount() throws Exception {
-        AccountGroup accountGroup = getAccountGroup(testAccountGroupInfo03);
-        String accountGroupId = String.valueOf(accountGroup.getId());
+        AccountGroupInfo testAccountGroup = getAccountGroup(testAccountGroupInfo03);
+        String accountGroupId = testAccountGroup.getId();
 
         AccountGroupInfoUpdate accountGroupInfoUpdate = AccountGroupInfoUpdate.builder()
                 .accountIdList(Arrays.asList("NOT_EXIST_ACCOUNT"))
@@ -216,8 +215,8 @@ public class AccountGroupServiceUpdateTest extends IricomTestSuite {
     @Test
     @DisplayName("존재하지 않는 게시판을 추가")
     public void updateNotExistBoard() throws Exception {
-        AccountGroup accountGroup = getAccountGroup(testAccountGroupInfo03);
-        String accountGroupId = String.valueOf(accountGroup.getId());
+        AccountGroupInfo testAccountGroup = getAccountGroup(testAccountGroupInfo03);
+        String accountGroupId = testAccountGroup.getId();
 
         AccountGroupInfoUpdate accountGroupInfoUpdate = AccountGroupInfoUpdate.builder()
                 .boardIdList(Arrays.asList("NOT_EXIST_BOARD"))

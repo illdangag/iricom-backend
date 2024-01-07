@@ -1,6 +1,5 @@
 package com.illdangag.iricom.server.service.account.group;
 
-import com.illdangag.iricom.server.data.entity.AccountGroup;
 import com.illdangag.iricom.server.exception.IricomException;
 import com.illdangag.iricom.server.service.AccountGroupService;
 import com.illdangag.iricom.server.test.IricomTestSuite;
@@ -32,8 +31,7 @@ public class AccountGroupServiceDeleteTest extends IricomTestSuite {
     @Test
     @DisplayName("계정 그룹 삭제")
     public void delete() throws Exception {
-        AccountGroup accountGroup = getAccountGroup(testAccountGroupInfo00);
-        String accountGroupId = String.valueOf(accountGroup.getId());
+        String accountGroupId = getAccountGroup(testAccountGroupInfo00).getId();
 
         accountGroupService.deleteAccountGroupInfo(accountGroupId);
 
