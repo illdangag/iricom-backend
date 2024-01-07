@@ -1,6 +1,5 @@
 package com.illdangag.iricom.server.restdocs.v1;
 
-import com.illdangag.iricom.server.data.entity.Account;
 import com.illdangag.iricom.server.restdocs.snippet.IricomFieldsSnippet;
 import com.illdangag.iricom.server.test.IricomTestSuite;
 import com.illdangag.iricom.server.test.data.wrapper.TestBoardInfo;
@@ -45,11 +44,11 @@ public class BoardAuthorizationControllerTest extends IricomTestSuite {
     @Test
     @DisplayName("게시판 관리자 추가")
     public void at001() throws Exception {
-        Account account = getAccount(toEnableBoardAdmin);
+        String accountId = getAccountId(toEnableBoardAdmin);
         String boardId = getBoardId(boardAdminBoard00);
 
         Map<String, Object> requestBody = new HashMap<>();
-        requestBody.put("accountId", account.getId());
+        requestBody.put("accountId", accountId);
         requestBody.put("boardId", boardId);
 
         MockHttpServletRequestBuilder requestBuilder = post("/v1/auth/boards")
@@ -157,11 +156,11 @@ public class BoardAuthorizationControllerTest extends IricomTestSuite {
     @Test
     @DisplayName("게시판 관리자 삭제")
     public void at004() throws Exception {
-        Account account = getAccount(toDisableBoardAdmin);
+        String accountId = getAccountId(toDisableBoardAdmin);
         String boardId = getBoardId(boardAdminBoard00);
 
         Map<String, Object> requestBody = new HashMap<>();
-        requestBody.put("accountId", account.getId());
+        requestBody.put("accountId", accountId);
         requestBody.put("boardId", boardId);
 
         MockHttpServletRequestBuilder requestBuilder = delete("/v1/auth/boards")

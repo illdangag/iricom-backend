@@ -1,7 +1,7 @@
 package com.illdangag.iricom.server.service.account.search;
 
-import com.illdangag.iricom.server.data.entity.Account;
 import com.illdangag.iricom.server.data.request.AccountInfoSearch;
+import com.illdangag.iricom.server.data.response.AccountInfo;
 import com.illdangag.iricom.server.data.response.AccountInfoList;
 import com.illdangag.iricom.server.service.AccountService;
 import com.illdangag.iricom.server.test.IricomTestSuite;
@@ -49,11 +49,11 @@ public class AccountServiceSearchTest extends IricomTestSuite {
     @Test
     @DisplayName("상세 정보가 등록되지 않은 계정을 이메일로 조회")
     public void searchUnregisteredAccount() throws Exception {
-        Account account = getAccount(unknown00);
+        AccountInfo accountInfo = getAccount(unknown00);
 
-        Assertions.assertNotNull(account);
+        Assertions.assertNotNull(accountInfo);
         AccountInfoSearch accountInfoSearch = AccountInfoSearch.builder()
-                .keyword(account.getEmail())
+                .keyword(accountInfo.getEmail())
                 .build();
 
         AccountInfoList accountInfoList = accountService.getAccountInfoList(accountInfoSearch);

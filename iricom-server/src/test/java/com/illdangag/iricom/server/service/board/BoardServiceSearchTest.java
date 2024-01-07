@@ -1,6 +1,5 @@
 package com.illdangag.iricom.server.service.board;
 
-import com.illdangag.iricom.server.data.entity.Account;
 import com.illdangag.iricom.server.data.request.BoardInfoSearch;
 import com.illdangag.iricom.server.data.response.BoardInfo;
 import com.illdangag.iricom.server.data.response.BoardInfoList;
@@ -82,13 +81,13 @@ public class BoardServiceSearchTest extends IricomTestSuite {
     @Test
     @DisplayName("공개 게시판 및 계정 그룹에 포함된 게시물 목록 조회")
     public void searchDisclosedBoardAndAccountGroupBoardList() throws Exception {
-        Account account = getAccount(common00);
+        String accountId = getAccountId(common00);
         String inaccessibleBoardId = String.valueOf(getBoardId(undisclosedBoard00));
         String accessibleBoardId = String.valueOf(getBoardId(undisclosedBoard01));
 
         List<String> list = getAllList(BoardInfoSearch.builder().build(), searchRequest -> {
             BoardInfoSearch boardInfoSearch = (BoardInfoSearch) searchRequest;
-            BoardInfoList boardInfoList = boardService.getBoardInfoList(account, boardInfoSearch);
+            BoardInfoList boardInfoList = boardService.getBoardInfoList(accountId, boardInfoSearch);
             return boardInfoList.getBoardInfoList().stream()
                     .map(BoardInfo::getId)
                     .collect(Collectors.toList());
@@ -101,12 +100,12 @@ public class BoardServiceSearchTest extends IricomTestSuite {
     @Test
     @DisplayName("삭제된 계정 그룹에 포함된 게시판 목록 조회")
     public void searchDisclosedBoardAndDeletedAccountGroupBoardList() throws Exception {
-        Account account = getAccount(common01);
+        String accountId = getAccountId(common01);
         String undisclosedBoardId = getBoardId(undisclosedBoard02);
 
         List<String> list = getAllList(BoardInfoSearch.builder().build(), searchRequest -> {
             BoardInfoSearch boardInfoSearch = (BoardInfoSearch) searchRequest;
-            BoardInfoList boardInfoList = boardService.getBoardInfoList(account, boardInfoSearch);
+            BoardInfoList boardInfoList = boardService.getBoardInfoList(accountId, boardInfoSearch);
             return boardInfoList.getBoardInfoList().stream()
                     .map(BoardInfo::getId)
                     .collect(Collectors.toList());
@@ -118,12 +117,12 @@ public class BoardServiceSearchTest extends IricomTestSuite {
     @Test
     @DisplayName("비공개 게시판 관리자가 비공개 게시판 목록 조회")
     public void searchDisclosedBoardListByBoardAdmin() throws Exception {
-        Account account = getAccount(common01);
+        String accountId = getAccountId(common01);
         String undisclosedBoardId = getBoardId(undisclosedBoard00);
 
         List<String> list = getAllList(BoardInfoSearch.builder().build(), searchRequest -> {
             BoardInfoSearch boardInfoSearch = (BoardInfoSearch) searchRequest;
-            BoardInfoList boardInfoList = boardService.getBoardInfoList(account, boardInfoSearch);
+            BoardInfoList boardInfoList = boardService.getBoardInfoList(accountId, boardInfoSearch);
             return boardInfoList.getBoardInfoList().stream()
                     .map(BoardInfo::getId)
                     .collect(Collectors.toList());

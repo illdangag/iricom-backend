@@ -1,6 +1,5 @@
 package com.illdangag.iricom.server.service.post;
 
-import com.illdangag.iricom.server.data.entity.Account;
 import com.illdangag.iricom.server.data.entity.type.PostState;
 import com.illdangag.iricom.server.data.entity.type.PostType;
 import com.illdangag.iricom.server.data.request.PostInfoSearch;
@@ -148,7 +147,7 @@ public class PostServiceSearchTest extends IricomTestSuite {
         addTestAccountGroupInfo(testAccountGroupInfo);
         init();
 
-        Account account = getAccount(common00);
+        String accountId = getAccountId(common00);
         String boardId = getBoardId(testBoardInfo);
         String postId = getPostId(testPostInfo00);
 
@@ -156,7 +155,7 @@ public class PostServiceSearchTest extends IricomTestSuite {
                 .skip(0).limit(100)
                 .build();
 
-        PostInfoList postInfoList = postService.getPublishPostInfoList(account, boardId, postInfoSearch);
+        PostInfoList postInfoList = postService.getPublishPostInfoList(accountId, boardId, postInfoSearch);
 
         List<String> postIdList = postInfoList.getPostInfoList().stream()
                 .map(PostInfo::getId)
@@ -185,13 +184,13 @@ public class PostServiceSearchTest extends IricomTestSuite {
         addTestPostInfo(testPostInfo00, testPostInfo01);
         init();
 
-        Account account = getAccount(common00);
+        String accountId = getAccountId(common00);
         String postId00 = getPostId(testPostInfo00);
         String postId01 = getPostId(testPostInfo01);
 
         List<String> list = getAllList(PostInfoSearch.builder().build(), searchRequest -> {
             PostInfoSearch postInfoSearch = (PostInfoSearch) searchRequest;
-            PostInfoList postInfoList = postService.getPostInfoList(account, postInfoSearch);
+            PostInfoList postInfoList = postService.getPostInfoList(accountId, postInfoSearch);
             return postInfoList.getPostInfoList().stream()
                     .map(PostInfo::getId)
                     .collect(Collectors.toList());

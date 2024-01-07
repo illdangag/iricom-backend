@@ -1,6 +1,5 @@
 package com.illdangag.iricom.server.service.report.post;
 
-import com.illdangag.iricom.server.data.entity.Account;
 import com.illdangag.iricom.server.data.entity.type.PostState;
 import com.illdangag.iricom.server.data.entity.type.PostType;
 import com.illdangag.iricom.server.data.entity.type.ReportType;
@@ -53,7 +52,7 @@ public class ReportServicePostReportTest extends IricomTestSuite {
     @Test
     @DisplayName("게시물 신고")
     public void reportPost() throws Exception {
-        Account account = getAccount(common01);
+        String accountId = getAccountId(common01);
         String boardId = getBoardId(testPostInfo00.getBoard());
         String postId = getPostId(testPostInfo00);
 
@@ -62,13 +61,13 @@ public class ReportServicePostReportTest extends IricomTestSuite {
                 .reason("report test")
                 .build();
 
-        reportService.reportPost(account, boardId, postId, postReportInfoCreate);
+        reportService.reportPost(accountId, boardId, postId, postReportInfoCreate);
     }
 
     @Test
     @DisplayName("중복 게시물 신고")
     public void duplicateReportPost() throws Exception {
-        Account account = getAccount(common00);
+        String accountId = getAccountId(common00);
         String boardId = getBoardId(testPostInfo01.getBoard());
         String postId = getPostId(testPostInfo01);
 
@@ -78,18 +77,18 @@ public class ReportServicePostReportTest extends IricomTestSuite {
                 .build();
 
         // 첫번째 신고
-        reportService.reportPost(account, boardId, postId, postReportInfoCreate);
+        reportService.reportPost(accountId, boardId, postId, postReportInfoCreate);
 
         // 두번째 신고
         Assertions.assertThrows(IricomException.class, () -> {
-            reportService.reportPost(account, boardId, postId, postReportInfoCreate);
+            reportService.reportPost(accountId, boardId, postId, postReportInfoCreate);
         });
     }
 
     @Test
     @DisplayName("게시물의 게시판 불일치")
     public void notMatchPostAndBoard() throws Exception {
-        Account account = getAccount(common00);
+        String accountId = getAccountId(common00);
         String boardId = getBoardId(testBoardInfo01);
         String postId = getPostId(testPostInfo01);
 
@@ -99,14 +98,14 @@ public class ReportServicePostReportTest extends IricomTestSuite {
                 .build();
 
         Assertions.assertThrows(IricomException.class, () -> {
-            reportService.reportPost(account, boardId, postId, postReportInfoCreate);
+            reportService.reportPost(accountId, boardId, postId, postReportInfoCreate);
         });
     }
 
     @Test
     @DisplayName("존재하지 않는 게시물")
     public void notExistPost() throws Exception {
-        Account account = getAccount(common00);
+        String accountId = getAccountId(common00);
         String boardId = getBoardId(testBoardInfo00);
 
         PostReportInfoCreate postReportInfoCreate = PostReportInfoCreate.builder()
@@ -115,14 +114,14 @@ public class ReportServicePostReportTest extends IricomTestSuite {
                 .build();
 
         Assertions.assertThrows(IricomException.class, () -> {
-            reportService.reportPost(account, boardId, "NOT_EXIST_POST", postReportInfoCreate);
+            reportService.reportPost(accountId, boardId, "NOT_EXIST_POST", postReportInfoCreate);
         });
     }
 
     @Test
     @DisplayName("존재하지 않는 게시판")
     public void notExistBoard() throws Exception {
-        Account account = getAccount(common00);
+        String accountId = getAccountId(common00);
         String postId = getPostId(testPostInfo01);
 
         PostReportInfoCreate postReportInfoCreate = PostReportInfoCreate.builder()
@@ -131,7 +130,7 @@ public class ReportServicePostReportTest extends IricomTestSuite {
                 .build();
 
         Assertions.assertThrows(IricomException.class, () -> {
-            reportService.reportPost(account, "NOT_EXIST_BOARD", postId, postReportInfoCreate);
+            reportService.reportPost(accountId, "NOT_EXIST_BOARD", postId, postReportInfoCreate);
         });
     }
 }

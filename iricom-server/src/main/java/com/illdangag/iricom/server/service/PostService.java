@@ -17,6 +17,8 @@ public interface PostService {
     /**
      * 게시물 생성
      */
+    PostInfo createPostInfo(String accountId, String boardId, @Valid PostInfoCreate postInfoCreate);
+
     PostInfo createPostInfo(Account account, String boardId, @Valid PostInfoCreate postInfoCreate);
 
     PostInfo createPostInfo(Account account, Board board, @Valid PostInfoCreate postInfoCreate);
@@ -24,6 +26,8 @@ public interface PostService {
     /**
      * 게시물 수정
      */
+    PostInfo updatePostInfo(String accountId, String boardId, String postId, @Valid PostInfoUpdate postInfoUpdate);
+
     PostInfo updatePostInfo(Account account, String boardId, String postId, @Valid PostInfoUpdate postInfoUpdate);
 
     PostInfo updatePostInfo(Account account, Board board, Post post, @Valid PostInfoUpdate postInfoUpdate);
@@ -48,12 +52,16 @@ public interface PostService {
     /**
      * 계정이 작성한 게시물 목록 조회
      */
+    PostInfoList getPostInfoList(String accountId, @Valid PostInfoSearch postInfoSearch);
+
     PostInfoList getPostInfoList(Account account, @Valid PostInfoSearch postInfoSearch);
 
     /**
      * 발행한 게시물 목록 조회
      */
     PostInfoList getPublishPostInfoList(String boardId, @Valid PostInfoSearch postInfoSearch);
+
+    PostInfoList getPublishPostInfoList(String accountId, String boardId, @Valid PostInfoSearch postInfoSearch);
 
     PostInfoList getPublishPostInfoList(Account account, String boardId, @Valid PostInfoSearch postInfoSearch);
 
@@ -62,6 +70,8 @@ public interface PostService {
     /**
      * 발행한 게시물 정보 조회
      */
+    PostInfo publishPostInfo(String accountId, String boardId, String postId);
+
     PostInfo publishPostInfo(Account account, String boardId, String postId);
 
     PostInfo publishPostInfo(Account account, Board board, Post post);
@@ -69,6 +79,8 @@ public interface PostService {
     /**
      * 게시물 삭제
      */
+    PostInfo deletePostInfo(String accountId, String boardId, String postId);
+
     PostInfo deletePostInfo(Account account, String boardId, String postId);
 
     PostInfo deletePostInfo(Account account, Board board, Post post);

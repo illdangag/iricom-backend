@@ -1,6 +1,5 @@
 package com.illdangag.iricom.storage.service.file;
 
-import com.illdangag.iricom.server.data.entity.Account;
 import com.illdangag.iricom.server.test.IricomTestSuite;
 import com.illdangag.iricom.storage.data.IricomFileInputStream;
 import com.illdangag.iricom.storage.data.response.FileMetadataInfo;
@@ -31,10 +30,10 @@ public class FileStorageServiceTest extends IricomTestSuite {
 
     @Test
     public void uploadFileTest() {
-        Account account = getAccount(common00);
+        String accountId = getAccountId(common00);
         InputStream sampleImageInputStream = this.getSampleImageInputStream();
 
-        FileMetadataInfo fileMetadataInfo = this.fileStorageServiceImpl.uploadFile(account, IMAGE_FILE_NAME, IMAGE_FILE_CONTENT_TYPE, sampleImageInputStream);
+        FileMetadataInfo fileMetadataInfo = this.fileStorageServiceImpl.uploadFile(accountId, IMAGE_FILE_NAME, IMAGE_FILE_CONTENT_TYPE, sampleImageInputStream);
         String fileName = fileMetadataInfo.getName();
 
         Assertions.assertNotNull(fileMetadataInfo.getId());
@@ -44,10 +43,10 @@ public class FileStorageServiceTest extends IricomTestSuite {
 
     @Test
     public void downloadFileTest() {
-        Account account = getAccount(common00);
+        String accountId = getAccountId(common00);
         InputStream sampleImageInputStream = this.getSampleImageInputStream();
 
-        FileMetadataInfo fileMetadataInfo = this.fileStorageServiceImpl.uploadFile(account, IMAGE_FILE_NAME, IMAGE_FILE_CONTENT_TYPE, sampleImageInputStream);
+        FileMetadataInfo fileMetadataInfo = this.fileStorageServiceImpl.uploadFile(accountId, IMAGE_FILE_NAME, IMAGE_FILE_CONTENT_TYPE, sampleImageInputStream);
 
         String id = fileMetadataInfo.getId();
 
@@ -64,14 +63,14 @@ public class FileStorageServiceTest extends IricomTestSuite {
 
     @Test
     public void deleteFileTest() {
-        Account account = getAccount(common00);
+        String accountId = getAccountId(common00);
         InputStream sampleImageInputStream = this.getSampleImageInputStream();
 
-        FileMetadataInfo fileMetadataInfo = this.fileStorageServiceImpl.uploadFile(account, IMAGE_FILE_NAME, IMAGE_FILE_CONTENT_TYPE, sampleImageInputStream);
+        FileMetadataInfo fileMetadataInfo = this.fileStorageServiceImpl.uploadFile(accountId, IMAGE_FILE_NAME, IMAGE_FILE_CONTENT_TYPE, sampleImageInputStream);
 
         String id = fileMetadataInfo.getId();
 
-        FileMetadataInfo deleteFileMetadataInfo = this.fileStorageServiceImpl.deleteFile(account, id);
+        FileMetadataInfo deleteFileMetadataInfo = this.fileStorageServiceImpl.deleteFile(accountId, id);
         Assertions.assertNotNull(deleteFileMetadataInfo);
     }
 

@@ -32,14 +32,21 @@ public class PostServiceImpl extends IricomService implements PostService {
     private final AccountPointService accountPointService;
 
     @Autowired
-    public PostServiceImpl(PostRepository postRepository, PostVoteRepository postVoteRepository, CommentRepository commentRepository,
+    public PostServiceImpl(AccountRepository accountRepository, PostRepository postRepository,
+                           PostVoteRepository postVoteRepository, CommentRepository commentRepository,
                            BoardRepository boardRepository, ReportRepository reportRepository,
                            BlockRepository blockRepository, AccountPointService accountPointService) {
-        super(boardRepository, postRepository, commentRepository);
+        super(accountRepository, boardRepository, postRepository, commentRepository);
         this.postVoteRepository = postVoteRepository;
         this.reportRepository = reportRepository;
         this.blockRepository = blockRepository;
         this.accountPointService = accountPointService;
+    }
+
+    @Override
+    public PostInfo createPostInfo(String accountId, String boardId, PostInfoCreate postInfoCreate) {
+        Account account = this.getAccount(accountId);
+        return this.createPostInfo(account, boardId, postInfoCreate);
     }
 
     /**
@@ -88,6 +95,12 @@ public class PostServiceImpl extends IricomService implements PostService {
 
         this.postRepository.save(post, postContent);
         return new PostInfo(post, true, PostState.TEMPORARY, 0, 0, 0, 0, false);
+    }
+
+    @Override
+    public PostInfo updatePostInfo(String accountId, String boardId, String postId, PostInfoUpdate postInfoUpdate) {
+        Account account = this.getAccount(accountId);
+        return this.updatePostInfo(account, boardId, postId, postInfoUpdate);
     }
 
     /**
@@ -281,6 +294,12 @@ public class PostServiceImpl extends IricomService implements PostService {
         return this.getPostInfo(board, post, postState, true);
     }
 
+    @Override
+    public PostInfo publishPostInfo(String accountId, String boardId, String postId) {
+        Account account = this.getAccount(accountId);
+        return this.publishPostInfo(account, boardId, postId);
+    }
+
     /**
      * 게시물 발행
      */
@@ -342,13 +361,18 @@ public class PostServiceImpl extends IricomService implements PostService {
         return this.getPublishPostInfoList(null, board, postInfoSearch);
     }
 
+    @Override
+    public PostInfoList getPublishPostInfoList(String accountId, String boardId, @Valid PostInfoSearch postInfoSearch) {
+        Account account = this.getAccount(accountId);
+        return this.getPublishPostInfoList(account, boardId, postInfoSearch);
+    }
+
     /**
      * 발행된 게시물 목록 조회
      */
     @Override
     public PostInfoList getPublishPostInfoList(Account account, String boardId, @Valid PostInfoSearch postInfoSearch) {
         Board board = this.getBoard(boardId);
-
         return this.getPublishPostInfoList(account, board, postInfoSearch);
     }
 
@@ -398,6 +422,12 @@ public class PostServiceImpl extends IricomService implements PostService {
                 .limit(postInfoSearch.getLimit())
                 .postInfoList(postInfoList)
                 .build();
+    }
+
+    @Override
+    public PostInfo deletePostInfo(String accountId, String boardId, String postId) {
+        Account account = this.getAccount(accountId);
+        return this.deletePostInfo(account, boardId, postId);
     }
 
     /**
@@ -498,6 +528,12 @@ public class PostServiceImpl extends IricomService implements PostService {
         this.postVoteRepository.save(postVote);
 
         return this.getPostInfo(account, post, PostState.PUBLISH, true);
+    }
+
+    @Override
+    public PostInfoList getPostInfoList(String accountId, PostInfoSearch postInfoSearch) {
+        Account account = this.getAccount(accountId);
+        return this.getPostInfoList(account, postInfoSearch);
     }
 
     /**

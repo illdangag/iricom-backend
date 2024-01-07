@@ -19,6 +19,8 @@ public interface ReportService {
     /**
      * 게시물 신고
      */
+    PostReportInfo reportPost(String accountId, String boardId, String postId, @Valid PostReportInfoCreate postReportInfoCreate);
+
     PostReportInfo reportPost(Account account, String boardId, String postId, @Valid PostReportInfoCreate postReportInfoCreate);
 
     PostReportInfo reportPost(Account account, Board board, Post post, @Valid PostReportInfoCreate postReportInfoCreate);
@@ -26,6 +28,8 @@ public interface ReportService {
     /**
      * 신고된 게시물 목록 조회
      */
+    PostReportInfoList getPostReportInfoList(String accountId, String boardId, @Valid PostReportInfoSearch postReportInfoSearch);
+
     PostReportInfoList getPostReportInfoList(Account account, String boardId, @Valid PostReportInfoSearch postReportInfoSearch);
 
     PostReportInfoList getPostReportInfoList(Account account, Board board, @Valid PostReportInfoSearch postReportInfoSearch);
@@ -37,6 +41,8 @@ public interface ReportService {
     /**
      * 신고된 게시물 정보 조회
      */
+    PostReportInfo getPostReportInfo(String accountId, String boardId, String postId, String reportId);
+
     PostReportInfo getPostReportInfo(Account account, String boardId, String postId, String reportId);
 
     PostReportInfo getPostReportInfo(Account account, Board board, Post post, String reportId);
@@ -44,6 +50,8 @@ public interface ReportService {
     /**
      * 댓글 신고
      */
+    CommentReportInfo reportComment(String accountId, String boardId, String postId, String commentId, @Valid CommentReportInfoCreate commentReportInfoCreate);
+
     CommentReportInfo reportComment(Account account, String boardId, String postId, String commentId, @Valid CommentReportInfoCreate commentReportInfoCreate);
 
     CommentReportInfo reportComment(Account account, Board board, Post post, Comment comment, @Valid CommentReportInfoCreate commentReportInfoCreate);
@@ -51,13 +59,19 @@ public interface ReportService {
     /**
      * 신고된 댓글 목록 조회
      */
+    CommentReportInfoList getCommentReportInfoList(String accountId, String boardId, @Valid CommentReportInfoSearch commentReportInfoSearch);
+
     CommentReportInfoList getCommentReportInfoList(Account account, String boardId, @Valid CommentReportInfoSearch commentReportInfoSearch);
 
     CommentReportInfoList getCommentReportInfoList(Account account, Board board, @Valid CommentReportInfoSearch commentReportInfoSearch);
 
+    CommentReportInfoList getCommentReportInfoList(String accountId, String boardId, String postId, @Valid CommentReportInfoSearch commentReportInfoSearch);
+
     CommentReportInfoList getCommentReportInfoList(Account account, String boardId, String postId, @Valid CommentReportInfoSearch commentReportInfoSearch);
 
     CommentReportInfoList getCommentReportInfoList(Account account, Board board, Post post, @Valid CommentReportInfoSearch commentReportInfoSearch);
+
+    CommentReportInfoList getCommentReportInfoList(String accountId, String boardId, String postId, String commentId, @Valid CommentReportInfoSearch commentReportInfoSearch);
 
     CommentReportInfoList getCommentReportInfoList(Account account, String boardId, String postId, String commentId, @Valid CommentReportInfoSearch commentReportInfoSearch);
 

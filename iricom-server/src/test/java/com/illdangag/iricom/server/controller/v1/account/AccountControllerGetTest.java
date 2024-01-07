@@ -1,6 +1,5 @@
 package com.illdangag.iricom.server.controller.v1.account;
 
-import com.illdangag.iricom.server.data.entity.Account;
 import com.illdangag.iricom.server.test.IricomTestSuite;
 import com.illdangag.iricom.server.test.data.wrapper.TestBoardInfo;
 import lombok.extern.slf4j.Slf4j;
@@ -45,9 +44,9 @@ public class AccountControllerGetTest extends IricomTestSuite {
         @Test
         @DisplayName("시스템 관리자의 본인 계정 정보 조회")
         public void getSystemAccountInfo() throws Exception {
-            Account account = getAccount(systemAdmin);
+            String accountId = getAccountId(systemAdmin);
 
-            MockHttpServletRequestBuilder requestBuilder = get("/v1/accounts/" + account.getId());
+            MockHttpServletRequestBuilder requestBuilder = get("/v1/accounts/" + accountId);
             setAuthToken(requestBuilder, systemAdmin);
 
             mockMvc.perform(requestBuilder)
@@ -60,9 +59,9 @@ public class AccountControllerGetTest extends IricomTestSuite {
         @Test
         @DisplayName("게시판 관리자의 본인 계정 정보 조회")
         public void getBoardAccountInfo() throws Exception {
-            Account account = getAccount(allBoardAdmin);
+            String accountId = getAccountId(allBoardAdmin);
 
-            MockHttpServletRequestBuilder requestBuilder = get("/v1/accounts/" + account.getId());
+            MockHttpServletRequestBuilder requestBuilder = get("/v1/accounts/" + accountId);
             setAuthToken(requestBuilder, allBoardAdmin);
 
             mockMvc.perform(requestBuilder)
@@ -75,9 +74,9 @@ public class AccountControllerGetTest extends IricomTestSuite {
         @Test
         @DisplayName("일반 계정의 본인 계정 정보 조회")
         public void getAccountInfo() throws Exception {
-            Account account = getAccount(common00);
+            String accountId = getAccountId(common00);
 
-            MockHttpServletRequestBuilder requestBuilder = get("/v1/accounts/" + account.getId());
+            MockHttpServletRequestBuilder requestBuilder = get("/v1/accounts/" + accountId);
             setAuthToken(requestBuilder, common00);
 
             mockMvc.perform(requestBuilder)

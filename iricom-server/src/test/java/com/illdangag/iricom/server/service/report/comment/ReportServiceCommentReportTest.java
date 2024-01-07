@@ -1,6 +1,5 @@
 package com.illdangag.iricom.server.service.report.comment;
 
-import com.illdangag.iricom.server.data.entity.Account;
 import com.illdangag.iricom.server.data.entity.type.PostState;
 import com.illdangag.iricom.server.data.entity.type.PostType;
 import com.illdangag.iricom.server.data.entity.type.ReportType;
@@ -62,7 +61,7 @@ public class ReportServiceCommentReportTest extends IricomTestSuite {
     @Test
     @DisplayName("댓글 신고")
     public void reportComment() throws Exception {
-        Account account = getAccount(common00);
+        String accountId = getAccountId(common00);
         String commentId = getCommentId(comment00);
         String postId = getPostId(comment00.getPost());
         String boardId = getBoardId(comment00.getPost().getBoard());
@@ -72,13 +71,13 @@ public class ReportServiceCommentReportTest extends IricomTestSuite {
                 .reason("report test")
                 .build();
 
-        reportService.reportComment(account, boardId, postId, commentId, commentReportInfoCreate);
+        reportService.reportComment(accountId, boardId, postId, commentId, commentReportInfoCreate);
     }
 
     @Test
     @DisplayName("중복 댓글 신고")
     public void duplicationReportComment() throws Exception {
-        Account account = getAccount(common00);
+        String accountId = getAccountId(common00);
         String commentId = getCommentId(comment01);
         String postId = getPostId(comment01.getPost());
         String boardId = getBoardId(comment01.getPost().getBoard());
@@ -88,10 +87,10 @@ public class ReportServiceCommentReportTest extends IricomTestSuite {
                 .reason("report test")
                 .build();
 
-        reportService.reportComment(account, boardId, postId, commentId, commentReportInfoCreate);
+        reportService.reportComment(accountId, boardId, postId, commentId, commentReportInfoCreate);
 
         IricomException iricomException = Assertions.assertThrows(IricomException.class, () -> {
-            reportService.reportComment(account, boardId, postId, commentId, commentReportInfoCreate);
+            reportService.reportComment(accountId, boardId, postId, commentId, commentReportInfoCreate);
         });
 
         Assertions.assertEquals("06010001", iricomException.getErrorCode());
@@ -101,7 +100,7 @@ public class ReportServiceCommentReportTest extends IricomTestSuite {
     @Test
     @DisplayName("댓글의 게시물 불일치")
     public void notMatchPost() throws Exception {
-        Account account = getAccount(common00);
+        String accountId = getAccountId(common00);
         String commentId = getCommentId(comment01);
         String postId = getPostId(comment01.getPost());
         String boardId = getBoardId(comment01.getPost().getBoard());
@@ -113,7 +112,7 @@ public class ReportServiceCommentReportTest extends IricomTestSuite {
                 .build();
 
         IricomException iricomException = Assertions.assertThrows(IricomException.class, () -> {
-            reportService.reportComment(account, boardId, invalidPostId, commentId, commentReportInfoCreate);
+            reportService.reportComment(accountId, boardId, invalidPostId, commentId, commentReportInfoCreate);
         });
 
         Assertions.assertEquals("05000000", iricomException.getErrorCode());
@@ -123,7 +122,7 @@ public class ReportServiceCommentReportTest extends IricomTestSuite {
     @Test
     @DisplayName("댓글의 게시물의 게시판 불일치")
     public void notMatchBoard() throws Exception {
-        Account account = getAccount(common00);
+        String accountId = getAccountId(common00);
         String commentId = getCommentId(comment01);
         String postId = getPostId(comment01.getPost());
         String invalidBoardId = getBoardId(enableBoard01);
@@ -134,7 +133,7 @@ public class ReportServiceCommentReportTest extends IricomTestSuite {
                 .build();
 
         IricomException iricomException = Assertions.assertThrows(IricomException.class, () -> {
-            reportService.reportComment(account, invalidBoardId, postId, commentId, commentReportInfoCreate);
+            reportService.reportComment(accountId, invalidBoardId, postId, commentId, commentReportInfoCreate);
         });
 
         Assertions.assertEquals("04000000", iricomException.getErrorCode());
@@ -144,7 +143,7 @@ public class ReportServiceCommentReportTest extends IricomTestSuite {
     @Test
     @DisplayName("존재하지 않는 댓글")
     public void notExistComment() throws Exception {
-        Account account = getAccount(common00);
+        String accountId = getAccountId(common00);
         String postId = getPostId(comment01.getPost());
         String boardId = getBoardId(comment01.getPost().getBoard());
         String commentId = "NOT_EXIST_COMMENT";
@@ -155,7 +154,7 @@ public class ReportServiceCommentReportTest extends IricomTestSuite {
                 .build();
 
         IricomException iricomException = Assertions.assertThrows(IricomException.class, () -> {
-            reportService.reportComment(account, boardId, postId, commentId, commentReportInfoCreate);
+            reportService.reportComment(accountId, boardId, postId, commentId, commentReportInfoCreate);
         });
 
         Assertions.assertEquals("05000000", iricomException.getErrorCode());
@@ -165,7 +164,7 @@ public class ReportServiceCommentReportTest extends IricomTestSuite {
     @Test
     @DisplayName("존재하지 않는 게시물")
     public void notExistPost() throws Exception {
-        Account account = getAccount(common00);
+        String accountId = getAccountId(common00);
         String commentId = getCommentId(comment01);
         String boardId = getBoardId(comment01.getPost().getBoard());
         String postId = "NOT_EXIST_POST";
@@ -176,7 +175,7 @@ public class ReportServiceCommentReportTest extends IricomTestSuite {
                 .build();
 
         IricomException iricomException = Assertions.assertThrows(IricomException.class, () -> {
-            reportService.reportComment(account, boardId, postId, commentId, commentReportInfoCreate);
+            reportService.reportComment(accountId, boardId, postId, commentId, commentReportInfoCreate);
         });
 
         Assertions.assertEquals("04000000", iricomException.getErrorCode());
@@ -186,7 +185,7 @@ public class ReportServiceCommentReportTest extends IricomTestSuite {
     @Test
     @DisplayName("존재하지 않는 게시판")
     public void notExistBoard() throws Exception {
-        Account account = getAccount(common00);
+        String accountId = getAccountId(common00);
         String commentId = getCommentId(comment01);
         String postId = getPostId(comment01.getPost());
         String boardId = "NOT_EXIST_BOARD";
@@ -197,7 +196,7 @@ public class ReportServiceCommentReportTest extends IricomTestSuite {
                 .build();
 
         IricomException iricomException = Assertions.assertThrows(IricomException.class, () -> {
-            reportService.reportComment(account, boardId, postId, commentId, commentReportInfoCreate);
+            reportService.reportComment(accountId, boardId, postId, commentId, commentReportInfoCreate);
         });
 
         Assertions.assertEquals("03000000", iricomException.getErrorCode());

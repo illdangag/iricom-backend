@@ -1,6 +1,5 @@
 package com.illdangag.iricom.server.service.block.post;
 
-import com.illdangag.iricom.server.data.entity.Account;
 import com.illdangag.iricom.server.data.entity.type.PostState;
 import com.illdangag.iricom.server.data.entity.type.PostType;
 import com.illdangag.iricom.server.data.response.PostBlockInfo;
@@ -53,70 +52,70 @@ public class BlockServicePostGetTest extends IricomTestSuite {
     @Test
     @DisplayName("시스템 관리자")
     public void getPostBlockInfoSystemAdmin() throws Exception {
-        Account account = getAccount(systemAdmin);
+        String accountId = getAccountId(systemAdmin);
         String boardId = getBoardId(alreadyBlockPostInfo00.getBoard());
         String postId = getPostId(alreadyBlockPostInfo00);
 
-        PostBlockInfo postBlockInfo = blockService.getPostBlockInfo(account, boardId, postId);
+        PostBlockInfo postBlockInfo = blockService.getPostBlockInfo(accountId, boardId, postId);
         Assertions.assertTrue(postBlockInfo.getEnabled());
     }
 
     @Test
     @DisplayName("게시판 관리자")
     public void getPostBlockInfoBoardAdmin() throws Exception {
-        Account account = getAccount(allBoardAdmin);
+        String accountId = getAccountId(allBoardAdmin);
         String boardId = getBoardId(alreadyBlockPostInfo00.getBoard());
         String postId = getPostId(alreadyBlockPostInfo00);
 
-        PostBlockInfo postBlockInfo = blockService.getPostBlockInfo(account, boardId, postId);
+        PostBlockInfo postBlockInfo = blockService.getPostBlockInfo(accountId, boardId, postId);
         Assertions.assertTrue(postBlockInfo.getEnabled());
     }
 
     @Test
     @DisplayName("다른 게시판 관리자")
     public void getPostBlockInfoOtherBoardAdmin() throws Exception {
-        Account account = getAccount(enableBoardAdmin);
+        String accountId = getAccountId(enableBoardAdmin);
         String boardId = getBoardId(alreadyBlockPostInfo00.getBoard());
         String postId = getPostId(alreadyBlockPostInfo00);
 
         Assertions.assertThrows(IricomException.class, () -> {
-            blockService.getPostBlockInfo(account, boardId, postId);
+            blockService.getPostBlockInfo(accountId, boardId, postId);
         });
     }
 
     @Test
     @DisplayName("일반 사용자")
     public void getPostBlockInfoAccount() throws Exception {
-        Account account = getAccount(common00);
+        String accountId = getAccountId(common00);
         String boardId = getBoardId(alreadyBlockPostInfo00.getBoard());
         String postId = getPostId(alreadyBlockPostInfo00);
 
         Assertions.assertThrows(IricomException.class, () -> {
-            blockService.getPostBlockInfo(account, boardId, postId);
+            blockService.getPostBlockInfo(accountId, boardId, postId);
         });
     }
 
     @Test
     @DisplayName("등록되지 않은 사용자")
     public void getPostBlockInfoUnknown() throws Exception {
-        Account account = getAccount(unknown00);
+        String accountId = getAccountId(unknown00);
         String boardId = getBoardId(alreadyBlockPostInfo00.getBoard());
         String postId = getPostId(alreadyBlockPostInfo00);
 
         Assertions.assertThrows(IricomException.class, () -> {
-            blockService.getPostBlockInfo(account, boardId, postId);
+            blockService.getPostBlockInfo(accountId, boardId, postId);
         });
     }
 
     @Test
     @DisplayName("시스템 관리자")
     public void getPostInOtherBoard() throws Exception {
-        Account account = getAccount(systemAdmin);
+        String accountId = getAccountId(systemAdmin);
         String boardId = getBoardId(boardInfo01);
         String postId = getPostId(alreadyBlockPostInfo00);
 
         Assertions.assertThrows(IricomException.class, () -> {
-            blockService.getPostBlockInfo(account, boardId, postId);
+            blockService.getPostBlockInfo(accountId, boardId, postId);
         });
     }
 }

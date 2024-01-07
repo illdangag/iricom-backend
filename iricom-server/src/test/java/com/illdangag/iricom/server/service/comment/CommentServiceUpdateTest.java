@@ -1,6 +1,5 @@
 package com.illdangag.iricom.server.service.comment;
 
-import com.illdangag.iricom.server.data.entity.Account;
 import com.illdangag.iricom.server.data.entity.type.PostState;
 import com.illdangag.iricom.server.data.entity.type.PostType;
 import com.illdangag.iricom.server.data.request.CommentInfoUpdate;
@@ -70,7 +69,7 @@ public class CommentServiceUpdateTest extends IricomTestSuite {
     public void updateComment() throws Exception {
         TestCommentInfo targetCommentInfo = testCommentInfo00;
 
-        Account account = getAccount(targetCommentInfo.getCreator());
+        String accountId = getAccountId(targetCommentInfo.getCreator());
         String boardId = getBoardId(targetCommentInfo.getPost().getBoard());
         String postId = getPostId(targetCommentInfo.getPost());
         String commentId = getCommentId(targetCommentInfo);
@@ -79,7 +78,7 @@ public class CommentServiceUpdateTest extends IricomTestSuite {
                 .content("update comment")
                 .build();
 
-        CommentInfo commentInfo = this.commentService.updateComment(account, boardId, postId, commentId, commentInfoUpdate);
+        CommentInfo commentInfo = this.commentService.updateComment(accountId, boardId, postId, commentId, commentInfoUpdate);
 
         Assertions.assertEquals(commentId, commentInfo.getId());
         Assertions.assertEquals("update comment", commentInfo.getContent());
@@ -90,7 +89,7 @@ public class CommentServiceUpdateTest extends IricomTestSuite {
     public void updateReferenceComment() throws Exception {
         TestCommentInfo targetCommentInfo = testCommentInfo01;
 
-        Account account = getAccount(targetCommentInfo.getCreator());
+        String accountId = getAccountId(targetCommentInfo.getCreator());
         String boardId = getBoardId(targetCommentInfo.getPost().getBoard());
         String postId = getPostId(targetCommentInfo.getPost());
         String commentId = getCommentId(targetCommentInfo);
@@ -99,7 +98,7 @@ public class CommentServiceUpdateTest extends IricomTestSuite {
                 .content("update comment")
                 .build();
 
-        CommentInfo commentInfo = this.commentService.updateComment(account, boardId, postId, commentId, commentInfoUpdate);
+        CommentInfo commentInfo = this.commentService.updateComment(accountId, boardId, postId, commentId, commentInfoUpdate);
 
         Assertions.assertEquals(commentId, commentInfo.getId());
         Assertions.assertEquals("update comment", commentInfo.getContent());
@@ -110,7 +109,7 @@ public class CommentServiceUpdateTest extends IricomTestSuite {
     public void emptyContent() throws Exception {
         TestCommentInfo targetCommentInfo = testCommentInfo00;
 
-        Account account = getAccount(targetCommentInfo.getCreator());
+        String accountId = getAccountId(targetCommentInfo.getCreator());
         String boardId = getBoardId(targetCommentInfo.getPost().getBoard());
         String postId = getPostId(targetCommentInfo.getPost());
         String commentId = getCommentId(targetCommentInfo);
@@ -120,7 +119,7 @@ public class CommentServiceUpdateTest extends IricomTestSuite {
                 .build();
 
         Assertions.assertThrows(ConstraintViolationException.class, () -> {
-            this.commentService.updateComment(account, boardId, postId, commentId, commentInfoUpdate);
+            this.commentService.updateComment(accountId, boardId, postId, commentId, commentInfoUpdate);
         });
     }
 
@@ -129,7 +128,7 @@ public class CommentServiceUpdateTest extends IricomTestSuite {
     public void overflowContent() throws Exception {
         TestCommentInfo targetCommentInfo = testCommentInfo00;
 
-        Account account = getAccount(targetCommentInfo.getCreator());
+        String accountId = getAccountId(targetCommentInfo.getCreator());
         String boardId = getBoardId(targetCommentInfo.getPost().getBoard());
         String postId = getPostId(targetCommentInfo.getPost());
         String commentId = getCommentId(targetCommentInfo);
@@ -141,7 +140,7 @@ public class CommentServiceUpdateTest extends IricomTestSuite {
                 .build();
 
         Assertions.assertThrows(ConstraintViolationException.class, () -> {
-            this.commentService.updateComment(account, boardId, postId, commentId, commentInfoUpdate);
+            this.commentService.updateComment(accountId, boardId, postId, commentId, commentInfoUpdate);
         });
     }
 
@@ -150,7 +149,7 @@ public class CommentServiceUpdateTest extends IricomTestSuite {
     public void notExistComment() throws Exception {
         TestCommentInfo targetCommentInfo = testCommentInfo00;
 
-        Account account = getAccount(targetCommentInfo.getCreator());
+        String accountId = getAccountId(targetCommentInfo.getCreator());
         String boardId = getBoardId(targetCommentInfo.getPost().getBoard());
         String postId = getPostId(targetCommentInfo.getPost());
         String commentId = "NOT_EXIST_COMMENT";
@@ -160,7 +159,7 @@ public class CommentServiceUpdateTest extends IricomTestSuite {
                 .build();
 
         IricomException iricomException = Assertions.assertThrows(IricomException.class, () -> {
-            this.commentService.updateComment(account, boardId, postId, commentId, commentInfoUpdate);
+            this.commentService.updateComment(accountId, boardId, postId, commentId, commentInfoUpdate);
         });
 
         Assertions.assertEquals("05000000", iricomException.getErrorCode());
@@ -172,7 +171,7 @@ public class CommentServiceUpdateTest extends IricomTestSuite {
     public void notExistPost() throws Exception {
         TestCommentInfo targetCommentInfo = testCommentInfo00;
 
-        Account account = getAccount(targetCommentInfo.getCreator());
+        String accountId = getAccountId(targetCommentInfo.getCreator());
         String boardId = getBoardId(targetCommentInfo.getPost().getBoard());
         String postId = "NOT_EXIST_POST";
         String commentId = getCommentId(targetCommentInfo);
@@ -182,7 +181,7 @@ public class CommentServiceUpdateTest extends IricomTestSuite {
                 .build();
 
         IricomException iricomException = Assertions.assertThrows(IricomException.class, () -> {
-            this.commentService.updateComment(account, boardId, postId, commentId, commentInfoUpdate);
+            this.commentService.updateComment(accountId, boardId, postId, commentId, commentInfoUpdate);
         });
 
         Assertions.assertEquals("04000000", iricomException.getErrorCode());
@@ -194,7 +193,7 @@ public class CommentServiceUpdateTest extends IricomTestSuite {
     public void notExistBoard() throws Exception {
         TestCommentInfo targetCommentInfo = testCommentInfo00;
 
-        Account account = getAccount(targetCommentInfo.getCreator());
+        String accountId = getAccountId(targetCommentInfo.getCreator());
         String boardId = "NOT_EXIST_BOARD";
         String postId = getPostId(targetCommentInfo.getPost());
         String commentId = getCommentId(targetCommentInfo);
@@ -204,7 +203,7 @@ public class CommentServiceUpdateTest extends IricomTestSuite {
                 .build();
 
         IricomException iricomException = Assertions.assertThrows(IricomException.class, () -> {
-            this.commentService.updateComment(account, boardId, postId, commentId, commentInfoUpdate);
+            this.commentService.updateComment(accountId, boardId, postId, commentId, commentInfoUpdate);
         });
 
         Assertions.assertEquals("03000000", iricomException.getErrorCode());
@@ -216,7 +215,7 @@ public class CommentServiceUpdateTest extends IricomTestSuite {
     public void invalidBoard() throws Exception {
         TestCommentInfo targetCommentInfo = testCommentInfo00;
 
-        Account account = getAccount(targetCommentInfo.getCreator());
+        String accountId = getAccountId(targetCommentInfo.getCreator());
         String boardId = getBoardId(testBoardInfo01);
         String postId = getPostId(targetCommentInfo.getPost());
         String commentId = getCommentId(targetCommentInfo);
@@ -226,7 +225,7 @@ public class CommentServiceUpdateTest extends IricomTestSuite {
                 .build();
 
         IricomException iricomException = Assertions.assertThrows(IricomException.class, () -> {
-            this.commentService.updateComment(account, boardId, postId, commentId, commentInfoUpdate);
+            this.commentService.updateComment(accountId, boardId, postId, commentId, commentInfoUpdate);
         });
 
         Assertions.assertEquals("04000000", iricomException.getErrorCode());
@@ -238,7 +237,7 @@ public class CommentServiceUpdateTest extends IricomTestSuite {
     public void invalidPost() throws Exception {
         TestCommentInfo targetCommentInfo = testCommentInfo00;
 
-        Account account = getAccount(targetCommentInfo.getCreator());
+        String accountId = getAccountId(targetCommentInfo.getCreator());
         String boardId = getBoardId(targetCommentInfo.getPost().getBoard());
         String postId = getPostId(targetCommentInfo.getPost());
         String commentId = getCommentId(testCommentInfo02);
@@ -248,7 +247,7 @@ public class CommentServiceUpdateTest extends IricomTestSuite {
                 .build();
 
         IricomException iricomException = Assertions.assertThrows(IricomException.class, () -> {
-            this.commentService.updateComment(account, boardId, postId, commentId, commentInfoUpdate);
+            this.commentService.updateComment(accountId, boardId, postId, commentId, commentInfoUpdate);
         });
 
         Assertions.assertEquals("05000000", iricomException.getErrorCode());

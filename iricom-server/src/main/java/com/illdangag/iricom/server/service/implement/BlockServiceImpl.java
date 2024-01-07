@@ -10,10 +10,7 @@ import com.illdangag.iricom.server.data.request.PostBlockInfoUpdate;
 import com.illdangag.iricom.server.data.response.*;
 import com.illdangag.iricom.server.exception.IricomErrorCode;
 import com.illdangag.iricom.server.exception.IricomException;
-import com.illdangag.iricom.server.repository.BlockRepository;
-import com.illdangag.iricom.server.repository.BoardRepository;
-import com.illdangag.iricom.server.repository.CommentRepository;
-import com.illdangag.iricom.server.repository.PostRepository;
+import com.illdangag.iricom.server.repository.*;
 import com.illdangag.iricom.server.service.BlockService;
 import com.illdangag.iricom.server.service.BoardAuthorizationService;
 import com.illdangag.iricom.server.service.CommentService;
@@ -36,14 +33,21 @@ public class BlockServiceImpl extends IricomService implements BlockService {
     private final CommentService commentService;
 
     @Autowired
-    public BlockServiceImpl(PostRepository postRepository, BlockRepository blockRepository, BoardRepository boardRepository,
-                            BoardAuthorizationService boardAuthorizationService, PostService postService, CommentRepository commentRepository,
-                            CommentService commentService) {
-        super(boardRepository, postRepository, commentRepository);
+    public BlockServiceImpl(AccountRepository accountRepository, PostRepository postRepository,
+                            BlockRepository blockRepository, BoardRepository boardRepository,
+                            BoardAuthorizationService boardAuthorizationService, PostService postService,
+                            CommentRepository commentRepository, CommentService commentService) {
+        super(accountRepository, boardRepository, postRepository, commentRepository);
         this.blockRepository = blockRepository;
         this.boardAuthorizationService = boardAuthorizationService;
         this.postService = postService;
         this.commentService = commentService;
+    }
+
+    @Override
+    public PostBlockInfo blockPost(String accountId, String boardId, String postId, PostBlockInfoCreate postBlockInfoCreate) {
+        Account account = this.getAccount(accountId);
+        return this.blockPost(account, boardId, postId, postBlockInfoCreate);
     }
 
     @Override
@@ -83,6 +87,12 @@ public class BlockServiceImpl extends IricomService implements BlockService {
 
         PostInfo postInfo = this.postService.getPostInfo(account, post, PostState.PUBLISH, false);
         return new PostBlockInfo(postBlock, postInfo);
+    }
+
+    @Override
+    public PostBlockInfo unblockPost(String accountId, String boardId, String postId) {
+        Account account = this.getAccount(accountId);
+        return this.unblockPost(account, boardId, postId);
     }
 
     @Override
@@ -142,6 +152,12 @@ public class BlockServiceImpl extends IricomService implements BlockService {
     }
 
     @Override
+    public PostBlockInfoList getPostBlockInfoList(String accountId, String boardId, PostBlockInfoSearch postBlockInfoSearch) {
+        Account account = this.getAccount(accountId);
+        return this.getPostBlockInfoList(account, boardId, postBlockInfoSearch);
+    }
+
+    @Override
     public PostBlockInfoList getPostBlockInfoList(Account account, String boardId, PostBlockInfoSearch postBlockInfoSearch) {
         Board board = this.getBoard(boardId);
         return this.getPostBlockInfoList(account, board, postBlockInfoSearch);
@@ -176,6 +192,12 @@ public class BlockServiceImpl extends IricomService implements BlockService {
     }
 
     @Override
+    public PostBlockInfo getPostBlockInfo(String accountId, String boardId, String postId) {
+        Account account = this.getAccount(accountId);
+        return this.getPostBlockInfo(account, boardId, postId);
+    }
+
+    @Override
     public PostBlockInfo getPostBlockInfo(Account account, String boardId, String postId) {
         Board board = this.getBoard(boardId);
         Post post = this.getPost(postId);
@@ -201,6 +223,12 @@ public class BlockServiceImpl extends IricomService implements BlockService {
 
         PostInfo postInfo = this.postService.getPostInfo(account, post, PostState.PUBLISH, false);
         return new PostBlockInfo(postBlock, postInfo);
+    }
+
+    @Override
+    public PostBlockInfo updatePostBlockInfo(String accountId, String boardId, String postId, PostBlockInfoUpdate postBlockInfoUpdate) {
+        Account account = this.getAccount(accountId);
+        return this.updatePostBlockInfo(account, boardId, postId, postBlockInfoUpdate);
     }
 
     @Override
@@ -233,6 +261,12 @@ public class BlockServiceImpl extends IricomService implements BlockService {
 
         PostInfo postInfo = this.postService.getPostInfo(account, post, PostState.PUBLISH, false);
         return new PostBlockInfo(postBlock, postInfo);
+    }
+
+    @Override
+    public CommentBlockInfo blockComment(String accountId, String boardId, String postId, String commentId, @Valid CommentBlockInfoCreate commentBlockInfoCreate) {
+        Account account = this.getAccount(accountId);
+        return this.blockComment(account, boardId, postId, commentId, commentBlockInfoCreate);
     }
 
     @Override
@@ -280,6 +314,12 @@ public class BlockServiceImpl extends IricomService implements BlockService {
 
         CommentInfo commentInfo = this.commentService.getComment(account, board, post, comment);
         return new CommentBlockInfo(commentBlock, commentInfo);
+    }
+
+    @Override
+    public CommentBlockInfo unblockComment(String accountId, String boardId, String postId, String commentId) {
+        Account account = this.getAccount(accountId);
+        return this.unblockComment(account, boardId, postId, commentId);
     }
 
     @Override

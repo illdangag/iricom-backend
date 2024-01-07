@@ -1,6 +1,6 @@
 package com.illdangag.iricom.server.controller.v1;
 
-import com.illdangag.iricom.server.data.entity.Account;
+import com.illdangag.iricom.server.data.response.AccountInfo;
 import com.illdangag.iricom.server.test.IricomTestSuite;
 import com.illdangag.iricom.server.test.data.wrapper.TestBoardInfo;
 import org.junit.jupiter.api.DisplayName;
@@ -35,14 +35,14 @@ public class InformationControllerTest extends IricomTestSuite {
         @Test
         @DisplayName("관리자 계정")
         public void testCase00() throws Exception {
-            Account account = getAccount(systemAdmin);
+            AccountInfo accountInfo = getAccount(systemAdmin);
 
             MockHttpServletRequestBuilder requestBuilder = get("/v1/infos");
             setAuthToken(requestBuilder, systemAdmin);
 
             mockMvc.perform(requestBuilder)
                     .andExpect(status().is(200))
-                    .andExpect(jsonPath("$.email").value(account.getEmail()))
+                    .andExpect(jsonPath("$.email").value(accountInfo.getEmail()))
                     .andExpect(jsonPath("$.auth").value("systemAdmin"))
                     .andDo(print());
         }
@@ -50,14 +50,14 @@ public class InformationControllerTest extends IricomTestSuite {
         @Test
         @DisplayName("게시판 관리자 계정")
         public void testCase01() throws Exception {
-            Account account = getAccount(allBoardAdmin);
+            AccountInfo accountInfo = getAccount(allBoardAdmin);
 
             MockHttpServletRequestBuilder requestBuilder = get("/v1/infos");
             setAuthToken(requestBuilder, allBoardAdmin);
 
             mockMvc.perform(requestBuilder)
                     .andExpect(status().is(200))
-                    .andExpect(jsonPath("$.email").value(account.getEmail()))
+                    .andExpect(jsonPath("$.email").value(accountInfo.getEmail()))
                     .andExpect(jsonPath("$.auth").value("boardAdmin"))
                     .andDo(print());
         }
@@ -65,14 +65,14 @@ public class InformationControllerTest extends IricomTestSuite {
         @Test
         @DisplayName("일반 계정")
         public void testCase02() throws Exception {
-            Account account = getAccount(common00);
+            AccountInfo accountInfo = getAccount(common00);
 
             MockHttpServletRequestBuilder requestBuilder = get("/v1/infos");
             setAuthToken(requestBuilder, common00);
 
             mockMvc.perform(requestBuilder)
                     .andExpect(status().is(200))
-                    .andExpect(jsonPath("$.email").value(account.getEmail()))
+                    .andExpect(jsonPath("$.email").value(accountInfo.getEmail()))
                     .andDo(print());
         }
     }

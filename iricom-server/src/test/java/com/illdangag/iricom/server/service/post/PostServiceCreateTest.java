@@ -1,6 +1,5 @@
 package com.illdangag.iricom.server.service.post;
 
-import com.illdangag.iricom.server.data.entity.Account;
 import com.illdangag.iricom.server.data.entity.type.PostType;
 import com.illdangag.iricom.server.data.request.PostInfoCreate;
 import com.illdangag.iricom.server.data.response.PostInfo;
@@ -41,7 +40,7 @@ public class PostServiceCreateTest extends IricomTestSuite {
         addTestBoardInfo(testBoardInfo);
         init();
 
-        Account account = getAccount(unknown00);
+        String accountId = getAccountId(unknown00);
         String boardId = getBoardId(testBoardInfo);
 
         PostInfoCreate postInfoCreate = PostInfoCreate.builder()
@@ -51,7 +50,7 @@ public class PostServiceCreateTest extends IricomTestSuite {
                 .build();
 
         Assertions.assertThrows(IricomException.class, () -> {
-            postService.createPostInfo(account, boardId, postInfoCreate);
+            postService.createPostInfo(accountId, boardId, postInfoCreate);
         });
     }
 
@@ -63,7 +62,7 @@ public class PostServiceCreateTest extends IricomTestSuite {
         addTestBoardInfo(testBoardInfo);
         init();
 
-        Account account = getAccount(common01);
+        String accountId = getAccountId(common01);
         String boardId = getBoardId(testBoardInfo);
 
         PostInfoCreate postInfoCreate = PostInfoCreate.builder()
@@ -73,7 +72,7 @@ public class PostServiceCreateTest extends IricomTestSuite {
                 .build();
 
         Assertions.assertThrows(IricomException.class, () -> {
-            postService.createPostInfo(account, boardId, postInfoCreate);
+            postService.createPostInfo(accountId, boardId, postInfoCreate);
         });
     }
 
@@ -92,7 +91,7 @@ public class PostServiceCreateTest extends IricomTestSuite {
         addTestAccountGroupInfo(testAccountGroupInfo);
         init();
 
-        Account account = getAccount(common00);
+        String accountId = getAccountId(common00);
         String boardId = getBoardId(testBoardInfo);
 
         PostInfoCreate postInfoCreate = PostInfoCreate.builder()
@@ -101,7 +100,7 @@ public class PostServiceCreateTest extends IricomTestSuite {
                 .type(PostType.POST)
                 .build();
 
-        postService.createPostInfo(account, boardId, postInfoCreate);
+        postService.createPostInfo(accountId, boardId, postInfoCreate);
     }
 
     @Test
@@ -113,9 +112,9 @@ public class PostServiceCreateTest extends IricomTestSuite {
         addTestBoardInfo(testBoardInfo);
         init();
 
-        Account account = getAccount(common00);
+        String accountId = getAccountId(common00);
         String boardId = getBoardId(testBoardInfo);
-        long beforePoint = this.accountService.getAccountInfo(String.valueOf(account.getId())).getPoint();
+        long beforePoint = this.accountService.getAccountInfo(String.valueOf(accountId)).getPoint();
 
         PostInfoCreate postInfoCreate = PostInfoCreate.builder()
                 .title("add point")
@@ -123,10 +122,10 @@ public class PostServiceCreateTest extends IricomTestSuite {
                 .type(PostType.POST)
                 .build();
 
-        PostInfo postInfo = postService.createPostInfo(account, boardId, postInfoCreate);
-        postService.publishPostInfo(account, postInfo.getBoardId(), postInfo.getId());
+        PostInfo postInfo = postService.createPostInfo(accountId, boardId, postInfoCreate);
+        postService.publishPostInfo(accountId, postInfo.getBoardId(), postInfo.getId());
 
-        long afterPoint = this.accountService.getAccountInfo(String.valueOf(account.getId())).getPoint();
+        long afterPoint = this.accountService.getAccountInfo(accountId).getPoint();
         Assertions.assertTrue(beforePoint < afterPoint);
     }
 }

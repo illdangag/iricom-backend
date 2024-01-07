@@ -1,6 +1,5 @@
 package com.illdangag.iricom.server.service.block.comment;
 
-import com.illdangag.iricom.server.data.entity.Account;
 import com.illdangag.iricom.server.data.entity.type.PostState;
 import com.illdangag.iricom.server.data.entity.type.PostType;
 import com.illdangag.iricom.server.exception.IricomException;
@@ -55,12 +54,12 @@ public class BlockServiceCommentUnblockTest extends IricomTestSuite {
         addTestCommentBlockInfo(testCommentBlockInfo);
         init();
 
-        Account account = getAccount(systemAdmin);
+        String accountId = getAccountId(systemAdmin);
         String boardId = getBoardId(testCommentInfo.getPost().getBoard());
         String postId = getPostId(testCommentInfo.getPost());
         String commentId = getCommentId(testCommentInfo);
 
-        this.blockService.unblockComment(account, boardId, postId, commentId);
+        this.blockService.unblockComment(accountId, boardId, postId, commentId);
     }
 
     @Test
@@ -90,12 +89,12 @@ public class BlockServiceCommentUnblockTest extends IricomTestSuite {
         addTestCommentBlockInfo(testCommentBlockInfo);
         init();
 
-        Account account = getAccount(allBoardAdmin);
+        String accountId = getAccountId(allBoardAdmin);
         String boardId = getBoardId(testCommentInfo.getPost().getBoard());
         String postId = getPostId(testCommentInfo.getPost());
         String commentId = getCommentId(testCommentInfo);
 
-        this.blockService.unblockComment(account, boardId, postId, commentId);
+        this.blockService.unblockComment(accountId, boardId, postId, commentId);
     }
 
     @Test
@@ -129,13 +128,13 @@ public class BlockServiceCommentUnblockTest extends IricomTestSuite {
         addTestCommentBlockInfo(testCommentBlockInfo);
         init();
 
-        Account account = getAccount(common00);
+        String accountId = getAccountId(common00);
         String boardId = getBoardId(testCommentInfo.getPost().getBoard());
         String postId = getPostId(testCommentInfo.getPost());
         String commentId = getCommentId(testCommentInfo);
 
         IricomException exception = Assertions.assertThrows(IricomException.class, () -> {
-            this.blockService.unblockComment(account, boardId, postId, commentId);
+            this.blockService.unblockComment(accountId, boardId, postId, commentId);
         });
 
         Assertions.assertEquals("05000009", exception.getErrorCode());
@@ -168,13 +167,13 @@ public class BlockServiceCommentUnblockTest extends IricomTestSuite {
         addTestCommentBlockInfo(testCommentBlockInfo);
         init();
 
-        Account account = getAccount(common00);
+        String accountId = getAccountId(common00);
         String boardId = getBoardId(testCommentInfo.getPost().getBoard());
         String postId = getPostId(testCommentInfo.getPost());
         String commentId = getCommentId(testCommentInfo);
 
         IricomException exception = Assertions.assertThrows(IricomException.class, () -> {
-            this.blockService.unblockComment(account, boardId, postId, commentId);
+            this.blockService.unblockComment(accountId, boardId, postId, commentId);
         });
 
         Assertions.assertEquals("05000009", exception.getErrorCode());
@@ -207,13 +206,13 @@ public class BlockServiceCommentUnblockTest extends IricomTestSuite {
         addTestCommentBlockInfo(testCommentBlockInfo);
         init();
 
-        Account account = getAccount(unknown00);
+        String accountId = getAccountId(unknown00);
         String boardId = getBoardId(testCommentInfo.getPost().getBoard());
         String postId = getPostId(testCommentInfo.getPost());
         String commentId = getCommentId(testCommentInfo);
 
         IricomException exception = Assertions.assertThrows(IricomException.class, () -> {
-            this.blockService.unblockComment(account, boardId, postId, commentId);
+            this.blockService.unblockComment(accountId, boardId, postId, commentId);
         });
 
         Assertions.assertEquals("05000009", exception.getErrorCode());
@@ -241,13 +240,13 @@ public class BlockServiceCommentUnblockTest extends IricomTestSuite {
         addTestCommentInfo(testCommentInfo);
         init();
 
-        Account account = getAccount(systemAdmin);
+        String accountId = getAccountId(systemAdmin);
         String boardId = getBoardId(testCommentInfo.getPost().getBoard());
         String postId = getPostId(testCommentInfo.getPost());
         String commentId = getCommentId(testCommentInfo);
 
         IricomException exception = Assertions.assertThrows(IricomException.class, () -> {
-            this.blockService.unblockComment(account, boardId, postId, commentId);
+            this.blockService.unblockComment(accountId, boardId, postId, commentId);
         });
 
         Assertions.assertEquals("050000010", exception.getErrorCode());

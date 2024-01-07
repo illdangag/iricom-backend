@@ -2,7 +2,9 @@ package com.illdangag.iricom.storage.file.service.impl;
 
 import com.illdangag.iricom.server.data.entity.Account;
 import com.illdangag.iricom.server.data.entity.type.AccountAuth;
+import com.illdangag.iricom.server.exception.IricomErrorCode;
 import com.illdangag.iricom.server.exception.IricomException;
+import com.illdangag.iricom.server.repository.AccountRepository;
 import com.illdangag.iricom.storage.data.IricomFileInputStream;
 import com.illdangag.iricom.storage.data.entity.FileMetadata;
 import com.illdangag.iricom.storage.data.response.FileMetadataInfo;
@@ -28,10 +30,13 @@ import java.util.UUID;
 public class FileStorageServiceImpl implements StorageService {
     private final String STORAGE_PATH;
 
+    private final AccountRepository accountRepository;
     private final FileRepository fileRepository;
 
     @Autowired
-    public FileStorageServiceImpl(FileRepository fileRepository, @Value("${storage.path:}") String storagePath) {
+    public FileStorageServiceImpl(AccountRepository accountRepository, FileRepository fileRepository,
+                                  @Value("${storage.path:}") String storagePath) {
+        this.accountRepository = accountRepository;
         this.fileRepository = fileRepository;
         this.STORAGE_PATH = storagePath;
 
@@ -52,6 +57,12 @@ public class FileStorageServiceImpl implements StorageService {
         if (!storagePathFile.isDirectory()) {
             throw new IricomException(IricomFileStorageErrorCode.INVALID_STORAGE_PATH);
         }
+    }
+
+    @Override
+    public FileMetadataInfo uploadFile(String accountId, String fileName, String contentType, InputStream inputStream) {
+        Account account = this.getAccount(accountId);
+        return this.uploadFile(account, fileName, contentType, inputStream);
     }
 
     @Override
@@ -120,11 +131,17 @@ public class FileStorageServiceImpl implements StorageService {
     }
 
     @Override
-    public FileMetadataInfo deleteFile(Account account, String id) {
+    public FileMetadataInfo deleteFile(String accountId, String fileId) {
+        Account account = this.getAccount(accountId);
+        return this.deleteFile(account, fileId);
+    }
+
+    @Override
+    public FileMetadataInfo deleteFile(Account account, String fileId) {
         UUID fileMetadataId = null;
 
         try {
-            fileMetadataId = UUID.fromString(id);
+            fileMetadataId = UUID.fromString(fileId);
         } catch (Exception exception) {
             throw new IricomException(IricomFileStorageErrorCode.NOT_EXIST_FILE);
         }
@@ -146,7 +163,7 @@ public class FileStorageServiceImpl implements StorageService {
             Files.delete(file.toPath());
         } catch (Exception exception) {
             // 파일 삭제 오류
-            log.error("Fail to delete file. id: {}, path: {}", id, filePath, exception);
+            log.error("Fail to delete file. id: {}, path: {}", fileId, filePath, exception);
         }
 
         fileMetadata.setDeleted(true);
@@ -158,5 +175,16 @@ public class FileStorageServiceImpl implements StorageService {
     private String getPath(FileMetadata fileMetadata) {
         LocalDateTime createDate = fileMetadata.getCreateDate();
         return String.format("%s/%04d-%02d-%02d/%s", STORAGE_PATH, createDate.getYear(), createDate.getMonthValue(), createDate.getDayOfMonth(), fileMetadata.getId());
+    }
+
+    private Account getAccount(String id) {
+        long accountId = -1;
+        try {
+            accountId = Long.parseLong(id);
+        } catch (Exception exception) {
+            throw new IricomException(IricomErrorCode.NOT_EXIST_ACCOUNT);
+        }
+        Optional<Account> accountOptional = this.accountRepository.getAccount(accountId);
+        return accountOptional.orElseThrow(() -> new IricomException(IricomErrorCode.NOT_EXIST_ACCOUNT));
     }
 }

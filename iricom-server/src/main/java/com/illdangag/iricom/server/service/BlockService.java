@@ -18,6 +18,8 @@ public interface BlockService {
     /**
      * 게시물 차단
      */
+    PostBlockInfo blockPost(String accountId, String boardId, String postId, @Valid PostBlockInfoCreate postBlockInfoCreate);
+
     PostBlockInfo blockPost(Account account, String boardId, String postId, @Valid PostBlockInfoCreate postBlockInfoCreate);
 
     PostBlockInfo blockPost(Account account, Board board, Post post, @Valid PostBlockInfoCreate postBlockInfoCreate);
@@ -25,6 +27,8 @@ public interface BlockService {
     /**
      * 게시물 차단 해제
      */
+    PostBlockInfo unblockPost(String accountId, String boardId, String postId);
+
     PostBlockInfo unblockPost(Account account, String boardId, String postId);
 
     PostBlockInfo unblockPost(Account account, Board board, Post post);
@@ -34,6 +38,8 @@ public interface BlockService {
      */
     PostBlockInfoList getPostBlockInfoList(Account account, @Valid PostBlockInfoSearch postBlockInfoSearch);
 
+    PostBlockInfoList getPostBlockInfoList(String accountId, String boardId, @Valid PostBlockInfoSearch postBlockInfoSearch);
+
     PostBlockInfoList getPostBlockInfoList(Account account, String boardId, @Valid PostBlockInfoSearch postBlockInfoSearch);
 
     PostBlockInfoList getPostBlockInfoList(Account account, Board board, @Valid PostBlockInfoSearch postBlockInfoSearch);
@@ -41,6 +47,8 @@ public interface BlockService {
     /**
      * 차단된 게시물 정보 조회
      */
+    PostBlockInfo getPostBlockInfo(String accountId, String boardId, String postId);
+
     PostBlockInfo getPostBlockInfo(Account account, String boardId, String postId);
 
     PostBlockInfo getPostBlockInfo(Account account, Board board, Post post);
@@ -48,6 +56,8 @@ public interface BlockService {
     /**
      * 차단된 게시물 정보 수정
      */
+    PostBlockInfo updatePostBlockInfo(String accountId, String boardId, String postId, @Valid PostBlockInfoUpdate postBlockInfoUpdate);
+
     PostBlockInfo updatePostBlockInfo(Account account, String boardId, String postId, @Valid PostBlockInfoUpdate postBlockInfoUpdate);
 
     PostBlockInfo updatePostBlockInfo(Account account, Board board, Post post, @Valid PostBlockInfoUpdate postBlockInfoUpdate);
@@ -55,6 +65,8 @@ public interface BlockService {
     /**
      * 댓글 차단
      */
+    CommentBlockInfo blockComment(String accountId, String boardId, String postId, String commentId, @Valid CommentBlockInfoCreate commentBlockInfoCreate);
+
     CommentBlockInfo blockComment(Account account, String boardId, String postId, String commentId, @Valid CommentBlockInfoCreate commentBlockInfoCreate);
 
     CommentBlockInfo blockComment(Account account, Board board, Post post, Comment comment, @Valid CommentBlockInfoCreate commentBlockInfoCreate);
@@ -62,6 +74,8 @@ public interface BlockService {
     /**
      * 댓글 차단 해제
      */
+    CommentBlockInfo unblockComment(String accountId, String boardId, String postId, String commentId);
+
     CommentBlockInfo unblockComment(Account account, String boardId, String postId, String commentId);
 
     CommentBlockInfo unblockComment(Account account, Board board, Post post, Comment comment);

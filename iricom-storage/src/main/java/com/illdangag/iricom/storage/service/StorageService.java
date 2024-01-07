@@ -9,11 +9,15 @@ import java.io.InputStream;
 import java.util.UUID;
 
 public interface StorageService {
+    FileMetadataInfo uploadFile(String accountId, String fileName, String contentType, InputStream inputStream);
+
     FileMetadataInfo uploadFile(Account account, String fileName, String contentType, InputStream inputStream);
 
     IricomFileInputStream downloadFile(String id);
 
-    FileMetadataInfo deleteFile(Account account, String id);
+    FileMetadataInfo deleteFile(String accountId, String fileId);
+
+    FileMetadataInfo deleteFile(Account account, String fileId);
 
     default String getFileExtension(String filePathName) {
         return FilenameUtils.getExtension(filePathName);

@@ -1,6 +1,5 @@
 package com.illdangag.iricom.server.service.board;
 
-import com.illdangag.iricom.server.data.entity.Account;
 import com.illdangag.iricom.server.data.request.BoardInfoCreate;
 import com.illdangag.iricom.server.data.response.BoardInfo;
 import com.illdangag.iricom.server.exception.IricomException;
@@ -33,13 +32,13 @@ public class BoardServiceCreateTest extends IricomTestSuite {
     @Test
     @DisplayName("생성")
     public void createBoard() throws Exception {
-        Account account = getAccount(systemAdmin);
+        String accountId = getAccountId(systemAdmin);
         BoardInfoCreate boardInfoCreate = BoardInfoCreate.builder()
                 .title("new board")
                 .description("description")
                 .build();
 
-        BoardInfo boardInfo = boardService.createBoardInfo(account, boardInfoCreate);
+        BoardInfo boardInfo = boardService.createBoardInfo(accountId, boardInfoCreate);
 
         Assertions.assertEquals("new board", boardInfo.getTitle());
         Assertions.assertEquals("description", boardInfo.getDescription());
@@ -49,14 +48,14 @@ public class BoardServiceCreateTest extends IricomTestSuite {
     @Test
     @DisplayName("제목을 빈 문자열로 설정")
     public void emptyTitle() throws Exception {
-        Account account = getAccount(systemAdmin);
+        String accountId = getAccountId(systemAdmin);
         BoardInfoCreate boardInfoCreate = BoardInfoCreate.builder()
                 .title("")
                 .description("description")
                 .build();
 
         ConstraintViolationException exception = Assertions.assertThrows(ConstraintViolationException.class, () -> {
-            boardService.createBoardInfo(account, boardInfoCreate);
+            boardService.createBoardInfo(accountId, boardInfoCreate);
         });
 
         Assertions.assertNotNull(exception);
@@ -65,14 +64,14 @@ public class BoardServiceCreateTest extends IricomTestSuite {
     @Test
     @DisplayName("제목을 긴 문자열로 설정")
     public void overflowTitle() throws Exception {
-        Account account = getAccount(systemAdmin);
+        String accountId = getAccountId(systemAdmin);
         BoardInfoCreate boardInfoCreate = BoardInfoCreate.builder()
                 .title("012345678901234567890123456789012345678901234567890")
                 .description("description")
                 .build();
 
         ConstraintViolationException exception = Assertions.assertThrows(ConstraintViolationException.class, () -> {
-            boardService.createBoardInfo(account, boardInfoCreate);
+            boardService.createBoardInfo(accountId, boardInfoCreate);
         });
 
         Assertions.assertNotNull(exception);
@@ -81,13 +80,13 @@ public class BoardServiceCreateTest extends IricomTestSuite {
     @Test
     @DisplayName("설명을 빈 문자열로 설정")
     public void emptyDescription() throws Exception {
-        Account account = getAccount(systemAdmin);
+        String accountId = getAccountId(systemAdmin);
         BoardInfoCreate boardInfoCreate = BoardInfoCreate.builder()
                 .title("new board")
                 .description("")
                 .build();
 
-        BoardInfo boardInfo = boardService.createBoardInfo(account, boardInfoCreate);
+        BoardInfo boardInfo = boardService.createBoardInfo(accountId, boardInfoCreate);
 
         Assertions.assertEquals("", boardInfo.getDescription());
     }
@@ -95,14 +94,14 @@ public class BoardServiceCreateTest extends IricomTestSuite {
     @Test
     @DisplayName("설명을 긴 문자열로 설정")
     public void overflowDescription() throws Exception {
-        Account account = getAccount(systemAdmin);
+        String accountId = getAccountId(systemAdmin);
         BoardInfoCreate boardInfoCreate = BoardInfoCreate.builder()
                 .title("01234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890")
                 .description("")
                 .build();
 
         ConstraintViolationException exception = Assertions.assertThrows(ConstraintViolationException.class, () -> {
-            boardService.createBoardInfo(account, boardInfoCreate);
+            boardService.createBoardInfo(accountId, boardInfoCreate);
         });
 
         Assertions.assertNotNull(exception);
@@ -111,14 +110,14 @@ public class BoardServiceCreateTest extends IricomTestSuite {
     @Test
     @DisplayName("비활성화")
     public void disabledBoard() throws Exception {
-        Account account = getAccount(systemAdmin);
+        String accountId = getAccountId(systemAdmin);
         BoardInfoCreate boardInfoCreate = BoardInfoCreate.builder()
                 .title("new create")
                 .description("")
                 .enabled(false)
                 .build();
 
-        BoardInfo boardInfo = boardService.createBoardInfo(account, boardInfoCreate);
+        BoardInfo boardInfo = boardService.createBoardInfo(accountId, boardInfoCreate);
 
         Assertions.assertFalse(boardInfo.getEnabled());
     }
@@ -126,14 +125,14 @@ public class BoardServiceCreateTest extends IricomTestSuite {
     @Test
     @DisplayName("비공개")
     public void undisclosedBoard() throws Exception {
-        Account account = getAccount(systemAdmin);
+        String accountId = getAccountId(systemAdmin);
         BoardInfoCreate boardInfoCreate = BoardInfoCreate.builder()
                 .title("new create")
                 .description("")
                 .undisclosed(true)
                 .build();
 
-        BoardInfo boardInfo = boardService.createBoardInfo(account, boardInfoCreate);
+        BoardInfo boardInfo = boardService.createBoardInfo(accountId, boardInfoCreate);
 
         Assertions.assertTrue(boardInfo.getUnDisclosed());
     }
@@ -141,14 +140,14 @@ public class BoardServiceCreateTest extends IricomTestSuite {
     @Test
     @DisplayName("공지 사항 전용")
     public void notificationOnlyBoard() throws Exception {
-        Account account = getAccount(systemAdmin);
+        String accountId = getAccountId(systemAdmin);
         BoardInfoCreate boardInfoCreate = BoardInfoCreate.builder()
                 .title("new create")
                 .description("")
                 .notificationOnly(true)
                 .build();
 
-        BoardInfo boardInfo = boardService.createBoardInfo(account, boardInfoCreate);
+        BoardInfo boardInfo = boardService.createBoardInfo(accountId, boardInfoCreate);
 
         Assertions.assertTrue(boardInfo.getNotificationOnly());
     }
@@ -164,7 +163,7 @@ public class BoardServiceCreateTest extends IricomTestSuite {
         addTestBoardInfo(testBoardInfo);
         init();
 
-        Account account = getAccount(common00);
+        String accountId = getAccountId(common00);
         BoardInfoCreate boardInfoCreate = BoardInfoCreate.builder()
                 .title("new create")
                 .description("")
@@ -172,7 +171,7 @@ public class BoardServiceCreateTest extends IricomTestSuite {
                 .build();
 
         Assertions.assertThrows(IricomException.class, () -> {
-            boardService.createBoardInfo(account, boardInfoCreate);
+            boardService.createBoardInfo(accountId, boardInfoCreate);
         });
     }
 }

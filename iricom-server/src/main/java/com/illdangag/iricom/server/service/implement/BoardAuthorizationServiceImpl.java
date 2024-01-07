@@ -13,6 +13,8 @@ import com.illdangag.iricom.server.exception.IricomErrorCode;
 import com.illdangag.iricom.server.exception.IricomException;
 import com.illdangag.iricom.server.repository.AccountRepository;
 import com.illdangag.iricom.server.repository.BoardRepository;
+import com.illdangag.iricom.server.repository.CommentRepository;
+import com.illdangag.iricom.server.repository.PostRepository;
 import com.illdangag.iricom.server.service.AccountService;
 import com.illdangag.iricom.server.service.BoardAuthorizationService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,16 +27,14 @@ import java.util.stream.Collectors;
 
 @Validated
 @Service
-public class BoardAuthorizationServiceImpl implements BoardAuthorizationService {
-    private final BoardRepository boardRepository;
-    private final AccountRepository accountRepository;
+public class BoardAuthorizationServiceImpl extends IricomService implements BoardAuthorizationService {
     private final AccountService accountService;
 
     @Autowired
-    public BoardAuthorizationServiceImpl(BoardRepository boardRepository,
-                                         AccountRepository accountRepository, AccountService accountService) {
-        this.boardRepository = boardRepository;
-        this.accountRepository = accountRepository;
+    public BoardAuthorizationServiceImpl(AccountRepository accountRepository, BoardRepository boardRepository,
+                                         PostRepository postRepository, CommentRepository commentRepository,
+                                         AccountService accountService) {
+        super(accountRepository, boardRepository, postRepository, commentRepository);
         this.accountService = accountService;
     }
 
@@ -93,6 +93,12 @@ public class BoardAuthorizationServiceImpl implements BoardAuthorizationService 
         }
 
         return this.getBoardAdminInfo(board);
+    }
+
+    @Override
+    public BoardAdminInfoList getBoardAdminInfoList(String accountId, @Valid BoardAdminInfoSearch boardAdminInfoSearch) {
+        Account account = this.getAccount(accountId);
+        return this.getBoardAdminInfoList(account, boardAdminInfoSearch);
     }
 
     /**
@@ -188,21 +194,5 @@ public class BoardAuthorizationServiceImpl implements BoardAuthorizationService 
 
         List<BoardAdmin> boardAdminList = this.boardRepository.getBoardAdminList(board, account);
         return !boardAdminList.isEmpty();
-    }
-
-    private Board getBoard(String id) {
-        long boardId;
-        try {
-            boardId = Long.parseLong(id);
-        } catch (Exception exception) {
-            throw new IricomException(IricomErrorCode.NOT_EXIST_BOARD);
-        }
-        Optional<Board> boardOptional = this.boardRepository.getBoard(boardId);
-        return boardOptional.orElseThrow(() -> new IricomException(IricomErrorCode.NOT_EXIST_BOARD));
-    }
-
-    private Account getAccount(String id) {
-        Optional<Account> accountOptional = this.accountRepository.getAccount(id);
-        return accountOptional.orElseThrow(() -> new IricomException(IricomErrorCode.NOT_EXIST_ACCOUNT));
     }
 }

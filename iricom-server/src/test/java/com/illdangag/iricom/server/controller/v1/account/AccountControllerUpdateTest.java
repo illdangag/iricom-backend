@@ -1,6 +1,5 @@
 package com.illdangag.iricom.server.controller.v1.account;
 
-import com.illdangag.iricom.server.data.entity.Account;
 import com.illdangag.iricom.server.test.IricomTestSuite;
 import com.illdangag.iricom.server.test.data.wrapper.TestBoardInfo;
 import lombok.extern.slf4j.Slf4j;
@@ -281,13 +280,13 @@ public class AccountControllerUpdateTest extends IricomTestSuite {
         @Test
         @DisplayName("시스템 관리자가 다른 계정 정보 수정")
         public void updateOtherAccountBySystemAdmin() throws Exception {
-            Account account = getAccount(common00);
+            String accountId = getAccountId(common00);
 
             Map<String, Object> requestBody = new HashMap<>();
             requestBody.put("nickname", "admin_update");
             requestBody.put("description", "admin_update");
 
-            MockHttpServletRequestBuilder requestBuilder = patch("/v1/accounts/" + account.getId())
+            MockHttpServletRequestBuilder requestBuilder = patch("/v1/accounts/" + accountId)
                     .content(getJsonString(requestBody))
                     .contentType(MediaType.APPLICATION_JSON);
             setAuthToken(requestBuilder, systemAdmin);
@@ -302,13 +301,13 @@ public class AccountControllerUpdateTest extends IricomTestSuite {
         @Test
         @DisplayName("게시판 관리자가 다른 계정 정보 수정")
         public void updateOtherAccountByBoardAdmin() throws Exception {
-            Account account = getAccount(common00);
+            String accountId = getAccountId(common00);
 
             Map<String, Object> requestBody = new HashMap<>();
             requestBody.put("nickname", "board_update");
             requestBody.put("description", "board_update");
 
-            MockHttpServletRequestBuilder requestBuilder = patch("/v1/accounts/" + account.getId())
+            MockHttpServletRequestBuilder requestBuilder = patch("/v1/accounts/" + accountId)
                     .content(getJsonString(requestBody))
                     .contentType(MediaType.APPLICATION_JSON);
             setAuthToken(requestBuilder, enableBoardAdmin);
@@ -322,13 +321,13 @@ public class AccountControllerUpdateTest extends IricomTestSuite {
         @Test
         @DisplayName("일반 계정이 다른 계정 정보 수정")
         public void updateOtherAccountByAccount() throws Exception {
-            Account account = getAccount(common00);
+            String accountId = getAccountId(common00);
 
             Map<String, Object> requestBody = new HashMap<>();
             requestBody.put("nickname", "common_update");
             requestBody.put("description", "common_update");
 
-            MockHttpServletRequestBuilder requestBuilder = patch("/v1/accounts/" + account.getId())
+            MockHttpServletRequestBuilder requestBuilder = patch("/v1/accounts/" + accountId)
                     .content(getJsonString(requestBody))
                     .contentType(MediaType.APPLICATION_JSON);
             setAuthToken(requestBuilder, common01);
@@ -342,13 +341,13 @@ public class AccountControllerUpdateTest extends IricomTestSuite {
         @Test
         @DisplayName("일반 계정이 본인 계정을 수정")
         public void updateAccount() throws Exception {
-            Account account = getAccount(common00);
+            String accountId = getAccountId(common00);
 
             Map<String, Object> requestBody = new HashMap<>();
             requestBody.put("nickname", "self_update");
             requestBody.put("description", "self_update");
 
-            MockHttpServletRequestBuilder requestBuilder = patch("/v1/accounts/" + account.getId())
+            MockHttpServletRequestBuilder requestBuilder = patch("/v1/accounts/" + accountId)
                     .content(getJsonString(requestBody))
                     .contentType(MediaType.APPLICATION_JSON);
             setAuthToken(requestBuilder, common00);

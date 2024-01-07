@@ -1,6 +1,5 @@
 package com.illdangag.iricom.storage.test;
 
-import com.illdangag.iricom.server.data.entity.Account;
 import com.illdangag.iricom.server.test.IricomTestSuite;
 import com.illdangag.iricom.server.test.data.wrapper.TestAccountInfo;
 import com.illdangag.iricom.storage.controller.v1.StorageControllerTest;
@@ -55,12 +54,12 @@ public class IricomTestSuiteEx extends IricomTestSuite {
     private void setFileMetadata(List<TestFileMetadataInfo> testFileMetadataInfoList) {
         testFileMetadataInfoList.forEach(testFileMetadataInfo -> {
             TestAccountInfo testAccountInfo = testFileMetadataInfo.getAccount();
-            Account account = this.getAccount(testAccountInfo);
+            String accountId = this.getAccountId(testAccountInfo);
             String fileName = testFileMetadataInfo.getName();
             String contentType = testFileMetadataInfo.getContentType();
             InputStream inputStream = testFileMetadataInfo.getInputStream();
 
-            FileMetadataInfo fileMetadataInfo = this.storageService.uploadFile(account, fileName, contentType, inputStream);
+            FileMetadataInfo fileMetadataInfo = this.storageService.uploadFile(accountId, fileName, contentType, inputStream);
             this.fileMetadataInfoMap.put(testFileMetadataInfo, fileMetadataInfo);
         });
     }

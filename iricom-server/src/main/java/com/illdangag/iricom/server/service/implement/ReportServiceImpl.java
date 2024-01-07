@@ -10,10 +10,7 @@ import com.illdangag.iricom.server.data.request.PostReportInfoSearch;
 import com.illdangag.iricom.server.data.response.*;
 import com.illdangag.iricom.server.exception.IricomErrorCode;
 import com.illdangag.iricom.server.exception.IricomException;
-import com.illdangag.iricom.server.repository.BoardRepository;
-import com.illdangag.iricom.server.repository.CommentRepository;
-import com.illdangag.iricom.server.repository.PostRepository;
-import com.illdangag.iricom.server.repository.ReportRepository;
+import com.illdangag.iricom.server.repository.*;
 import com.illdangag.iricom.server.service.BoardAuthorizationService;
 import com.illdangag.iricom.server.service.CommentService;
 import com.illdangag.iricom.server.service.PostService;
@@ -36,15 +33,22 @@ public class ReportServiceImpl extends IricomService implements ReportService {
     private final BoardAuthorizationService boardAuthorizationService;
 
     @Autowired
-    private ReportServiceImpl(ReportRepository reportRepository, PostRepository postRepository, BoardRepository boardRepository,
-                              CommentRepository commentRepository,  PostService postService, CommentService commentService,
+    private ReportServiceImpl(AccountRepository accountRepository, ReportRepository reportRepository,
+                              PostRepository postRepository, BoardRepository boardRepository,
+                              CommentRepository commentRepository, PostService postService, CommentService commentService,
                               BoardAuthorizationService boardAuthorizationService) {
-        super(boardRepository, postRepository, commentRepository);
+        super(accountRepository, boardRepository, postRepository, commentRepository);
         this.reportRepository = reportRepository;
 
         this.postService = postService;
         this.commentService = commentService;
         this.boardAuthorizationService = boardAuthorizationService;
+    }
+
+    @Override
+    public PostReportInfo getPostReportInfo(String accountId, String boardId, String postId, String reportId) {
+        Account account = this.getAccount(accountId);
+        return this.getPostReportInfo(account, boardId, postId, reportId);
     }
 
     @Override
@@ -73,6 +77,12 @@ public class ReportServiceImpl extends IricomService implements ReportService {
 
         PostInfo postInfo = this.postService.getPostInfo(account, post, PostState.PUBLISH, true);
         return new PostReportInfo(postReport, postInfo);
+    }
+
+    @Override
+    public PostReportInfoList getPostReportInfoList(String accountId, String boardId, PostReportInfoSearch postReportInfoSearch) {
+        Account account = this.getAccount(accountId);
+        return this.getPostReportInfoList(account, boardId, postReportInfoSearch);
     }
 
     @Override
@@ -166,6 +176,12 @@ public class ReportServiceImpl extends IricomService implements ReportService {
     }
 
     @Override
+    public PostReportInfo reportPost(String accountId, String boardId, String postId, PostReportInfoCreate postReportInfoCreate) {
+        Account account = this.getAccount(accountId);
+        return this.reportPost(account, boardId, postId, postReportInfoCreate);
+    }
+
+    @Override
     public PostReportInfo reportPost(Account account, String boardId, String postId, PostReportInfoCreate postReportInfoCreate) {
         Board board = this.getBoard(boardId);
         Post post = this.getPost(postId);
@@ -198,6 +214,12 @@ public class ReportServiceImpl extends IricomService implements ReportService {
 
         PostInfo postInfo = this.postService.getPostInfo(account, post, PostState.PUBLISH, false);
         return new PostReportInfo(postReport, postInfo);
+    }
+
+    @Override
+    public CommentReportInfo reportComment(String accountId, String boardId, String postId, String commentId, CommentReportInfoCreate commentReportInfoCreate) {
+        Account account = this.getAccount(accountId);
+        return this.reportComment(account, boardId, postId, commentId, commentReportInfoCreate);
     }
 
     @Override
@@ -237,6 +259,12 @@ public class ReportServiceImpl extends IricomService implements ReportService {
         this.reportRepository.saveCommentReport(commentReport);
         CommentInfo commentInfo = this.commentService.getComment(board, post, comment);
         return new CommentReportInfo(commentReport, commentInfo);
+    }
+
+    @Override
+    public CommentReportInfoList getCommentReportInfoList(String accountId, String boardId, CommentReportInfoSearch commentReportInfoSearch) {
+        Account account = this.getAccount(accountId);
+        return this.getCommentReportInfoList(account, boardId, commentReportInfoSearch);
     }
 
     @Override
@@ -285,6 +313,12 @@ public class ReportServiceImpl extends IricomService implements ReportService {
     }
 
     @Override
+    public CommentReportInfoList getCommentReportInfoList(String accountId, String boardId, String postId, CommentReportInfoSearch commentReportInfoSearch) {
+        Account account = this.getAccount(accountId);
+        return this.getCommentReportInfoList(account, boardId, postId, commentReportInfoSearch);
+    }
+
+    @Override
     public CommentReportInfoList getCommentReportInfoList(Account account, String boardId, String postId, CommentReportInfoSearch commentReportInfoSearch) {
         Board board = this.getBoard(boardId);
         Post post = this.getPost(postId);
@@ -327,6 +361,12 @@ public class ReportServiceImpl extends IricomService implements ReportService {
                 .total(total)
                 .commentReportInfoList(commentReportInfoList)
                 .build();
+    }
+
+    @Override
+    public CommentReportInfoList getCommentReportInfoList(String accountId, String boardId, String postId, String commentId, CommentReportInfoSearch commentReportInfoSearch) {
+        Account account = this.getAccount(accountId);
+        return this.getCommentReportInfoList(account, boardId, postId, commentId, commentReportInfoSearch);
     }
 
     @Override

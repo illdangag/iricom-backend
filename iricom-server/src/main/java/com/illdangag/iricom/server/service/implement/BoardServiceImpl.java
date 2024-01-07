@@ -10,6 +10,7 @@ import com.illdangag.iricom.server.data.response.BoardInfo;
 import com.illdangag.iricom.server.data.response.BoardInfoList;
 import com.illdangag.iricom.server.exception.IricomErrorCode;
 import com.illdangag.iricom.server.exception.IricomException;
+import com.illdangag.iricom.server.repository.AccountRepository;
 import com.illdangag.iricom.server.repository.BoardRepository;
 import com.illdangag.iricom.server.repository.CommentRepository;
 import com.illdangag.iricom.server.repository.PostRepository;
@@ -31,10 +32,17 @@ public class BoardServiceImpl extends IricomService implements BoardService {
     private final BoardAuthorizationService boardAuthorizationService;
 
     @Autowired
-    public BoardServiceImpl(BoardRepository boardRepository, PostRepository postRepository, CommentRepository commentRepository,
+    public BoardServiceImpl(AccountRepository accountRepository, BoardRepository boardRepository,
+                            PostRepository postRepository, CommentRepository commentRepository,
                             BoardAuthorizationService boardAuthorizationService) {
-        super(boardRepository, postRepository, commentRepository);
+        super(accountRepository, boardRepository, postRepository, commentRepository);
         this.boardAuthorizationService = boardAuthorizationService;
+    }
+
+    @Override
+    public BoardInfo createBoardInfo(String accountId, @Valid BoardInfoCreate boardInfoCreate) {
+        Account account = this.getAccount(accountId);
+        return this.createBoardInfo(account, boardInfoCreate);
     }
 
     /**
@@ -64,18 +72,24 @@ public class BoardServiceImpl extends IricomService implements BoardService {
      * 게시판 정보 조회
      */
     @Override
-    public BoardInfo getBoardInfo(String id) {
-        Board board = this.getBoard(id);
+    public BoardInfo getBoardInfo(String boardId) {
+        Board board = this.getBoard(boardId);
         this.validate(null, board);
         return new BoardInfo(board, false);
+    }
+
+    @Override
+    public BoardInfo getBoardInfo(String accountId, String boardId) {
+        Account account = this.getAccount(accountId);
+        return this.getBoardInfo(account, boardId);
     }
 
     /**
      * 게시판 정보 조회
      */
     @Override
-    public BoardInfo getBoardInfo(Account account, String id) {
-        Board board = this.getBoard(id);
+    public BoardInfo getBoardInfo(Account account, String boardId) {
+        Board board = this.getBoard(boardId);
         this.validate(account, board);
 
         boolean isAdmin = this.boardAuthorizationService.hasAuthorization(account, board);
@@ -105,6 +119,12 @@ public class BoardServiceImpl extends IricomService implements BoardService {
                 .build();
     }
 
+    @Override
+    public BoardInfoList getBoardInfoList(String accountId, @Valid BoardInfoSearch boardInfoSearch) {
+        Account account = this.getAccount(accountId);
+        return this.getBoardInfoList(account, boardInfoSearch);
+    }
+
     /**
      * 공개, 비공개 게시판 목록 조회
      */
@@ -129,12 +149,18 @@ public class BoardServiceImpl extends IricomService implements BoardService {
                 .build();
     }
 
+    @Override
+    public BoardInfo updateBoardInfo(String accountId, String boardId, @Valid BoardInfoUpdate boardInfoUpdate) {
+        Account account = this.getAccount(accountId);
+        return this.updateBoardInfo(account, boardId, boardInfoUpdate);
+    }
+
     /**
      * 게시판 정보 수정
      */
     @Override
-    public BoardInfo updateBoardInfo(Account account, String id, @Valid BoardInfoUpdate boardInfoUpdate) {
-        Board board = this.getBoard(id);
+    public BoardInfo updateBoardInfo(Account account, String boardId, @Valid BoardInfoUpdate boardInfoUpdate) {
+        Board board = this.getBoard(boardId);
         return this.updateBoardInfo(account, board, boardInfoUpdate);
     }
 

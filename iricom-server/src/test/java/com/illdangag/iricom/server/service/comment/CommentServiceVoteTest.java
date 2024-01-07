@@ -1,6 +1,5 @@
 package com.illdangag.iricom.server.service.comment;
 
-import com.illdangag.iricom.server.data.entity.Account;
 import com.illdangag.iricom.server.data.entity.type.PostState;
 import com.illdangag.iricom.server.data.entity.type.PostType;
 import com.illdangag.iricom.server.data.entity.type.VoteType;
@@ -58,12 +57,12 @@ public class CommentServiceVoteTest extends IricomTestSuite {
     @Test
     @DisplayName("좋아요")
     public void upvote() throws Exception {
-        Account account = getAccount(common00);
+        String accountId = getAccountId(common00);
         String commentId = getCommentId(voteCommentInfo00);
         String postId = getPostId(voteCommentInfo00.getPost());
         String boardId = getBoardId(voteCommentInfo00.getPost().getBoard());
 
-        CommentInfo commentInfo = commentService.voteComment(account, boardId, postId, commentId, VoteType.UPVOTE);
+        CommentInfo commentInfo = commentService.voteComment(accountId, boardId, postId, commentId, VoteType.UPVOTE);
 
         Assertions.assertEquals(1, commentInfo.getUpvote());
         Assertions.assertEquals(0, commentInfo.getDownvote());
@@ -72,12 +71,12 @@ public class CommentServiceVoteTest extends IricomTestSuite {
     @Test
     @DisplayName("싫어요")
     public void downvote() throws Exception {
-        Account account = getAccount(common00);
+        String accountId = getAccountId(common00);
         String commentId = getCommentId(voteCommentInfo00);
         String postId = getPostId(voteCommentInfo00.getPost());
         String boardId = getBoardId(voteCommentInfo00.getPost().getBoard());
 
-        CommentInfo commentInfo = commentService.voteComment(account, boardId, postId, commentId, VoteType.DOWNVOTE);
+        CommentInfo commentInfo = commentService.voteComment(accountId, boardId, postId, commentId, VoteType.DOWNVOTE);
 
         Assertions.assertEquals(1, commentInfo.getDownvote());
         Assertions.assertEquals(0, commentInfo.getUpvote());
@@ -86,17 +85,17 @@ public class CommentServiceVoteTest extends IricomTestSuite {
     @Test
     @DisplayName("중복 좋아요")
     public void duplicateUpvote() throws Exception {
-        Account account = getAccount(common00);
+        String accountId = getAccountId(common00);
         String commentId = getCommentId(voteCommentInfo01);
         String postId = getPostId(voteCommentInfo01.getPost());
         String boardId = getBoardId(voteCommentInfo01.getPost().getBoard());
 
-        CommentInfo commentInfo = commentService.voteComment(account, boardId, postId, commentId, VoteType.UPVOTE);
+        CommentInfo commentInfo = commentService.voteComment(accountId, boardId, postId, commentId, VoteType.UPVOTE);
         Assertions.assertEquals(1, commentInfo.getUpvote());
         Assertions.assertEquals(0, commentInfo.getDownvote());
 
         IricomException iricomException = Assertions.assertThrows(IricomException.class, () -> {
-            commentService.voteComment(account, boardId, postId, commentId, VoteType.UPVOTE);
+            commentService.voteComment(accountId, boardId, postId, commentId, VoteType.UPVOTE);
         });
         Assertions.assertEquals("05000005", iricomException.getErrorCode());
         Assertions.assertEquals("Already vote comment.", iricomException.getMessage());
@@ -105,17 +104,17 @@ public class CommentServiceVoteTest extends IricomTestSuite {
     @Test
     @DisplayName("중복 싫어요")
     public void duplicateDownvote() throws Exception {
-        Account account = getAccount(common00);
+        String accountId = getAccountId(common00);
         String commentId = getCommentId(voteCommentInfo01);
         String postId = getPostId(voteCommentInfo01.getPost());
         String boardId = getBoardId(voteCommentInfo01.getPost().getBoard());
 
-        CommentInfo commentInfo = commentService.voteComment(account, boardId, postId, commentId, VoteType.DOWNVOTE);
+        CommentInfo commentInfo = commentService.voteComment(accountId, boardId, postId, commentId, VoteType.DOWNVOTE);
         Assertions.assertEquals(0, commentInfo.getUpvote());
         Assertions.assertEquals(1, commentInfo.getDownvote());
 
         IricomException iricomException = Assertions.assertThrows(IricomException.class, () -> {
-            commentService.voteComment(account, boardId, postId, commentId, VoteType.DOWNVOTE);
+            commentService.voteComment(accountId, boardId, postId, commentId, VoteType.DOWNVOTE);
         });
         Assertions.assertEquals("05000005", iricomException.getErrorCode());
         Assertions.assertEquals("Already vote comment.", iricomException.getMessage());
@@ -124,13 +123,13 @@ public class CommentServiceVoteTest extends IricomTestSuite {
     @Test
     @DisplayName("삭제된 댓글 좋아요")
     public void upvoteDeletedComment() throws Exception {
-        Account account = getAccount(common00);
+        String accountId = getAccountId(common00);
         String commentId = getCommentId(voteCommentInfo02);
         String postId = getPostId(voteCommentInfo02.getPost());
         String boardId = getBoardId(voteCommentInfo02.getPost().getBoard());
 
         IricomException iricomException = Assertions.assertThrows(IricomException.class, () -> {
-            commentService.voteComment(account, boardId, postId, commentId, VoteType.UPVOTE);
+            commentService.voteComment(accountId, boardId, postId, commentId, VoteType.UPVOTE);
         });
         Assertions.assertEquals("05000000", iricomException.getErrorCode());
         Assertions.assertEquals("Not exist comment.", iricomException.getMessage());
@@ -139,13 +138,13 @@ public class CommentServiceVoteTest extends IricomTestSuite {
     @Test
     @DisplayName("삭제된 댓글 싫어요")
     public void downvoteDeletedComment() throws Exception {
-        Account account = getAccount(common00);
+        String accountId = getAccountId(common00);
         String commentId = getCommentId(voteCommentInfo02);
         String postId = getPostId(voteCommentInfo02.getPost());
         String boardId = getBoardId(voteCommentInfo02.getPost().getBoard());
 
         IricomException iricomException = Assertions.assertThrows(IricomException.class, () -> {
-            commentService.voteComment(account, boardId, postId, commentId, VoteType.DOWNVOTE);
+            commentService.voteComment(accountId, boardId, postId, commentId, VoteType.DOWNVOTE);
         });
         Assertions.assertEquals("05000000", iricomException.getErrorCode());
         Assertions.assertEquals("Not exist comment.", iricomException.getMessage());

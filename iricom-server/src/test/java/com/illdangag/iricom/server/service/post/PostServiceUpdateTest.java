@@ -1,6 +1,5 @@
 package com.illdangag.iricom.server.service.post;
 
-import com.illdangag.iricom.server.data.entity.Account;
 import com.illdangag.iricom.server.data.entity.type.PostState;
 import com.illdangag.iricom.server.data.entity.type.PostType;
 import com.illdangag.iricom.server.data.request.PostInfoUpdate;
@@ -111,14 +110,14 @@ public class PostServiceUpdateTest extends IricomTestSuite {
     public void updateTemporaryPost() {
         String boardId = getBoardId(temporaryTestPostInfo00.getBoard());
         String postId = getPostId(temporaryTestPostInfo00);
-        Account account = getAccount(temporaryTestPostInfo00.getCreator());
+        String accountId = getAccountId(temporaryTestPostInfo00.getCreator());
 
         PostInfoUpdate postInfoUpdate = PostInfoUpdate.builder()
                 .title("update title")
                 .content("update content")
                 .build();
 
-        PostInfo postInfo = this.postService.updatePostInfo(account, boardId, postId, postInfoUpdate);
+        PostInfo postInfo = this.postService.updatePostInfo(accountId, boardId, postId, postInfoUpdate);
 
         Assertions.assertEquals("update title", postInfo.getTitle());
         Assertions.assertEquals("update content", postInfo.getContent());
@@ -130,14 +129,14 @@ public class PostServiceUpdateTest extends IricomTestSuite {
     public void updatePublishPost() {
         String boardId = getBoardId(publishTestPostInfo00.getBoard());
         String postId = getPostId(publishTestPostInfo00);
-        Account account = getAccount(publishTestPostInfo00.getCreator());
+        String accountId = getAccountId(publishTestPostInfo00.getCreator());
 
         PostInfoUpdate postInfoUpdate = PostInfoUpdate.builder()
                 .title("update title")
                 .content("update content")
                 .build();
 
-        PostInfo postInfo = this.postService.updatePostInfo(account, boardId, postId, postInfoUpdate);
+        PostInfo postInfo = this.postService.updatePostInfo(accountId, boardId, postId, postInfoUpdate);
 
         Assertions.assertEquals("update title", postInfo.getTitle());
         Assertions.assertEquals("update content", postInfo.getContent());
@@ -149,14 +148,14 @@ public class PostServiceUpdateTest extends IricomTestSuite {
     public void updateTemporaryNotification() {
         String boardId = getBoardId(temporaryTestNotificationInfo00.getBoard());
         String postId = getPostId(temporaryTestNotificationInfo00);
-        Account account = getAccount(temporaryTestNotificationInfo00.getCreator());
+        String accountId = getAccountId(temporaryTestNotificationInfo00.getCreator());
 
         PostInfoUpdate postInfoUpdate = PostInfoUpdate.builder()
                 .title("update title")
                 .content("update content")
                 .build();
 
-        PostInfo postInfo = this.postService.updatePostInfo(account, boardId, postId, postInfoUpdate);
+        PostInfo postInfo = this.postService.updatePostInfo(accountId, boardId, postId, postInfoUpdate);
 
         Assertions.assertEquals("update title", postInfo.getTitle());
         Assertions.assertEquals("update content", postInfo.getContent());
@@ -168,14 +167,14 @@ public class PostServiceUpdateTest extends IricomTestSuite {
     public void updatePublishNotification() {
         String boardId = getBoardId(publishTestNotificationInfo00.getBoard());
         String postId = getPostId(publishTestNotificationInfo00);
-        Account account = getAccount(publishTestNotificationInfo00.getCreator());
+        String accountId = getAccountId(publishTestNotificationInfo00.getCreator());
 
         PostInfoUpdate postInfoUpdate = PostInfoUpdate.builder()
                 .title("update title")
                 .content("update content")
                 .build();
 
-        PostInfo postInfo = this.postService.updatePostInfo(account, boardId, postId, postInfoUpdate);
+        PostInfo postInfo = this.postService.updatePostInfo(accountId, boardId, postId, postInfoUpdate);
 
         Assertions.assertEquals("update title", postInfo.getTitle());
         Assertions.assertEquals("update content", postInfo.getContent());
@@ -185,7 +184,7 @@ public class PostServiceUpdateTest extends IricomTestSuite {
     @Test
     @DisplayName("작성자가 다른 게시물")
     public void updateOtherCreator() {
-        Account account = getAccount(common01);
+        String accountId = getAccountId(common01);
         String boardId = getBoardId(publishTestPostInfo01.getBoard());
         String postId = getPostId(publishTestPostInfo01);
 
@@ -195,7 +194,7 @@ public class PostServiceUpdateTest extends IricomTestSuite {
                 .build();
 
         IricomException iricomException = Assertions.assertThrows(IricomException.class, () -> {
-            this.postService.updatePostInfo(account, boardId, postId, postInfoUpdate);
+            this.postService.updatePostInfo(accountId, boardId, postId, postInfoUpdate);
         });
 
         Assertions.assertEquals("04000002", iricomException.getErrorCode());
@@ -207,14 +206,14 @@ public class PostServiceUpdateTest extends IricomTestSuite {
     public void emptyTitle() {
         String boardId = getBoardId(publishTestPostInfo00.getBoard());
         String postId = getPostId(publishTestPostInfo00);
-        Account account = getAccount(publishTestPostInfo00.getCreator());
+        String accountId = getAccountId(publishTestPostInfo00.getCreator());
 
         PostInfoUpdate postInfoUpdate = PostInfoUpdate.builder()
                 .title("")
                 .build();
 
         Assertions.assertThrows(ConstraintViolationException.class, () -> {
-            this.postService.updatePostInfo(account, boardId, postId, postInfoUpdate);
+            this.postService.updatePostInfo(accountId, boardId, postId, postInfoUpdate);
         });
     }
 
@@ -223,14 +222,14 @@ public class PostServiceUpdateTest extends IricomTestSuite {
     public void overflowTitle() {
         String boardId = getBoardId(publishTestPostInfo00.getBoard());
         String postId = getPostId(publishTestPostInfo00);
-        Account account = getAccount(publishTestPostInfo00.getCreator());
+        String accountId = getAccountId(publishTestPostInfo00.getCreator());
 
         PostInfoUpdate postInfoUpdate = PostInfoUpdate.builder()
                 .title("01234567890123456789012345678901234567890")
                 .build();
 
         Assertions.assertThrows(ConstraintViolationException.class, () -> {
-            this.postService.updatePostInfo(account, boardId, postId, postInfoUpdate);
+            this.postService.updatePostInfo(accountId, boardId, postId, postInfoUpdate);
         });
     }
 
@@ -238,7 +237,7 @@ public class PostServiceUpdateTest extends IricomTestSuite {
     @DisplayName("존재하지 않는 게시판")
     public void notExistBoard() {
         String postId = getPostId(publishTestPostInfo00);
-        Account account = getAccount(publishTestPostInfo00.getCreator());
+        String accountId = getAccountId(publishTestPostInfo00.getCreator());
 
         String boardId = "NOT_EXIST_BOARD";
 
@@ -248,7 +247,7 @@ public class PostServiceUpdateTest extends IricomTestSuite {
                 .build();
 
         IricomException iricomException = Assertions.assertThrows(IricomException.class, () -> {
-            this.postService.updatePostInfo(account, boardId, postId, postInfoUpdate);
+            this.postService.updatePostInfo(accountId, boardId, postId, postInfoUpdate);
         });
 
         Assertions.assertEquals("03000000", iricomException.getErrorCode());
@@ -260,7 +259,7 @@ public class PostServiceUpdateTest extends IricomTestSuite {
     public void notMatchBoard() {
         String boardId = getBoardId(testBoardInfo01);
         String postId = getPostId(publishTestPostInfo00);
-        Account account = getAccount(publishTestPostInfo00.getCreator());
+        String accountId = getAccountId(publishTestPostInfo00.getCreator());
 
         PostInfoUpdate postInfoUpdate = PostInfoUpdate.builder()
                 .title("not matched board")
@@ -268,7 +267,7 @@ public class PostServiceUpdateTest extends IricomTestSuite {
                 .build();
 
         IricomException iricomException = Assertions.assertThrows(IricomException.class, () -> {
-            this.postService.updatePostInfo(account, boardId, postId, postInfoUpdate);
+            this.postService.updatePostInfo(accountId, boardId, postId, postInfoUpdate);
         });
 
         Assertions.assertEquals("04000000", iricomException.getErrorCode());
@@ -280,7 +279,7 @@ public class PostServiceUpdateTest extends IricomTestSuite {
     public void disabledBoard() {
         String boardId = getBoardId(disabledBoardTestPostInfo00.getBoard());
         String postId = getPostId(disabledBoardTestPostInfo00);
-        Account account = getAccount(disabledBoardTestPostInfo00.getCreator());
+        String accountId = getAccountId(disabledBoardTestPostInfo00.getCreator());
 
         PostInfoUpdate postInfoUpdate = PostInfoUpdate.builder()
                 .title("disabled board post")
@@ -288,7 +287,7 @@ public class PostServiceUpdateTest extends IricomTestSuite {
                 .build();
 
         IricomException iricomException = Assertions.assertThrows(IricomException.class, () -> {
-            this.postService.updatePostInfo(account, boardId, postId, postInfoUpdate);
+            this.postService.updatePostInfo(accountId, boardId, postId, postInfoUpdate);
         });
 
         Assertions.assertEquals("03000001", iricomException.getErrorCode());
@@ -300,7 +299,7 @@ public class PostServiceUpdateTest extends IricomTestSuite {
     public void updatePostOnlyNotification() {
         String boardId = getBoardId(publishTestPostInfo02.getBoard());
         String postId = getPostId(publishTestPostInfo02);
-        Account account = getAccount(publishTestPostInfo02.getCreator());
+        String accountId = getAccountId(publishTestPostInfo02.getCreator());
 
         PostInfoUpdate postInfoUpdate = PostInfoUpdate.builder()
                 .title("notification only board post")
@@ -308,7 +307,7 @@ public class PostServiceUpdateTest extends IricomTestSuite {
                 .build();
 
         IricomException iricomException = Assertions.assertThrows(IricomException.class, () -> {
-            this.postService.updatePostInfo(account, boardId, postId, postInfoUpdate);
+            this.postService.updatePostInfo(accountId, boardId, postId, postInfoUpdate);
         });
 
         Assertions.assertEquals("04000013", iricomException.getErrorCode());
@@ -320,14 +319,14 @@ public class PostServiceUpdateTest extends IricomTestSuite {
     public void updateNotificationOnlyNotification() {
         String boardId = getBoardId(temporaryTestNotificationInfo01.getBoard());
         String postId = getPostId(temporaryTestNotificationInfo01);
-        Account account = getAccount(temporaryTestNotificationInfo01.getCreator());
+        String accountId = getAccountId(temporaryTestNotificationInfo01.getCreator());
 
         PostInfoUpdate postInfoUpdate = PostInfoUpdate.builder()
                 .title("notification only board notification")
                 .content("update content")
                 .build();
 
-        PostInfo postInfo = this.postService.updatePostInfo(account, boardId, postId, postInfoUpdate);
+        PostInfo postInfo = this.postService.updatePostInfo(accountId, boardId, postId, postInfoUpdate);
 
         Assertions.assertEquals("notification only board notification", postInfo.getTitle());
         Assertions.assertEquals("update content", postInfo.getContent());
@@ -338,7 +337,7 @@ public class PostServiceUpdateTest extends IricomTestSuite {
     public void switchPostToNotificationByAccount() {
         String boardId = getBoardId(temporaryTestNotificationInfo02.getBoard());
         String postId = getPostId(temporaryTestNotificationInfo02);
-        Account account = getAccount(temporaryTestNotificationInfo02.getCreator());
+        String accountId = getAccountId(temporaryTestNotificationInfo02.getCreator());
 
         PostInfoUpdate postInfoUpdate = PostInfoUpdate.builder()
                 .title("switch post to notification")
@@ -347,7 +346,7 @@ public class PostServiceUpdateTest extends IricomTestSuite {
                 .build();
 
         IricomException iricomException = Assertions.assertThrows(IricomException.class, () -> {
-            this.postService.updatePostInfo(account, boardId, postId, postInfoUpdate);
+            this.postService.updatePostInfo(accountId, boardId, postId, postInfoUpdate);
         });
 
         Assertions.assertEquals("04000001", iricomException.getErrorCode());
@@ -359,7 +358,7 @@ public class PostServiceUpdateTest extends IricomTestSuite {
     public void switchPostToNotificationByBoardAdmin() {
         String boardId = getBoardId(temporaryTestNotificationInfo03.getBoard());
         String postId = getPostId(temporaryTestNotificationInfo03);
-        Account account = getAccount(temporaryTestNotificationInfo03.getCreator());
+        String accountId = getAccountId(temporaryTestNotificationInfo03.getCreator());
 
         PostInfoUpdate postInfoUpdate = PostInfoUpdate.builder()
                 .title("switch post to notification")
@@ -367,7 +366,7 @@ public class PostServiceUpdateTest extends IricomTestSuite {
                 .type(PostType.NOTIFICATION)
                 .build();
 
-        PostInfo postInfo = this.postService.updatePostInfo(account, boardId, postId, postInfoUpdate);
+        PostInfo postInfo = this.postService.updatePostInfo(accountId, boardId, postId, postInfoUpdate);
 
         Assertions.assertEquals("switch post to notification", postInfo.getTitle());
         Assertions.assertEquals("switch post to notification content", postInfo.getContent());
@@ -380,7 +379,7 @@ public class PostServiceUpdateTest extends IricomTestSuite {
     public void switchPostToNotificationNotificationOnlyBoard() {
         String boardId = getBoardId(temporaryTestNotificationInfo04.getBoard());
         String postId = getPostId(temporaryTestNotificationInfo04);
-        Account account = getAccount(temporaryTestNotificationInfo04.getCreator());
+        String accountId = getAccountId(temporaryTestNotificationInfo04.getCreator());
 
         PostInfoUpdate postInfoUpdate = PostInfoUpdate.builder()
                 .title("switch post to notification")
@@ -388,7 +387,7 @@ public class PostServiceUpdateTest extends IricomTestSuite {
                 .type(PostType.NOTIFICATION)
                 .build();
 
-        PostInfo postInfo = this.postService.updatePostInfo(account, boardId, postId, postInfoUpdate);
+        PostInfo postInfo = this.postService.updatePostInfo(accountId, boardId, postId, postInfoUpdate);
 
         Assertions.assertEquals("switch post to notification", postInfo.getTitle());
         Assertions.assertEquals("switch post to notification content", postInfo.getContent());

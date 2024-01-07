@@ -4,6 +4,7 @@ import com.illdangag.iricom.server.data.entity.*;
 import com.illdangag.iricom.server.data.entity.type.AccountAuth;
 import com.illdangag.iricom.server.exception.IricomErrorCode;
 import com.illdangag.iricom.server.exception.IricomException;
+import com.illdangag.iricom.server.repository.AccountRepository;
 import com.illdangag.iricom.server.repository.BoardRepository;
 import com.illdangag.iricom.server.repository.CommentRepository;
 import com.illdangag.iricom.server.repository.PostRepository;
@@ -12,14 +13,28 @@ import java.util.List;
 import java.util.Optional;
 
 public abstract class IricomService {
+    protected final AccountRepository accountRepository;
     protected final BoardRepository boardRepository;
     protected final PostRepository postRepository;
     protected final CommentRepository commentRepository;
 
-    public IricomService(BoardRepository boardRepository, PostRepository postRepository, CommentRepository commentRepository) {
+    public IricomService(AccountRepository accountRepository, BoardRepository boardRepository,
+                         PostRepository postRepository, CommentRepository commentRepository) {
+        this.accountRepository = accountRepository;
         this.boardRepository = boardRepository;
         this.postRepository = postRepository;
         this.commentRepository = commentRepository;
+    }
+
+    protected Account getAccount(String id) {
+        long accountId = -1;
+        try {
+            accountId = Long.parseLong(id);
+        } catch (Exception exception) {
+            throw new IricomException(IricomErrorCode.NOT_EXIST_ACCOUNT);
+        }
+        Optional<Account> accountOptional = this.accountRepository.getAccount(accountId);
+        return accountOptional.orElseThrow(() -> new IricomException(IricomErrorCode.NOT_EXIST_ACCOUNT));
     }
 
     protected Board getBoard(String id) {

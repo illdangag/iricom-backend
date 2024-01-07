@@ -37,15 +37,22 @@ public class CommentServiceImpl extends IricomService implements CommentService 
     private final AccountPointService accountPointService;
 
     @Autowired
-    public CommentServiceImpl(CommentRepository commentRepository, CommentVoteRepository commentVoteRepository, BoardRepository boardRepository,
+    public CommentServiceImpl(AccountRepository accountRepository, CommentRepository commentRepository,
+                              CommentVoteRepository commentVoteRepository, BoardRepository boardRepository,
                               BlockRepository blockRepository, PostRepository postRepository, ReportRepository reportRepository,
                               AccountService accountService, AccountPointService accountPointService) {
-        super(boardRepository, postRepository, commentRepository);
+        super(accountRepository, boardRepository, postRepository, commentRepository);
         this.commentVoteRepository = commentVoteRepository;
         this.reportRepository = reportRepository;
         this.blockRepository = blockRepository;
         this.accountService = accountService;
         this.accountPointService = accountPointService;
+    }
+
+    @Override
+    public CommentInfo createCommentInfo(String accountId, String boardId, String postId, @Valid CommentInfoCreate commentInfoCreate) {
+        Account account = this.getAccount(accountId);
+        return this.createCommentInfo(account, boardId, postId, commentInfoCreate);
     }
 
     /**
@@ -109,6 +116,12 @@ public class CommentServiceImpl extends IricomService implements CommentService 
         this.accountPointService.addAccountPoint(account, AccountPointType.CREATE_COMMENT);
 
         return new CommentInfo(comment, accountInfo, 0, 0, 0);
+    }
+
+    @Override
+    public CommentInfo updateComment(String accountId, String boardId, String postId, String commentId, @Valid CommentInfoUpdate commentInfoUpdate) {
+        Account account = this.getAccount(accountId);
+        return this.updateComment(account, boardId, postId, commentId, commentInfoUpdate);
     }
 
     /**
@@ -308,6 +321,12 @@ public class CommentServiceImpl extends IricomService implements CommentService 
         return new CommentInfo(comment, accountInfo, upvote, downvote, reportCount);
     }
 
+    @Override
+    public CommentInfo deleteComment(String accountId, String boardId, String postId, String commentId) {
+        Account account = this.getAccount(accountId);
+        return this.deleteComment(account, boardId, postId, commentId);
+    }
+
     /**
      * 댓글 삭제
      */
@@ -351,6 +370,12 @@ public class CommentServiceImpl extends IricomService implements CommentService 
         long downvote = this.commentVoteRepository.getCommentVoteCount(comment, VoteType.DOWNVOTE);
         long reportCount = this.reportRepository.getCommentReportCount(comment);
         return new CommentInfo(comment, accountInfo, upvote, downvote, reportCount);
+    }
+
+    @Override
+    public CommentInfo voteComment(String accountId, String boardId, String postId, String commentId, VoteType voteType) {
+        Account account = this.getAccount(accountId);
+        return this.voteComment(account, boardId, postId, commentId, voteType);
     }
 
     /**

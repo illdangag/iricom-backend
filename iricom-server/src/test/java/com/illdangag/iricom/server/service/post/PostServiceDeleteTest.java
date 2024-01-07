@@ -1,6 +1,5 @@
 package com.illdangag.iricom.server.service.post;
 
-import com.illdangag.iricom.server.data.entity.Account;
 import com.illdangag.iricom.server.data.entity.type.PostState;
 import com.illdangag.iricom.server.data.entity.type.PostType;
 import com.illdangag.iricom.server.data.response.PostInfo;
@@ -100,11 +99,11 @@ public class PostServiceDeleteTest extends IricomTestSuite {
     public void deletePost() {
         TestPostInfo targetPostInfo = testPostInfo00;
 
-        Account creator = getAccount(targetPostInfo.getCreator());
+        String accountId = getAccountId(targetPostInfo.getCreator());
         String boardId = getBoardId(targetPostInfo.getBoard());
         String postId = getPostId(targetPostInfo);
 
-        PostInfo postInfo = this.postService.deletePostInfo(creator, boardId, postId);
+        PostInfo postInfo = this.postService.deletePostInfo(accountId, boardId, postId);
 
         Assertions.assertEquals(postId, postInfo.getId());
         Assertions.assertTrue(postInfo.getDeleted());
@@ -116,16 +115,16 @@ public class PostServiceDeleteTest extends IricomTestSuite {
     public void notCreator() {
         TestPostInfo targetPostInfo = testPostInfo01;
 
-        Account account = getAccount(common01);
-        Account creator = getAccount(targetPostInfo.getCreator());
+        String accountId = getAccountId(common01);
+        String creatorId = getAccountId(targetPostInfo.getCreator());
         String boardId = getBoardId(targetPostInfo.getBoard());
         String postId = getPostId(targetPostInfo);
 
         IricomException iricomException = Assertions.assertThrows(IricomException.class, () -> {
-            this.postService.deletePostInfo(account, boardId, postId);
+            this.postService.deletePostInfo(accountId, boardId, postId);
         });
 
-        Assertions.assertNotEquals(creator.getId(), account.getId());
+        Assertions.assertNotEquals(creatorId, accountId);
         Assertions.assertEquals("04000002", iricomException.getErrorCode());
         Assertions.assertEquals("Invalid authorization.", iricomException.getMessage());
     }
@@ -135,12 +134,12 @@ public class PostServiceDeleteTest extends IricomTestSuite {
     public void disabledBoard() {
         TestPostInfo targetPostInfo = testPostInfo02;
 
-        Account creator = getAccount(targetPostInfo.getCreator());
+        String creatorId = getAccountId(targetPostInfo.getCreator());
         String boardId = getBoardId(targetPostInfo.getBoard());
         String postId = getPostId(targetPostInfo);
 
         IricomException iricomException = Assertions.assertThrows(IricomException.class, () -> {
-            this.postService.deletePostInfo(creator, boardId, postId);
+            this.postService.deletePostInfo(creatorId, boardId, postId);
         });
 
         Assertions.assertEquals("03000001", iricomException.getErrorCode());
@@ -152,12 +151,12 @@ public class PostServiceDeleteTest extends IricomTestSuite {
     public void noAuthUndisclosedBoard() {
         TestPostInfo targetPostInfo = testPostInfo03;
 
-        Account creator = getAccount(targetPostInfo.getCreator());
+        String creatorId = getAccountId(targetPostInfo.getCreator());
         String boardId = getBoardId(targetPostInfo.getBoard());
         String postId = getPostId(targetPostInfo);
 
         IricomException iricomException = Assertions.assertThrows(IricomException.class, () -> {
-            this.postService.deletePostInfo(creator, boardId, postId);
+            this.postService.deletePostInfo(creatorId, boardId, postId);
         });
 
         Assertions.assertEquals("03000000", iricomException.getErrorCode());
@@ -169,11 +168,11 @@ public class PostServiceDeleteTest extends IricomTestSuite {
     public void undisclosedBoard() {
         TestPostInfo targetPostInfo = testPostInfo04;
 
-        Account creator = getAccount(targetPostInfo.getCreator());
+        String creatorId = getAccountId(targetPostInfo.getCreator());
         String boardId = getBoardId(targetPostInfo.getBoard());
         String postId = getPostId(targetPostInfo);
 
-        PostInfo postInfo = this.postService.deletePostInfo(creator, boardId, postId);
+        PostInfo postInfo = this.postService.deletePostInfo(creatorId, boardId, postId);
 
         Assertions.assertEquals(postId, postInfo.getId());
         Assertions.assertNull(postInfo.getContent());
@@ -184,11 +183,11 @@ public class PostServiceDeleteTest extends IricomTestSuite {
     public void deleteNotification() {
         TestPostInfo targetPostInfo = testPostInfo05;
 
-        Account creator = getAccount(targetPostInfo.getCreator());
+        String creatorId = getAccountId(targetPostInfo.getCreator());
         String boardId = getBoardId(targetPostInfo.getBoard());
         String postId = getPostId(targetPostInfo);
 
-        PostInfo postInfo = this.postService.deletePostInfo(creator, boardId, postId);
+        PostInfo postInfo = this.postService.deletePostInfo(creatorId, boardId, postId);
 
         Assertions.assertEquals(postId, postInfo.getId());
         Assertions.assertNull(postInfo.getContent());
@@ -199,12 +198,12 @@ public class PostServiceDeleteTest extends IricomTestSuite {
     public void deleteNoAuthNotification() {
         TestPostInfo targetPostInfo = testPostInfo06;
 
-        Account creator = getAccount(targetPostInfo.getCreator());
+        String creatorId = getAccountId(targetPostInfo.getCreator());
         String boardId = getBoardId(targetPostInfo.getBoard());
         String postId = getPostId(targetPostInfo);
 
         IricomException iricomException = Assertions.assertThrows(IricomException.class, () -> {
-            this.postService.deletePostInfo(creator, boardId, postId);
+            this.postService.deletePostInfo(creatorId, boardId, postId);
         });
 
         Assertions.assertEquals("04000001", iricomException.getErrorCode());

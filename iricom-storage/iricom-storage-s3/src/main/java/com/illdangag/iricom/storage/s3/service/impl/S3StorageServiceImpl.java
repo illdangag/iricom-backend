@@ -11,7 +11,9 @@ import com.amazonaws.services.s3.AmazonS3ClientBuilder;
 import com.amazonaws.services.s3.model.*;
 import com.illdangag.iricom.server.data.entity.Account;
 import com.illdangag.iricom.server.data.entity.type.AccountAuth;
+import com.illdangag.iricom.server.exception.IricomErrorCode;
 import com.illdangag.iricom.server.exception.IricomException;
+import com.illdangag.iricom.server.repository.AccountRepository;
 import com.illdangag.iricom.storage.data.IricomFileInputStream;
 import com.illdangag.iricom.storage.data.entity.FileMetadata;
 import com.illdangag.iricom.storage.data.response.FileMetadataInfo;
@@ -31,7 +33,7 @@ import java.util.UUID;
 @Slf4j
 @Service
 public class S3StorageServiceImpl implements StorageService {
-
+    private final AccountRepository accountRepository;
     private final FileRepository fileRepository;
     private final String ENDPOINT;
     private final Regions REGIONS;
@@ -40,18 +42,25 @@ public class S3StorageServiceImpl implements StorageService {
     private final String BUCKET;
 
     @Autowired
-    public S3StorageServiceImpl(FileRepository fileRepository,
+    public S3StorageServiceImpl(AccountRepository accountRepository, FileRepository fileRepository,
                                 @Value("${storage.s3.endpoint:#{null}}") String endpoint,
                                 @Value("${storage.s3.region:#{null}}") String region,
                                 @Value("${storage.s3.accessKey:#{null}}") String accessKey,
                                 @Value("${storage.s3.secretKey:#{null}}") String secretKey,
                                 @Value("${storage.s3.bucket:#{null}}") String bucket) {
+        this.accountRepository = accountRepository;
         this.fileRepository = fileRepository;
         this.ENDPOINT = endpoint;
         this.REGIONS = Regions.fromName(region);
         this.ACCESS_KEY = accessKey;
         this.SECRET_KEY = secretKey;
         this.BUCKET = bucket;
+    }
+
+    @Override
+    public FileMetadataInfo uploadFile(String accountId, String fileName, String contentType, InputStream inputStream) {
+        Account account = this.getAccount(accountId);
+        return this.uploadFile(account, fileName, contentType, inputStream);
     }
 
     @Override
@@ -120,11 +129,17 @@ public class S3StorageServiceImpl implements StorageService {
     }
 
     @Override
-    public FileMetadataInfo deleteFile(Account account, String id) {
+    public FileMetadataInfo deleteFile(String accountId, String fileId) {
+        Account account = this.getAccount(accountId);
+        return this.deleteFile(account, fileId);
+    }
+
+    @Override
+    public FileMetadataInfo deleteFile(Account account, String fileId) {
         UUID fileMetadataId = null;
 
         try {
-            fileMetadataId = UUID.fromString(id);
+            fileMetadataId = UUID.fromString(fileId);
         } catch (Exception exception) {
             throw new IricomException(IricomS3StorageErrorCode.NOT_EXIST_FILE);
         }
@@ -144,7 +159,7 @@ public class S3StorageServiceImpl implements StorageService {
         try {
             amazonS3.deleteObject(deleteObjectRequest);
         } catch (Exception exception) {
-            log.error("Fail to delete file. id: {}, path: {}", id, filePath, exception);
+            log.error("Fail to delete file. id: {}, path: {}", fileId, filePath, exception);
         }
 
         fileMetadata.setDeleted(true);
@@ -174,5 +189,16 @@ public class S3StorageServiceImpl implements StorageService {
     private String getPath(FileMetadata fileMetadata) {
         LocalDateTime createDate = fileMetadata.getCreateDate();
         return String.format("%04d-%02d-%02d/%s", createDate.getYear(), createDate.getMonthValue(), createDate.getDayOfMonth(), fileMetadata.getId());
+    }
+
+    private Account getAccount(String id) {
+        long accountId = -1;
+        try {
+            accountId = Long.parseLong(id);
+        } catch (Exception exception) {
+            throw new IricomException(IricomErrorCode.NOT_EXIST_ACCOUNT);
+        }
+        Optional<Account> accountOptional = this.accountRepository.getAccount(accountId);
+        return accountOptional.orElseThrow(() -> new IricomException(IricomErrorCode.NOT_EXIST_ACCOUNT));
     }
 }

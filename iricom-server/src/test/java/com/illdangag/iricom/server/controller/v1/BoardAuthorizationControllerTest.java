@@ -1,6 +1,5 @@
 package com.illdangag.iricom.server.controller.v1;
 
-import com.illdangag.iricom.server.data.entity.Account;
 import com.illdangag.iricom.server.test.IricomTestSuite;
 import com.illdangag.iricom.server.test.data.wrapper.TestBoardInfo;
 import lombok.extern.slf4j.Slf4j;
@@ -51,11 +50,11 @@ public class BoardAuthorizationControllerTest extends IricomTestSuite {
             @Test
             @DisplayName("생성")
             public void create() throws Exception {
-                Account account = getAccount(toEnableBoardAdmin);
+                String accountId = getAccountId(toEnableBoardAdmin);
                 String boardId = getBoardId(testBoardInfo00);
 
                 Map<String, Object> requestBody = new HashMap<>();
-                requestBody.put("accountId", account.getId());
+                requestBody.put("accountId", accountId);
                 requestBody.put("boardId", boardId);
 
                 MockHttpServletRequestBuilder requestBuilder = post("/v1/auth/boards")
@@ -71,10 +70,10 @@ public class BoardAuthorizationControllerTest extends IricomTestSuite {
             @Test
             @DisplayName("존재하지 않는 게시판")
             public void notExistBoard() throws Exception {
-                Account account = getAccount(toEnableBoardAdmin);
+                String accountId = getAccountId(toEnableBoardAdmin);
 
                 Map<String, Object> requestBody = new HashMap<>();
-                requestBody.put("accountId", account.getId());
+                requestBody.put("accountId", accountId);
                 requestBody.put("boardId", "unknown");
 
                 MockHttpServletRequestBuilder requestBuilder = post("/v1/auth/boards")
@@ -115,11 +114,11 @@ public class BoardAuthorizationControllerTest extends IricomTestSuite {
                 @Test
                 @DisplayName("게시판 관리자 계정으로 생성")
                 public void boardAdminAuth() throws Exception {
-                    Account account = getAccount(common00);
+                    String accountId = getAccountId(common00);
                     String boardId = getBoardId(testBoardInfo00);
 
                     Map<String, Object> requestBody = new HashMap<>();
-                    requestBody.put("accountId", account.getId());
+                    requestBody.put("accountId", accountId);
                     requestBody.put("boardId", boardId);
 
                     MockHttpServletRequestBuilder requestBuilder = post("/v1/auth/boards")
@@ -141,11 +140,11 @@ public class BoardAuthorizationControllerTest extends IricomTestSuite {
             @Test
             @DisplayName("삭제")
             public void deleteBoardAdmin() throws Exception {
-                Account account = getAccount(toDisableBoardAdmin);
+                String accountId = getAccountId(toDisableBoardAdmin);
                 String boardId = getBoardId(testBoardInfo00);
 
                 Map<String, Object> requestBody = new HashMap<>();
-                requestBody.put("accountId", account.getId());
+                requestBody.put("accountId", accountId);
                 requestBody.put("boardId", boardId);
 
                 MockHttpServletRequestBuilder requestBuilder = delete("/v1/auth/boards")
@@ -161,10 +160,10 @@ public class BoardAuthorizationControllerTest extends IricomTestSuite {
             @Test
             @DisplayName("존재하지 않는 게시판")
             public void notExistBoard() throws Exception {
-                Account account = getAccount(toDisableBoardAdmin);
+                String accountId = getAccountId(toDisableBoardAdmin);
 
                 Map<String, Object> requestBody = new HashMap<>();
-                requestBody.put("accountId", account.getId());
+                requestBody.put("accountId", accountId);
                 requestBody.put("boardId", "unknown");
 
                 MockHttpServletRequestBuilder requestBuilder = delete("/v1/auth/boards")
@@ -205,11 +204,11 @@ public class BoardAuthorizationControllerTest extends IricomTestSuite {
                 @Test
                 @DisplayName("게시판 관리자 계정으로 생성")
                 public void boardAdminAuth() throws Exception {
-                    Account account = getAccount(common00);
+                    String accountId = getAccountId(common00);
                     String boardId = getBoardId(testBoardInfo00);
 
                     Map<String, Object> requestBody = new HashMap<>();
-                    requestBody.put("accountId", account.getId());
+                    requestBody.put("accountId", accountId);
                     requestBody.put("boardId", boardId);
 
                     MockHttpServletRequestBuilder requestBuilder = delete("/v1/auth/boards")

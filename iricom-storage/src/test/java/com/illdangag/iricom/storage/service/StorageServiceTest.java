@@ -1,6 +1,5 @@
 package com.illdangag.iricom.storage.service;
 
-import com.illdangag.iricom.server.data.entity.Account;
 import com.illdangag.iricom.server.test.data.wrapper.TestAccountInfo;
 import com.illdangag.iricom.storage.data.IricomFileInputStream;
 import com.illdangag.iricom.storage.data.response.FileMetadataInfo;
@@ -29,10 +28,10 @@ public class StorageServiceTest extends IricomTestSuiteEx {
     @Test
     @DisplayName("업로드")
     public void uploadFileTest() {
-        Account account = getAccount(common00);
+        String accountId = getAccountId(common00);
         InputStream sampleImageInputStream = this.getSampleImageInputStream();
 
-        FileMetadataInfo fileMetadataInfo = this.storageService.uploadFile(account, IMAGE_FILE_NAME, IMAGE_FILE_CONTENT_TYPE, sampleImageInputStream);
+        FileMetadataInfo fileMetadataInfo = this.storageService.uploadFile(accountId, IMAGE_FILE_NAME, IMAGE_FILE_CONTENT_TYPE, sampleImageInputStream);
         String fileName = fileMetadataInfo.getName();
 
         Assertions.assertNotNull(fileMetadataInfo.getId());

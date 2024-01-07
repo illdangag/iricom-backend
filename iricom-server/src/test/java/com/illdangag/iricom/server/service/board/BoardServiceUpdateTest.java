@@ -1,6 +1,5 @@
 package com.illdangag.iricom.server.service.board;
 
-import com.illdangag.iricom.server.data.entity.Account;
 import com.illdangag.iricom.server.data.request.BoardInfoUpdate;
 import com.illdangag.iricom.server.data.response.BoardInfo;
 import com.illdangag.iricom.server.service.BoardService;
@@ -38,7 +37,7 @@ public class BoardServiceUpdateTest extends IricomTestSuite {
     @Test
     @DisplayName("수정")
     public void updateBoard() throws Exception {
-        Account account = getAccount(systemAdmin);
+        String accountId = getAccountId(systemAdmin);
         String boardId = getBoardId(testBoardInfo00);
 
         BoardInfoUpdate boardInfoUpdate = BoardInfoUpdate.builder()
@@ -46,7 +45,7 @@ public class BoardServiceUpdateTest extends IricomTestSuite {
                 .description("update description")
                 .build();
 
-        BoardInfo boardInfo = this.boardService.updateBoardInfo(account, boardId, boardInfoUpdate);
+        BoardInfo boardInfo = this.boardService.updateBoardInfo(accountId, boardId, boardInfoUpdate);
 
         Assertions.assertEquals(boardId, boardInfo.getId());
         Assertions.assertEquals("update title", boardInfo.getTitle());
@@ -59,7 +58,7 @@ public class BoardServiceUpdateTest extends IricomTestSuite {
     @Test
     @DisplayName("제목을 빈 문자열로 설정")
     public void emptyTitle() throws Exception {
-        Account account = getAccount(systemAdmin);
+        String accountId = getAccountId(systemAdmin);
         String boardId = getBoardId(testBoardInfo00);
 
         BoardInfoUpdate boardInfoUpdate = BoardInfoUpdate.builder()
@@ -67,14 +66,14 @@ public class BoardServiceUpdateTest extends IricomTestSuite {
                 .build();
 
         Assertions.assertThrows(ConstraintViolationException.class, () -> {
-            this.boardService.updateBoardInfo(account, boardId, boardInfoUpdate);
+            this.boardService.updateBoardInfo(accountId, boardId, boardInfoUpdate);
         });
     }
 
     @Test
     @DisplayName("제목을 긴 문자열로 설정")
     public void overflowTitle() throws Exception {
-        Account account = getAccount(systemAdmin);
+        String accountId = getAccountId(systemAdmin);
         String boardId = getBoardId(testBoardInfo00);
 
         BoardInfoUpdate boardInfoUpdate = BoardInfoUpdate.builder()
@@ -82,21 +81,21 @@ public class BoardServiceUpdateTest extends IricomTestSuite {
                 .build();
 
         Assertions.assertThrows(ConstraintViolationException.class, () -> {
-            this.boardService.updateBoardInfo(account, boardId, boardInfoUpdate);
+            this.boardService.updateBoardInfo(accountId, boardId, boardInfoUpdate);
         });
     }
 
     @Test
     @DisplayName("설명을 빈 문자열로 설정")
     public void emptyDescription() throws Exception {
-        Account account = getAccount(systemAdmin);
+        String accountId = getAccountId(systemAdmin);
         String boardId = getBoardId(testBoardInfo00);
 
         BoardInfoUpdate boardInfoUpdate = BoardInfoUpdate.builder()
                 .description("")
                 .build();
 
-        BoardInfo boardInfo = this.boardService.updateBoardInfo(account, boardId, boardInfoUpdate);
+        BoardInfo boardInfo = this.boardService.updateBoardInfo(accountId, boardId, boardInfoUpdate);
 
         Assertions.assertEquals("", boardInfo.getDescription());
     }
@@ -104,7 +103,7 @@ public class BoardServiceUpdateTest extends IricomTestSuite {
     @Test
     @DisplayName("설명을 긴 문자열로 설정")
     public void overflowDescription() throws Exception {
-        Account account = getAccount(systemAdmin);
+        String accountId = getAccountId(systemAdmin);
         String boardId = getBoardId(testBoardInfo00);
 
         BoardInfoUpdate boardInfoUpdate = BoardInfoUpdate.builder()
@@ -112,21 +111,21 @@ public class BoardServiceUpdateTest extends IricomTestSuite {
                 .build();
 
         Assertions.assertThrows(ConstraintViolationException.class, () -> {
-            this.boardService.updateBoardInfo(account, boardId, boardInfoUpdate);
+            this.boardService.updateBoardInfo(accountId, boardId, boardInfoUpdate);
         });
     }
 
     @Test
     @DisplayName("비활성화")
     public void disabledBoard() throws Exception {
-        Account account = getAccount(systemAdmin);
+        String accountId = getAccountId(systemAdmin);
         String boardId = getBoardId(testBoardInfo00);
 
         BoardInfoUpdate boardInfoUpdate = BoardInfoUpdate.builder()
                 .enabled(false)
                 .build();
 
-        BoardInfo boardInfo = this.boardService.updateBoardInfo(account, boardId, boardInfoUpdate);
+        BoardInfo boardInfo = this.boardService.updateBoardInfo(accountId, boardId, boardInfoUpdate);
 
         Assertions.assertFalse(boardInfo.getEnabled());
     }
@@ -134,14 +133,14 @@ public class BoardServiceUpdateTest extends IricomTestSuite {
     @Test
     @DisplayName("비공개")
     public void undisclosedBoard() throws Exception {
-        Account account = getAccount(systemAdmin);
+        String accountId = getAccountId(systemAdmin);
         String boardId = getBoardId(testBoardInfo00);
 
         BoardInfoUpdate boardInfoUpdate = BoardInfoUpdate.builder()
                 .undisclosed(true)
                 .build();
 
-        BoardInfo boardInfo = this.boardService.updateBoardInfo(account, boardId, boardInfoUpdate);
+        BoardInfo boardInfo = this.boardService.updateBoardInfo(accountId, boardId, boardInfoUpdate);
 
         Assertions.assertTrue(boardInfo.getUnDisclosed());
     }
@@ -149,14 +148,14 @@ public class BoardServiceUpdateTest extends IricomTestSuite {
     @Test
     @DisplayName("공지 사항 전용")
     public void notificationOnlyBoard() throws Exception {
-        Account account = getAccount(systemAdmin);
+        String accountId = getAccountId(systemAdmin);
         String boardId = getBoardId(testBoardInfo00);
 
         BoardInfoUpdate boardInfoUpdate = BoardInfoUpdate.builder()
                 .notificationOnly(true)
                 .build();
 
-        BoardInfo boardInfo = this.boardService.updateBoardInfo(account, boardId, boardInfoUpdate);
+        BoardInfo boardInfo = this.boardService.updateBoardInfo(accountId, boardId, boardInfoUpdate);
 
         Assertions.assertTrue(boardInfo.getNotificationOnly());
     }

@@ -1,6 +1,5 @@
 package com.illdangag.iricom.server.service.block.comment;
 
-import com.illdangag.iricom.server.data.entity.Account;
 import com.illdangag.iricom.server.data.entity.type.PostState;
 import com.illdangag.iricom.server.data.entity.type.PostType;
 import com.illdangag.iricom.server.data.request.CommentBlockInfoCreate;
@@ -48,7 +47,7 @@ public class BlockServiceCommentBlockTest extends IricomTestSuite {
         addTestCommentInfo(testCommentInfo);
         init();
 
-        Account account = getAccount(systemAdmin);
+        String accountId = getAccountId(systemAdmin);
         String boardId = getBoardId(testCommentInfo.getPost().getBoard());
         String postId = getPostId(testCommentInfo.getPost());
         String commentId = getCommentId(testCommentInfo);
@@ -57,7 +56,7 @@ public class BlockServiceCommentBlockTest extends IricomTestSuite {
                 .reason("block reason")
                 .build();
 
-        CommentBlockInfo commentBlockInfo = this.blockService.blockComment(account, boardId, postId, commentId, commentBlockInfoCreate);
+        CommentBlockInfo commentBlockInfo = this.blockService.blockComment(accountId, boardId, postId, commentId, commentBlockInfoCreate);
 
         Assertions.assertEquals("block reason", commentBlockInfo.getReason());
         Assertions.assertNotNull(commentBlockInfo.getCommentInfo());
@@ -84,7 +83,7 @@ public class BlockServiceCommentBlockTest extends IricomTestSuite {
         addTestCommentInfo(testCommentInfo);
         init();
 
-        Account account = getAccount(allBoardAdmin);
+        String accountId = getAccountId(allBoardAdmin);
         String boardId = getBoardId(testCommentInfo.getPost().getBoard());
         String postId = getPostId(testCommentInfo.getPost());
         String commentId = getCommentId(testCommentInfo);
@@ -93,7 +92,7 @@ public class BlockServiceCommentBlockTest extends IricomTestSuite {
                 .reason("block reason")
                 .build();
 
-        CommentBlockInfo commentBlockInfo = this.blockService.blockComment(account, boardId, postId, commentId, commentBlockInfoCreate);
+        CommentBlockInfo commentBlockInfo = this.blockService.blockComment(accountId, boardId, postId, commentId, commentBlockInfoCreate);
 
         Assertions.assertEquals("block reason", commentBlockInfo.getReason());
         Assertions.assertNotNull(commentBlockInfo.getCommentInfo());
@@ -122,7 +121,7 @@ public class BlockServiceCommentBlockTest extends IricomTestSuite {
         addTestCommentInfo(testCommentInfo);
         init();
 
-        Account account = getAccount(common00);
+        String accountId = getAccountId(common00);
         String boardId = getBoardId(testCommentInfo.getPost().getBoard());
         String postId = getPostId(testCommentInfo.getPost());
         String commentId = getCommentId(testCommentInfo);
@@ -132,7 +131,7 @@ public class BlockServiceCommentBlockTest extends IricomTestSuite {
                 .build();
 
         IricomException exception = Assertions.assertThrows(IricomException.class, () -> {
-            this.blockService.blockComment(account, boardId, postId, commentId, commentBlockInfoCreate);
+            this.blockService.blockComment(accountId, boardId, postId, commentId, commentBlockInfoCreate);
         });
 
         Assertions.assertEquals("05000009", exception.getErrorCode());
@@ -157,7 +156,7 @@ public class BlockServiceCommentBlockTest extends IricomTestSuite {
         addTestCommentInfo(testCommentInfo);
         init();
 
-        Account account = getAccount(common09);
+        String accountId = getAccountId(common09);
         String boardId = getBoardId(testCommentInfo.getPost().getBoard());
         String postId = getPostId(testCommentInfo.getPost());
         String commentId = getCommentId(testCommentInfo);
@@ -167,7 +166,7 @@ public class BlockServiceCommentBlockTest extends IricomTestSuite {
                 .build();
 
         IricomException exception = Assertions.assertThrows(IricomException.class, () -> {
-            this.blockService.blockComment(account, boardId, postId, commentId, commentBlockInfoCreate);
+            this.blockService.blockComment(accountId, boardId, postId, commentId, commentBlockInfoCreate);
         });
 
         Assertions.assertEquals("05000009", exception.getErrorCode());
@@ -192,7 +191,7 @@ public class BlockServiceCommentBlockTest extends IricomTestSuite {
         addTestCommentInfo(testCommentInfo);
         init();
 
-        Account account = getAccount(unknown00);
+        String accountId = getAccountId(unknown00);
         String boardId = getBoardId(testCommentInfo.getPost().getBoard());
         String postId = getPostId(testCommentInfo.getPost());
         String commentId = getCommentId(testCommentInfo);
@@ -202,7 +201,7 @@ public class BlockServiceCommentBlockTest extends IricomTestSuite {
                 .build();
 
         IricomException exception = Assertions.assertThrows(IricomException.class, () -> {
-            this.blockService.blockComment(account, boardId, postId, commentId, commentBlockInfoCreate);
+            this.blockService.blockComment(accountId, boardId, postId, commentId, commentBlockInfoCreate);
         });
 
         Assertions.assertEquals("05000009", exception.getErrorCode());
@@ -231,7 +230,7 @@ public class BlockServiceCommentBlockTest extends IricomTestSuite {
         addTestPostBlockInfo(testPostBlockInfo);
         init();
 
-        Account account = getAccount(systemAdmin);
+        String accountId = getAccountId(systemAdmin);
         String boardId = getBoardId(testCommentInfo.getPost().getBoard());
         String postId = getPostId(testCommentInfo.getPost());
         String commentId = getCommentId(testCommentInfo);
@@ -241,7 +240,7 @@ public class BlockServiceCommentBlockTest extends IricomTestSuite {
                 .build();
 
         IricomException exception = Assertions.assertThrows(IricomException.class, () -> {
-            this.blockService.blockComment(account, boardId, postId, commentId, commentBlockInfoCreate);
+            this.blockService.blockComment(accountId, boardId, postId, commentId, commentBlockInfoCreate);
         });
 
         Assertions.assertEquals("04000010", exception.getErrorCode());
@@ -271,7 +270,7 @@ public class BlockServiceCommentBlockTest extends IricomTestSuite {
         addTestCommentBlockInfo(testCommentBlockInfo);
         init();
 
-        Account account = getAccount(systemAdmin);
+        String accountInfo = getAccountId(systemAdmin);
         String boardId = getBoardId(testCommentInfo.getPost().getBoard());
         String postId = getPostId(testCommentInfo.getPost());
         String commentId = getCommentId(testCommentInfo);
@@ -281,7 +280,7 @@ public class BlockServiceCommentBlockTest extends IricomTestSuite {
                 .build();
 
         IricomException exception = Assertions.assertThrows(IricomException.class, () -> {
-            this.blockService.blockComment(account, boardId, postId, commentId, commentBlockInfoCreate);
+            this.blockService.blockComment(accountInfo, boardId, postId, commentId, commentBlockInfoCreate);
         });
 
         Assertions.assertEquals("05000008", exception.getErrorCode());

@@ -1,6 +1,5 @@
 package com.illdangag.iricom.server.service.block.post;
 
-import com.illdangag.iricom.server.data.entity.Account;
 import com.illdangag.iricom.server.data.entity.type.PostState;
 import com.illdangag.iricom.server.data.entity.type.PostType;
 import com.illdangag.iricom.server.data.response.PostBlockInfo;
@@ -77,11 +76,11 @@ public class BlockServicePostUnblockTest extends IricomTestSuite {
     @Test
     @DisplayName("시스템 관리자")
     public void unblockSystemAdmin() throws Exception {
-        Account account = getAccount(systemAdmin);
+        String accountId = getAccountId(systemAdmin);
         String boardId = getBoardId(alreadyBlockPostInfo02.getBoard());
         String postId = getPostId(alreadyBlockPostInfo02);
 
-        PostBlockInfo postBlockInfo = blockService.unblockPost(account, boardId, postId);
+        PostBlockInfo postBlockInfo = blockService.unblockPost(accountId, boardId, postId);
 
         Assertions.assertFalse(postBlockInfo.getEnabled());
     }
@@ -89,11 +88,11 @@ public class BlockServicePostUnblockTest extends IricomTestSuite {
     @Test
     @DisplayName("게시판 관리자")
     public void unblockBoardAdmin() throws Exception {
-        Account account = getAccount(allBoardAdmin);
+        String accountId = getAccountId(allBoardAdmin);
         String boardId = getBoardId(alreadyBlockPostInfo03.getBoard());
         String postId = getPostId(alreadyBlockPostInfo03);
 
-        PostBlockInfo postBlockInfo = blockService.unblockPost(account, boardId, postId);
+        PostBlockInfo postBlockInfo = blockService.unblockPost(accountId, boardId, postId);
 
         Assertions.assertFalse(postBlockInfo.getEnabled());
     }
@@ -101,12 +100,12 @@ public class BlockServicePostUnblockTest extends IricomTestSuite {
     @Test
     @DisplayName("다른 게시판 관리자")
     public void unblockOtherBoardAdmin() throws Exception {
-        Account account = getAccount(enableBoardAdmin);
+        String accountId = getAccountId(enableBoardAdmin);
         String boardId = getBoardId(alreadyBlockPostInfo01.getBoard());
         String postId = getPostId(alreadyBlockPostInfo01);
 
         IricomException iricomException = Assertions.assertThrows(IricomException.class, () -> {
-            blockService.unblockPost(account, boardId, postId);
+            blockService.unblockPost(accountId, boardId, postId);
         });
 
         Assertions.assertEquals("04000009", iricomException.getErrorCode());
@@ -116,12 +115,12 @@ public class BlockServicePostUnblockTest extends IricomTestSuite {
     @Test
     @DisplayName("일반 사용자")
     public void unblockAccount() throws Exception {
-        Account account = getAccount(common00);
+        String accountId = getAccountId(common00);
         String boardId = getBoardId(alreadyBlockPostInfo01.getBoard());
         String postId = getPostId(alreadyBlockPostInfo01);
 
         IricomException iricomException = Assertions.assertThrows(IricomException.class, () -> {
-            blockService.unblockPost(account, boardId, postId);
+            blockService.unblockPost(accountId, boardId, postId);
         });
 
         Assertions.assertEquals("04000009", iricomException.getErrorCode());
@@ -131,12 +130,12 @@ public class BlockServicePostUnblockTest extends IricomTestSuite {
     @Test
     @DisplayName("등록되지 않은 사용자")
     public void unblockUnknown() throws Exception {
-        Account account = getAccount(unknown00);
+        String accountId = getAccountId(unknown00);
         String boardId = getBoardId(alreadyBlockPostInfo01.getBoard());
         String postId = getPostId(alreadyBlockPostInfo01);
 
         IricomException iricomException = Assertions.assertThrows(IricomException.class, () -> {
-            blockService.unblockPost(account, boardId, postId);
+            blockService.unblockPost(accountId, boardId, postId);
         });
 
         Assertions.assertEquals("04000009", iricomException.getErrorCode());
@@ -146,12 +145,12 @@ public class BlockServicePostUnblockTest extends IricomTestSuite {
     @Test
     @DisplayName("게시물이 포함된 게시판이 아닌 다른 게시판")
     public void unblockPostInOtherBoard() throws Exception {
-        Account account = getAccount(systemAdmin);
+        String accountId = getAccountId(systemAdmin);
         String boardId = getBoardId(boardInfo01);
         String postId = getPostId(alreadyBlockPostInfo01);
 
         IricomException iricomException = Assertions.assertThrows(IricomException.class, () -> {
-            blockService.unblockPost(account, boardId, postId);
+            blockService.unblockPost(accountId, boardId, postId);
         });
 
         Assertions.assertEquals("04000000", iricomException.getErrorCode());

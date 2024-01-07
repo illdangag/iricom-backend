@@ -1,6 +1,5 @@
 package com.illdangag.iricom.storage.service.s3;
 
-import com.illdangag.iricom.server.data.entity.Account;
 import com.illdangag.iricom.server.test.IricomTestSuite;
 import com.illdangag.iricom.storage.data.IricomFileInputStream;
 import com.illdangag.iricom.storage.data.response.FileMetadataInfo;
@@ -31,10 +30,10 @@ public class S3StorageServiceTest extends IricomTestSuite {
 
     @Test
     public void uploadFileTest() {
-        Account account = getAccount(common00);
+        String accountId = getAccountId(common00);
         InputStream sampleImageInputStream = this.getSampleImageInputStream();
 
-        FileMetadataInfo fileMetadataInfo = this.s3StorageServiceImpl.uploadFile(account, IMAGE_FILE_NAME, IMAGE_FILE_CONTENT_TYPE, sampleImageInputStream);
+        FileMetadataInfo fileMetadataInfo = this.s3StorageServiceImpl.uploadFile(accountId, IMAGE_FILE_NAME, IMAGE_FILE_CONTENT_TYPE, sampleImageInputStream);
 
         Assertions.assertNotNull(fileMetadataInfo);
         Assertions.assertNotNull(fileMetadataInfo.getId());
@@ -42,10 +41,10 @@ public class S3StorageServiceTest extends IricomTestSuite {
 
     @Test
     public void downloadFileTest() {
-        Account account = getAccount(common00);
+        String accountId = getAccountId(common00);
         InputStream sampleImageInputStream = this.getSampleImageInputStream();
 
-        FileMetadataInfo fileMetadataInfo = this.s3StorageServiceImpl.uploadFile(account, IMAGE_FILE_NAME, IMAGE_FILE_CONTENT_TYPE, sampleImageInputStream);
+        FileMetadataInfo fileMetadataInfo = this.s3StorageServiceImpl.uploadFile(accountId, IMAGE_FILE_NAME, IMAGE_FILE_CONTENT_TYPE, sampleImageInputStream);
 
         String id = fileMetadataInfo.getId();
 
@@ -62,14 +61,14 @@ public class S3StorageServiceTest extends IricomTestSuite {
 
     @Test
     public void deleteFileTest() {
-        Account account = getAccount(common00);
+        String accountId = getAccountId(common00);
         InputStream sampleImageInputStream = this.getSampleImageInputStream();
 
-        FileMetadataInfo fileMetadataInfo = this.s3StorageServiceImpl.uploadFile(account, IMAGE_FILE_NAME, IMAGE_FILE_CONTENT_TYPE, sampleImageInputStream);
+        FileMetadataInfo fileMetadataInfo = this.s3StorageServiceImpl.uploadFile(accountId, IMAGE_FILE_NAME, IMAGE_FILE_CONTENT_TYPE, sampleImageInputStream);
 
         String id = fileMetadataInfo.getId();
 
-        FileMetadataInfo deleteFileMetadataInfo = this.s3StorageServiceImpl.deleteFile(account, id);
+        FileMetadataInfo deleteFileMetadataInfo = this.s3StorageServiceImpl.deleteFile(accountId, id);
         Assertions.assertNotNull(deleteFileMetadataInfo);
     }
 

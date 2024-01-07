@@ -1,6 +1,5 @@
 package com.illdangag.iricom.server.service.block.post;
 
-import com.illdangag.iricom.server.data.entity.Account;
 import com.illdangag.iricom.server.data.entity.type.PostState;
 import com.illdangag.iricom.server.data.entity.type.PostType;
 import com.illdangag.iricom.server.data.request.PostBlockInfoSearch;
@@ -61,7 +60,7 @@ public class BlockServicePostSearchTest extends IricomTestSuite {
     @Test
     @DisplayName("시스템 관리자")
     public void searchSystemAdmin() throws Exception {
-        Account account = getAccount(systemAdmin);
+        String accountId = getAccountId(systemAdmin);
         String boardId = getBoardId(boardInfo00);
 
         PostBlockInfoSearch postBlockInfoSearch = PostBlockInfoSearch.builder()
@@ -70,7 +69,7 @@ public class BlockServicePostSearchTest extends IricomTestSuite {
                 .limit(10)
                 .build();
 
-        PostBlockInfoList postBlockInfoList = blockService.getPostBlockInfoList(account, boardId, postBlockInfoSearch);
+        PostBlockInfoList postBlockInfoList = blockService.getPostBlockInfoList(accountId, boardId, postBlockInfoSearch);
 
         Assertions.assertEquals(0, postBlockInfoList.getSkip());
         Assertions.assertEquals(10, postBlockInfoList.getLimit());
@@ -80,7 +79,7 @@ public class BlockServicePostSearchTest extends IricomTestSuite {
     @Test
     @DisplayName("게시판 관리자")
     public void searchBoardAdmin() throws Exception {
-        Account account = getAccount(allBoardAdmin);
+        String accountId = getAccountId(allBoardAdmin);
         String boardId = getBoardId(boardInfo00);
 
         PostBlockInfoSearch postBlockInfoSearch = PostBlockInfoSearch.builder()
@@ -89,7 +88,7 @@ public class BlockServicePostSearchTest extends IricomTestSuite {
                 .limit(10)
                 .build();
 
-        PostBlockInfoList postBlockInfoList = blockService.getPostBlockInfoList(account, boardId, postBlockInfoSearch);
+        PostBlockInfoList postBlockInfoList = blockService.getPostBlockInfoList(accountId, boardId, postBlockInfoSearch);
 
         Assertions.assertEquals(0, postBlockInfoList.getSkip());
         Assertions.assertEquals(10, postBlockInfoList.getLimit());
@@ -99,7 +98,7 @@ public class BlockServicePostSearchTest extends IricomTestSuite {
     @Test
     @DisplayName("다른 게시판 관리자")
     public void searchOtherBoardAdmin() throws Exception {
-        Account account = getAccount(enableBoardAdmin);
+        String accountId = getAccountId(enableBoardAdmin);
         String boardId = getBoardId(boardInfo00);
 
         PostBlockInfoSearch postBlockInfoSearch = PostBlockInfoSearch.builder()
@@ -109,14 +108,14 @@ public class BlockServicePostSearchTest extends IricomTestSuite {
                 .build();
 
         Assertions.assertThrows(IricomException.class, () -> {
-            blockService.getPostBlockInfoList(account, boardId, postBlockInfoSearch);
+            blockService.getPostBlockInfoList(accountId, boardId, postBlockInfoSearch);
         });
     }
 
     @Test
     @DisplayName("일반 사용자")
     public void searchAccount() throws Exception {
-        Account account = getAccount(common00);
+        String accountId = getAccountId(common00);
         String boardId = getBoardId(boardInfo00);
 
         PostBlockInfoSearch postBlockInfoSearch = PostBlockInfoSearch.builder()
@@ -126,14 +125,14 @@ public class BlockServicePostSearchTest extends IricomTestSuite {
                 .build();
 
         Assertions.assertThrows(IricomException.class, () -> {
-            blockService.getPostBlockInfoList(account, boardId, postBlockInfoSearch);
+            blockService.getPostBlockInfoList(accountId, boardId, postBlockInfoSearch);
         });
     }
 
     @Test
     @DisplayName("등록되지 않은 사용자")
     public void searchUnknown() throws Exception {
-        Account account = getAccount(unknown00);
+        String accountId = getAccountId(unknown00);
         String boardId = getBoardId(boardInfo00);
 
         PostBlockInfoSearch postBlockInfoSearch = PostBlockInfoSearch.builder()
@@ -143,7 +142,7 @@ public class BlockServicePostSearchTest extends IricomTestSuite {
                 .build();
 
         Assertions.assertThrows(IricomException.class, () -> {
-            blockService.getPostBlockInfoList(account, boardId, postBlockInfoSearch);
+            blockService.getPostBlockInfoList(accountId, boardId, postBlockInfoSearch);
         });
     }
 }

@@ -1,6 +1,5 @@
 package com.illdangag.iricom.server.service.block.post;
 
-import com.illdangag.iricom.server.data.entity.Account;
 import com.illdangag.iricom.server.data.entity.type.PostState;
 import com.illdangag.iricom.server.data.entity.type.PostType;
 import com.illdangag.iricom.server.data.request.PostBlockInfoCreate;
@@ -81,14 +80,14 @@ public class BlockServicePostBlockTest extends IricomTestSuite {
     @Test
     @DisplayName("시스템 관리자")
     public void blockSystemAdmin() throws Exception {
-        Account account = getAccount(systemAdmin);
+        String accountId = getAccountId(systemAdmin);
         String boardId = getBoardId(toBlockPostInfo00.getBoard());
         String postId = getPostId(toBlockPostInfo00);
 
         PostBlockInfoCreate postBlockInfoCreate = PostBlockInfoCreate.builder()
                 .reason("block")
                 .build();
-        PostBlockInfo postBlockInfo = blockService.blockPost(account, boardId, postId, postBlockInfoCreate);
+        PostBlockInfo postBlockInfo = blockService.blockPost(accountId, boardId, postId, postBlockInfoCreate);
 
         Assertions.assertNotNull(postBlockInfo);
         Assertions.assertEquals("block", postBlockInfo.getReason());
@@ -100,14 +99,14 @@ public class BlockServicePostBlockTest extends IricomTestSuite {
     @Test
     @DisplayName("게시판 관리자")
     public void blockBoardAdmin() throws Exception {
-        Account account = getAccount(allBoardAdmin);
+        String accountId = getAccountId(allBoardAdmin);
         String boardId = getBoardId(toBlockPostInfo01.getBoard());
         String postId = getPostId(toBlockPostInfo01);
 
         PostBlockInfoCreate postBlockInfoCreate = PostBlockInfoCreate.builder()
                 .reason("block")
                 .build();
-        PostBlockInfo postBlockInfo = blockService.blockPost(account, boardId, postId, postBlockInfoCreate);
+        PostBlockInfo postBlockInfo = blockService.blockPost(accountId, boardId, postId, postBlockInfoCreate);
 
         Assertions.assertNotNull(postBlockInfo);
         Assertions.assertEquals("block", postBlockInfo.getReason());
@@ -119,7 +118,7 @@ public class BlockServicePostBlockTest extends IricomTestSuite {
     @Test
     @DisplayName("다른 게시판 관리자")
     public void blockOtherBoardAdmin() throws Exception {
-        Account account = getAccount(enableBoardAdmin);
+        String accountId = getAccountId(enableBoardAdmin);
         String boardId = getBoardId(toBlockPostInfo01.getBoard());
         String postId = getPostId(toBlockPostInfo01);
 
@@ -128,14 +127,14 @@ public class BlockServicePostBlockTest extends IricomTestSuite {
                 .build();
 
         Assertions.assertThrows(IricomException.class, () -> {
-            blockService.blockPost(account, boardId, postId, postBlockInfoCreate);
+            blockService.blockPost(accountId, boardId, postId, postBlockInfoCreate);
         });
     }
 
     @Test
     @DisplayName("일반 사용자")
     public void blockAccount() throws Exception {
-        Account account = getAccount(common00);
+        String accountId = getAccountId(common00);
         String boardId = getBoardId(toBlockPostInfo02.getBoard());
         String postId = getPostId(toBlockPostInfo02);
 
@@ -144,14 +143,14 @@ public class BlockServicePostBlockTest extends IricomTestSuite {
                 .build();
 
         Assertions.assertThrows(IricomException.class, () -> {
-            blockService.blockPost(account, boardId, postId, postBlockInfoCreate);
+            blockService.blockPost(accountId, boardId, postId, postBlockInfoCreate);
         });
     }
 
     @Test
     @DisplayName("등록되지 않은 사용자")
     public void blockUnknown() throws Exception {
-        Account account = getAccount(unknown00);
+        String accountId = getAccountId(unknown00);
         String boardId = getBoardId(toBlockPostInfo02.getBoard());
         String postId = getPostId(toBlockPostInfo02);
 
@@ -160,7 +159,7 @@ public class BlockServicePostBlockTest extends IricomTestSuite {
                 .build();
 
         IricomException exception = Assertions.assertThrows(IricomException.class, () -> {
-            blockService.blockPost(account, boardId, postId, postBlockInfoCreate);
+            blockService.blockPost(accountId, boardId, postId, postBlockInfoCreate);
         });
 
         Assertions.assertEquals("04000009", exception.getErrorCode());
@@ -169,7 +168,7 @@ public class BlockServicePostBlockTest extends IricomTestSuite {
     @Test
     @DisplayName("이미 차단된 게시물")
     public void alreadyBlockPost() throws Exception {
-        Account account = getAccount(systemAdmin);
+        String accountId = getAccountId(systemAdmin);
         String boardId = getBoardId(alreadyBlockPostInfo00.getBoard());
         String postId = getPostId(alreadyBlockPostInfo00);
 
@@ -178,14 +177,14 @@ public class BlockServicePostBlockTest extends IricomTestSuite {
                 .build();
 
         Assertions.assertThrows(IricomException.class, () -> {
-            blockService.blockPost(account, boardId, postId, postBlockInfoCreate);
+            blockService.blockPost(accountId, boardId, postId, postBlockInfoCreate);
         });
     }
 
     @Test
     @DisplayName("이미 차단한 게시물")
     public void blockAlreadyBlockPost() {
-        Account account = getAccount(systemAdmin);
+        String accountId = getAccountId(systemAdmin);
         String boardId = getBoardId(alreadyBlockPostInfo01.getBoard());
         String postId = getPostId(alreadyBlockPostInfo01);
 
@@ -193,14 +192,14 @@ public class BlockServicePostBlockTest extends IricomTestSuite {
                 .reason("Already block")
                 .build();
         Assertions.assertThrows(IricomException.class, () -> {
-            blockService.blockPost(account, boardId, postId, postBlockInfoCreate);
+            blockService.blockPost(accountId, boardId, postId, postBlockInfoCreate);
         });
     }
 
     @Test
     @DisplayName("다른 게시판에 존재하는 게시물")
     public void blockPostInOtherBoard() throws Exception {
-        Account account = getAccount(systemAdmin);
+        String accountId = getAccountId(systemAdmin);
         String boardId = getBoardId(boardInfo00);
         String postId = getPostId(toBlockPostInfo04);
 
@@ -208,7 +207,7 @@ public class BlockServicePostBlockTest extends IricomTestSuite {
                 .reason("not exist post")
                 .build();
         Assertions.assertThrows(IricomException.class, () -> {
-            blockService.blockPost(account, boardId, postId, postBlockInfoCreate);
+            blockService.blockPost(accountId, boardId, postId, postBlockInfoCreate);
         });
     }
 }

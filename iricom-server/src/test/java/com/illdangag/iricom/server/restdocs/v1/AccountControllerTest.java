@@ -1,6 +1,5 @@
 package com.illdangag.iricom.server.restdocs.v1;
 
-import com.illdangag.iricom.server.data.entity.Account;
 import com.illdangag.iricom.server.restdocs.snippet.IricomFieldsSnippet;
 import com.illdangag.iricom.server.test.IricomTestSuite;
 import org.junit.jupiter.api.DisplayName;
@@ -76,9 +75,9 @@ public class AccountControllerTest extends IricomTestSuite {
     @Test
     @DisplayName("정보 조회")
     public void ac002() throws Exception {
-        Account account = getAccount(systemAdmin);
+        String accountId = getAccountId(systemAdmin);
 
-        MockHttpServletRequestBuilder requestBuilder = get("/v1/accounts/{id}", account.getId());
+        MockHttpServletRequestBuilder requestBuilder = get("/v1/accounts/{id}", accountId);
         setAuthToken(requestBuilder, systemAdmin);
 
         List<FieldDescriptor> fieldDescriptorList = new LinkedList<>();
@@ -146,13 +145,13 @@ public class AccountControllerTest extends IricomTestSuite {
     @Test
     @DisplayName("수정")
     public void ac004() throws Exception {
-        Account account = getAccount(common00);
+        String accountId = getAccountId(common00);
 
         Map<String, Object> requestBody = new HashMap<>();
         requestBody.put("nickname", "admin_update");
         requestBody.put("description", "admin_update");
 
-        MockHttpServletRequestBuilder requestBuilder = patch("/v1/accounts/{id}", account.getId())
+        MockHttpServletRequestBuilder requestBuilder = patch("/v1/accounts/{id}", accountId)
                 .content(getJsonString(requestBody))
                 .contentType(MediaType.APPLICATION_JSON);
         setAuthToken(requestBuilder, systemAdmin);

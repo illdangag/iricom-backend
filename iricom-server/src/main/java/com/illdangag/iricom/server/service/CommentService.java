@@ -17,6 +17,8 @@ public interface CommentService {
     /**
      * 댓글 생성
      */
+    CommentInfo createCommentInfo(String accountId, String boardId, String postId, @Valid CommentInfoCreate commentInfoCreate);
+
     CommentInfo createCommentInfo(Account account, String boardId, String postId, @Valid CommentInfoCreate commentInfoCreate);
 
     CommentInfo createCommentInfo(Account account, Board board, Post post, @Valid CommentInfoCreate commentInfoCreate);
@@ -46,6 +48,8 @@ public interface CommentService {
     /**
      * 댓글 수정
      */
+    CommentInfo updateComment(String accountId, String boardId, String postId, String commentId, @Valid CommentInfoUpdate commentInfoUpdate);
+
     CommentInfo updateComment(Account account, String boardId, String postId, String commentId, @Valid CommentInfoUpdate commentInfoUpdate);
 
     CommentInfo updateComment(Account account, Board board, Post post, Comment comment, @Valid CommentInfoUpdate commentInfoUpdate);
@@ -53,6 +57,8 @@ public interface CommentService {
     /**
      * 댓글 삭제
      */
+    CommentInfo deleteComment(String accountId, String boardId, String postId, String commentId);
+
     CommentInfo deleteComment(Account account, String boardId, String postId, String commentId);
 
     CommentInfo deleteComment(Account account, Board board, Post post, Comment comment);
@@ -60,6 +66,8 @@ public interface CommentService {
     /**
      * 댓글 좋아요 싫어요
      */
+    CommentInfo voteComment(String accountId, String boardId, String postId, String commentId, VoteType voteType);
+
     CommentInfo voteComment(Account account, String boardId, String postId, String commentId, VoteType voteType);
 
     CommentInfo voteComment(Account account, Board board, Post post, Comment comment, VoteType voteType);

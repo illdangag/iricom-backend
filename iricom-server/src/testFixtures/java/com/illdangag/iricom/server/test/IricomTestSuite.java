@@ -105,7 +105,7 @@ public abstract class IricomTestSuite {
     private final List<TestPostBlockInfo> testPostBlockInfoList = new ArrayList<>();
     private final List<TestCommentBlockInfo> testCommentBlockInfoList = new ArrayList<>();
 
-    private static final Map<TestAccountInfo, Account> accountMap = new HashMap<>();
+    private static final Map<TestAccountInfo, AccountInfo> accountMap = new HashMap<>();
     private static final Map<TestBoardInfo, BoardInfo> boardMap = new HashMap<>();
     private static final Map<TestPostInfo, PostInfo> postMap = new HashMap<>();
     private static final Map<TestAccountInfo, String> tokenMap = new HashMap<>();
@@ -148,11 +148,11 @@ public abstract class IricomTestSuite {
                 continue;
             }
 
-            Account account = this.createAccount(testAccountInfo);
-            accountMap.put(testAccountInfo, account);
+            AccountInfo accountInfo = this.createAccount(testAccountInfo);
+            accountMap.put(testAccountInfo, accountInfo);
 
             if (!testAccountInfo.isUnregistered()) {
-                this.updateAccountDetail(testAccountInfo, account);
+                this.updateAccountDetail(testAccountInfo, accountInfo);
             }
         }
     }
@@ -339,7 +339,7 @@ public abstract class IricomTestSuite {
         this.deleteBoardAdmin(testBoardInfoList);
     }
 
-    private Account createAccount(TestAccountInfo testAccountInfo) {
+    private AccountInfo createAccount(TestAccountInfo testAccountInfo) {
         Account.AccountBuilder accountBuilder = Account.builder().email(testAccountInfo.getEmail());
         if (testAccountInfo.isAdmin()) {
             accountBuilder.auth(AccountAuth.SYSTEM_ADMIN);
@@ -354,16 +354,15 @@ public abstract class IricomTestSuite {
         account.setAccountDetail(accountDetail);
         this.accountRepository.saveAccount(account);
 
-        Optional<Account> accountOptional = this.accountRepository.getAccount(account.getId());
-        return accountOptional.get();
+        return this.accountService.getAccountInfo(String.valueOf(account.getId()));
     }
 
-    private void updateAccountDetail(TestAccountInfo testAccountInfo, Account account) {
+    private void updateAccountDetail(TestAccountInfo testAccountInfo, AccountInfo accountInfo) {
         AccountInfoUpdate accountInfoUpdate = AccountInfoUpdate.builder()
                 .nickname(testAccountInfo.getNickname())
                 .description(testAccountInfo.getDescription())
                 .build();
-        this.accountService.updateAccountDetail(account, accountInfoUpdate);
+        this.accountService.updateAccountDetail(accountInfo.getId(), accountInfoUpdate);
     }
 
     private BoardInfo createBoard(TestBoardInfo testBoardInfo) {
@@ -374,7 +373,8 @@ public abstract class IricomTestSuite {
                 .undisclosed(testBoardInfo.isUndisclosed())
                 .build();
 
-        return this.boardService.createBoardInfo(getAccount(systemAdmin), boardInfoCreate);
+        AccountInfo accountInfo = getAccount(systemAdmin);
+        return this.boardService.createBoardInfo(accountInfo.getId(), boardInfoCreate);
     }
 
     private void createBoardAdmin(String accountId, String boardId) {
@@ -397,18 +397,20 @@ public abstract class IricomTestSuite {
         BoardInfoUpdate boardInfoUpdate = BoardInfoUpdate.builder()
                 .enabled(false)
                 .build();
-        this.boardService.updateBoardInfo(getAccount(systemAdmin), boardInfo.getId(), boardInfoUpdate);
+        AccountInfo accountInfo = getAccount(systemAdmin);
+        this.boardService.updateBoardInfo(accountInfo.getId(), boardInfo.getId(), boardInfoUpdate);
     }
 
     private void notificationOnlyBoard(BoardInfo boardInfo) {
         BoardInfoUpdate boardInfoUpdate = BoardInfoUpdate.builder()
                 .notificationOnly(true)
                 .build();
-        this.boardService.updateBoardInfo(getAccount(systemAdmin), boardInfo.getId(), boardInfoUpdate);
+        AccountInfo accountInfo = getAccount(systemAdmin);
+        this.boardService.updateBoardInfo(accountInfo.getId(), boardInfo.getId(), boardInfoUpdate);
     }
 
     private PostInfo createPost(TestPostInfo testPostInfo) {
-        Account account = accountMap.get(testPostInfo.getCreator());
+        AccountInfo account = accountMap.get(testPostInfo.getCreator());
         BoardInfo boardInfo = boardMap.get(testPostInfo.getBoard());
 
         PostInfoCreate postInfoCreate = PostInfoCreate.builder()
@@ -417,18 +419,18 @@ public abstract class IricomTestSuite {
                 .allowComment(true)
                 .type(testPostInfo.getPostType())
                 .build();
-        return this.postService.createPostInfo(account, boardInfo.getId(), postInfoCreate);
+        return this.postService.createPostInfo(account.getId(), boardInfo.getId(), postInfoCreate);
     }
 
     private void updateDisabledAllowComment(TestPostInfo testPostInfo) {
-        Account account = accountMap.get(testPostInfo.getCreator());
+        AccountInfo accountInfo = accountMap.get(testPostInfo.getCreator());
         BoardInfo boardInfo = boardMap.get(testPostInfo.getBoard());
         PostInfo postInfo = postMap.get(testPostInfo);
 
         PostInfoUpdate postInfoUpdate = PostInfoUpdate.builder()
                 .allowComment(false)
                 .build();
-        this.postService.updatePostInfo(account, boardInfo.getId(), postInfo.getId(), postInfoUpdate);
+        this.postService.updatePostInfo(accountInfo.getId(), boardInfo.getId(), postInfo.getId(), postInfoUpdate);
 
         if (testPostInfo.getPostState() == PostState.PUBLISH) {
             this.publishPost(testPostInfo);
@@ -436,11 +438,11 @@ public abstract class IricomTestSuite {
     }
 
     private void publishPost(TestPostInfo testPostInfo) {
-        Account account = accountMap.get(testPostInfo.getCreator());
+        AccountInfo accountInfo = accountMap.get(testPostInfo.getCreator());
         BoardInfo boardInfo = boardMap.get(testPostInfo.getBoard());
         PostInfo postInfo = postMap.get(testPostInfo);
 
-        this.postService.publishPostInfo(account, boardInfo.getId(), postInfo.getId());
+        this.postService.publishPostInfo(accountInfo.getId(), boardInfo.getId(), postInfo.getId());
     }
 
     private CommentInfo createComment(TestCommentInfo testCommentInfo) {
@@ -449,7 +451,7 @@ public abstract class IricomTestSuite {
         TestBoardInfo testBoardInfo = testPostInfo.getBoard();
         TestCommentInfo referenceTestCommentInfo = testCommentInfo.getReferenceComment();
 
-        Account account = accountMap.get(testAccountInfo);
+        AccountInfo accountInfo = accountMap.get(testAccountInfo);
         BoardInfo boardInfo = boardMap.get(testBoardInfo);
         PostInfo postInfo = postMap.get(testPostInfo);
         CommentInfo referenceCommentInfo = commentMap.get(referenceTestCommentInfo);
@@ -463,19 +465,19 @@ public abstract class IricomTestSuite {
 
         String boardId = boardInfo.getId();
         String postId = postInfo.getId();
-        return this.commentService.createCommentInfo(account, boardId, postId, commentInfoCreate);
+        return this.commentService.createCommentInfo(accountInfo.getId(), boardId, postId, commentInfoCreate);
     }
 
     private void deleteComment(TestCommentInfo testCommentInfo) {
         TestAccountInfo testAccountInfo = testCommentInfo.getCreator();
         TestPostInfo testPostInfo = testCommentInfo.getPost();
         TestBoardInfo testBoardInfo = testPostInfo.getBoard();
-        Account account = accountMap.get(testAccountInfo);
+        AccountInfo accountInfo = accountMap.get(testAccountInfo);
         BoardInfo boardInfo = boardMap.get(testBoardInfo);
         PostInfo postInfo = postMap.get(testPostInfo);
         CommentInfo commentInfo = commentMap.get(testCommentInfo);
 
-        this.commentService.deleteComment(account, boardInfo.getId(), postInfo.getId(), commentInfo.getId());
+        this.commentService.deleteComment(accountInfo.getId(), boardInfo.getId(), postInfo.getId(), commentInfo.getId());
     }
 
 
@@ -483,7 +485,7 @@ public abstract class IricomTestSuite {
         TestAccountInfo reportTestAccountInfo = testPostReportInfo.getReportAccount();
         TestPostInfo testPostInfo = testPostReportInfo.getPost();
 
-        Account reportAccount = accountMap.get(reportTestAccountInfo);
+        AccountInfo accountInfo = accountMap.get(reportTestAccountInfo);
         PostInfo postInfo = postMap.get(testPostInfo);
         BoardInfo boardInfo = boardMap.get(testPostInfo.getBoard());
 
@@ -494,7 +496,7 @@ public abstract class IricomTestSuite {
                 .type(testPostReportInfo.getType())
                 .reason(testPostReportInfo.getReason())
                 .build();
-        return this.reportService.reportPost(reportAccount, boardId, postId, postReportInfoCreate);
+        return this.reportService.reportPost(accountInfo.getId(), boardId, postId, postReportInfoCreate);
     }
 
 
@@ -502,7 +504,7 @@ public abstract class IricomTestSuite {
         TestAccountInfo reportTestAccountInfo = testCommentReportInfo.getReportAccount();
         TestCommentInfo testCommentInfo = testCommentReportInfo.getComment();
 
-        Account reportAccount = accountMap.get(reportTestAccountInfo);
+        AccountInfo accountInfo = accountMap.get(reportTestAccountInfo);
         CommentInfo commentInfo = commentMap.get(testCommentInfo);
         PostInfo postInfo = postMap.get(testCommentInfo.getPost());
         BoardInfo boardInfo = boardMap.get(testCommentInfo.getPost().getBoard());
@@ -515,28 +517,28 @@ public abstract class IricomTestSuite {
                 .type(testCommentReportInfo.getType())
                 .reason(testCommentReportInfo.getReason())
                 .build();
-        return this.reportService.reportComment(reportAccount, boardId, postId, commentId, commentReportInfoCreate);
+        return this.reportService.reportComment(accountInfo.getId(), boardId, postId, commentId, commentReportInfoCreate);
     }
 
     private PostBlockInfo blockPost(TestPostBlockInfo testPostBlockInfo) {
         TestAccountInfo blockTestAccountInfo = testPostBlockInfo.getAccount();
         TestPostInfo testPostInfo = testPostBlockInfo.getPost();
 
-        Account account = accountMap.get(blockTestAccountInfo);
+        AccountInfo accountInfo = accountMap.get(blockTestAccountInfo);
         PostInfo postInfo = postMap.get(testPostInfo);
         BoardInfo boardInfo = boardMap.get(testPostInfo.getBoard());
 
         PostBlockInfoCreate postBlockInfoCreate = PostBlockInfoCreate.builder()
                 .reason(testPostBlockInfo.getReason())
                 .build();
-        return blockService.blockPost(account, boardInfo.getId(), postInfo.getId(), postBlockInfoCreate);
+        return blockService.blockPost(accountInfo.getId(), boardInfo.getId(), postInfo.getId(), postBlockInfoCreate);
     }
 
     private CommentBlockInfo blockComment(TestCommentBlockInfo testCommentBlockInfo) {
         TestAccountInfo testAccountInfo = testCommentBlockInfo.getAccount();
         TestCommentInfo testCommentInfo = testCommentBlockInfo.getComment();
 
-        Account account = accountMap.get(testAccountInfo);
+        AccountInfo accountInfo = accountMap.get(testAccountInfo);
         String commentId = getCommentId(testCommentInfo);
         String postId = getPostId(testCommentInfo.getPost());
         String boardId = getBoardId(testCommentInfo.getPost().getBoard());
@@ -544,7 +546,7 @@ public abstract class IricomTestSuite {
         CommentBlockInfoCreate commentBlockInfoCreate = CommentBlockInfoCreate.builder()
                 .reason(testCommentBlockInfo.getReason())
                 .build();
-        return blockService.blockComment(account, boardId, postId, commentId, commentBlockInfoCreate);
+        return blockService.blockComment(accountInfo.getId(), boardId, postId, commentId, commentBlockInfoCreate);
     }
 
     private AccountGroupInfo setAccountGroup(TestAccountGroupInfo testAccountGroupInfo) {
@@ -598,12 +600,12 @@ public abstract class IricomTestSuite {
         return objectMapper.readValue(jsonString, classType);
     }
 
-    protected Account getAccount(TestAccountInfo testAccountInfo) {
+    protected AccountInfo getAccount(TestAccountInfo testAccountInfo) {
         return accountMap.get(testAccountInfo);
     }
 
     protected String getAccountId(TestAccountInfo testAccountInfo) {
-        return String.valueOf(this.getAccount(testAccountInfo).getId());
+        return this.getAccount(testAccountInfo).getId();
     }
 
     private BoardInfo getBoard(TestBoardInfo testBoardInfo) {
@@ -611,7 +613,7 @@ public abstract class IricomTestSuite {
     }
 
     protected String getBoardId(TestBoardInfo testBoardInfo) {
-        return String.valueOf(this.getBoard(testBoardInfo).getId());
+        return this.getBoard(testBoardInfo).getId();
     }
 
     private PostInfo getPost(TestPostInfo testPostInfo) {
@@ -619,7 +621,7 @@ public abstract class IricomTestSuite {
     }
 
     protected String getPostId(TestPostInfo testPostInfo) {
-        return String.valueOf(this.getPost(testPostInfo).getId());
+        return this.getPost(testPostInfo).getId();
     }
 
     private CommentInfo getComment(TestCommentInfo testCommentInfo) {
@@ -627,7 +629,7 @@ public abstract class IricomTestSuite {
     }
 
     protected String getCommentId(TestCommentInfo testCommentInfo) {
-        return String.valueOf(this.getComment(testCommentInfo).getId());
+        return this.getComment(testCommentInfo).getId();
     }
 
     private PostReportInfo getPostReport(TestPostReportInfo testPostReportInfo) {
@@ -635,7 +637,7 @@ public abstract class IricomTestSuite {
     }
 
     protected String getPostReportId(TestPostReportInfo testPostReportInfo) {
-        return String.valueOf(this.getPostReport(testPostReportInfo).getId());
+        return this.getPostReport(testPostReportInfo).getId();
     }
 
     private CommentReportInfo getCommentReport(TestCommentReportInfo testCommentReportInfo) {
@@ -643,7 +645,7 @@ public abstract class IricomTestSuite {
     }
 
     protected String getCommentReportId(TestCommentReportInfo testCommentReportInfo) {
-        return String.valueOf(this.getCommentReport(testCommentReportInfo).getId());
+        return this.getCommentReport(testCommentReportInfo).getId();
     }
 
     private PostBlockInfo getPostBlock(TestPostBlockInfo testPostBlockInfo) {
@@ -651,7 +653,7 @@ public abstract class IricomTestSuite {
     }
 
     protected String getPostBlockId(TestPostBlockInfo testPostBlockInfo) {
-        return String.valueOf(this.getPostBlock(testPostBlockInfo).getId());
+        return this.getPostBlock(testPostBlockInfo).getId();
     }
 
     protected AccountGroupInfo getAccountGroup(TestAccountGroupInfo testAccountGroupInfo) {

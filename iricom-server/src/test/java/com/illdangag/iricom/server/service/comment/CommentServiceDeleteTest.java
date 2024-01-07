@@ -1,6 +1,5 @@
 package com.illdangag.iricom.server.service.comment;
 
-import com.illdangag.iricom.server.data.entity.Account;
 import com.illdangag.iricom.server.data.entity.type.PostState;
 import com.illdangag.iricom.server.data.entity.type.PostType;
 import com.illdangag.iricom.server.data.response.CommentInfo;
@@ -73,12 +72,12 @@ public class CommentServiceDeleteTest extends IricomTestSuite {
     public void deleteComment() throws Exception {
         TestCommentInfo targetCommentInfo = testCommentInfo00;
 
-        Account account = getAccount(targetCommentInfo.getCreator());
+        String accountId = getAccountId(targetCommentInfo.getCreator());
         String boardId = getBoardId(targetCommentInfo.getPost().getBoard());
         String postId = getPostId(targetCommentInfo.getPost());
         String commentId = getCommentId(targetCommentInfo);
 
-        CommentInfo commentInfo = this.commentService.deleteComment(account, boardId, postId, commentId);
+        CommentInfo commentInfo = this.commentService.deleteComment(accountId, boardId, postId, commentId);
 
         Assertions.assertEquals(commentId, commentInfo.getId());
         Assertions.assertEquals(true, commentInfo.getDeleted());
@@ -90,12 +89,12 @@ public class CommentServiceDeleteTest extends IricomTestSuite {
     public void deleteHasNestedComment() throws Exception {
         TestCommentInfo targetCommentInfo = testCommentInfo01;
 
-        Account account = getAccount(targetCommentInfo.getCreator());
+        String accountId = getAccountId(targetCommentInfo.getCreator());
         String boardId = getBoardId(targetCommentInfo.getPost().getBoard());
         String postId = getPostId(targetCommentInfo.getPost());
         String commentId = getCommentId(targetCommentInfo);
 
-        CommentInfo commentInfo = this.commentService.deleteComment(account, boardId, postId, commentId);
+        CommentInfo commentInfo = this.commentService.deleteComment(accountId, boardId, postId, commentId);
 
         Assertions.assertEquals(commentId, commentInfo.getId());
         Assertions.assertEquals(true, commentInfo.getDeleted());
@@ -107,12 +106,12 @@ public class CommentServiceDeleteTest extends IricomTestSuite {
     public void deleteNestedComment() throws Exception {
         TestCommentInfo targetCommentInfo = testCommentInfo04;
 
-        Account account = getAccount(targetCommentInfo.getCreator());
+        String accountId = getAccountId(targetCommentInfo.getCreator());
         String boardId = getBoardId(targetCommentInfo.getPost().getBoard());
         String postId = getPostId(targetCommentInfo.getPost());
         String commentId = getCommentId(targetCommentInfo);
 
-        CommentInfo commentInfo = this.commentService.deleteComment(account, boardId, postId, commentId);
+        CommentInfo commentInfo = this.commentService.deleteComment(accountId, boardId, postId, commentId);
 
         Assertions.assertEquals(commentId, commentInfo.getId());
         Assertions.assertEquals(true, commentInfo.getDeleted());
@@ -124,13 +123,13 @@ public class CommentServiceDeleteTest extends IricomTestSuite {
     public void notExistComment() throws Exception {
         TestCommentInfo targetCommentInfo = testCommentInfo00;
 
-        Account account = getAccount(targetCommentInfo.getCreator());
+        String accountId = getAccountId(targetCommentInfo.getCreator());
         String boardId = getBoardId(targetCommentInfo.getPost().getBoard());
         String postId = getPostId(targetCommentInfo.getPost());
         String commentId = "NOT_EXIST_COMMENT";
 
         IricomException iricomException = Assertions.assertThrows(IricomException.class, () -> {
-            this.commentService.deleteComment(account, boardId, postId, commentId);
+            this.commentService.deleteComment(accountId, boardId, postId, commentId);
         });
 
         Assertions.assertEquals("05000000", iricomException.getErrorCode());
@@ -142,17 +141,17 @@ public class CommentServiceDeleteTest extends IricomTestSuite {
     public void notCreator() throws Exception {
         TestCommentInfo targetCommentInfo = testCommentInfo05;
 
-        Account creator = getAccount(targetCommentInfo.getCreator());
-        Account account = getAccount(common01);
+        String creatorId = getAccountId(targetCommentInfo.getCreator());
+        String accountId = getAccountId(common01);
         String boardId = getBoardId(targetCommentInfo.getPost().getBoard());
         String postId = getPostId(targetCommentInfo.getPost());
         String commentId = getCommentId(targetCommentInfo);
 
         IricomException iricomException = Assertions.assertThrows(IricomException.class, () -> {
-            this.commentService.deleteComment(account, boardId, postId, commentId);
+            this.commentService.deleteComment(accountId, boardId, postId, commentId);
         });
 
-        Assertions.assertNotEquals(creator.getId(), account.getId());
+        Assertions.assertNotEquals(creatorId, accountId);
         Assertions.assertEquals("05000004", iricomException.getErrorCode());
         Assertions.assertEquals("Invalid authorization.", iricomException.getMessage());
     }

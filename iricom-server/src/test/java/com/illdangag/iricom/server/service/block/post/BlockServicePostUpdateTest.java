@@ -1,6 +1,5 @@
 package com.illdangag.iricom.server.service.block.post;
 
-import com.illdangag.iricom.server.data.entity.Account;
 import com.illdangag.iricom.server.data.entity.type.PostState;
 import com.illdangag.iricom.server.data.entity.type.PostType;
 import com.illdangag.iricom.server.data.request.PostBlockInfoUpdate;
@@ -52,7 +51,7 @@ public class BlockServicePostUpdateTest extends IricomTestSuite {
     @Test
     @DisplayName("시스템 관리자")
     public void updateSystemAdmin() throws Exception {
-        Account account = getAccount(systemAdmin);
+        String accountId = getAccountId(systemAdmin);
         String boardId = getBoardId(alreadyBlockPostInfo00.getBoard());
         String postId = getPostId(alreadyBlockPostInfo00);
 
@@ -60,7 +59,7 @@ public class BlockServicePostUpdateTest extends IricomTestSuite {
                 .reason("UPDATE_SYSTEM_ADMIN")
                 .build();
 
-        PostBlockInfo postBlockInfo = blockService.updatePostBlockInfo(account, boardId, postId, postBlockInfoUpdate);
+        PostBlockInfo postBlockInfo = blockService.updatePostBlockInfo(accountId, boardId, postId, postBlockInfoUpdate);
 
         Assertions.assertEquals("UPDATE_SYSTEM_ADMIN", postBlockInfo.getReason());
     }
@@ -68,7 +67,7 @@ public class BlockServicePostUpdateTest extends IricomTestSuite {
     @Test
     @DisplayName("게시판 관리자")
     public void updateBoardAdmin() throws Exception {
-        Account account = getAccount(allBoardAdmin);
+        String accountId = getAccountId(allBoardAdmin);
         String boardId = getBoardId(alreadyBlockPostInfo00.getBoard());
         String postId = getPostId(alreadyBlockPostInfo00);
 
@@ -76,7 +75,7 @@ public class BlockServicePostUpdateTest extends IricomTestSuite {
                 .reason("UPDATE_BOARD_ADMIN")
                 .build();
 
-        PostBlockInfo postBlockInfo = blockService.updatePostBlockInfo(account, boardId, postId, postBlockInfoUpdate);
+        PostBlockInfo postBlockInfo = blockService.updatePostBlockInfo(accountId, boardId, postId, postBlockInfoUpdate);
 
         Assertions.assertEquals("UPDATE_BOARD_ADMIN", postBlockInfo.getReason());
     }
@@ -84,7 +83,7 @@ public class BlockServicePostUpdateTest extends IricomTestSuite {
     @Test
     @DisplayName("다른 게시판 관리자")
     public void updateOtherBoardAdmin() throws Exception {
-        Account account = getAccount(enableBoardAdmin);
+        String accountId = getAccountId(enableBoardAdmin);
         String boardId = getBoardId(alreadyBlockPostInfo00.getBoard());
         String postId = getPostId(alreadyBlockPostInfo00);
 
@@ -93,14 +92,14 @@ public class BlockServicePostUpdateTest extends IricomTestSuite {
                 .build();
 
         Assertions.assertThrows(IricomException.class, () -> {
-            blockService.updatePostBlockInfo(account, boardId, postId, postBlockInfoUpdate);
+            blockService.updatePostBlockInfo(accountId, boardId, postId, postBlockInfoUpdate);
         });
     }
 
     @Test
     @DisplayName("일반 사용자")
     public void updateAccount() throws Exception {
-        Account account = getAccount(common00);
+        String accountId = getAccountId(common00);
         String boardId = getBoardId(alreadyBlockPostInfo00.getBoard());
         String postId = getPostId(alreadyBlockPostInfo00);
 
@@ -109,14 +108,14 @@ public class BlockServicePostUpdateTest extends IricomTestSuite {
                 .build();
 
         Assertions.assertThrows(IricomException.class, () -> {
-            blockService.updatePostBlockInfo(account, boardId, postId, postBlockInfoUpdate);
+            blockService.updatePostBlockInfo(accountId, boardId, postId, postBlockInfoUpdate);
         });
     }
 
     @Test
     @DisplayName("등록되지 않은 사용자")
     public void updateUnknown() throws Exception {
-        Account account = getAccount(unknown00);
+        String accountId = getAccountId(unknown00);
         String boardId = getBoardId(alreadyBlockPostInfo00.getBoard());
         String postId = getPostId(alreadyBlockPostInfo00);
 
@@ -125,7 +124,7 @@ public class BlockServicePostUpdateTest extends IricomTestSuite {
                 .build();
 
         Assertions.assertThrows(IricomException.class, () -> {
-            blockService.updatePostBlockInfo(account, boardId, postId, postBlockInfoUpdate);
+            blockService.updatePostBlockInfo(accountId, boardId, postId, postBlockInfoUpdate);
         });
     }
 }
