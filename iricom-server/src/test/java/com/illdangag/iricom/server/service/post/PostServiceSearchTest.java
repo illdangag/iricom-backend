@@ -18,12 +18,14 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 
+import javax.transaction.Transactional;
 import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
 @DisplayName("service: 게시물 - 목록 조회")
 @Slf4j
+@Transactional
 public class PostServiceSearchTest extends IricomTestSuite {
     @Autowired
     private PostService postService;

@@ -51,8 +51,7 @@ public class CommentVoteRepositoryImpl implements CommentVoteRepository {
         TypedQuery<Long> query = this.entityManager.createQuery(jpql, Long.class)
                 .setParameter("comment", comment)
                 .setParameter("type", type);
-        long result = query.getSingleResult();
-        return result;
+        return query.getSingleResult();
     }
 
     @Override
@@ -62,5 +61,6 @@ public class CommentVoteRepositoryImpl implements CommentVoteRepository {
         } else {
             this.entityManager.merge(commentVote);
         }
+        this.entityManager.flush();
     }
 }

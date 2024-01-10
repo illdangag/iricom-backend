@@ -51,8 +51,7 @@ public class BoardRepositoryImpl implements BoardRepository {
 
         TypedQuery<Board> query = this.entityManager.createQuery(jpql, Board.class)
                 .setParameter("idList", idList);
-        List<Board> resultList = query.getResultList();
-        return resultList;
+        return query.getResultList();
     }
 
     /**
@@ -99,8 +98,7 @@ public class BoardRepositoryImpl implements BoardRepository {
             query.setMaxResults(limit);
         }
 
-        List<Board> resultList = query.getResultList();
-        return resultList;
+        return query.getResultList();
     }
 
     /**
@@ -139,17 +137,17 @@ public class BoardRepositoryImpl implements BoardRepository {
             query.setParameter("title", "%" + StringUtils.escape(title) + "%");
         }
 
-        Long result = query.getSingleResult();
-        return result;
+        return query.getSingleResult();
     }
 
     @Override
     public void save(Board board) {
         if (board.getId() == null) {
-            entityManager.persist(board);
+            this.entityManager.persist(board);
         } else {
-            entityManager.merge(board);
+            this.entityManager.merge(board);
         }
+        this.entityManager.flush();
     }
 
     /**
@@ -164,8 +162,7 @@ public class BoardRepositoryImpl implements BoardRepository {
         TypedQuery<BoardAdmin> query = this.entityManager.createQuery(jpql, BoardAdmin.class)
                 .setParameter("boards", boardList);
 
-        List<BoardAdmin> resultList = query.getResultList();
-        return resultList;
+        return query.getResultList();
     }
 
     /**
@@ -180,14 +177,13 @@ public class BoardRepositoryImpl implements BoardRepository {
             jpql += " WHERE ba.account = :account";
         }
 
-        TypedQuery<BoardAdmin> query = entityManager.createQuery(jpql, BoardAdmin.class);
+        TypedQuery<BoardAdmin> query = this.entityManager.createQuery(jpql, BoardAdmin.class);
 
         if (account != null) {
             query.setParameter("account", account);
         }
 
-        List<BoardAdmin> boardAdminList = query.getResultList();
-        return boardAdminList;
+        return query.getResultList();
     }
 
     /**
@@ -200,12 +196,11 @@ public class BoardRepositoryImpl implements BoardRepository {
                 " AND ba.account = :account" +
                 " ORDER BY ba.createDate DESC";
 
-        TypedQuery<BoardAdmin> query = entityManager.createQuery(jpql, BoardAdmin.class)
+        TypedQuery<BoardAdmin> query = this.entityManager.createQuery(jpql, BoardAdmin.class)
                 .setParameter("board", board)
                 .setParameter("account", account);
 
-        List<BoardAdmin> resultList = query.getResultList();
-        return resultList;
+        return query.getResultList();
     }
 
     private List<Long> getAccessibleBoardIdList(Account account) {
@@ -267,11 +262,13 @@ public class BoardRepositoryImpl implements BoardRepository {
         } else {
             this.entityManager.merge(boardAdmin);
         }
+        this.entityManager.flush();
     }
 
     @Override
     public void delete(BoardAdmin boardAdmin) {
         BoardAdmin entity = this.entityManager.find(BoardAdmin.class, boardAdmin.getId());
         this.entityManager.remove(entity);
+        this.entityManager.flush();
     }
 }

@@ -15,11 +15,13 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 
+import javax.transaction.Transactional;
 import java.util.Arrays;
 import java.util.Collections;
 
 @DisplayName("service: 계정 그룹 - 조회")
 @Slf4j
+@Transactional
 public class AccountGroupServiceGetTest extends IricomTestSuite {
     @Autowired
     private AccountGroupService accountGroupService;
@@ -44,7 +46,7 @@ public class AccountGroupServiceGetTest extends IricomTestSuite {
 
     @Test
     @DisplayName("그룹 정보 조회")
-    public void get() {
+    void get() {
         AccountGroupInfo testAccountGroup = getAccountGroup(testAccountGroupInfo00);
         String accountGroupId = testAccountGroup.getId();
 
@@ -75,7 +77,7 @@ public class AccountGroupServiceGetTest extends IricomTestSuite {
 
     @Test
     @DisplayName("존재하지 않는 그룹 조회")
-    public void getNotExistAccountGroup() throws Exception {
+    void getNotExistAccountGroup() throws Exception {
         String accountGroupId = "NOT_EXIST_ACCOUNT_GROUP";
 
         Assertions.assertThrows(IricomException.class, () -> {

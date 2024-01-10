@@ -40,5 +40,6 @@ public class FirebaseAuthenticationRepositoryImpl implements FirebaseAuthenticat
         } else {
             this.entityManager.merge(firebaseAuthentication);
         }
+        this.entityManager.flush();
     }
 }

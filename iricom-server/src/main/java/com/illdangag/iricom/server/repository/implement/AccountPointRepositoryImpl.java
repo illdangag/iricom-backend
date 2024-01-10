@@ -47,9 +47,7 @@ public class AccountPointRepositoryImpl implements AccountPointRepository {
         TypedQuery<Long> query = this.entityManager.createQuery(jpql, Long.class)
                 .setParameter("account", account);
 
-        long result = query.getSingleResult();
-        return result;
-
+        return query.getSingleResult();
     }
 
     @Override
@@ -59,6 +57,7 @@ public class AccountPointRepositoryImpl implements AccountPointRepository {
         accountPointTableOptional.ifPresent(this.entityManager::remove); // 이미 해당 type의 정보가 존재 하는 경우 이전 정보는 샂게
 
         this.entityManager.persist(accountPointTable);
+        this.entityManager.flush();
     }
 
     @Override
@@ -68,5 +67,6 @@ public class AccountPointRepositoryImpl implements AccountPointRepository {
         } else {
             this.entityManager.merge(accountPoint);
         }
+        this.entityManager.flush();
     }
 }

@@ -16,10 +16,12 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 
+import javax.transaction.Transactional;
 import java.util.Collections;
 
 @DisplayName("service: 게시물 - 생성")
 @Slf4j
+@Transactional
 public class PostServiceCreateTest extends IricomTestSuite {
     @Autowired
     private PostService postService;

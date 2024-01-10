@@ -16,10 +16,12 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 
+import javax.transaction.Transactional;
 import java.util.Collections;
 
-@Slf4j
 @DisplayName("service: 댓글 - 삭제")
+@Slf4j
+@Transactional
 public class CommentServiceDeleteTest extends IricomTestSuite {
     @Autowired
     private CommentService commentService;

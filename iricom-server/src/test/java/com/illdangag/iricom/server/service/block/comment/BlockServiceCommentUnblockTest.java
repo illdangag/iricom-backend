@@ -15,10 +15,12 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 
+import javax.transaction.Transactional;
 import java.util.Arrays;
 import java.util.Collections;
 
 @DisplayName("service: 차단 - 댓글 차단 해제")
+@Transactional
 public class BlockServiceCommentUnblockTest extends IricomTestSuite {
     @Autowired
     private BlockService blockService;

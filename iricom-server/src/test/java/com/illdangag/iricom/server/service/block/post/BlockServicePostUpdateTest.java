@@ -17,10 +17,12 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 
+import javax.transaction.Transactional;
 import java.util.Collections;
 
 @DisplayName("service: 차단 - 수정")
 @Slf4j
+@Transactional
 public class BlockServicePostUpdateTest extends IricomTestSuite {
     @Autowired
     private BlockService blockService;

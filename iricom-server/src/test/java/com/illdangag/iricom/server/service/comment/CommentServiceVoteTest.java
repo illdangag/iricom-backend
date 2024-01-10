@@ -17,10 +17,12 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 
+import javax.transaction.Transactional;
 import java.util.Collections;
 
 @DisplayName("service: 댓글 - 좋아요, 싫어요")
 @Slf4j
+@Transactional
 public class CommentServiceVoteTest extends IricomTestSuite {
     @Autowired
     private CommentService commentService;

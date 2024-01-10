@@ -17,11 +17,13 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 
+import javax.transaction.Transactional;
 import javax.validation.ConstraintViolationException;
 import java.util.Collections;
 
-@Slf4j
 @DisplayName("service: 댓글 - 갱신")
+@Slf4j
+@Transactional
 public class CommentServiceUpdateTest extends IricomTestSuite {
     @Autowired
     private CommentService commentService;

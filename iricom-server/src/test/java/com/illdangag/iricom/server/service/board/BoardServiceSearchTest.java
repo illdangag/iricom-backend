@@ -14,6 +14,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 
+import javax.transaction.Transactional;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
@@ -21,6 +22,7 @@ import java.util.stream.Collectors;
 
 @DisplayName("service: 게시판 - 목록 조회")
 @Slf4j
+@Transactional
 public class BoardServiceSearchTest extends IricomTestSuite {
     @Autowired
     private BoardService boardService;

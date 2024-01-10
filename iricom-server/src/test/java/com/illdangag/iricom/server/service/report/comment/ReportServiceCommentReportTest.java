@@ -17,10 +17,12 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 
+import javax.transaction.Transactional;
 import java.util.Arrays;
 
 @DisplayName("service: 신고 - 댓글 신고")
 @Slf4j
+@Transactional
 public class ReportServiceCommentReportTest extends IricomTestSuite {
     @Autowired
     private ReportService reportService;

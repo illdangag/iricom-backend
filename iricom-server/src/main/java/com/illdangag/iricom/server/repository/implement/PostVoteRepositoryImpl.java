@@ -52,8 +52,7 @@ public class PostVoteRepositoryImpl implements PostVoteRepository {
         TypedQuery<Long> query = this.entityManager.createQuery(jpql, Long.class)
                 .setParameter("post", post)
                 .setParameter("type", voteType);
-        long result = query.getSingleResult();
-        return result;
+        return query.getSingleResult();
     }
 
     @Override
@@ -63,5 +62,6 @@ public class PostVoteRepositoryImpl implements PostVoteRepository {
         } else {
             this.entityManager.merge(postVote);
         }
+        this.entityManager.flush();
     }
 }

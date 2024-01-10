@@ -13,11 +13,13 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 
+import javax.transaction.Transactional;
 import java.util.Arrays;
 import java.util.Collections;
 
 @DisplayName("service: 게시판 - 조회")
 @Slf4j
+@Transactional
 public class BoardServiceGetTest extends IricomTestSuite {
     @Autowired
     private BoardService boardService;

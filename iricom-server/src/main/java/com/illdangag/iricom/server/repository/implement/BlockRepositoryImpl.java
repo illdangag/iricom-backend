@@ -27,8 +27,7 @@ public class BlockRepositoryImpl implements BlockRepository {
 
         TypedQuery<PostBlock> query = this.entityManager.createQuery(jpql, PostBlock.class)
                 .setParameter("post", post);
-        List<PostBlock> resultList = query.getResultList();
-        return resultList;
+        return query.getResultList();
     }
 
     @Override
@@ -39,8 +38,7 @@ public class BlockRepositoryImpl implements BlockRepository {
 
         TypedQuery<Long> query = this.entityManager.createQuery(jpql, Long.class)
                 .setParameter("post", post);
-        long result = query.getSingleResult();
-        return result;
+        return query.getSingleResult();
     }
 
     @Override
@@ -56,8 +54,7 @@ public class BlockRepositoryImpl implements BlockRepository {
                 .setParameter("reason", "%" + StringUtils.escape(reason) + "%")
                 .setFirstResult(offset)
                 .setMaxResults(limit);
-        List<PostBlock> resultList = query.getResultList();
-        return resultList;
+        return query.getResultList();
     }
 
     @Override
@@ -70,8 +67,7 @@ public class BlockRepositoryImpl implements BlockRepository {
         TypedQuery<Long> query = this.entityManager.createQuery(jpql, Long.class)
                 .setParameter("board", board)
                 .setParameter("reason", "%" + StringUtils.escape(reason) + "%");
-        long result = query.getSingleResult();
-        return result;
+        return query.getSingleResult();
     }
 
     @Override
@@ -110,6 +106,7 @@ public class BlockRepositoryImpl implements BlockRepository {
         } else {
             entityManager.merge(postBlock);
         }
+        this.entityManager.flush();
     }
 
     @Override
@@ -121,8 +118,7 @@ public class BlockRepositoryImpl implements BlockRepository {
 
         TypedQuery<PostBlock> query = this.entityManager.createQuery(jpql, PostBlock.class)
                 .setParameter("reason", "%" + StringUtils.escape(reason) + "%");
-        List<PostBlock> resultList = query.getResultList();
-        return resultList;
+        return query.getResultList();
     }
 
     @Override
@@ -133,8 +129,7 @@ public class BlockRepositoryImpl implements BlockRepository {
 
         TypedQuery<Long> query = this.entityManager.createQuery(jpql, Long.class)
                 .setParameter("reason", "%" + StringUtils.escape(reason) + "%");
-        long result = query.getSingleResult();
-        return result;
+        return query.getSingleResult();
     }
 
     @Override
@@ -188,16 +183,16 @@ public class BlockRepositoryImpl implements BlockRepository {
             query.setMaxResults(limit);
         }
 
-        List<CommentBlock> resultList = query.getResultList();
-        return resultList;
+        return query.getResultList();
     }
 
     @Override
     public void save(CommentBlock commentBlock) {
         if (commentBlock.getId() == null) {
-            entityManager.persist(commentBlock);
+            this.entityManager.persist(commentBlock);
         } else {
-            entityManager.merge(commentBlock);
+            this.entityManager.merge(commentBlock);
         }
+        this.entityManager.flush();
     }
 }

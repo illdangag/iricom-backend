@@ -41,9 +41,10 @@ public class FileRepositoryImpl implements FileRepository {
     @Override
     public void saveFileMetadata(FileMetadata fileMetadata) {
         if (fileMetadata.getId() == null) {
-            entityManager.persist(fileMetadata);
+            this.entityManager.persist(fileMetadata);
         } else {
             entityManager.merge(fileMetadata);
         }
+        this.entityManager.flush();
     }
 }

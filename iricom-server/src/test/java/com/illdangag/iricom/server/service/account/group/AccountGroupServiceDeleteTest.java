@@ -11,8 +11,11 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 
+import javax.transaction.Transactional;
+
 @DisplayName("service: 계정 그룹 - 삭제")
 @Slf4j
+@Transactional
 public class AccountGroupServiceDeleteTest extends IricomTestSuite {
     @Autowired
     private AccountGroupService accountGroupService;

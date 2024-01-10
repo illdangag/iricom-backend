@@ -3,6 +3,7 @@ package com.illdangag.iricom.server.service.comment;
 import com.illdangag.iricom.server.data.entity.type.PostState;
 import com.illdangag.iricom.server.data.entity.type.PostType;
 import com.illdangag.iricom.server.data.request.CommentInfoCreate;
+import com.illdangag.iricom.server.data.response.AccountInfo;
 import com.illdangag.iricom.server.data.response.CommentInfo;
 import com.illdangag.iricom.server.exception.IricomException;
 import com.illdangag.iricom.server.service.AccountService;
@@ -18,11 +19,13 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 
+import javax.transaction.Transactional;
 import javax.validation.ConstraintViolationException;
 import java.util.Collections;
 
 @DisplayName("service: 댓글 - 생성")
 @Slf4j
+@Transactional
 public class CommentServiceCreateTest extends IricomTestSuite {
     @Autowired
     private CommentService commentService;
@@ -151,14 +154,14 @@ public class CommentServiceCreateTest extends IricomTestSuite {
         String boardId = getBoardId(testPostInfo00.getBoard());
         String postId = getPostId(testPostInfo00);
 
-        long beforePoint = this.accountService.getAccountInfo(accountId).getPoint();
+        AccountInfo beforeAccountInfo = this.accountService.getAccountInfo(accountId);
 
         CommentInfoCreate commentInfoCreate = CommentInfoCreate.builder()
                 .content("댓글 생성")
                 .build();
         commentService.createCommentInfo(accountId, boardId, postId, commentInfoCreate);
 
-        long afterPoint = this.accountService.getAccountInfo(accountId).getPoint();
-        Assertions.assertTrue(beforePoint < afterPoint);
+        AccountInfo afterAccountInfo = this.accountService.getAccountInfo(accountId);
+        Assertions.assertTrue(beforeAccountInfo.getPoint() < afterAccountInfo.getPoint());
     }
 }

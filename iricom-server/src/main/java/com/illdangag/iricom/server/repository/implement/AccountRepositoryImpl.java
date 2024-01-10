@@ -56,8 +56,7 @@ public class AccountRepositoryImpl implements AccountRepository {
 
         TypedQuery<Account> query = this.entityManager.createQuery(jpql, Account.class)
                 .setParameter("email", email);
-        List<Account> resultList = query.getResultList();
-        return resultList;
+        return query.getResultList();
     }
 
     @Override
@@ -68,8 +67,7 @@ public class AccountRepositoryImpl implements AccountRepository {
         TypedQuery<Account> query = this.entityManager.createQuery(jpql, Account.class)
                 .setFirstResult(offset)
                 .setMaxResults(limit);
-        List<Account> resultList = query.getResultList();
-        return resultList;
+        return query.getResultList();
     }
 
     @Override
@@ -77,8 +75,7 @@ public class AccountRepositoryImpl implements AccountRepository {
         final String jpql = "SELECT COUNT(*) FROM Account a";
 
         TypedQuery<Long> query = this.entityManager.createQuery(jpql, Long.class);
-        long result = query.getSingleResult();
-        return result;
+        return query.getSingleResult();
     }
 
     @Override
@@ -92,8 +89,7 @@ public class AccountRepositoryImpl implements AccountRepository {
                 .setParameter("keyword", "%" +  StringUtils.escape(keyword) + "%")
                 .setFirstResult(offset)
                 .setMaxResults(limit);
-        List<Account> resultList = query.getResultList();
-        return resultList;
+        return query.getResultList();
     }
 
     @Override
@@ -104,8 +100,7 @@ public class AccountRepositoryImpl implements AccountRepository {
 
         TypedQuery<Long> query = this.entityManager.createQuery(jpql, Long.class)
                 .setParameter("keyword", "%" + StringUtils.escape(keyword) + "%");
-        long result = query.getSingleResult();
-        return result;
+        return query.getSingleResult();
     }
 
     @Override
@@ -182,6 +177,15 @@ public class AccountRepositoryImpl implements AccountRepository {
         } else {
             this.entityManager.merge(account);
         }
+
+        account.getPointList().forEach(accountPoint -> {
+            if (accountPoint.getId() == null) {
+                this.entityManager.persist(accountPoint);
+            } else {
+                this.entityManager.merge(accountPoint);
+            }
+        });
+        this.entityManager.flush();
     }
 
     @Override
@@ -191,5 +195,6 @@ public class AccountRepositoryImpl implements AccountRepository {
         } else {
             this.entityManager.merge(accountDetail);
         }
+        this.entityManager.flush();
     }
 }

@@ -40,9 +40,7 @@ public class CommentRepositoryImpl implements CommentRepository {
                 .setParameter("post", post)
                 .setFirstResult(offset)
                 .setMaxResults(limit);
-        List<Comment> resultList = query.getResultList();
-
-        return resultList;
+        return query.getResultList();
     }
 
     public long getCommentCount(Post post) {
@@ -52,9 +50,7 @@ public class CommentRepositoryImpl implements CommentRepository {
 
         TypedQuery<Long> query = this.entityManager.createQuery(jpql, Long.class)
                 .setParameter("post", post);
-        long result = query.getSingleResult();
-
-        return result;
+        return query.getSingleResult();
     }
 
     @Override
@@ -69,9 +65,7 @@ public class CommentRepositoryImpl implements CommentRepository {
                 .setParameter("referenceComment", referenceComment)
                 .setFirstResult(offset)
                 .setMaxResults(limit);
-        List<Comment> resultList = query.getResultList();
-
-        return resultList;
+        return query.getResultList();
     }
 
     @Override
@@ -83,9 +77,7 @@ public class CommentRepositoryImpl implements CommentRepository {
         TypedQuery<Long> query = this.entityManager.createQuery(jpql, Long.class)
                 .setParameter("post", post)
                 .setParameter("referenceComment", referenceComment);
-        long result = query.getSingleResult();
-
-        return result;
+        return query.getSingleResult();
     }
 
     @Override
@@ -95,8 +87,7 @@ public class CommentRepositoryImpl implements CommentRepository {
 
         TypedQuery<Long> query = this.entityManager.createQuery(jpql, Long.class)
                 .setParameter("post", post);
-        long result = query.getSingleResult();
-        return result;
+        return query.getSingleResult();
     }
 
     @Override
@@ -106,5 +97,6 @@ public class CommentRepositoryImpl implements CommentRepository {
         } else {
             this.entityManager.merge(comment);
         }
+        this.entityManager.flush();
     }
 }

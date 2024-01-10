@@ -53,8 +53,7 @@ public class PostRepositoryImpl implements PostRepository {
                 .setParameter("type", postType)
                 .setFirstResult(offset)
                 .setMaxResults(limit);
-        List<Post> resultList = query.getResultList();
-        return resultList;
+        return query.getResultList();
     }
 
     @Override
@@ -69,8 +68,7 @@ public class PostRepositoryImpl implements PostRepository {
                 .setParameter("board", board)
                 .setFirstResult(offset)
                 .setMaxResults(limit);
-        List<Post> resultList = query.getResultList();
-        return resultList;
+        return query.getResultList();
     }
 
     @Override
@@ -87,8 +85,7 @@ public class PostRepositoryImpl implements PostRepository {
                 .setParameter("boardIdList", boardIdList)
                 .setFirstResult(offset)
                 .setMaxResults(limit);
-        List<Post> resultList = query.getResultList();
-        return resultList;
+        return query.getResultList();
     }
 
     @Override
@@ -101,8 +98,7 @@ public class PostRepositoryImpl implements PostRepository {
         TypedQuery<Long> query = this.entityManager.createQuery(jpql, Long.class)
                 .setParameter("account", account)
                 .setParameter("boardIdList", boardIdList);
-        long result = query.getSingleResult();
-        return result;
+        return query.getSingleResult();
     }
 
     @Override
@@ -116,8 +112,7 @@ public class PostRepositoryImpl implements PostRepository {
         TypedQuery<Long> query = this.entityManager.createQuery(jpql, Long.class)
                 .setParameter("board", board)
                 .setParameter("type", postType);
-        long result = query.getSingleResult();
-        return result;
+        return query.getSingleResult();
     }
 
     @Override
@@ -129,8 +124,7 @@ public class PostRepositoryImpl implements PostRepository {
 
         TypedQuery<Long> query = this.entityManager.createQuery(jpql, Long.class)
                 .setParameter("board", board);
-        long result = query.getSingleResult();
-        return result;
+        return query.getSingleResult();
     }
 
     @Override
@@ -149,8 +143,7 @@ public class PostRepositoryImpl implements PostRepository {
                 .setParameter("title", "%" + StringUtils.escape(containTitle) + "%")
                 .setFirstResult(offset)
                 .setMaxResults(limit);
-        List<Post> resultList = query.getResultList();
-        return resultList;
+        return query.getResultList();
     }
 
     @Override
@@ -167,8 +160,7 @@ public class PostRepositoryImpl implements PostRepository {
                 .setParameter("title", "%" + StringUtils.escape(containTitle) + "%")
                 .setFirstResult(offset)
                 .setMaxResults(limit);
-        List<Post> resultList = query.getResultList();
-        return resultList;
+        return query.getResultList();
     }
 
     @Override
@@ -184,8 +176,7 @@ public class PostRepositoryImpl implements PostRepository {
                 .setParameter("board", board)
                 .setParameter("type", postType)
                 .setParameter("title", "%" + StringUtils.escape(containTitle) + "%");
-        long result = query.getSingleResult();
-        return result;
+        return query.getSingleResult();
     }
 
     @Override
@@ -199,8 +190,7 @@ public class PostRepositoryImpl implements PostRepository {
         TypedQuery<Long> query = this.entityManager.createQuery(jpql, Long.class)
                 .setParameter("board", board)
                 .setParameter("title", "%" + StringUtils.escape(containTitle) + "%");
-        long result = query.getSingleResult();
-        return result;
+        return query.getSingleResult();
     }
 
     @Override
@@ -210,6 +200,7 @@ public class PostRepositoryImpl implements PostRepository {
         } else {
             this.entityManager.merge(post);
         }
+        this.entityManager.flush();
     }
 
     @Override
@@ -219,6 +210,7 @@ public class PostRepositoryImpl implements PostRepository {
         } else {
             this.entityManager.merge(postContent);
         }
+        this.entityManager.flush();
     }
 
     @Override
@@ -234,5 +226,7 @@ public class PostRepositoryImpl implements PostRepository {
         } else {
             this.entityManager.merge(post);
         }
+
+        this.entityManager.flush();
     }
 }

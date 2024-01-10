@@ -16,11 +16,13 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 
+import javax.transaction.Transactional;
 import javax.validation.ConstraintViolationException;
 import java.util.Collections;
 
 @DisplayName("service: 게시물 - 수정")
 @Slf4j
+@Transactional
 public class PostServiceUpdateTest extends IricomTestSuite {
     @Autowired
     private PostService postService;

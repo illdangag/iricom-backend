@@ -14,13 +14,15 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 
+import javax.transaction.Transactional;
 import javax.validation.ConstraintViolationException;
 import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
-@Slf4j
 @DisplayName("service: 게시판 관리자 - 생성")
+@Slf4j
+@Transactional
 public class BoardAuthorizationServiceCreateTest extends IricomTestSuite {
     @Autowired
     private BoardAuthorizationService boardAuthorizationService;

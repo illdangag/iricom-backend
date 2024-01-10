@@ -16,9 +16,11 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 
+import javax.transaction.Transactional;
 import java.util.Collections;
 
 @DisplayName("service: 신고 - 게시물 정보 조회")
+@Transactional
 public class ReportServicePostGetTest extends IricomTestSuite {
     @Autowired
     ReportService reportService;

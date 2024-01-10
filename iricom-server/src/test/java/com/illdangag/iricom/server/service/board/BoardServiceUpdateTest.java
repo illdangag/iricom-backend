@@ -12,11 +12,13 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 
+import javax.transaction.Transactional;
 import javax.validation.ConstraintViolationException;
 import java.util.Collections;
 
 @DisplayName("service: 게시판 수정")
 @Slf4j
+@Transactional
 public class BoardServiceUpdateTest extends IricomTestSuite {
     @Autowired
     private BoardService boardService;

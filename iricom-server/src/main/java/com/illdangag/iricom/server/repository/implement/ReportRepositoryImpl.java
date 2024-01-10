@@ -32,8 +32,7 @@ public class ReportRepositoryImpl implements ReportRepository {
                 .setParameter("type", type)
                 .setParameter("board", board)
                 .setParameter("reason", "%" + StringUtils.escape(reason) + "%");
-        long result = query.getSingleResult();
-        return result;
+        return query.getSingleResult();
     }
 
     @Override
@@ -50,8 +49,7 @@ public class ReportRepositoryImpl implements ReportRepository {
                 .setParameter("reason", "%" + StringUtils.escape(reason) + "%")
                 .setFirstResult(offset)
                 .setMaxResults(limit);
-        List<PostReport> resultList = query.getResultList();
-        return resultList;
+        return query.getResultList();
     }
 
     @Override
@@ -65,8 +63,7 @@ public class ReportRepositoryImpl implements ReportRepository {
                 .setParameter("post", post)
                 .setParameter("board", board)
                 .setParameter("reason", "%" + StringUtils.escape(reason) + "%");
-        long result = query.getSingleResult();
-        return result;
+        return query.getSingleResult();
     }
 
     @Override
@@ -83,8 +80,7 @@ public class ReportRepositoryImpl implements ReportRepository {
                 .setParameter("reason", "%" + StringUtils.escape(reason) + "%")
                 .setFirstResult(offset)
                 .setMaxResults(limit);
-        List<PostReport> resultList = query.getResultList();
-        return resultList;
+        return query.getResultList();
     }
 
     @Override
@@ -100,8 +96,7 @@ public class ReportRepositoryImpl implements ReportRepository {
                 .setParameter("post", post)
                 .setParameter("board", board)
                 .setParameter("reason", "%" + StringUtils.escape(reason) + "%");
-        long result = query.getSingleResult();
-        return result;
+        return query.getSingleResult();
     }
 
     @Override
@@ -120,8 +115,7 @@ public class ReportRepositoryImpl implements ReportRepository {
                 .setParameter("reason", "%" + StringUtils.escape(reason) + "%")
                 .setFirstResult(offset)
                 .setMaxResults(limit);
-        List<PostReport> resultList = query.getResultList();
-        return resultList;
+        return query.getResultList();
     }
 
     @Override
@@ -133,8 +127,7 @@ public class ReportRepositoryImpl implements ReportRepository {
         TypedQuery<Long> query = this.entityManager.createQuery(jpql, Long.class)
                 .setParameter("board", board)
                 .setParameter("reason", "%" + StringUtils.escape(reason) + "%");
-        long result = query.getSingleResult();
-        return result;
+        return query.getSingleResult();
     }
 
     @Override
@@ -149,8 +142,7 @@ public class ReportRepositoryImpl implements ReportRepository {
                 .setParameter("reason", "%" + StringUtils.escape(reason) + "%")
                 .setFirstResult(offset)
                 .setMaxResults(limit);
-        List<PostReport> resultList = query.getResultList();
-        return resultList;
+        return query.getResultList();
     }
 
     @Override
@@ -162,9 +154,7 @@ public class ReportRepositoryImpl implements ReportRepository {
         TypedQuery<PostReport> query = this.entityManager.createQuery(jpql, PostReport.class)
                 .setParameter("account", account)
                 .setParameter("post", post);
-        List<PostReport> reportList = query.getResultList();
-
-        return reportList;
+        return query.getResultList();
     }
 
     @Override
@@ -202,6 +192,7 @@ public class ReportRepositoryImpl implements ReportRepository {
         } else {
             this.entityManager.merge(postReport);
         }
+        this.entityManager.flush();
     }
 
     @Override
@@ -215,8 +206,7 @@ public class ReportRepositoryImpl implements ReportRepository {
                 .setParameter("type", reportType)
                 .setParameter("board", board)
                 .setParameter("reason", "%" + StringUtils.escape(reason) + "%");
-        long result = query.getSingleResult();
-        return result;
+        return query.getSingleResult();
     }
 
     @Override
@@ -233,8 +223,7 @@ public class ReportRepositoryImpl implements ReportRepository {
                 .setParameter("reason", "%" + StringUtils.escape(reason) + "%")
                 .setFirstResult(offset)
                 .setMaxResults(limit);
-        List<CommentReport> reportList = query.getResultList();
-        return reportList;
+        return query.getResultList();
     }
 
     @Override
@@ -246,8 +235,7 @@ public class ReportRepositoryImpl implements ReportRepository {
         TypedQuery<Long> query = this.entityManager.createQuery(jpql, Long.class)
                 .setParameter("board", board)
                 .setParameter("reason", "%" + StringUtils.escape(reason) + "%");
-        long result = query.getSingleResult();
-        return result;
+        return query.getSingleResult();
     }
 
     @Override
@@ -262,8 +250,7 @@ public class ReportRepositoryImpl implements ReportRepository {
                 .setParameter("reason", "%" + StringUtils.escape(reason) + "%")
                 .setFirstResult(offset)
                 .setMaxResults(limit);
-        List<CommentReport> reportList = query.getResultList();
-        return reportList;
+        return query.getResultList();
     }
 
     @Override
@@ -279,8 +266,7 @@ public class ReportRepositoryImpl implements ReportRepository {
                 .setParameter("post", post)
                 .setParameter("board", board)
                 .setParameter("reason", "%" + StringUtils.escape(reason) + "%");
-        long result = query.getSingleResult();
-        return result;
+        return query.getSingleResult();
     }
 
     @Override
@@ -299,8 +285,7 @@ public class ReportRepositoryImpl implements ReportRepository {
                 .setParameter("reason", "%" + StringUtils.escape(reason) + "%")
                 .setFirstResult(offset)
                 .setMaxResults(limit);
-        List<CommentReport> reportList = query.getResultList();
-        return reportList;
+        return query.getResultList();
     }
 
     @Override
@@ -314,8 +299,7 @@ public class ReportRepositoryImpl implements ReportRepository {
                 .setParameter("post", post)
                 .setParameter("board", board)
                 .setParameter("reason", "%" + StringUtils.escape(reason) + "%");
-        long result = query.getSingleResult();
-        return result;
+        return query.getSingleResult();
     }
 
     @Override
@@ -332,8 +316,7 @@ public class ReportRepositoryImpl implements ReportRepository {
                 .setParameter("reason", "%" + StringUtils.escape(reason) + "%")
                 .setFirstResult(offset)
                 .setMaxResults(limit);
-        List<CommentReport> reportList = query.getResultList();
-        return reportList;
+        return query.getResultList();
     }
 
     @Override
@@ -351,8 +334,7 @@ public class ReportRepositoryImpl implements ReportRepository {
                 .setParameter("post", post)
                 .setParameter("board", board)
                 .setParameter("reason", "%" + StringUtils.escape(reason) + "%");
-        long result = query.getSingleResult();
-        return result;
+        return query.getSingleResult();
     }
 
     @Override
@@ -373,8 +355,7 @@ public class ReportRepositoryImpl implements ReportRepository {
                 .setParameter("reason", "%" + StringUtils.escape(reason) + "%")
                 .setFirstResult(offset)
                 .setMaxResults(limit);
-        List<CommentReport> reportList = query.getResultList();
-        return reportList;
+        return query.getResultList();
     }
 
     @Override
@@ -390,8 +371,7 @@ public class ReportRepositoryImpl implements ReportRepository {
                 .setParameter("post", post)
                 .setParameter("board", board)
                 .setParameter("reason", "%" + StringUtils.escape(reason) + "%");
-        long result = query.getSingleResult();
-        return result;
+        return query.getSingleResult();
     }
 
     @Override
@@ -410,8 +390,7 @@ public class ReportRepositoryImpl implements ReportRepository {
                 .setParameter("reason", "%" + StringUtils.escape(reason) + "%")
                 .setFirstResult(offset)
                 .setMaxResults(limit);
-        List<CommentReport> reportList = query.getResultList();
-        return reportList;
+        return query.getResultList();
     }
 
     @Override
@@ -423,9 +402,7 @@ public class ReportRepositoryImpl implements ReportRepository {
         TypedQuery<CommentReport> query = this.entityManager.createQuery(jpql, CommentReport.class)
                 .setParameter("account", account)
                 .setParameter("comment", comment);
-        List<CommentReport> reportList = query.getResultList();
-
-        return reportList;
+        return query.getResultList();
     }
 
     @Override
@@ -435,6 +412,7 @@ public class ReportRepositoryImpl implements ReportRepository {
         } else {
             this.entityManager.merge(commentReport);
         }
+        this.entityManager.flush();
     }
 
     @Override
@@ -473,8 +451,7 @@ public class ReportRepositoryImpl implements ReportRepository {
 
         TypedQuery<Long> query = this.entityManager.createQuery(jpql, Long.class)
                 .setParameter("post", post);
-        long result = query.getSingleResult();
-        return result;
+        return query.getSingleResult();
     }
 
     @Override
@@ -484,7 +461,6 @@ public class ReportRepositoryImpl implements ReportRepository {
 
         TypedQuery<Long> query = this.entityManager.createQuery(jpql, Long.class)
                 .setParameter("comment", comment);
-        long result = query.getSingleResult();
-        return result;
+        return query.getSingleResult();
     }
 }

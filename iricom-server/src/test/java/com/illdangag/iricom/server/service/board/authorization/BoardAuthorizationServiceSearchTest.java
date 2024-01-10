@@ -12,10 +12,12 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 
+import javax.transaction.Transactional;
 import java.util.Arrays;
 
-@Slf4j
 @DisplayName("service: 게시판 관리자 - 검색")
+@Slf4j
+@Transactional
 public class BoardAuthorizationServiceSearchTest extends IricomTestSuite {
     @Autowired
     private BoardAuthorizationService boardAuthorizationService;

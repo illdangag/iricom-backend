@@ -5,20 +5,25 @@ import com.illdangag.iricom.server.data.entity.AccountPoint;
 import com.illdangag.iricom.server.data.entity.AccountPointTable;
 import com.illdangag.iricom.server.data.entity.type.AccountPointType;
 import com.illdangag.iricom.server.repository.AccountPointRepository;
+import com.illdangag.iricom.server.repository.AccountRepository;
 import com.illdangag.iricom.server.service.AccountPointService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import javax.transaction.Transactional;
 import java.util.Optional;
 
 @Slf4j
+@Transactional
 @Service
 public class AccountPointServiceImpl implements AccountPointService {
+    private final AccountRepository accountRepository;
     private final AccountPointRepository accountPointRepository;
 
     @Autowired
-    public AccountPointServiceImpl(AccountPointRepository accountPointRepository) {
+    public AccountPointServiceImpl(AccountRepository accountRepository, AccountPointRepository accountPointRepository) {
+        this.accountRepository = accountRepository;
         this.accountPointRepository = accountPointRepository;
     }
 
@@ -32,7 +37,9 @@ public class AccountPointServiceImpl implements AccountPointService {
                 .point(point)
                 .build();
 
+        account.getPointList().add(accountPoint);
         this.accountPointRepository.save(accountPoint);
+        this.accountRepository.saveAccount(account);
     }
 
     private long getAccountPoint(AccountPointType accountPointType) {

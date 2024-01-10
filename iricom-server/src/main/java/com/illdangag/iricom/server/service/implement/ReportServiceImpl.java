@@ -18,12 +18,16 @@ import com.illdangag.iricom.server.service.ReportService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.validation.annotation.Validated;
 
+import javax.transaction.Transactional;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Slf4j
+@Validated
+@Transactional
 @Service
 public class ReportServiceImpl extends IricomService implements ReportService {
     private final ReportRepository reportRepository;
@@ -33,7 +37,7 @@ public class ReportServiceImpl extends IricomService implements ReportService {
     private final BoardAuthorizationService boardAuthorizationService;
 
     @Autowired
-    private ReportServiceImpl(AccountRepository accountRepository, ReportRepository reportRepository,
+    public ReportServiceImpl(AccountRepository accountRepository, ReportRepository reportRepository,
                               PostRepository postRepository, BoardRepository boardRepository,
                               CommentRepository commentRepository, PostService postService, CommentService commentService,
                               BoardAuthorizationService boardAuthorizationService) {

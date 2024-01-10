@@ -22,6 +22,7 @@ import org.springframework.web.servlet.HandlerInterceptor;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.transaction.Transactional;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -29,6 +30,7 @@ import java.util.stream.Collectors;
  * firebase를 이용하여 요청에 대한 권한 검사
  */
 @Slf4j
+@Transactional
 @Component
 public class FirebaseAuthInterceptor implements HandlerInterceptor {
     private final FirebaseInitializer firebaseInitializer;

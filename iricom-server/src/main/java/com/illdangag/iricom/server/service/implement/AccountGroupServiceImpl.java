@@ -16,11 +16,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.validation.annotation.Validated;
 
+import javax.transaction.Transactional;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Validated
+@Transactional
 @Service
 public class AccountGroupServiceImpl implements AccountGroupService {
     private final AccountRepository accountRepository;
@@ -66,10 +68,6 @@ public class AccountGroupServiceImpl implements AccountGroupService {
                             .build();
                 })
                 .collect(Collectors.toList());
-        List<Account> accountList = accountGroupAccountList.stream()
-                .map(AccountGroupAccount::getAccount)
-                .collect(Collectors.toList());
-
         List<AccountGroupBoard> accountGroupBoardList = boardIdList.stream()
                 .map(item -> {
                     return AccountGroupBoard.builder()
@@ -78,12 +76,11 @@ public class AccountGroupServiceImpl implements AccountGroupService {
                             .build();
                 })
                 .collect(Collectors.toList());
-        List<Board> boardList = accountGroupBoardList.stream()
-                .map(AccountGroupBoard::getBoard)
-                .collect(Collectors.toList());
+        accountGroup.setAccountGroupAccountList(accountGroupAccountList);
+        accountGroup.setAccountGroupBoardList(accountGroupBoardList);
 
-        this.accountGroupRepository.saveAccountGroup(accountGroup, accountGroupAccountList, accountGroupBoardList);
-        return new AccountGroupInfo(accountGroup, accountList, boardList);
+        this.accountGroupRepository.saveAccountGroup(accountGroup);
+        return new AccountGroupInfo(accountGroup);
     }
 
     @Override
@@ -96,9 +93,7 @@ public class AccountGroupServiceImpl implements AccountGroupService {
 
         List<AccountGroupInfo> accountGroupInfoList = accountGroupList.stream()
                 .map(item -> {
-                    List<Account> accountList = this.accountGroupRepository.getAccountListInAccountGroup(item);
-                    List<Board> boardList = this.accountGroupRepository.getBoardListInAccountGroup(item);
-                    return new AccountGroupInfo(item, accountList, boardList);
+                    return new AccountGroupInfo(item);
                 }).collect(Collectors.toList());
         return AccountGroupInfoList.builder()
                 .accountGroupInfoList(accountGroupInfoList)
@@ -111,10 +106,7 @@ public class AccountGroupServiceImpl implements AccountGroupService {
     @Override
     public AccountGroupInfo getAccountGroupInfo(String accountGroupId) {
         AccountGroup accountGroup = this.getAccountGroup(accountGroupId);
-
-        List<Account> accountList = this.accountGroupRepository.getAccountListInAccountGroup(accountGroup);
-        List<Board> boardList = this.accountGroupRepository.getBoardListInAccountGroup(accountGroup);
-        return new AccountGroupInfo(accountGroup, accountList, boardList);
+        return new AccountGroupInfo(accountGroup);
     }
 
     @Override
@@ -174,38 +166,15 @@ public class AccountGroupServiceImpl implements AccountGroupService {
 
         this.accountGroupRepository.updateAccountGroup(accountGroup, accountGroupAccountList, accountGroupBoardList);
 
-        if (accountGroupAccountList == null) {
-            List<Account> accountList = this.accountGroupRepository.getAccountListInAccountGroup(accountGroup);
-            accountGroupAccountList = accountList.stream()
-                    .map(item -> AccountGroupAccount.builder().accountGroup(accountGroup).account(item).build())
-                    .collect(Collectors.toList());
-        }
-        List<Account> accountList = accountGroupAccountList.stream()
-                .map(AccountGroupAccount::getAccount)
-                .collect(Collectors.toList());
-
-        if (accountGroupBoardList == null) {
-            List<Board> boardList = this.accountGroupRepository.getBoardListInAccountGroup(accountGroup);
-            accountGroupBoardList = boardList.stream()
-                    .map(item -> AccountGroupBoard.builder().accountGroup(accountGroup).board(item).build())
-                    .collect(Collectors.toList());
-        }
-        List<Board> boardList = accountGroupBoardList.stream()
-                .map(AccountGroupBoard::getBoard)
-                .collect(Collectors.toList());
-
-        return new AccountGroupInfo(accountGroup, accountList, boardList);
+        return new AccountGroupInfo(accountGroup);
     }
 
     @Override
     public AccountGroupInfo deleteAccountGroupInfo(String accountGroupId) {
         AccountGroup accountGroup = this.getAccountGroup(accountGroupId);
-        List<Account> accountList = this.accountGroupRepository.getAccountListInAccountGroup(accountGroup);
-        List<Board> boardList = this.accountGroupRepository.getBoardListInAccountGroup(accountGroup);
-
+        AccountGroupInfo accountGroupInfo = new AccountGroupInfo(accountGroup);
         this.accountGroupRepository.removeAccountGroup(accountGroup);
-
-        return new AccountGroupInfo(accountGroup, accountList, boardList);
+        return accountGroupInfo;
     }
 
     /**

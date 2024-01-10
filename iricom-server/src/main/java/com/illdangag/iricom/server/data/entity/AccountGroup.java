@@ -7,6 +7,8 @@ import org.hibernate.envers.Audited;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 
 @Getter
@@ -43,6 +45,14 @@ public class AccountGroup {
 
     @Builder.Default
     private Boolean enabled = true;
+
+    @Builder.Default
+    @OneToMany(mappedBy = "accountGroup", fetch = FetchType.LAZY)
+    private List<AccountGroupAccount> accountGroupAccountList = new ArrayList<>();
+
+    @Builder.Default
+    @OneToMany(mappedBy = "accountGroup", fetch = FetchType.LAZY)
+    private List<AccountGroupBoard> accountGroupBoardList = new ArrayList<>();
 
     @Override
     public boolean equals(Object object) {

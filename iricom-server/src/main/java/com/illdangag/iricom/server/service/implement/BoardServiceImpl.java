@@ -21,12 +21,14 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.validation.annotation.Validated;
 
+import javax.transaction.Transactional;
 import javax.validation.Valid;
 import java.util.List;
 import java.util.stream.Collectors;
 
 @Slf4j
 @Validated
+@Transactional
 @Service
 public class BoardServiceImpl extends IricomService implements BoardService {
     private final BoardAuthorizationService boardAuthorizationService;
