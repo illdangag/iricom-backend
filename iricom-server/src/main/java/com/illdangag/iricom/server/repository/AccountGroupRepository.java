@@ -8,9 +8,9 @@ import java.util.Optional;
 public interface AccountGroupRepository {
     Optional<AccountGroup> getAccountGroup(long id);
 
-    void saveAccountGroup(AccountGroup accountGroup, List<AccountInAccountGroup> accountInAccountGroupList, List<BoardInAccountGroup> boardInAccountGroupList);
+    void saveAccountGroup(AccountGroup accountGroup, List<AccountGroupAccount> accountGroupAccountList, List<AccountGroupBoard> accountGroupBoardList);
 
-    void updateAccountGroup(AccountGroup accountGroup, List<AccountInAccountGroup> accountInAccountGroupList, List<BoardInAccountGroup> boardInAccountGroupList);
+    void updateAccountGroup(AccountGroup accountGroup, List<AccountGroupAccount> accountGroupAccountList, List<AccountGroupBoard> accountGroupBoardList);
 
     void updateAccountGroup(AccountGroup accountGroup);
 

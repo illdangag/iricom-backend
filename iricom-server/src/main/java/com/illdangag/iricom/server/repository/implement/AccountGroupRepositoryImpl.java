@@ -39,7 +39,7 @@ public class AccountGroupRepositoryImpl implements AccountGroupRepository {
 
     @Override
     public List<Account> getAccountListInAccountGroup(AccountGroup accountGroup) {
-        final String jpql = "SELECT aiag.account FROM AccountInAccountGroup aiag WHERE aiag.accountGroup = :accountGroup";
+        final String jpql = "SELECT aiag.account FROM AccountGroupAccount aiag WHERE aiag.accountGroup = :accountGroup";
 
         TypedQuery<Account> query = this.entityManager.createQuery(jpql, Account.class)
                 .setParameter("accountGroup", accountGroup);
@@ -50,7 +50,7 @@ public class AccountGroupRepositoryImpl implements AccountGroupRepository {
 
     @Override
     public List<Board> getBoardListInAccountGroup(AccountGroup accountGroup) {
-        final String jpql = "SELECT biag.board FROM BoardInAccountGroup biag WHERE biag.accountGroup = :accountGroup";
+        final String jpql = "SELECT biag.board FROM AccountGroupBoard biag WHERE biag.accountGroup = :accountGroup";
 
         TypedQuery<Board> query = this.entityManager.createQuery(jpql, Board.class)
                 .setParameter("accountGroup", accountGroup);
@@ -60,19 +60,19 @@ public class AccountGroupRepositoryImpl implements AccountGroupRepository {
     }
 
     @Override
-    public void saveAccountGroup(AccountGroup accountGroup, List<AccountInAccountGroup> accountInAccountGroupList, List<BoardInAccountGroup> boardInAccountGroupList) {
+    public void saveAccountGroup(AccountGroup accountGroup, List<AccountGroupAccount> accountGroupAccountList, List<AccountGroupBoard> accountGroupBoardList) {
         // 계정 그룹 저장
         this.entityManager.persist(accountGroup);
 
         // 계정 정보 저장
-        accountInAccountGroupList.forEach(entityManager::persist);
+        accountGroupAccountList.forEach(entityManager::persist);
 
         // 게시판 정보 저장
-        boardInAccountGroupList.forEach(entityManager::persist);
+        accountGroupBoardList.forEach(entityManager::persist);
     }
 
     @Override
-    public void updateAccountGroup(AccountGroup accountGroup, List<AccountInAccountGroup> accountInAccountGroupList, List<BoardInAccountGroup> boardInAccountGroupList) {
+    public void updateAccountGroup(AccountGroup accountGroup, List<AccountGroupAccount> accountGroupAccountList, List<AccountGroupBoard> accountGroupBoardList) {
         if (accountGroup.getId() == null) {
             throw new IricomException(IricomErrorCode.NOT_EXIST_ACCOUNT_GROUP);
         }
@@ -83,38 +83,38 @@ public class AccountGroupRepositoryImpl implements AccountGroupRepository {
         }
 
         // 계정 그룹에 추가할 계정과 제거할 계정 처리
-        List<AccountInAccountGroup> addAccountInAccountGroupList;
-        List<AccountInAccountGroup> removeAccountInAccountGroupList;
-        if (accountInAccountGroupList != null) {
-            List<AccountInAccountGroup> dbAccountInAccountGroupList = this.getAccountInAccountGroupList(entityManager, accountGroup);
-            addAccountInAccountGroupList = accountInAccountGroupList.stream()
-                    .filter(item -> !dbAccountInAccountGroupList.contains(item)).collect(Collectors.toList());
-            removeAccountInAccountGroupList = dbAccountInAccountGroupList.stream()
-                    .filter(item -> !accountInAccountGroupList.contains(item)).collect(Collectors.toList());
+        List<AccountGroupAccount> addAccountGroupAccountList;
+        List<AccountGroupAccount> removeAccountGroupAccountList;
+        if (accountGroupAccountList != null) {
+            List<AccountGroupAccount> dbAccountGroupAccountList = this.getAccountInAccountGroupList(entityManager, accountGroup);
+            addAccountGroupAccountList = accountGroupAccountList.stream()
+                    .filter(item -> !dbAccountGroupAccountList.contains(item)).collect(Collectors.toList());
+            removeAccountGroupAccountList = dbAccountGroupAccountList.stream()
+                    .filter(item -> !accountGroupAccountList.contains(item)).collect(Collectors.toList());
         } else {
-            addAccountInAccountGroupList = Collections.emptyList();
-            removeAccountInAccountGroupList = Collections.emptyList();
+            addAccountGroupAccountList = Collections.emptyList();
+            removeAccountGroupAccountList = Collections.emptyList();
         }
 
         // 계정 그룹에 추가할 게시물과 제거할 게시물 처리
-        List<BoardInAccountGroup> addBoardInAccountGroupList;
-        List<BoardInAccountGroup> removeBoardInAccountGroupList;
-        if (boardInAccountGroupList != null) {
-            List<BoardInAccountGroup> dbBoardInAccountGroupList = this.getBoardInAccountGroupList(entityManager, accountGroup);
-            addBoardInAccountGroupList = boardInAccountGroupList.stream()
-                    .filter(item -> !dbBoardInAccountGroupList.contains(item)).collect(Collectors.toList());
-            removeBoardInAccountGroupList = dbBoardInAccountGroupList.stream()
-                    .filter(item -> !boardInAccountGroupList.contains(item)).collect(Collectors.toList());
+        List<AccountGroupBoard> addAccountGroupBoardList;
+        List<AccountGroupBoard> removeAccountGroupBoardList;
+        if (accountGroupBoardList != null) {
+            List<AccountGroupBoard> dbAccountGroupBoardList = this.getBoardInAccountGroupList(entityManager, accountGroup);
+            addAccountGroupBoardList = accountGroupBoardList.stream()
+                    .filter(item -> !dbAccountGroupBoardList.contains(item)).collect(Collectors.toList());
+            removeAccountGroupBoardList = dbAccountGroupBoardList.stream()
+                    .filter(item -> !accountGroupBoardList.contains(item)).collect(Collectors.toList());
         } else {
-            addBoardInAccountGroupList = Collections.emptyList();
-            removeBoardInAccountGroupList = Collections.emptyList();
+            addAccountGroupBoardList = Collections.emptyList();
+            removeAccountGroupBoardList = Collections.emptyList();
         }
 
         this.entityManager.merge(accountGroup);
-        addAccountInAccountGroupList.forEach(item -> this.entityManager.persist(item));
-        removeAccountInAccountGroupList.forEach(item -> this.entityManager.remove(item));
-        addBoardInAccountGroupList.forEach(item -> this.entityManager.persist(item));
-        removeBoardInAccountGroupList.forEach(item -> this.entityManager.remove(item));
+        addAccountGroupAccountList.forEach(item -> this.entityManager.persist(item));
+        removeAccountGroupAccountList.forEach(item -> this.entityManager.remove(item));
+        addAccountGroupBoardList.forEach(item -> this.entityManager.persist(item));
+        removeAccountGroupBoardList.forEach(item -> this.entityManager.remove(item));
     }
 
     @Override
@@ -122,18 +122,18 @@ public class AccountGroupRepositoryImpl implements AccountGroupRepository {
         this.entityManager.merge(accountGroup);
     }
 
-    private List<AccountInAccountGroup> getAccountInAccountGroupList(EntityManager entityManager, AccountGroup accountGroup) {
-        final String jpql = "SELECT aiag FROM AccountInAccountGroup aiag WHERE aiag.accountGroup = :accountGroup";
+    private List<AccountGroupAccount> getAccountInAccountGroupList(EntityManager entityManager, AccountGroup accountGroup) {
+        final String jpql = "SELECT aiag FROM AccountGroupAccount aiag WHERE aiag.accountGroup = :accountGroup";
 
-        TypedQuery<AccountInAccountGroup> query = this.entityManager.createQuery(jpql, AccountInAccountGroup.class)
+        TypedQuery<AccountGroupAccount> query = this.entityManager.createQuery(jpql, AccountGroupAccount.class)
                 .setParameter("accountGroup", accountGroup);
         return query.getResultList();
     }
 
-    private List<BoardInAccountGroup> getBoardInAccountGroupList(EntityManager entityManager, AccountGroup accountGroup) {
-        final String jpql = "SELECT biag FROM BoardInAccountGroup biag WHERE biag.accountGroup = :accountGroup";
+    private List<AccountGroupBoard> getBoardInAccountGroupList(EntityManager entityManager, AccountGroup accountGroup) {
+        final String jpql = "SELECT biag FROM AccountGroupBoard biag WHERE biag.accountGroup = :accountGroup";
 
-        TypedQuery<BoardInAccountGroup> query = this.entityManager.createQuery(jpql, BoardInAccountGroup.class)
+        TypedQuery<AccountGroupBoard> query = this.entityManager.createQuery(jpql, AccountGroupBoard.class)
                 .setParameter("accountGroup", accountGroup);
         return query.getResultList();
     }
@@ -160,11 +160,11 @@ public class AccountGroupRepositoryImpl implements AccountGroupRepository {
 
     @Override
     public void removeAccountGroup(AccountGroup accountGroup) {
-        List<AccountInAccountGroup> dbAccountInAccountGroupList = this.getAccountInAccountGroupList(entityManager, accountGroup);
-        List<BoardInAccountGroup> dbBoardInAccountGroupList = this.getBoardInAccountGroupList(entityManager, accountGroup);
+        List<AccountGroupAccount> dbAccountGroupAccountList = this.getAccountInAccountGroupList(entityManager, accountGroup);
+        List<AccountGroupBoard> dbAccountGroupBoardList = this.getBoardInAccountGroupList(entityManager, accountGroup);
 
-        dbAccountInAccountGroupList.forEach(entityManager::remove);
-        dbBoardInAccountGroupList.forEach(entityManager::remove);
+        dbAccountGroupAccountList.forEach(entityManager::remove);
+        dbAccountGroupBoardList.forEach(entityManager::remove);
 
         AccountGroup dbAccountGroup = this.entityManager.find(AccountGroup.class, accountGroup.getId());
         this.entityManager.remove(dbAccountGroup);

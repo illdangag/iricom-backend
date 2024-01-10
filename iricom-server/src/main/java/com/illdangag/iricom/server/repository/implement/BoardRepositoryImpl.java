@@ -227,7 +227,7 @@ public class BoardRepositoryImpl implements BoardRepository {
             accountGroupIdList = this.getAccountGroupId(account);
         }
 
-        final String jpql = "SELECT biag.board.id FROM BoardInAccountGroup biag" +
+        final String jpql = "SELECT biag.board.id FROM AccountGroupBoard biag" +
                 " WHERE biag.accountGroup.id IN :accountGroupId";
 
         TypedQuery<Long> query = this.entityManager.createQuery(jpql, Long.class)
@@ -247,7 +247,7 @@ public class BoardRepositoryImpl implements BoardRepository {
     }
 
     private List<Long> getAccountGroupId(Account account) {
-        final String jpql = "SELECT ag.id FROM AccountGroup ag RIGHT JOIN AccountInAccountGroup aiag ON ag.id = aiag.accountGroup.id" +
+        final String jpql = "SELECT ag.id FROM AccountGroup ag RIGHT JOIN AccountGroupAccount aiag ON ag.id = aiag.accountGroup.id" +
                 " WHERE aiag.account = :account";
         TypedQuery<Long> query = this.entityManager.createQuery(jpql, Long.class)
                 .setParameter("account", account);

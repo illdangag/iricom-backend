@@ -13,12 +13,12 @@ import java.util.Objects;
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 @Entity
 @Table(
-        name = "board_in_account_group",
+        name = "account_group_account",
         indexes = {
-                @Index(name = "BoardInAccountGroup_accountGroup", columnList = "account_group_id"),
+            @Index(name = "AccountInAccountGroup_accountGroup", columnList = "account_group_id"),
         }
 )
-public class BoardInAccountGroup {
+public class AccountGroupAccount {
     @Id
     @GeneratedValue
     private Long id;
@@ -28,22 +28,22 @@ public class BoardInAccountGroup {
     private AccountGroup accountGroup;
 
     @ManyToOne
-    @JoinColumn(name = "board_id")
-    private Board board;
+    @JoinColumn(name = "account_id")
+    private Account account;
 
     @Override
     public boolean equals(Object object) {
-        if (!(object instanceof BoardInAccountGroup)) {
+        if (!(object instanceof AccountGroupAccount)) {
             return false;
         }
 
-        BoardInAccountGroup other = (BoardInAccountGroup) object;
+        AccountGroupAccount other = (AccountGroupAccount) object;
 
-        return this.accountGroup.equals(other.accountGroup) && this.board.equals(other.board);
+        return this.accountGroup.equals(other.accountGroup) && this.account.equals(other.account);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(this.accountGroup, this.board);
+        return Objects.hash(this.accountGroup, this.account);
     }
 }
