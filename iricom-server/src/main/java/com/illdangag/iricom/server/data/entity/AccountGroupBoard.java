@@ -1,14 +1,16 @@
 package com.illdangag.iricom.server.data.entity;
 
 import lombok.*;
+import org.hibernate.envers.Audited;
 
 import javax.persistence.*;
 import java.util.Objects;
 
+import static org.hibernate.envers.RelationTargetAuditMode.NOT_AUDITED;
+
 @Getter
 @Setter
 @Builder
-@ToString
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 @Entity
@@ -28,6 +30,7 @@ public class AccountGroupBoard {
     private AccountGroup accountGroup;
 
     @ManyToOne
+    @Audited(targetAuditMode = NOT_AUDITED)
     @JoinColumn(name = "board_id")
     private Board board;
 

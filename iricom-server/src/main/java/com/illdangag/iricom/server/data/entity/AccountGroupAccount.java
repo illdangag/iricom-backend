@@ -1,21 +1,23 @@
 package com.illdangag.iricom.server.data.entity;
 
 import lombok.*;
+import org.hibernate.envers.Audited;
 
 import javax.persistence.*;
 import java.util.Objects;
 
+import static org.hibernate.envers.RelationTargetAuditMode.NOT_AUDITED;
+
 @Getter
 @Setter
 @Builder
-@ToString
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 @Entity
 @Table(
         name = "account_group_account",
         indexes = {
-            @Index(name = "AccountInAccountGroup_accountGroup", columnList = "account_group_id"),
+                @Index(name = "AccountInAccountGroup_accountGroup", columnList = "account_group_id"),
         }
 )
 public class AccountGroupAccount {
@@ -24,6 +26,7 @@ public class AccountGroupAccount {
     private Long id;
 
     @ManyToOne
+    @Audited(targetAuditMode = NOT_AUDITED)
     @JoinColumn(name = "account_group_id")
     private AccountGroup accountGroup;
 

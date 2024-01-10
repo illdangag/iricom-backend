@@ -10,7 +10,6 @@ import java.util.Objects;
 @Getter
 @Setter
 @Builder
-@ToString
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 @Entity
