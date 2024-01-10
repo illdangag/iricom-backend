@@ -8,9 +8,7 @@ import com.illdangag.iricom.server.data.response.AccountGroupInfo;
 import com.illdangag.iricom.server.data.response.AccountGroupInfoList;
 import com.illdangag.iricom.server.exception.IricomErrorCode;
 import com.illdangag.iricom.server.exception.IricomException;
-import com.illdangag.iricom.server.repository.AccountGroupRepository;
-import com.illdangag.iricom.server.repository.AccountRepository;
-import com.illdangag.iricom.server.repository.BoardRepository;
+import com.illdangag.iricom.server.repository.*;
 import com.illdangag.iricom.server.service.AccountGroupService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -24,15 +22,15 @@ import java.util.stream.Collectors;
 @Validated
 @Transactional
 @Service
-public class AccountGroupServiceImpl implements AccountGroupService {
-    private final AccountRepository accountRepository;
+public class AccountGroupServiceImpl extends IricomService implements AccountGroupService {
     private final BoardRepository boardRepository;
     private final AccountGroupRepository accountGroupRepository;
 
     @Autowired
     public AccountGroupServiceImpl(AccountRepository accountRepository, BoardRepository boardRepository,
+                                   PostRepository postRepository, CommentRepository commentRepository,
                                    AccountGroupRepository accountGroupRepository) {
-        this.accountRepository = accountRepository;
+        super(accountRepository, boardRepository, postRepository, commentRepository);
         this.boardRepository = boardRepository;
         this.accountGroupRepository = accountGroupRepository;
     }
@@ -45,12 +43,12 @@ public class AccountGroupServiceImpl implements AccountGroupService {
         List<String> accountIdList = accountGroupInfoCreate.getAccountIdList().stream().distinct().collect(Collectors.toList());
         List<String> boardIdList = accountGroupInfoCreate.getBoardIdList().stream().distinct().collect(Collectors.toList());
 
-        if (!accountIdList.isEmpty() && !this.validateAccount(accountIdList)) {
+        if (!accountIdList.isEmpty() && !this.isExistAccount(accountIdList)) {
             // 계정 ID 목록이 존재하는 경우 포함된 ID가 모두 유효한지 확인
             throw new IricomException(IricomErrorCode.INVALID_ACCOUNT_LIST);
         }
 
-        if (!boardIdList.isEmpty() && !this.validateBoard(boardIdList)) {
+        if (!boardIdList.isEmpty() && !this.isExistBoard(boardIdList)) {
             throw new IricomException(IricomErrorCode.INVALID_BOARD_LIST);
         }
 
@@ -92,9 +90,9 @@ public class AccountGroupServiceImpl implements AccountGroupService {
         long total = this.accountGroupRepository.getAccountGroupCount();
 
         List<AccountGroupInfo> accountGroupInfoList = accountGroupList.stream()
-                .map(item -> {
-                    return new AccountGroupInfo(item);
-                }).collect(Collectors.toList());
+                .map(AccountGroupInfo::new)
+                .collect(Collectors.toList());
+
         return AccountGroupInfoList.builder()
                 .accountGroupInfoList(accountGroupInfoList)
                 .total(total)
@@ -117,16 +115,17 @@ public class AccountGroupServiceImpl implements AccountGroupService {
         if (accountIdList != null) {
             accountIdList = accountIdList.stream().distinct().collect(Collectors.toList());
         }
+
         List<String> boardIdList = accountGroupInfoUpdate.getBoardIdList();
         if (boardIdList != null) {
             boardIdList = boardIdList.stream().distinct().collect(Collectors.toList());
         }
 
-        if (accountIdList != null && !accountIdList.isEmpty() && !this.validateAccount(accountIdList)) {
+        if (accountIdList != null && !accountIdList.isEmpty() && !this.isExistAccount(accountIdList)) {
             throw new IricomException(IricomErrorCode.INVALID_ACCOUNT_LIST);
         }
 
-        if (boardIdList != null && !boardIdList.isEmpty() && !this.validateBoard(boardIdList)) {
+        if (boardIdList != null && !boardIdList.isEmpty() && !this.isExistBoard(boardIdList)) {
             throw new IricomException(IricomErrorCode.INVALID_BOARD_LIST);
         }
 
@@ -165,7 +164,6 @@ public class AccountGroupServiceImpl implements AccountGroupService {
         }
 
         this.accountGroupRepository.updateAccountGroup(accountGroup, accountGroupAccountList, accountGroupBoardList);
-
         return new AccountGroupInfo(accountGroup);
     }
 
@@ -180,29 +178,32 @@ public class AccountGroupServiceImpl implements AccountGroupService {
     /**
      * 게시판이 모두 존재하는지 확인
      */
-    private boolean validateBoard(List<String> idList) {
-        List<Long> boardIdList;
+    private boolean isExistBoard(List<String> boardIdList) {
+        List<Long> idList;
         try {
-            boardIdList = idList.stream().map(Long::parseLong).distinct().collect(Collectors.toList());
+            idList = boardIdList.stream()
+                    .map(Long::parseLong)
+                    .distinct()
+                    .collect(Collectors.toList());
         } catch (Exception exception) {
             throw new IricomException(IricomErrorCode.NOT_EXIST_BOARD);
         }
 
-        List<Board> boardList = this.boardRepository.getBoardList(boardIdList);
-        return boardIdList.size() == boardList.size();
+        List<Board> boardList = this.boardRepository.getBoardList(idList);
+        return idList.size() == boardList.size();
     }
 
     /**
      * id 목록이 모두 존재하는지 확인
      */
-    private boolean validateAccount(List<String> idList) {
-        List<Long> accountIdList;
+    private boolean isExistAccount(List<String> accountIdList) {
+        List<Long> idList;
         try {
-            accountIdList = idList.stream().map(Long::parseLong).collect(Collectors.toList());
+            idList = accountIdList.stream().map(Long::parseLong).collect(Collectors.toList());
         } catch (Exception exception) {
             throw new IricomException(IricomErrorCode.NOT_EXIST_ACCOUNT);
         }
-        return this.accountRepository.existAccount(accountIdList);
+        return this.accountRepository.existAccount(idList);
     }
 
     private AccountGroup getAccountGroup(String id) {
@@ -214,27 +215,5 @@ public class AccountGroupServiceImpl implements AccountGroupService {
         }
         Optional<AccountGroup> accountGroupOptional = this.accountGroupRepository.getAccountGroup(accountGroupId);
         return accountGroupOptional.orElseThrow(() -> new IricomException(IricomErrorCode.NOT_EXIST_ACCOUNT_GROUP));
-    }
-
-    private Account getAccount(String id) {
-        long accountId = -1L;
-        try {
-            accountId = Long.parseLong(id);
-        } catch (Exception exception) {
-            throw new IricomException(IricomErrorCode.NOT_EXIST_ACCOUNT);
-        }
-        Optional<Account> accountOptional = this.accountRepository.getAccount(accountId);
-        return accountOptional.orElseThrow(() -> new IricomException(IricomErrorCode.NOT_EXIST_ACCOUNT));
-    }
-
-    private Board getBoard(String id) {
-        long boardId = -1;
-        try {
-            boardId = Long.parseLong(id);
-        } catch (Exception exception) {
-            throw new IricomException(IricomErrorCode.NOT_EXIST_BOARD);
-        }
-        Optional<Board> boardOptional = this.boardRepository.getBoard(boardId);
-        return boardOptional.orElseThrow(() -> new IricomException(IricomErrorCode.NOT_EXIST_BOARD));
     }
 }

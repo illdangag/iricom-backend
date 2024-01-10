@@ -34,9 +34,9 @@ public class PostServiceImpl extends IricomService implements PostService {
     private final AccountPointService accountPointService;
 
     @Autowired
-    public PostServiceImpl(AccountRepository accountRepository, PostRepository postRepository,
-                           PostVoteRepository postVoteRepository, CommentRepository commentRepository,
-                           BoardRepository boardRepository, ReportRepository reportRepository,
+    public PostServiceImpl(AccountRepository accountRepository, BoardRepository boardRepository,
+                           PostRepository postRepository, CommentRepository commentRepository,
+                           PostVoteRepository postVoteRepository, ReportRepository reportRepository,
                            BlockRepository blockRepository, AccountPointService accountPointService) {
         super(accountRepository, boardRepository, postRepository, commentRepository);
         this.postVoteRepository = postVoteRepository;
@@ -395,7 +395,7 @@ public class PostServiceImpl extends IricomService implements PostService {
                 totalPostCount = this.postRepository.getPublishPostCount(board, postInfoSearch.getType());
             } else {
                 // 제목 없음, 게시물 종류 없음
-                postList = this.postRepository.getPublishPostList(board,  postInfoSearch.getSkip(), postInfoSearch.getLimit());
+                postList = this.postRepository.getPublishPostList(board, postInfoSearch.getSkip(), postInfoSearch.getLimit());
                 totalPostCount = this.postRepository.getPublishPostCount(board);
             }
         } else { // 검색어가 존재하는 경우

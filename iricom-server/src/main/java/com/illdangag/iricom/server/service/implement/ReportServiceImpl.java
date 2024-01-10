@@ -37,10 +37,10 @@ public class ReportServiceImpl extends IricomService implements ReportService {
     private final BoardAuthorizationService boardAuthorizationService;
 
     @Autowired
-    public ReportServiceImpl(AccountRepository accountRepository, ReportRepository reportRepository,
-                              PostRepository postRepository, BoardRepository boardRepository,
-                              CommentRepository commentRepository, PostService postService, CommentService commentService,
-                              BoardAuthorizationService boardAuthorizationService) {
+    public ReportServiceImpl(AccountRepository accountRepository, BoardRepository boardRepository,
+                             PostRepository postRepository, CommentRepository commentRepository,
+                             ReportRepository reportRepository, PostService postService, CommentService commentService,
+                             BoardAuthorizationService boardAuthorizationService) {
         super(accountRepository, boardRepository, postRepository, commentRepository);
         this.reportRepository = reportRepository;
 

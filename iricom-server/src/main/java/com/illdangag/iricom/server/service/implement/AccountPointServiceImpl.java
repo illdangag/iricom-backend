@@ -4,8 +4,7 @@ import com.illdangag.iricom.server.data.entity.Account;
 import com.illdangag.iricom.server.data.entity.AccountPoint;
 import com.illdangag.iricom.server.data.entity.AccountPointTable;
 import com.illdangag.iricom.server.data.entity.type.AccountPointType;
-import com.illdangag.iricom.server.repository.AccountPointRepository;
-import com.illdangag.iricom.server.repository.AccountRepository;
+import com.illdangag.iricom.server.repository.*;
 import com.illdangag.iricom.server.service.AccountPointService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,13 +16,14 @@ import java.util.Optional;
 @Slf4j
 @Transactional
 @Service
-public class AccountPointServiceImpl implements AccountPointService {
-    private final AccountRepository accountRepository;
+public class AccountPointServiceImpl extends IricomService implements AccountPointService {
     private final AccountPointRepository accountPointRepository;
 
     @Autowired
-    public AccountPointServiceImpl(AccountRepository accountRepository, AccountPointRepository accountPointRepository) {
-        this.accountRepository = accountRepository;
+    public AccountPointServiceImpl(AccountRepository accountRepository, BoardRepository boardRepository,
+                                   PostRepository postRepository, CommentRepository commentRepository,
+                                   AccountPointRepository accountPointRepository) {
+        super(accountRepository, boardRepository, postRepository, commentRepository);
         this.accountPointRepository = accountPointRepository;
     }
 

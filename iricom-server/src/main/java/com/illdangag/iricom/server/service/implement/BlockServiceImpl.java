@@ -35,10 +35,10 @@ public class BlockServiceImpl extends IricomService implements BlockService {
     private final CommentService commentService;
 
     @Autowired
-    public BlockServiceImpl(AccountRepository accountRepository, PostRepository postRepository,
-                            BlockRepository blockRepository, BoardRepository boardRepository,
-                            BoardAuthorizationService boardAuthorizationService, PostService postService,
-                            CommentRepository commentRepository, CommentService commentService) {
+    public BlockServiceImpl(AccountRepository accountRepository, BoardRepository boardRepository,
+                            PostRepository postRepository, CommentRepository commentRepository,
+                            BlockRepository blockRepository, BoardAuthorizationService boardAuthorizationService,
+                            PostService postService, CommentService commentService) {
         super(accountRepository, boardRepository, postRepository, commentRepository);
         this.blockRepository = blockRepository;
         this.boardAuthorizationService = boardAuthorizationService;

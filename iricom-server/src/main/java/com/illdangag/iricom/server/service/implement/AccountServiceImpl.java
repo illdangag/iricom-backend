@@ -10,6 +10,9 @@ import com.illdangag.iricom.server.data.response.AccountInfoList;
 import com.illdangag.iricom.server.exception.IricomErrorCode;
 import com.illdangag.iricom.server.exception.IricomException;
 import com.illdangag.iricom.server.repository.AccountRepository;
+import com.illdangag.iricom.server.repository.BoardRepository;
+import com.illdangag.iricom.server.repository.CommentRepository;
+import com.illdangag.iricom.server.repository.PostRepository;
 import com.illdangag.iricom.server.service.AccountService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,12 +32,12 @@ import java.util.stream.Collectors;
 @Validated
 @Transactional
 @Service
-public class AccountServiceImpl implements AccountService {
-    private final AccountRepository accountRepository;
+public class AccountServiceImpl extends IricomService implements AccountService {
 
     @Autowired
-    public AccountServiceImpl(AccountRepository accountRepository) {
-        this.accountRepository = accountRepository;
+    public AccountServiceImpl(AccountRepository accountRepository, BoardRepository boardRepository,
+                              PostRepository postRepository, CommentRepository commentRepository) {
+        super(accountRepository, boardRepository, postRepository, commentRepository);
     }
 
     @Override
@@ -135,18 +138,5 @@ public class AccountServiceImpl implements AccountService {
             accountAccountInfoMap.put(account, accountInfo);
         });
         return accountAccountInfoMap;
-    }
-
-    private Account getAccount(String id) {
-        try {
-            return this.getAccount(Long.parseLong(id));
-        } catch (Exception exception) {
-            throw new IricomException(IricomErrorCode.NOT_EXIST_ACCOUNT);
-        }
-    }
-
-    private Account getAccount(long id) {
-        Optional<Account> accountOptional = this.accountRepository.getAccount(id);
-        return accountOptional.orElseThrow(() -> new IricomException(IricomErrorCode.NOT_EXIST_ACCOUNT));
     }
 }
