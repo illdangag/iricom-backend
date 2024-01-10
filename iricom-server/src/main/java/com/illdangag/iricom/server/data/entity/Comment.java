@@ -14,9 +14,12 @@ import java.util.Objects;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 @Entity
-@Table(indexes = {
-        @Index(name = "Comment_createDate", columnList = "createDate"),
-})
+@Table(
+        name = "comment",
+        indexes = {
+                @Index(name = "Comment_createDate", columnList = "createDate"),
+        }
+)
 public class Comment {
     @Id
     @GeneratedValue

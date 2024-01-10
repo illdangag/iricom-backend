@@ -16,10 +16,13 @@ import java.time.LocalDateTime;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 @Entity
-@Table(indexes = {
-        @Index(name = "CommentReport_account_and_comment", columnList = "report_account_id,comment_id"),
-        @Index(name = "CommentReport_enabled", columnList = "enabled"),
-})
+@Table(
+        name = "comment_report",
+        indexes = {
+                @Index(name = "CommentReport_account_and_comment", columnList = "report_account_id,comment_id"),
+                @Index(name = "CommentReport_enabled", columnList = "enabled"),
+        }
+)
 public class CommentReport {
     @Id
     @GeneratedValue

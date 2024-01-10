@@ -17,9 +17,12 @@ import java.util.List;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 @Entity
-@Table(indexes = {
-        @Index(name = "Account_email", columnList = "email"),
-})
+@Table(
+        name = "account",
+        indexes = {
+            @Index(name = "Account_email", columnList = "email"),
+        }
+)
 public class Account {
     @Id
     @GeneratedValue

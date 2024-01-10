@@ -15,9 +15,12 @@ import java.time.LocalDateTime;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 @Entity
-@Table(indexes = {
-        @Index(name = "CommentBlock_Comment", columnList = "comment_id"),
-})
+@Table(
+        name = "comment_block",
+        indexes = {
+                @Index(name = "CommentBlock_Comment", columnList = "comment_id"),
+        }
+)
 public class CommentBlock {
     @Id
     @GeneratedValue

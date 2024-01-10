@@ -13,11 +13,14 @@ import java.time.LocalDateTime;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 @Entity
-@Table(indexes = {
-        @Index(name = "CommentVote_comment", columnList = "comment_id"),
-        @Index(name = "CommentVote_account", columnList = "account_id"),
-        @Index(name = "CommentVote_type", columnList = "type"),
-})
+@Table(
+        name = "comment_vote",
+        indexes = {
+                @Index(name = "CommentVote_comment", columnList = "comment_id"),
+                @Index(name = "CommentVote_account", columnList = "account_id"),
+                @Index(name = "CommentVote_type", columnList = "type"),
+        }
+)
 public class CommentVote {
     @Id
     @GeneratedValue

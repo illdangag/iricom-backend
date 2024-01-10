@@ -14,11 +14,14 @@ import java.time.LocalDateTime;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 @Entity
-@Table(indexes = {
-        @Index(name = "PostVote_post", columnList = "post_id"),
-        @Index(name = "PostVote_account", columnList = "account_id"),
-        @Index(name = "PostVote_type", columnList = "type")
-})
+@Table(
+        name = "post_vote",
+        indexes = {
+                @Index(name = "PostVote_post", columnList = "post_id"),
+                @Index(name = "PostVote_account", columnList = "account_id"),
+                @Index(name = "PostVote_type", columnList = "type")
+        }
+)
 public class PostVote {
     @Id
     @GeneratedValue

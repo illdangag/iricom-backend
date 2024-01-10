@@ -16,10 +16,13 @@ import java.util.Objects;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 @Entity
+@Table(
+        name = "account_group",
+        indexes = {
+                @Index(name = "AccountGroup_enabled", columnList = "enabled"),
+        }
+)
 @Audited
-@Table(indexes = {
-        @Index(name = "AccountGroup_enabled", columnList = "enabled"),
-})
 public class AccountGroup {
     @Id
     @GeneratedValue

@@ -15,7 +15,10 @@ import java.time.LocalDateTime;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 @Entity
-@Table(indexes = {})
+@Table(
+        name = "account_point_table",
+        indexes = {}
+)
 public class AccountPointTable {
     @Id
     @GeneratedValue

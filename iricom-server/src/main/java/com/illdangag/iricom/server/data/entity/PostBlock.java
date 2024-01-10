@@ -15,13 +15,16 @@ import java.time.LocalDateTime;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 @Entity
-@Table(indexes = {
-        @Index(name = "PostBlock_createDate", columnList = "createDate"),
-        @Index(name = "PostBlock_reason", columnList = "reason"),
-        @Index(name = "PostBlock_post", columnList = "post_id"),
-        @Index(name = "PostBlock_adminAccount", columnList = "admin_account_id"),
-        @Index(name = "PostBlock_enabled", columnList = "enabled"),
-})
+@Table(
+        name = "post_block",
+        indexes = {
+                @Index(name = "PostBlock_createDate", columnList = "createDate"),
+                @Index(name = "PostBlock_reason", columnList = "reason"),
+                @Index(name = "PostBlock_post", columnList = "post_id"),
+                @Index(name = "PostBlock_adminAccount", columnList = "admin_account_id"),
+                @Index(name = "PostBlock_enabled", columnList = "enabled"),
+        }
+)
 public class PostBlock {
     @Id
     @GeneratedValue

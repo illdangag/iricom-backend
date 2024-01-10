@@ -18,8 +18,11 @@ import java.time.LocalDateTime;
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 @Entity
 @Audited
-@Table(indexes = {
-})
+@Table(
+        name = "board_admin",
+        indexes = {
+        }
+)
 public class BoardAdmin {
     @Id
     @GeneratedValue

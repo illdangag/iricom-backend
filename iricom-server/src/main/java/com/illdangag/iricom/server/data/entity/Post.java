@@ -14,9 +14,12 @@ import java.time.LocalDateTime;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 @Entity
-@Table(indexes = {
-        @Index(name = "Post_createDate", columnList = "createDate"),
-})
+@Table(
+        name = "post",
+        indexes = {
+                @Index(name = "Post_createDate", columnList = "createDate"),
+        }
+)
 public class Post {
     @Id
     @GeneratedValue

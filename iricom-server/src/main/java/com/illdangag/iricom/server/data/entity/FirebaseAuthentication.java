@@ -11,8 +11,11 @@ import java.util.Objects;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 @Entity
-@Table(indexes = {
-})
+@Table(
+        name = "firebase_authentication",
+        indexes = {
+        }
+)
 public class FirebaseAuthentication {
     @Id
     private String id;

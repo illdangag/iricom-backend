@@ -12,9 +12,12 @@ import java.util.Objects;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 @Entity
-@Table(indexes = {
-        @Index(name = "AccountInAccountGroup_accountGroup", columnList = "account_group_id"),
-})
+@Table(
+        name = "account_in_account_group",
+        indexes = {
+            @Index(name = "AccountInAccountGroup_accountGroup", columnList = "account_group_id"),
+        }
+)
 public class AccountInAccountGroup {
     @Id
     @GeneratedValue
