@@ -1,9 +1,6 @@
 package com.illdangag.iricom.server.repository.implement;
 
-import com.illdangag.iricom.server.data.entity.Account;
-import com.illdangag.iricom.server.data.entity.Board;
-import com.illdangag.iricom.server.data.entity.Post;
-import com.illdangag.iricom.server.data.entity.PostContent;
+import com.illdangag.iricom.server.data.entity.*;
 import com.illdangag.iricom.server.data.entity.type.PostType;
 import com.illdangag.iricom.server.repository.PostRepository;
 import com.illdangag.iricom.server.util.StringUtils;
@@ -195,6 +192,14 @@ public class PostRepositoryImpl implements PostRepository {
 
     @Override
     public void save(Post post) {
+        for (PostBlock postBlock : post.getPostBlockList()) {
+            if (postBlock.getId() == null) {
+                this.entityManager.persist(postBlock);
+            } else {
+                this.entityManager.merge(postBlock);
+            }
+        }
+
         if (post.getId() == null) {
             this.entityManager.persist(post);
         } else {

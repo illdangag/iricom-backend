@@ -7,6 +7,8 @@ import org.hibernate.annotations.UpdateTimestamp;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 @Getter
 @Setter
@@ -54,6 +56,10 @@ public class Post {
 
     @Builder.Default
     private Boolean deleted = false;
+
+    @Builder.Default
+    @OneToMany(mappedBy = "post", fetch = FetchType.LAZY)
+    List<PostBlock> postBlockList = new ArrayList<>();
 
     @Override
     public boolean equals(Object object) {

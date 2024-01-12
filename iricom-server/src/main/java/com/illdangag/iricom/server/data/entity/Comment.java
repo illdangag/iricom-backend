@@ -5,6 +5,8 @@ import org.hibernate.annotations.CreationTimestamp;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 
 @Getter
@@ -52,6 +54,10 @@ public class Comment {
 
     @Builder.Default
     private Boolean hasNestedComment = false;
+
+    @Builder.Default
+    @OneToMany(mappedBy = "comment", fetch = FetchType.LAZY)
+    private List<CommentBlock> commentBlockList = new ArrayList<>();
 
     @Override
     public boolean equals(Object object) {

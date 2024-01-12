@@ -8,6 +8,7 @@ import com.illdangag.iricom.server.service.PostService;
 import com.illdangag.iricom.server.test.IricomTestSuite;
 import com.illdangag.iricom.server.test.data.wrapper.TestAccountGroupInfo;
 import com.illdangag.iricom.server.test.data.wrapper.TestBoardInfo;
+import com.illdangag.iricom.server.test.data.wrapper.TestPostBlockInfo;
 import com.illdangag.iricom.server.test.data.wrapper.TestPostInfo;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.Assertions;
@@ -83,5 +84,31 @@ public class PostServiceGetTest extends IricomTestSuite {
         Assertions.assertThrows(IricomException.class, () -> {
             postService.getPostInfo(boardId, postId, PostState.PUBLISH, true);
         });
+    }
+
+    @Test
+    @DisplayName("차단된 게시물 조회")
+    public void getBlockedPost() {
+        TestBoardInfo testBoardInfo = TestBoardInfo.builder()
+                .title("testBoardInfo").isEnabled(true).undisclosed(false)
+                .adminList(Collections.singletonList(allBoardAdmin)).build();
+
+        TestPostInfo testPostInfo = TestPostInfo.builder()
+                .title("testPostInfo").content("content").isAllowComment(true)
+                .postType(PostType.POST).postState(PostState.PUBLISH)
+                .creator(common00).board(testBoardInfo).build();
+
+        TestPostBlockInfo testPostBlockInfo = TestPostBlockInfo.builder()
+                .account(systemAdmin).post(testPostInfo).reason("Block")
+                .build();
+
+        addTestBoardInfo(testBoardInfo);
+        addTestPostInfo(testPostInfo);
+        addTestPostBlockInfo(testPostBlockInfo);
+        init();
+
+        String boardId = getBoardId(testBoardInfo);
+        String postId = getPostId(testPostInfo);
+        PostInfo postInfo = postService.getPostInfo(boardId, postId, PostState.PUBLISH, true);
     }
 }

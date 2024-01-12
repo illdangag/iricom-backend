@@ -1,6 +1,7 @@
 package com.illdangag.iricom.server.repository.implement;
 
 import com.illdangag.iricom.server.data.entity.Comment;
+import com.illdangag.iricom.server.data.entity.CommentBlock;
 import com.illdangag.iricom.server.data.entity.Post;
 import com.illdangag.iricom.server.repository.CommentRepository;
 import org.springframework.stereotype.Repository;
@@ -92,6 +93,14 @@ public class CommentRepositoryImpl implements CommentRepository {
 
     @Override
     public void save(Comment comment) {
+        for (CommentBlock commentBlock : comment.getCommentBlockList()) {
+            if (commentBlock.getId() == null) {
+                this.entityManager.persist(commentBlock);
+            } else {
+                this.entityManager.merge(commentBlock);
+            }
+        }
+
         if (comment.getId() == null) {
             this.entityManager.persist(comment);
         } else {

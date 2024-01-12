@@ -593,7 +593,7 @@ public class PostServiceImpl extends IricomService implements PostService {
      * 게시물의 차단 여부
      */
     private boolean isBlockPost(Post post) {
-        long postBlockCount = this.blockRepository.getPostBlockCount(post);
-        return postBlockCount > 0;
+        List<PostBlock> postBlockList = post.getPostBlockList();
+        return !postBlockList.isEmpty();
     }
 }

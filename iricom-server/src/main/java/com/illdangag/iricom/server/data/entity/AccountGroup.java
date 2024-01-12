@@ -23,7 +23,7 @@ import java.util.Objects;
                 @Index(name = "AccountGroup_enabled", columnList = "enabled"),
         }
 )
-@Audited
+@Audited(withModifiedFlag = true)
 public class AccountGroup {
     @Id
     @GeneratedValue

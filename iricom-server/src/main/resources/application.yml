@@ -1,6 +1,13 @@
 spring:
   profiles:
     include: database, storage # 서버 실행 환경과 테스트 환경을 분리 하기 위하여 설정을 분리
+  jpa:
+    properties:
+      org:
+        hibernate:
+          envers:
+            audit_table_suffix: _history
+            store_data_at_delete: true
 
 logging:
   level:

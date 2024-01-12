@@ -3,10 +3,10 @@ package com.illdangag.iricom.server.data.entity;
 import org.hibernate.envers.RevisionNumber;
 import org.hibernate.envers.RevisionTimestamp;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
+import javax.persistence.*;
 import java.io.Serializable;
+import java.time.LocalDateTime;
+import java.util.Date;
 
 @Entity
 @org.hibernate.envers.RevisionEntity
@@ -14,8 +14,9 @@ public class RevisionEntity implements Serializable {
     @Id
     @GeneratedValue
     @RevisionNumber
-    private long rev;
+    private Long rev;
 
     @RevisionTimestamp
-    private long timestamp;
+    @Temporal(TemporalType.TIMESTAMP)
+    private Date timestamp;
 }

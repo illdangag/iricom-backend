@@ -5,7 +5,7 @@ import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 import org.hibernate.envers.Audited;
-import org.hibernate.envers.NotAudited;
+import org.hibernate.envers.RelationTargetAuditMode;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
@@ -16,23 +16,23 @@ import java.time.LocalDateTime;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 @Entity
-@Audited
 @Table(
         name = "board_admin",
         indexes = {
         }
 )
+@Audited(withModifiedFlag = true)
 public class BoardAdmin {
     @Id
     @GeneratedValue
     private Long id;
 
-    @NotAudited
+    @Audited(targetAuditMode = RelationTargetAuditMode.NOT_AUDITED)
     @OneToOne
     @JoinColumn(name = "account_id")
     private Account account;
 
-    @NotAudited
+    @Audited(targetAuditMode = RelationTargetAuditMode.NOT_AUDITED)
     @OneToOne
     @JoinColumn(name = "board_id")
     private Board board;

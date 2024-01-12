@@ -442,13 +442,7 @@ public class CommentServiceImpl extends IricomService implements CommentService 
     }
 
     private boolean isBlockPost(Post post) {
-        Optional<PostBlock> postBlockOptional = this.blockRepository.getPostBlock(post);
-
-        if (postBlockOptional.isEmpty()) {
-            return false;
-        }
-
-        PostBlock postBlock = postBlockOptional.get();
-        return postBlock.getEnabled();
+        List<PostBlock> postBlockList = post.getPostBlockList();
+        return !postBlockList.isEmpty();
     }
 }

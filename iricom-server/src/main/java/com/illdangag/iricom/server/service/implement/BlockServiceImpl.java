@@ -84,8 +84,8 @@ public class BlockServiceImpl extends IricomService implements BlockService {
                 .reason(postBlockInfoCreate.getReason())
                 .enabled(true)
                 .build();
-
-        this.blockRepository.save(postBlock);
+        post.getPostBlockList().add(postBlock);
+        this.postRepository.save(post);
 
         PostInfo postInfo = this.postService.getPostInfo(account, post, PostState.PUBLISH, false);
         return new PostBlockInfo(postBlock, postInfo);
@@ -112,15 +112,15 @@ public class BlockServiceImpl extends IricomService implements BlockService {
             throw new IricomException(IricomErrorCode.INVALID_AUTHORIZATION_TO_BLOCK_POST);
         }
 
-        List<PostBlock> postBlockList = this.blockRepository.getPostBlockList(post);
+        List<PostBlock> postBlockList = post.getPostBlockList();
         if (postBlockList.isEmpty()) {
             throw new IricomException(IricomErrorCode.NOT_BLOCKED_POST);
         }
 
-        postBlockList.forEach(item -> item.setEnabled(false));
-        postBlockList.forEach(this.blockRepository::save);
-
         PostBlock postBlock = postBlockList.get(0);
+        postBlock.setEnabled(false);
+        this.postRepository.save(post);
+
         PostInfo postInfo = this.postService.getPostInfo(account, post, PostState.PUBLISH, false);
         return new PostBlockInfo(postBlock, postInfo);
     }
@@ -250,7 +250,7 @@ public class BlockServiceImpl extends IricomService implements BlockService {
             throw new IricomException(IricomErrorCode.NOT_EXIST_POST);
         }
 
-        List<PostBlock> postBlockList = this.blockRepository.getPostBlockList(post);
+        List<PostBlock> postBlockList = post.getPostBlockList();
         if (postBlockList.isEmpty()) {
             throw new IricomException(IricomErrorCode.NOT_EXIST_POST_BLOCK);
         }
@@ -259,7 +259,7 @@ public class BlockServiceImpl extends IricomService implements BlockService {
 
         String reason = postBlockInfoUpdate.getReason();
         postBlock.setReason(reason);
-        this.blockRepository.save(postBlock);
+        this.postRepository.save(post);
 
         PostInfo postInfo = this.postService.getPostInfo(account, post, PostState.PUBLISH, false);
         return new PostBlockInfo(postBlock, postInfo);
@@ -312,7 +312,8 @@ public class BlockServiceImpl extends IricomService implements BlockService {
                 .enabled(true)
                 .build();
 
-        this.blockRepository.save(commentBlock);
+        comment.getCommentBlockList().add(commentBlock);
+        this.commentRepository.save(comment);
 
         CommentInfo commentInfo = this.commentService.getComment(account, board, post, comment);
         return new CommentBlockInfo(commentBlock, commentInfo);
@@ -359,8 +360,8 @@ public class BlockServiceImpl extends IricomService implements BlockService {
         }
 
         CommentBlock commentBlock = commentBlockList.get(0);
-        commentBlock.setEnabled(false);
-        this.blockRepository.save(commentBlock);
+        comment.getCommentBlockList().clear();
+        this.commentRepository.save(comment);
 
         CommentInfo commentInfo = this.commentService.getComment(account, board, post, comment);
         return new CommentBlockInfo(commentBlock, commentInfo);

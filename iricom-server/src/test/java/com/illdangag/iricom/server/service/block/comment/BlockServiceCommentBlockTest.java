@@ -6,6 +6,7 @@ import com.illdangag.iricom.server.data.request.CommentBlockInfoCreate;
 import com.illdangag.iricom.server.data.response.CommentBlockInfo;
 import com.illdangag.iricom.server.exception.IricomException;
 import com.illdangag.iricom.server.service.BlockService;
+import com.illdangag.iricom.server.service.CommentService;
 import com.illdangag.iricom.server.test.IricomTestSuite;
 import com.illdangag.iricom.server.test.data.wrapper.*;
 import lombok.extern.slf4j.Slf4j;
@@ -25,6 +26,8 @@ import java.util.Collections;
 public class BlockServiceCommentBlockTest extends IricomTestSuite {
     @Autowired
     private BlockService blockService;
+    @Autowired
+    private CommentService commentService;
 
     public BlockServiceCommentBlockTest(ApplicationContext context) {
         super(context);
@@ -210,7 +213,7 @@ public class BlockServiceCommentBlockTest extends IricomTestSuite {
     }
 
     @Test
-    @DisplayName("이미 차단된 게시물")
+    @DisplayName("이미 차단된 댓글")
     void alreadyBlockPost() {
         TestBoardInfo testBoardInfo00 = TestBoardInfo.builder()
                 .title("board").isEnabled(true).adminList(Collections.singletonList(allBoardAdmin)).build();
@@ -249,7 +252,7 @@ public class BlockServiceCommentBlockTest extends IricomTestSuite {
     }
 
     @Test
-    @DisplayName("이미 차단된 게시물")
+    @DisplayName("이미 차단된 댓글")
     void alreadyBlockComment() {
         TestBoardInfo testBoardInfo00 = TestBoardInfo.builder()
                 .title("board").isEnabled(true).adminList(Collections.singletonList(allBoardAdmin)).build();
@@ -286,5 +289,37 @@ public class BlockServiceCommentBlockTest extends IricomTestSuite {
         });
 
         Assertions.assertEquals("05000008", exception.getErrorCode());
+    }
+
+    @Test
+    @DisplayName("차단된 댓글 조회")
+    void getBlockComment() {
+        TestBoardInfo testBoardInfo00 = TestBoardInfo.builder()
+                .title("board").isEnabled(true).adminList(Collections.singletonList(allBoardAdmin)).build();
+        TestPostInfo testPostInfo = TestPostInfo.builder()
+                .title("post title").content("content").isAllowComment(true)
+                .postType(PostType.POST).postState(PostState.PUBLISH)
+                .creator(allBoardAdmin).board(testBoardInfo00)
+                .build();
+        TestCommentInfo testCommentInfo = TestCommentInfo.builder()
+                .content("comment").creator(allBoardAdmin).post(testPostInfo)
+                .build();
+        TestCommentBlockInfo testCommentBlockInfo = TestCommentBlockInfo.builder()
+                .comment(testCommentInfo).account(systemAdmin)
+                .reason("block reason")
+                .build();
+
+        addTestBoardInfo(testBoardInfo00);
+        addTestPostInfo(testPostInfo);
+        addTestCommentInfo(testCommentInfo);
+        addTestCommentBlockInfo(testCommentBlockInfo);
+        init();
+
+        String accountInfo = getAccountId(systemAdmin);
+        String boardId = getBoardId(testCommentInfo.getPost().getBoard());
+        String postId = getPostId(testCommentInfo.getPost());
+        String commentId = getCommentId(testCommentInfo);
+
+        this.commentService.getComment(boardId, postId, commentId);
     }
 }
