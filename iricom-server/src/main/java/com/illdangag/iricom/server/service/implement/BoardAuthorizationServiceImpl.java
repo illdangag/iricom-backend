@@ -86,7 +86,7 @@ public class BoardAuthorizationServiceImpl extends IricomService implements Boar
         }
 
         List<BoardAdmin> otherBoardAdminList = this.boardRepository.getBoardAdminList(account);
-        if (otherBoardAdminList.isEmpty()) { // 관리자 권한이 남아 있지 않은 경우
+        if (account.getAuth() != AccountAuth.SYSTEM_ADMIN && otherBoardAdminList.isEmpty()) { // 관리자 권한이 남아 있지 않은 경우
             account.setAuth(AccountAuth.ACCOUNT);
             this.accountService.saveAccount(account);
         } else if (account.getAuth() == AccountAuth.ACCOUNT) { // 관리자 권한이 남아 있는데 계정 권한이 일반 계정인 경우
