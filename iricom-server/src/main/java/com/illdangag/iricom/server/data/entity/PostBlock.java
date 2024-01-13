@@ -3,6 +3,8 @@ package com.illdangag.iricom.server.data.entity;
 import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
+import org.hibernate.envers.Audited;
+import org.hibernate.envers.RelationTargetAuditMode;
 
 import javax.persistence.*;
 import javax.validation.constraints.Size;
@@ -23,6 +25,7 @@ import java.time.LocalDateTime;
                 @Index(name = "PostBlock_adminAccount", columnList = "admin_account_id")
         }
 )
+@Audited(withModifiedFlag = true)
 public class PostBlock {
     @Id
     @GeneratedValue
@@ -30,10 +33,12 @@ public class PostBlock {
 
     @OneToOne
     @JoinColumn(name = "post_id")
+    @Audited(targetAuditMode = RelationTargetAuditMode.NOT_AUDITED)
     private Post post;
 
     @ManyToOne
     @JoinColumn(name = "admin_account_id")
+    @Audited(targetAuditMode = RelationTargetAuditMode.NOT_AUDITED)
     private Account adminAccount;
 
     @Builder.Default

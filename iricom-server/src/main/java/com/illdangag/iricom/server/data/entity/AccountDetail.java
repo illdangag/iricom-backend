@@ -3,6 +3,8 @@ package com.illdangag.iricom.server.data.entity;
 import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
+import org.hibernate.envers.Audited;
+import org.hibernate.envers.RelationTargetAuditMode;
 
 import javax.persistence.*;
 import javax.validation.constraints.Size;
@@ -22,6 +24,7 @@ import java.util.Objects;
                 @Index(name = "AccountDetail_createDate", columnList = "createDate"),
         }
 )
+@Audited(withModifiedFlag = true)
 public class AccountDetail {
     @Id
     @GeneratedValue
@@ -29,6 +32,7 @@ public class AccountDetail {
 
     @OneToOne
     @JoinColumn(name = "account_id")
+    @Audited(targetAuditMode = RelationTargetAuditMode.NOT_AUDITED)
     private Account account;
 
     @Builder.Default
