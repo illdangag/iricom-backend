@@ -14,10 +14,10 @@ import java.time.LocalDateTime;
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 @Entity
 @Table(
-        name = "private_message",
+        name = "personal_message",
         indexes = {}
 )
-public class PrivateMessage {
+public class PersonalMessage {
     @Id
     @GeneratedValue
     private Long id;
@@ -37,12 +37,16 @@ public class PrivateMessage {
     @JoinColumn(name = "receive_account_id")
     private Account receiveAccount;
 
+    @Size(max = 100)
+    @Builder.Default
+    private String title = "";
+
     @Size(max = 1000)
     @Builder.Default
     private String message = "";
 
     @Builder.Default
-    private Boolean received = false;
+    private Boolean receivedConfirm = false;
 
     @Builder.Default
     private Boolean deleted = false;

@@ -3,6 +3,7 @@ package com.illdangag.iricom.server.test;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.illdangag.iricom.server.data.entity.Account;
 import com.illdangag.iricom.server.data.entity.AccountDetail;
+import com.illdangag.iricom.server.data.entity.PersonalMessage;
 import com.illdangag.iricom.server.data.entity.type.AccountAuth;
 import com.illdangag.iricom.server.data.entity.type.PostState;
 import com.illdangag.iricom.server.data.entity.type.ReportType;
@@ -38,6 +39,7 @@ public abstract class IricomTestSuite {
     private final ReportService reportService;
     private final BlockService blockService;
     private final AccountGroupService accountGroupService;
+    private final PersonalMessageService personalMessageService;
 
     private final AccountRepository accountRepository;
 
@@ -104,6 +106,7 @@ public abstract class IricomTestSuite {
     private final List<TestCommentReportInfo> testCommentReportInfoList = new ArrayList<>();
     private final List<TestPostBlockInfo> testPostBlockInfoList = new ArrayList<>();
     private final List<TestCommentBlockInfo> testCommentBlockInfoList = new ArrayList<>();
+    private final List<TestPersonalMessageInfo> testPersonalMessageInfoList = new ArrayList<>();
 
     private static final Map<TestAccountInfo, AccountInfo> accountMap = new HashMap<>();
     private static final Map<TestBoardInfo, BoardInfo> boardMap = new HashMap<>();
@@ -115,6 +118,7 @@ public abstract class IricomTestSuite {
     private static final Map<TestPostBlockInfo, PostBlockInfo> postBlockMap = new HashMap<>();
     private static final Map<TestAccountGroupInfo, AccountGroupInfo> accountGroupMap = new HashMap<>();
     private static final Map<TestCommentBlockInfo, CommentBlockInfo> commentBlockMap = new HashMap<>();
+    private static final Map<TestPersonalMessageInfo, PersonalMessageInfo> personalMessageMap = new HashMap<>();
 
     private static boolean isAccountInit = false;
 
@@ -127,6 +131,7 @@ public abstract class IricomTestSuite {
         this.reportService = context.getBean(ReportService.class);
         this.blockService = context.getBean(BlockService.class);
         this.accountGroupService = context.getBean(AccountGroupService.class);
+        this.personalMessageService = context.getBean(PersonalMessageService.class);
 
         this.accountRepository = context.getBean(AccountRepository.class);
 
@@ -321,6 +326,17 @@ public abstract class IricomTestSuite {
         });
     }
 
+    /**
+     * 개인 쪽지 전송
+     */
+    protected void createPersonalMessage(List<TestPersonalMessageInfo> testPersonalMessageInfoList) {
+        testPersonalMessageInfoList.forEach(item -> {
+            PersonalMessageInfo personalMessageInfo = this.createPersonalMessage(item);
+            personalMessageMap.put(item, personalMessageInfo);
+        });
+    }
+
+
     protected void init() {
         this.setBoard(testBoardInfoList);
         this.setAccountGroup(testAccountGroupInfoList);
@@ -337,6 +353,8 @@ public abstract class IricomTestSuite {
         this.setNotificationOnlyBoard(testBoardInfoList);
         this.deleteAccountGroup(testAccountGroupInfoList);
         this.deleteBoardAdmin(testBoardInfoList);
+
+        this.createPersonalMessage(testPersonalMessageInfoList);
     }
 
     private AccountInfo createAccount(TestAccountInfo testAccountInfo) {
@@ -549,6 +567,19 @@ public abstract class IricomTestSuite {
         return blockService.blockComment(accountInfo.getId(), boardId, postId, commentId, commentBlockInfoCreate);
     }
 
+    private PersonalMessageInfo createPersonalMessage(TestPersonalMessageInfo testPersonalMessageInfo) {
+
+        AccountInfo accountInfo = accountMap.get(testPersonalMessageInfo.getSender());
+
+        PersonalMessageInfoCreate personalMessageInfoCreate = PersonalMessageInfoCreate.builder()
+                .title(testPersonalMessageInfo.getTitle())
+                .message(testPersonalMessageInfo.getMessage())
+                .receiverAccountId(accountMap.get(testPersonalMessageInfo.getReceiver()).getId())
+                .build();
+
+        return this.personalMessageService.createPersonalMessageInfo(accountInfo.getId(), personalMessageInfoCreate);
+    }
+
     private AccountGroupInfo setAccountGroup(TestAccountGroupInfo testAccountGroupInfo) {
         List<String> accountIdList = testAccountGroupInfo.getAccountList().stream()
                 .map(testAccountInfo -> accountMap.get(testAccountInfo))
@@ -660,6 +691,10 @@ public abstract class IricomTestSuite {
         return accountGroupMap.get(testAccountGroupInfo);
     }
 
+    protected PersonalMessageInfo getPersonalMessage(TestPersonalMessageInfo testPersonalMessageInfo) {
+        return personalMessageMap.get(testPersonalMessageInfo);
+    }
+
     protected List<TestPostReportInfo> createTestPostReportInfo(TestPostInfo testPostInfo) {
         return Arrays.asList(
                 TestPostReportInfo.builder().type(ReportType.HATE).reason("hate report").reportAccount(common00).post(testPostInfo).build(),
@@ -748,6 +783,14 @@ public abstract class IricomTestSuite {
 
     protected void addTestCommentBlockInfo(TestCommentBlockInfo... testCommentBlockInfos) {
         this.testCommentBlockInfoList.addAll(Arrays.asList(testCommentBlockInfos));
+    }
+
+    protected void addTestPersonalMessageInfo(List<TestPersonalMessageInfo> testPersonalMessageInfoList) {
+        this.testPersonalMessageInfoList.addAll(testPersonalMessageInfoList);
+    }
+
+    protected void addTestPersonalMessageInfo(TestPersonalMessageInfo... testPersonalMessageInfos) {
+        this.addTestPersonalMessageInfo(Arrays.asList(testPersonalMessageInfos));
     }
 
     protected <T> List<T> getAllList(SearchRequest searchRequest, SearchAllListResponse<T> response) {
