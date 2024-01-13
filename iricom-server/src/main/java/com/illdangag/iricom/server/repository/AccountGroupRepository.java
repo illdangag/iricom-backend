@@ -12,12 +12,6 @@ public interface AccountGroupRepository {
 
     void updateAccountGroup(AccountGroup accountGroup, List<AccountGroupAccount> accountGroupAccountList, List<AccountGroupBoard> accountGroupBoardList);
 
-    void updateAccountGroup(AccountGroup accountGroup);
-
-    List<Account> getAccountListInAccountGroup(AccountGroup accountGroup);
-
-    List<Board> getBoardListInAccountGroup(AccountGroup accountGroup);
-
     List<AccountGroup> getAccountGroupList(int skip, int limit);
 
     long getAccountGroupCount();

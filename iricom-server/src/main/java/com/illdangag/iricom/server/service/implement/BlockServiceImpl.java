@@ -73,7 +73,7 @@ public class BlockServiceImpl extends IricomService implements BlockService {
         }
 
         // 이미 밴 처리 된 게시물인지 확인
-        List<PostBlock> postBlockList = this.blockRepository.getPostBlockList(post);
+        List<PostBlock> postBlockList = post.getPostBlockList();
         if (!postBlockList.isEmpty()) {
             throw new IricomException(IricomErrorCode.ALREADY_BLOCK_POST);
         }
@@ -216,7 +216,7 @@ public class BlockServiceImpl extends IricomService implements BlockService {
             throw new IricomException(IricomErrorCode.NOT_EXIST_POST);
         }
 
-        List<PostBlock> postBlockList = this.blockRepository.getPostBlockList(post);
+        List<PostBlock> postBlockList = post.getPostBlockList();
         if (postBlockList.isEmpty()) {
             throw new IricomException(IricomErrorCode.NOT_EXIST_POST_BLOCK);
         }
@@ -294,7 +294,7 @@ public class BlockServiceImpl extends IricomService implements BlockService {
         }
 
         // 이미 차단 처리 된 게시물인지 확인
-        List<PostBlock> postBlockList = this.blockRepository.getPostBlockList(post);
+        List<PostBlock> postBlockList = post.getPostBlockList();
         if (!postBlockList.isEmpty()) {
             throw new IricomException(IricomErrorCode.ALREADY_BLOCK_POST);
         }
@@ -348,7 +348,7 @@ public class BlockServiceImpl extends IricomService implements BlockService {
         }
 
         // 이미 차단 처리 된 게시물인지 확인
-        List<PostBlock> postBlockList = this.blockRepository.getPostBlockList(post);
+        List<PostBlock> postBlockList = post.getPostBlockList();
         if (!postBlockList.isEmpty()) {
             throw new IricomException(IricomErrorCode.ALREADY_BLOCK_POST);
         }

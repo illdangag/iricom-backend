@@ -18,19 +18,6 @@ public class BlockRepositoryImpl implements BlockRepository {
     private EntityManager entityManager;
 
     @Override
-    public List<PostBlock> getPostBlockList(Post post) {
-        final String jpql = "SELECT pb FROM PostBlock pb" +
-                " WHERE pb.post = :post" +
-                " AND pb.enabled = true" +
-                " ORDER BY pb.createDate ASC";
-
-        TypedQuery<PostBlock> query = this.entityManager.createQuery(jpql, PostBlock.class)
-                .setParameter("post", post);
-        return query.getResultList();
-    }
-
-
-    @Override
     public List<PostBlock> getPostBlockList(Board board, String reason, int offset, int limit) {
         final String jpql = "SELECT pb FROM PostBlock pb" +
                 " WHERE pb.post.board = :board" +

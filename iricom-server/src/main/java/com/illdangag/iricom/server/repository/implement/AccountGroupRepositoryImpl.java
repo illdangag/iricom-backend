@@ -38,26 +38,6 @@ public class AccountGroupRepositoryImpl implements AccountGroupRepository {
     }
 
     @Override
-    public List<Account> getAccountListInAccountGroup(AccountGroup accountGroup) {
-        final String jpql = "SELECT aiag.account FROM AccountGroupAccount aiag WHERE aiag.accountGroup = :accountGroup";
-
-        TypedQuery<Account> query = this.entityManager.createQuery(jpql, Account.class)
-                .setParameter("accountGroup", accountGroup);
-
-        return query.getResultList();
-    }
-
-    @Override
-    public List<Board> getBoardListInAccountGroup(AccountGroup accountGroup) {
-        final String jpql = "SELECT biag.board FROM AccountGroupBoard biag WHERE biag.accountGroup = :accountGroup";
-
-        TypedQuery<Board> query = this.entityManager.createQuery(jpql, Board.class)
-                .setParameter("accountGroup", accountGroup);
-
-        return query.getResultList();
-    }
-
-    @Override
     public void saveAccountGroup(AccountGroup accountGroup) {
         // 계정 그룹 저장
         this.entityManager.persist(accountGroup);
@@ -114,12 +94,6 @@ public class AccountGroupRepositoryImpl implements AccountGroupRepository {
         removeAccountGroupAccountList.forEach(item -> this.entityManager.remove(item));
         addAccountGroupBoardList.forEach(item -> this.entityManager.persist(item));
         removeAccountGroupBoardList.forEach(item -> this.entityManager.remove(item));
-        this.entityManager.flush();
-    }
-
-    @Override
-    public void updateAccountGroup(AccountGroup accountGroup) {
-        this.entityManager.merge(accountGroup);
         this.entityManager.flush();
     }
 
