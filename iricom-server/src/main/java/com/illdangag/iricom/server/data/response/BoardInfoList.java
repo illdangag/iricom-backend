@@ -9,8 +9,8 @@ import lombok.experimental.SuperBuilder;
 import java.util.LinkedList;
 import java.util.List;
 
-@SuperBuilder
 @Getter
+@SuperBuilder
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class BoardInfoList extends SearchList {
     @Builder.Default

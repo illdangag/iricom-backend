@@ -5,21 +5,16 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
+import lombok.experimental.SuperBuilder;
 
 import java.util.LinkedList;
 import java.util.List;
 
 @Getter
 @Setter
-@Builder
+@SuperBuilder
 @JsonInclude(JsonInclude.Include.NON_NULL)
-public class CommentInfoList {
-    private long total;
-
-    private long skip;
-
-    private long limit;
-
+public class CommentInfoList extends SearchList {
     @Builder.Default
     @JsonProperty("comments")
     private List<CommentInfo> commentInfoList = new LinkedList<>();
