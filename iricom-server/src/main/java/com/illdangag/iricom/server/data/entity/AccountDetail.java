@@ -39,7 +39,7 @@ public class AccountDetail {
     @UpdateTimestamp
     private LocalDateTime updateDate = LocalDateTime.now();
 
-    @Size(min = 0, max = 20)
+    @Size(max = 20)
     @Builder.Default
     private String nickname = "";
 

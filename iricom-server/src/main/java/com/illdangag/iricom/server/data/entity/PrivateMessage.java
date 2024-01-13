@@ -4,6 +4,7 @@ import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
 
 import javax.persistence.*;
+import javax.validation.constraints.Size;
 import java.time.LocalDateTime;
 
 @Getter
@@ -35,6 +36,13 @@ public class PrivateMessage {
     @ManyToOne
     @JoinColumn(name = "receive_account_id")
     private Account receiveAccount;
+
+    @Size(max = 1000)
+    @Builder.Default
+    private String message = "";
+
+    @Builder.Default
+    private Boolean received = false;
 
     @Builder.Default
     private Boolean deleted = false;
