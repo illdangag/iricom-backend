@@ -93,7 +93,14 @@ public class CommentRepositoryImpl implements CommentRepository {
 
     @Override
     public void save(Comment comment) {
-        for (CommentBlock commentBlock : comment.getCommentBlockList()) {
+        if (comment.getId() == null) {
+            this.entityManager.persist(comment);
+        } else {
+            this.entityManager.merge(comment);
+        }
+
+        if (comment.getCommentBlock() != null) {
+            CommentBlock commentBlock = comment.getCommentBlock();
             if (commentBlock.getId() == null) {
                 this.entityManager.persist(commentBlock);
             } else {
@@ -101,11 +108,6 @@ public class CommentRepositoryImpl implements CommentRepository {
             }
         }
 
-        if (comment.getId() == null) {
-            this.entityManager.persist(comment);
-        } else {
-            this.entityManager.merge(comment);
-        }
         this.entityManager.flush();
     }
 }

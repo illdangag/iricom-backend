@@ -1,6 +1,8 @@
 package com.illdangag.iricom.server.repository;
 
-import com.illdangag.iricom.server.data.entity.*;
+import com.illdangag.iricom.server.data.entity.AccountGroup;
+import com.illdangag.iricom.server.data.entity.AccountGroupAccount;
+import com.illdangag.iricom.server.data.entity.AccountGroupBoard;
 
 import java.util.List;
 import java.util.Optional;

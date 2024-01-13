@@ -59,7 +59,7 @@ public class BlockServicePostGetTest extends IricomTestSuite {
         String postId = getPostId(alreadyBlockPostInfo00);
 
         PostBlockInfo postBlockInfo = blockService.getPostBlockInfo(accountId, boardId, postId);
-        Assertions.assertTrue(postBlockInfo.getEnabled());
+        Assertions.assertNotNull(postBlockInfo);
     }
 
     @Test
@@ -70,7 +70,7 @@ public class BlockServicePostGetTest extends IricomTestSuite {
         String postId = getPostId(alreadyBlockPostInfo00);
 
         PostBlockInfo postBlockInfo = blockService.getPostBlockInfo(accountId, boardId, postId);
-        Assertions.assertTrue(postBlockInfo.getEnabled());
+        Assertions.assertNotNull(postBlockInfo);
     }
 
     @Test

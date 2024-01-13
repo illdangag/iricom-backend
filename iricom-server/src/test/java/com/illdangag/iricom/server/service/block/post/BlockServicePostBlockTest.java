@@ -95,7 +95,6 @@ public class BlockServicePostBlockTest extends IricomTestSuite {
         Assertions.assertEquals("block", postBlockInfo.getReason());
         Assertions.assertEquals(String.valueOf(postId), postBlockInfo.getPostInfo().getId());
         Assertions.assertTrue(postBlockInfo.getPostInfo().getBlocked());
-        Assertions.assertTrue(postBlockInfo.getEnabled());
     }
 
     @Test
@@ -114,7 +113,6 @@ public class BlockServicePostBlockTest extends IricomTestSuite {
         Assertions.assertEquals("block", postBlockInfo.getReason());
         Assertions.assertEquals(String.valueOf(postId), postBlockInfo.getPostInfo().getId());
         Assertions.assertTrue(postBlockInfo.getPostInfo().getBlocked());
-        Assertions.assertTrue(postBlockInfo.getEnabled());
     }
 
     @Test

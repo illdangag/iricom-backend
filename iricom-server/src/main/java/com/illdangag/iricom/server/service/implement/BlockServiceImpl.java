@@ -73,8 +73,7 @@ public class BlockServiceImpl extends IricomService implements BlockService {
         }
 
         // 이미 밴 처리 된 게시물인지 확인
-        List<PostBlock> postBlockList = post.getPostBlockList();
-        if (!postBlockList.isEmpty()) {
+        if (post.getPostBlock() != null) {
             throw new IricomException(IricomErrorCode.ALREADY_BLOCK_POST);
         }
 
@@ -82,9 +81,8 @@ public class BlockServiceImpl extends IricomService implements BlockService {
                 .post(post)
                 .adminAccount(account)
                 .reason(postBlockInfoCreate.getReason())
-                .enabled(true)
                 .build();
-        post.getPostBlockList().add(postBlock);
+        post.setPostBlock(postBlock);
         this.postRepository.save(post);
 
         PostInfo postInfo = this.postService.getPostInfo(account, post, PostState.PUBLISH, false);
@@ -112,14 +110,14 @@ public class BlockServiceImpl extends IricomService implements BlockService {
             throw new IricomException(IricomErrorCode.INVALID_AUTHORIZATION_TO_BLOCK_POST);
         }
 
-        List<PostBlock> postBlockList = post.getPostBlockList();
-        if (postBlockList.isEmpty()) {
+        if (post.getPostBlock() == null) {
             throw new IricomException(IricomErrorCode.NOT_BLOCKED_POST);
         }
 
-        PostBlock postBlock = postBlockList.get(0);
-        postBlock.setEnabled(false);
+        PostBlock postBlock = post.getPostBlock();
+        post.setPostBlock(null);
         this.postRepository.save(post);
+        this.blockRepository.remove(postBlock);
 
         PostInfo postInfo = this.postService.getPostInfo(account, post, PostState.PUBLISH, false);
         return new PostBlockInfo(postBlock, postInfo);
@@ -216,13 +214,11 @@ public class BlockServiceImpl extends IricomService implements BlockService {
             throw new IricomException(IricomErrorCode.NOT_EXIST_POST);
         }
 
-        List<PostBlock> postBlockList = post.getPostBlockList();
-        if (postBlockList.isEmpty()) {
+        if (post.getPostBlock() == null) {
             throw new IricomException(IricomErrorCode.NOT_EXIST_POST_BLOCK);
         }
 
-        PostBlock postBlock = postBlockList.get(0);
-
+        PostBlock postBlock = post.getPostBlock();
         PostInfo postInfo = this.postService.getPostInfo(account, post, PostState.PUBLISH, false);
         return new PostBlockInfo(postBlock, postInfo);
     }
@@ -250,13 +246,11 @@ public class BlockServiceImpl extends IricomService implements BlockService {
             throw new IricomException(IricomErrorCode.NOT_EXIST_POST);
         }
 
-        List<PostBlock> postBlockList = post.getPostBlockList();
-        if (postBlockList.isEmpty()) {
+        if (post.getPostBlock() == null) {
             throw new IricomException(IricomErrorCode.NOT_EXIST_POST_BLOCK);
         }
 
-        PostBlock postBlock = postBlockList.get(0);
-
+        PostBlock postBlock = post.getPostBlock();
         String reason = postBlockInfoUpdate.getReason();
         postBlock.setReason(reason);
         this.postRepository.save(post);
@@ -294,13 +288,12 @@ public class BlockServiceImpl extends IricomService implements BlockService {
         }
 
         // 이미 차단 처리 된 게시물인지 확인
-        List<PostBlock> postBlockList = post.getPostBlockList();
-        if (!postBlockList.isEmpty()) {
+        if (post.getPostBlock() != null) {
             throw new IricomException(IricomErrorCode.ALREADY_BLOCK_POST);
         }
 
         // 이미 차단 처리 된 댓글인지 확인
-        List<CommentBlock> commentBlockList = this.blockRepository.getCommentBlockList(comment, true, null, null);
+        List<CommentBlock> commentBlockList = this.blockRepository.getCommentBlockList(comment, null, null);
         if (!commentBlockList.isEmpty()) {
             throw new IricomException(IricomErrorCode.ALREADY_BLOCKED_COMMENT);
         }
@@ -309,10 +302,9 @@ public class BlockServiceImpl extends IricomService implements BlockService {
                 .comment(comment)
                 .adminAccount(account)
                 .reason(commentBlockInfoCreate.getReason())
-                .enabled(true)
                 .build();
 
-        comment.getCommentBlockList().add(commentBlock);
+        comment.setCommentBlock(commentBlock);
         this.commentRepository.save(comment);
 
         CommentInfo commentInfo = this.commentService.getComment(account, board, post, comment);
@@ -348,20 +340,20 @@ public class BlockServiceImpl extends IricomService implements BlockService {
         }
 
         // 이미 차단 처리 된 게시물인지 확인
-        List<PostBlock> postBlockList = post.getPostBlockList();
-        if (!postBlockList.isEmpty()) {
+        if (post.getPostBlock() != null) {
             throw new IricomException(IricomErrorCode.ALREADY_BLOCK_POST);
         }
 
         // 차단 처리 된 댓글인지 확인
-        List<CommentBlock> commentBlockList = this.blockRepository.getCommentBlockList(comment, true, null, null);
+        List<CommentBlock> commentBlockList = this.blockRepository.getCommentBlockList(comment, null, null);
         if (commentBlockList.isEmpty()) {
             throw new IricomException(IricomErrorCode.NOT_BLOCK_COMMENT);
         }
 
         CommentBlock commentBlock = commentBlockList.get(0);
-        comment.getCommentBlockList().clear();
+        comment.setCommentBlock(null);
         this.commentRepository.save(comment);
+        this.blockRepository.remove(commentBlock);
 
         CommentInfo commentInfo = this.commentService.getComment(account, board, post, comment);
         return new CommentBlockInfo(commentBlock, commentInfo);

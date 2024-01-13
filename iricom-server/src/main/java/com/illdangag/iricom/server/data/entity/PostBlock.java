@@ -20,8 +20,7 @@ import java.time.LocalDateTime;
                 @Index(name = "PostBlock_createDate", columnList = "createDate"),
                 @Index(name = "PostBlock_reason", columnList = "reason"),
                 @Index(name = "PostBlock_post", columnList = "post_id"),
-                @Index(name = "PostBlock_adminAccount", columnList = "admin_account_id"),
-                @Index(name = "PostBlock_enabled", columnList = "enabled"),
+                @Index(name = "PostBlock_adminAccount", columnList = "admin_account_id")
         }
 )
 public class PostBlock {
@@ -29,7 +28,7 @@ public class PostBlock {
     @GeneratedValue
     private Long id;
 
-    @ManyToOne
+    @OneToOne
     @JoinColumn(name = "post_id")
     private Post post;
 
@@ -48,7 +47,4 @@ public class PostBlock {
     @Builder.Default
     @Size(max = 1000)
     private String reason = "";
-
-    @Builder.Default
-    private Boolean enabled = true;
 }

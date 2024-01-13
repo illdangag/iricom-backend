@@ -15,8 +15,6 @@ public class CommentBlockInfo {
 
     private String reason;
 
-    private Boolean enabled;
-
     @JsonProperty("comment")
     private CommentInfo commentInfo;
 
@@ -25,7 +23,6 @@ public class CommentBlockInfo {
         this.createDate = DateTimeUtils.getLong(commentBlock.getCreateDate());
         this.updateDate = DateTimeUtils.getLong(commentBlock.getUpdateDate());
         this.reason = commentBlock.getReason();
-        this.enabled = commentBlock.getEnabled();
         this.commentInfo = commentInfo;
     }
 }

@@ -1,6 +1,9 @@
 package com.illdangag.iricom.server.repository.implement;
 
-import com.illdangag.iricom.server.data.entity.*;
+import com.illdangag.iricom.server.data.entity.Board;
+import com.illdangag.iricom.server.data.entity.Comment;
+import com.illdangag.iricom.server.data.entity.CommentBlock;
+import com.illdangag.iricom.server.data.entity.PostBlock;
 import com.illdangag.iricom.server.repository.BlockRepository;
 import com.illdangag.iricom.server.util.StringUtils;
 import org.springframework.stereotype.Repository;
@@ -9,6 +12,7 @@ import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.TypedQuery;
 import javax.transaction.Transactional;
+import javax.validation.Valid;
 import java.util.List;
 
 @Transactional
@@ -21,7 +25,6 @@ public class BlockRepositoryImpl implements BlockRepository {
     public List<PostBlock> getPostBlockList(Board board, String reason, int offset, int limit) {
         final String jpql = "SELECT pb FROM PostBlock pb" +
                 " WHERE pb.post.board = :board" +
-                " AND pb.enabled = true" +
                 " AND UPPER(pb.reason) LIKE UPPER(:reason)" +
                 " ORDER BY pb.createDate ASC";
 
@@ -37,7 +40,6 @@ public class BlockRepositoryImpl implements BlockRepository {
     public long getPostBlockListCount(Board board, String reason) {
         final String jpql = "SELECT COUNT(*) FROM PostBlock pb" +
                 " WHERE pb.post.board = :board" +
-                " AND pb.enabled = true" +
                 " AND UPPER(pb.reason) LIKE UPPER(:reason)";
 
         TypedQuery<Long> query = this.entityManager.createQuery(jpql, Long.class)
@@ -49,8 +51,7 @@ public class BlockRepositoryImpl implements BlockRepository {
     @Override
     public List<PostBlock> getPostBlockList(String reason, int offset, int limit) {
         final String jpql = "SELECT pb FROM PostBlock pb" +
-                " WHERE pb.enabled = true" +
-                " AND UPPER(pb.reason) LIKE UPPER(:reason)" +
+                " WHERE UPPER(pb.reason) LIKE UPPER(:reason)" +
                 " ORDER BY pb.createDate ASC";
 
         TypedQuery<PostBlock> query = this.entityManager.createQuery(jpql, PostBlock.class)
@@ -61,8 +62,7 @@ public class BlockRepositoryImpl implements BlockRepository {
     @Override
     public long getPostBlockListCount(String reason) {
         final String jpql = "SELECT COUNT(*) FROM PostBlock pb" +
-                " WHERE pb.enabled = true" +
-                " AND UPPER(pb.reason) LIKE UPPER(:reason)";
+                " WHERE UPPER(pb.reason) LIKE UPPER(:reason)";
 
         TypedQuery<Long> query = this.entityManager.createQuery(jpql, Long.class)
                 .setParameter("reason", "%" + StringUtils.escape(reason) + "%");
@@ -70,20 +70,12 @@ public class BlockRepositoryImpl implements BlockRepository {
     }
 
     @Override
-    public List<CommentBlock> getCommentBlockList(Comment comment, Boolean enabled, Integer skip, Integer limit) {
+    public List<CommentBlock> getCommentBlockList(Comment comment, Integer skip, Integer limit) {
         String jpql = "SELECT cb FROM CommentBlock cb" +
                 " WHERE cb.comment = :comment";
 
-        if (enabled != null) {
-            jpql += " AND cb.enabled = :enabled";
-        }
-
         TypedQuery<CommentBlock> query = this.entityManager.createQuery(jpql, CommentBlock.class)
                 .setParameter("comment", comment);
-
-        if (enabled != null) {
-            query.setParameter("enabled", enabled);
-        }
 
         if (skip != null) {
             query.setFirstResult(skip);
@@ -94,5 +86,17 @@ public class BlockRepositoryImpl implements BlockRepository {
         }
 
         return query.getResultList();
+    }
+
+    @Override
+    public void remove(PostBlock postBlock) {
+        this.entityManager.remove(postBlock);
+        this.entityManager.flush();
+    }
+
+    @Override
+    public void remove(CommentBlock commentBlock) {
+        this.entityManager.remove(commentBlock);
+        this.entityManager.flush();
     }
 }

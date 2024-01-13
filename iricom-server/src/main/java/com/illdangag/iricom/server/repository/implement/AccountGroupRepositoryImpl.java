@@ -1,6 +1,8 @@
 package com.illdangag.iricom.server.repository.implement;
 
-import com.illdangag.iricom.server.data.entity.*;
+import com.illdangag.iricom.server.data.entity.AccountGroup;
+import com.illdangag.iricom.server.data.entity.AccountGroupAccount;
+import com.illdangag.iricom.server.data.entity.AccountGroupBoard;
 import com.illdangag.iricom.server.exception.IricomErrorCode;
 import com.illdangag.iricom.server.exception.IricomException;
 import com.illdangag.iricom.server.repository.AccountGroupRepository;

@@ -25,7 +25,7 @@ public class CommentBlock {
     @GeneratedValue
     private Long id;
 
-    @ManyToOne
+    @OneToOne
     @JoinColumn(name = "comment_id")
     private Comment comment;
 
@@ -44,7 +44,4 @@ public class CommentBlock {
     @Builder.Default
     @Size(max = 1000)
     private String reason = "";
-
-    @Builder.Default
-    private Boolean enabled = true;
 }

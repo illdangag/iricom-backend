@@ -93,16 +93,14 @@ public class IricomFieldsSnippet {
             ResponseField.builder().path("id").description("아이디").build(),
             ResponseField.builder().path("createDate").description("생성일").build(),
             ResponseField.builder().path("updateDate").description("수정일").build(),
-            ResponseField.builder().path("reason").description("사유").build(),
-            ResponseField.builder().path("enabled").description("활성화 여부").build()
+            ResponseField.builder().path("reason").description("사유").build()
     );
 
     private static final List<ResponseField> commentBlockResponseFieldList = Arrays.asList(
             ResponseField.builder().path("id").description("아이디").build(),
             ResponseField.builder().path("createDate").description("생성일").build(),
             ResponseField.builder().path("updateDate").description("수정일").build(),
-            ResponseField.builder().path("reason").description("사유").build(),
-            ResponseField.builder().path("enabled").description("활성화 여부").build()
+            ResponseField.builder().path("reason").description("사유").build()
     );
 
     private static final List<ResponseField> accountGroupResponseFieldList = Arrays.asList(

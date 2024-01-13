@@ -192,7 +192,15 @@ public class PostRepositoryImpl implements PostRepository {
 
     @Override
     public void save(Post post) {
-        for (PostBlock postBlock : post.getPostBlockList()) {
+        if (post.getId() == null) {
+            this.entityManager.persist(post);
+        } else {
+            this.entityManager.merge(post);
+        }
+
+        if (post.getPostBlock() != null) {
+            PostBlock postBlock = post.getPostBlock();
+
             if (postBlock.getId() == null) {
                 this.entityManager.persist(postBlock);
             } else {
@@ -200,11 +208,6 @@ public class PostRepositoryImpl implements PostRepository {
             }
         }
 
-        if (post.getId() == null) {
-            this.entityManager.persist(post);
-        } else {
-            this.entityManager.merge(post);
-        }
         this.entityManager.flush();
     }
 

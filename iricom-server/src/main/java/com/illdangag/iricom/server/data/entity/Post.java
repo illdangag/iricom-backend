@@ -58,8 +58,8 @@ public class Post {
     private Boolean deleted = false;
 
     @Builder.Default
-    @OneToMany(mappedBy = "post", fetch = FetchType.LAZY)
-    List<PostBlock> postBlockList = new ArrayList<>();
+    @OneToOne(mappedBy = "post", fetch = FetchType.LAZY)
+    PostBlock postBlock = null;
 
     @Override
     public boolean equals(Object object) {

@@ -1,6 +1,9 @@
 package com.illdangag.iricom.server.service.implement;
 
-import com.illdangag.iricom.server.data.entity.*;
+import com.illdangag.iricom.server.data.entity.AccountGroup;
+import com.illdangag.iricom.server.data.entity.AccountGroupAccount;
+import com.illdangag.iricom.server.data.entity.AccountGroupBoard;
+import com.illdangag.iricom.server.data.entity.Board;
 import com.illdangag.iricom.server.data.request.AccountGroupInfoCreate;
 import com.illdangag.iricom.server.data.request.AccountGroupInfoSearch;
 import com.illdangag.iricom.server.data.request.AccountGroupInfoUpdate;

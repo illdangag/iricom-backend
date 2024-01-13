@@ -83,8 +83,7 @@ public class BlockServicePostUnblockTest extends IricomTestSuite {
         String postId = getPostId(alreadyBlockPostInfo02);
 
         PostBlockInfo postBlockInfo = blockService.unblockPost(accountId, boardId, postId);
-
-        Assertions.assertFalse(postBlockInfo.getEnabled());
+        Assertions.assertNotNull(postBlockInfo);
     }
 
     @Test
@@ -95,8 +94,7 @@ public class BlockServicePostUnblockTest extends IricomTestSuite {
         String postId = getPostId(alreadyBlockPostInfo03);
 
         PostBlockInfo postBlockInfo = blockService.unblockPost(accountId, boardId, postId);
-
-        Assertions.assertFalse(postBlockInfo.getEnabled());
+        Assertions.assertNotNull(postBlockInfo);
     }
 
     @Test

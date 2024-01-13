@@ -16,5 +16,9 @@ public interface BlockRepository {
 
     long getPostBlockListCount(Board board, String reason);
 
-    List<CommentBlock> getCommentBlockList(Comment comment, Boolean enabled, Integer skip, Integer limit);
+    List<CommentBlock> getCommentBlockList(Comment comment, Integer skip, Integer limit);
+
+    void remove(PostBlock postBlock);
+
+    void remove(CommentBlock commentBlock);
 }

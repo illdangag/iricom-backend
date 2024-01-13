@@ -15,8 +15,6 @@ public class PostBlockInfo {
 
     private String reason;
 
-    private Boolean enabled;
-
     @JsonProperty("post")
     private PostInfo postInfo;
 
@@ -25,7 +23,6 @@ public class PostBlockInfo {
         this.createDate = DateTimeUtils.getLong(postBlock.getCreateDate());
         this.updateDate = DateTimeUtils.getLong(postBlock.getUpdateDate());
         this.reason = postBlock.getReason();
-        this.enabled = postBlock.getEnabled();
         this.postInfo = postInfo;
     }
 }

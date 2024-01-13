@@ -56,8 +56,8 @@ public class Comment {
     private Boolean hasNestedComment = false;
 
     @Builder.Default
-    @OneToMany(mappedBy = "comment", fetch = FetchType.LAZY)
-    private List<CommentBlock> commentBlockList = new ArrayList<>();
+    @OneToOne(mappedBy = "comment", fetch = FetchType.LAZY)
+    private CommentBlock commentBlock = null;
 
     @Override
     public boolean equals(Object object) {

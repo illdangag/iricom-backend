@@ -442,7 +442,6 @@ public class CommentServiceImpl extends IricomService implements CommentService 
     }
 
     private boolean isBlockPost(Post post) {
-        List<PostBlock> postBlockList = post.getPostBlockList();
-        return !postBlockList.isEmpty();
+        return post.getPostBlock() != null;
     }
 }
