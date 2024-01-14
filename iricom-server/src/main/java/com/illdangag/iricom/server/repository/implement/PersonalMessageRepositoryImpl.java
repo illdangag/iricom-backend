@@ -36,27 +36,67 @@ public class PersonalMessageRepositoryImpl implements PersonalMessageRepository 
     }
 
     @Override
-    public List<PersonalMessage> getSendPersonalMessageList(Account account) {
+    public List<PersonalMessage> getSendPersonalMessageList(Account account, Integer offset, Integer limit) {
         final String jpql = "SELECT pm FROM PersonalMessage pm" +
                 " WHERE pm.sendAccount = :account" +
-                " AND pm.deleted = false";
+                " AND pm.deleted = false" +
+                " ORDER BY pm.createDate DESC";
 
         TypedQuery<PersonalMessage> query = this.entityManager.createQuery(jpql, PersonalMessage.class)
                 .setParameter("account", account);
+
+        if (offset != null) {
+            query.setFirstResult(offset);
+        }
+
+        if (limit != null) {
+            query.setMaxResults(limit);
+        }
 
         return query.getResultList();
     }
 
     @Override
-    public List<PersonalMessage> getReceivedPersonalMessageList(Account account) {
+    public long getSendPersonalMessageCount(Account account) {
+        final String jpql = "SELECT COUNT(1) FROM PersonalMessage pm" +
+                " WHERE pm.sendAccount = :account" +
+                " AND pm.deleted = false";
+
+        TypedQuery<Long> query = this.entityManager.createQuery(jpql, Long.class)
+                .setParameter("account", account);
+        return query.getSingleResult();
+    }
+
+    @Override
+    public List<PersonalMessage> getReceivePersonalMessageList(Account account, Integer offset, Integer limit) {
         final String jpql = "SELECT pm FROM PersonalMessage pm" +
                 " WHERE pm.receiveAccount = :account" +
-                " AND pm.deleted = false";
+                " AND pm.deleted = false" +
+                " ORDER BY pm.createDate DESC";
 
         TypedQuery<PersonalMessage> query = this.entityManager.createQuery(jpql, PersonalMessage.class)
                 .setParameter("account", account);
 
+        if (offset != null) {
+            query.setFirstResult(offset);
+        }
+
+        if (limit != null) {
+            query.setMaxResults(limit);
+        }
+
         return query.getResultList();
+    }
+
+    @Override
+    public long getReceivePersonalMessageCount(Account account) {
+        final String jpql = "SELECT COUNT(1) FROM PersonalMessage pm" +
+                " WHERE pm.receiveAccount = :account" +
+                " AND pm.deleted = false";
+
+        TypedQuery<Long> query = this.entityManager.createQuery(jpql, Long.class)
+                .setParameter("account", account);
+        return query.getSingleResult();
     }
 
     @Override

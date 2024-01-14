@@ -9,9 +9,13 @@ import java.util.Optional;
 public interface PersonalMessageRepository {
     Optional<PersonalMessage> getPersonalMessage(Long id);
 
-    List<PersonalMessage> getSendPersonalMessageList(Account account);
+    List<PersonalMessage> getSendPersonalMessageList(Account account, Integer offset, Integer limit);
 
-    List<PersonalMessage> getReceivedPersonalMessageList(Account account);
+    long getSendPersonalMessageCount(Account account);
+
+    List<PersonalMessage> getReceivePersonalMessageList(Account account, Integer offset, Integer limit);
+
+    long getReceivePersonalMessageCount(Account account);
 
     void save(PersonalMessage personalMessage);
 }

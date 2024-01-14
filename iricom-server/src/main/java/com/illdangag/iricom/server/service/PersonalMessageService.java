@@ -25,9 +25,16 @@ public interface PersonalMessageService {
     PersonalMessageInfo getPersonalMessageInfo(Account account, String personalMessageId);
 
     /**
-     * 개인 쪽지 목록 조회
+     * 수신 개인 쪽지 목록 조회
      */
-    PersonalMessageInfoList getPersonalMessageInfoList(String accountId, @Valid PersonalMessageInfoSearch personalMessageInfoSearch);
+    PersonalMessageInfoList getReceivePersonalMessageInfoList(String accountId, @Valid PersonalMessageInfoSearch personalMessageInfoSearch);
 
-    PersonalMessageInfoList getPersonalMessageInfoList(Account account, @Valid PersonalMessageInfoSearch personalMessageInfoSearch);
+    PersonalMessageInfoList getReceivePersonalMessageInfoList(Account account, @Valid PersonalMessageInfoSearch personalMessageInfoSearch);
+
+    /**
+     * 송신 개인 쪽지 목록 조회
+     */
+    PersonalMessageInfoList getSendPersonalMessageInfoList(String accountId, @Valid PersonalMessageInfoSearch personalMessageInfoSearch);
+
+    PersonalMessageInfoList getSendPersonalMessageInfoList(Account account, @Valid PersonalMessageInfoSearch personalMessageInfoSearch);
 }
