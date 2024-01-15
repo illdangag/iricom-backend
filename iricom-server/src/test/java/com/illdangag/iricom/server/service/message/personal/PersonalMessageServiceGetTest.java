@@ -77,4 +77,40 @@ public class PersonalMessageServiceGetTest extends IricomTestSuite {
 
         Assertions.assertEquals(IricomErrorCode.NOT_EXIST_PERSONAL_MESSAGE.getCode(), iricomException.getErrorCode());
     }
+
+    @Test
+    @DisplayName("수신자가 내용 확인 시 수신 확인")
+    public void getPersonalMessageReceivedConfirm() throws Exception {
+        TestPersonalMessageInfo testPersonalMessageInfo = TestPersonalMessageInfo.builder()
+                .sender(common00).receiver(common01)
+                .title("TITLE").message("MESSAGE")
+                .build();
+
+        addTestPersonalMessageInfo(testPersonalMessageInfo);
+        init();
+
+        String accountId = getAccountId(common01);
+        PersonalMessageInfo personalMessageInfo = getPersonalMessage(testPersonalMessageInfo);
+
+        PersonalMessageInfo resultPersonalMessageInfo = this.personalMessageService.getPersonalMessageInfo(accountId, personalMessageInfo.getId());
+        Assertions.assertTrue(resultPersonalMessageInfo.getReceivedConfirm());
+    }
+
+    @Test
+    @DisplayName("발신자가 내용 확인시 수식 확인 하지 않음")
+    public void getPersonalMessageSendConfirm() throws Exception {
+        TestPersonalMessageInfo testPersonalMessageInfo = TestPersonalMessageInfo.builder()
+                .sender(common00).receiver(common01)
+                .title("TITLE").message("MESSAGE")
+                .build();
+
+        addTestPersonalMessageInfo(testPersonalMessageInfo);
+        init();
+
+        String accountId = getAccountId(common00);
+        PersonalMessageInfo personalMessageInfo = getPersonalMessage(testPersonalMessageInfo);
+
+        PersonalMessageInfo resultPersonalMessageInfo = this.personalMessageService.getPersonalMessageInfo(accountId, personalMessageInfo.getId());
+        Assertions.assertFalse(resultPersonalMessageInfo.getReceivedConfirm());
+    }
 }

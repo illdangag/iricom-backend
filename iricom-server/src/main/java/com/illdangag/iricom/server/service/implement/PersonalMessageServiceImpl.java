@@ -54,7 +54,7 @@ public class PersonalMessageServiceImpl extends IricomService implements Persona
                 .build();
 
         this.personalMessageRepository.save(personalMessage);
-        return new PersonalMessageInfo(personalMessage);
+        return new PersonalMessageInfo(personalMessage, true);
     }
 
     @Override
@@ -71,7 +71,14 @@ public class PersonalMessageServiceImpl extends IricomService implements Persona
             throw new IricomException(IricomErrorCode.NOT_EXIST_PERSONAL_MESSAGE);
         }
 
-        return new PersonalMessageInfo(personalMessage);
+        // 수신 확인 여부 저장
+        boolean receivedConfirm = personalMessage.getReceivedConfirm() != null && personalMessage.getReceivedConfirm();
+        if (!receivedConfirm && personalMessage.getReceiveAccount().equals(account)) {
+            personalMessage.setReceivedConfirm(true);
+            this.personalMessageRepository.save(personalMessage);
+        }
+
+        return new PersonalMessageInfo(personalMessage, true);
     }
 
     @Override
@@ -89,7 +96,7 @@ public class PersonalMessageServiceImpl extends IricomService implements Persona
         long total = this.personalMessageRepository.getReceivePersonalMessageCount(account);
 
         List<PersonalMessageInfo> personalMessageInfoList = personalMessageList.stream()
-                .map(PersonalMessageInfo::new)
+                .map((PersonalMessage personalMessage) -> new PersonalMessageInfo(personalMessage, false))
                 .collect(Collectors.toList());
 
         return PersonalMessageInfoList.builder()
@@ -115,7 +122,7 @@ public class PersonalMessageServiceImpl extends IricomService implements Persona
         long total = this.personalMessageRepository.getSendPersonalMessageCount(account);
 
         List<PersonalMessageInfo> personalMessageInfoList = personalMessageList.stream()
-                .map(PersonalMessageInfo::new)
+                .map((PersonalMessage personalMessage) -> new PersonalMessageInfo(personalMessage, false))
                 .collect(Collectors.toList());
 
         return PersonalMessageInfoList.builder()
