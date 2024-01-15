@@ -4,7 +4,6 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.illdangag.iricom.server.data.entity.PostReport;
 import com.illdangag.iricom.server.util.DateTimeUtils;
 import lombok.Getter;
-import lombok.ToString;
 
 @Getter
 public class PostReportInfo {

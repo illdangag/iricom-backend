@@ -3,7 +3,6 @@ package com.illdangag.iricom.server.test;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.illdangag.iricom.server.data.entity.Account;
 import com.illdangag.iricom.server.data.entity.AccountDetail;
-import com.illdangag.iricom.server.data.entity.PersonalMessage;
 import com.illdangag.iricom.server.data.entity.type.AccountAuth;
 import com.illdangag.iricom.server.data.entity.type.PostState;
 import com.illdangag.iricom.server.data.entity.type.ReportType;
