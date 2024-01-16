@@ -49,5 +49,8 @@ public class PersonalMessage {
     private Boolean receivedConfirm = false;
 
     @Builder.Default
-    private Boolean deleted = false;
+    private Boolean sendDeleted = false;
+
+    @Builder.Default
+    private Boolean receiveDeleted = false;
 }

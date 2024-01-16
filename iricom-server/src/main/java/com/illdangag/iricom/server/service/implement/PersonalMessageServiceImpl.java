@@ -71,6 +71,12 @@ public class PersonalMessageServiceImpl extends IricomService implements Persona
             throw new IricomException(IricomErrorCode.NOT_EXIST_PERSONAL_MESSAGE);
         }
 
+        // 수신자 또는 송신자가 삭제한 경우
+        if (personalMessage.getReceiveAccount().equals(account) && personalMessage.getReceiveDeleted()
+                || personalMessage.getSendAccount().equals(account) && personalMessage.getSendDeleted()) {
+            throw new IricomException(IricomErrorCode.NOT_EXIST_PERSONAL_MESSAGE);
+        }
+
         // 수신 확인 여부 저장
         boolean receivedConfirm = personalMessage.getReceivedConfirm() != null && personalMessage.getReceivedConfirm();
         if (!receivedConfirm && personalMessage.getReceiveAccount().equals(account)) {
@@ -133,15 +139,41 @@ public class PersonalMessageServiceImpl extends IricomService implements Persona
                 .build();
     }
 
-    private PersonalMessage getPersonalMessage(String id) {
-        long personalMessageId = -1;
+    @Override
+    public PersonalMessageInfo deletePersonalMessageInfo(String accountId, String personalMessageId) {
+        Account account = this.getAccount(accountId);
+        return this.deletePersonalMessageInfo(account, personalMessageId);
+    }
+
+    @Override
+    public PersonalMessageInfo deletePersonalMessageInfo(Account account, String personalMessageId) {
+        PersonalMessage personalMessage = this.getPersonalMessage(personalMessageId);
+
+        if (!personalMessage.getReceiveAccount().equals(account)
+                && !personalMessage.getSendAccount().equals(account)) {
+            throw new IricomException(IricomErrorCode.NOT_EXIST_PERSONAL_MESSAGE);
+        }
+
+        if (personalMessage.getReceiveAccount().equals(account)) {
+            personalMessage.setReceiveDeleted(true);
+        } else {
+            personalMessage.setSendDeleted(true);
+        }
+
+        this.personalMessageRepository.save(personalMessage);
+
+        return new PersonalMessageInfo(personalMessage, true);
+    }
+
+    private PersonalMessage getPersonalMessage(String personalMessageId) {
+        long id = -1;
         try {
-            personalMessageId = Long.parseLong(id);
+            id = Long.parseLong(personalMessageId);
         } catch (Exception exception) {
             throw new IricomException(IricomErrorCode.NOT_EXIST_PERSONAL_MESSAGE);
         }
 
-        Optional<PersonalMessage> personalMessageOptional = this.personalMessageRepository.getPersonalMessage(personalMessageId);
+        Optional<PersonalMessage> personalMessageOptional = this.personalMessageRepository.getPersonalMessage(id);
         return personalMessageOptional.orElseThrow(() -> new IricomException(IricomErrorCode.NOT_EXIST_PERSONAL_MESSAGE));
     }
 }

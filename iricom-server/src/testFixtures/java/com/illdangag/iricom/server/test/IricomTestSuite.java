@@ -694,6 +694,10 @@ public abstract class IricomTestSuite {
         return personalMessageMap.get(testPersonalMessageInfo);
     }
 
+    protected String getPersonalMessageId(TestPersonalMessageInfo testPersonalMessageInfo) {
+        return personalMessageMap.get(testPersonalMessageInfo).getId();
+    }
+
     protected List<TestPostReportInfo> createTestPostReportInfo(TestPostInfo testPostInfo) {
         return Arrays.asList(
                 TestPostReportInfo.builder().type(ReportType.HATE).reason("hate report").reportAccount(common00).post(testPostInfo).build(),

@@ -21,8 +21,7 @@ public class PersonalMessageRepositoryImpl implements PersonalMessageRepository 
     @Override
     public Optional<PersonalMessage> getPersonalMessage(Long id) {
         final String jpql = "SELECT pm FROM PersonalMessage pm" +
-                " WHERE pm.id = :id" +
-                " AND pm.deleted = false";
+                " WHERE pm.id = :id";
 
         TypedQuery<PersonalMessage> query = this.entityManager.createQuery(jpql, PersonalMessage.class)
                 .setParameter("id", id);
@@ -39,7 +38,7 @@ public class PersonalMessageRepositoryImpl implements PersonalMessageRepository 
     public List<PersonalMessage> getSendPersonalMessageList(Account account, Integer offset, Integer limit) {
         final String jpql = "SELECT pm FROM PersonalMessage pm" +
                 " WHERE pm.sendAccount = :account" +
-                " AND pm.deleted = false" +
+                " AND pm.sendDeleted = false" +
                 " ORDER BY pm.createDate DESC";
 
         TypedQuery<PersonalMessage> query = this.entityManager.createQuery(jpql, PersonalMessage.class)
@@ -60,7 +59,7 @@ public class PersonalMessageRepositoryImpl implements PersonalMessageRepository 
     public long getSendPersonalMessageCount(Account account) {
         final String jpql = "SELECT COUNT(1) FROM PersonalMessage pm" +
                 " WHERE pm.sendAccount = :account" +
-                " AND pm.deleted = false";
+                " AND pm.sendDeleted = false";
 
         TypedQuery<Long> query = this.entityManager.createQuery(jpql, Long.class)
                 .setParameter("account", account);
@@ -71,7 +70,7 @@ public class PersonalMessageRepositoryImpl implements PersonalMessageRepository 
     public List<PersonalMessage> getReceivePersonalMessageList(Account account, Integer offset, Integer limit) {
         final String jpql = "SELECT pm FROM PersonalMessage pm" +
                 " WHERE pm.receiveAccount = :account" +
-                " AND pm.deleted = false" +
+                " AND pm.receiveDeleted = false" +
                 " ORDER BY pm.createDate DESC";
 
         TypedQuery<PersonalMessage> query = this.entityManager.createQuery(jpql, PersonalMessage.class)
@@ -92,7 +91,7 @@ public class PersonalMessageRepositoryImpl implements PersonalMessageRepository 
     public long getReceivePersonalMessageCount(Account account) {
         final String jpql = "SELECT COUNT(1) FROM PersonalMessage pm" +
                 " WHERE pm.receiveAccount = :account" +
-                " AND pm.deleted = false";
+                " AND pm.receiveDeleted = false";
 
         TypedQuery<Long> query = this.entityManager.createQuery(jpql, Long.class)
                 .setParameter("account", account);

@@ -30,18 +30,16 @@ import java.util.stream.Collectors;
 public class PostServiceImpl extends IricomService implements PostService {
     private final PostVoteRepository postVoteRepository;
     private final ReportRepository reportRepository;
-    private final BlockRepository blockRepository;
     private final AccountPointService accountPointService;
 
     @Autowired
     public PostServiceImpl(AccountRepository accountRepository, BoardRepository boardRepository,
                            PostRepository postRepository, CommentRepository commentRepository,
                            PostVoteRepository postVoteRepository, ReportRepository reportRepository,
-                           BlockRepository blockRepository, AccountPointService accountPointService) {
+                           AccountPointService accountPointService) {
         super(accountRepository, boardRepository, postRepository, commentRepository);
         this.postVoteRepository = postVoteRepository;
         this.reportRepository = reportRepository;
-        this.blockRepository = blockRepository;
         this.accountPointService = accountPointService;
     }
 

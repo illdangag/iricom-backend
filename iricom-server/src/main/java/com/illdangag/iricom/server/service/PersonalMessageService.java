@@ -37,4 +37,11 @@ public interface PersonalMessageService {
     PersonalMessageInfoList getSendPersonalMessageInfoList(String accountId, @Valid PersonalMessageInfoSearch personalMessageInfoSearch);
 
     PersonalMessageInfoList getSendPersonalMessageInfoList(Account account, @Valid PersonalMessageInfoSearch personalMessageInfoSearch);
+
+    /**
+     * 수신 개인 쪽지 삭제
+     */
+    PersonalMessageInfo deletePersonalMessageInfo(String accountId, String personalMessageId);
+
+    PersonalMessageInfo deletePersonalMessageInfo(Account account, String personalMessageId);
 }
