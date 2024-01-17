@@ -335,6 +335,17 @@ public abstract class IricomTestSuite {
         });
     }
 
+    /**
+     * 개인 쪽지 삭제
+     */
+    protected void deletePersonalMessage(List<TestPersonalMessageInfo> testPersonalMessageInfoList) {
+        testPersonalMessageInfoList.forEach(item -> {
+            if (item.isSendDeleted() || item.isReceiveDeleted()) {
+                PersonalMessageInfo personalMessageInfo = this.deletePersonalMessage(item);
+                personalMessageMap.put(item, personalMessageInfo);
+            }
+        });
+    }
 
     protected void init() {
         this.setBoard(testBoardInfoList);
@@ -354,6 +365,7 @@ public abstract class IricomTestSuite {
         this.deleteBoardAdmin(testBoardInfoList);
 
         this.createPersonalMessage(testPersonalMessageInfoList);
+        this.deletePersonalMessage(testPersonalMessageInfoList);
     }
 
     private AccountInfo createAccount(TestAccountInfo testAccountInfo) {
@@ -577,6 +589,23 @@ public abstract class IricomTestSuite {
                 .build();
 
         return this.personalMessageService.createPersonalMessageInfo(accountInfo.getId(), personalMessageInfoCreate);
+    }
+
+    private PersonalMessageInfo deletePersonalMessage(TestPersonalMessageInfo testPersonalMessageInfo) {
+        PersonalMessageInfo result = null;
+        if (testPersonalMessageInfo.isSendDeleted()) {
+            String accountId = getAccountId(testPersonalMessageInfo.getSender());
+            String personalMessageId = getPersonalMessageId(testPersonalMessageInfo);
+            result = this.personalMessageService.deletePersonalMessageInfo(accountId, personalMessageId);
+        }
+
+        if (testPersonalMessageInfo.isReceiveDeleted()) {
+            String accountId = getAccountId(testPersonalMessageInfo.getReceiver());
+            String personalMessageId = getPersonalMessageId(testPersonalMessageInfo);
+            result = this.personalMessageService.deletePersonalMessageInfo(accountId, personalMessageId);
+        }
+
+        return result;
     }
 
     private AccountGroupInfo setAccountGroup(TestAccountGroupInfo testAccountGroupInfo) {

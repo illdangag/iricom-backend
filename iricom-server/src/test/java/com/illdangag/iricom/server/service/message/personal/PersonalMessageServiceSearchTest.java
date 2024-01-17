@@ -168,6 +168,62 @@ public class PersonalMessageServiceSearchTest extends IricomTestSuite {
     }
 
     @Test
+    @DisplayName("송신 목록 조회 - 송신자 삭제 개인 쪽지 포함")
+    public void getSendPersonalMessageListSendIncludeDelete() throws Exception {
+        TestPersonalMessageInfo testPersonalMessageInfo00 = TestPersonalMessageInfo.builder()
+                .sender(common04).receiver(systemAdmin)
+                .title("TITLE").message("MESSAGE")
+                .build();
+        TestPersonalMessageInfo testPersonalMessageInfo01 = TestPersonalMessageInfo.builder()
+                .sender(common04).receiver(systemAdmin)
+                .title("TITLE").message("MESSAGE")
+                .build();
+        TestPersonalMessageInfo testPersonalMessageInfo02 = TestPersonalMessageInfo.builder()
+                .sender(common04).receiver(systemAdmin)
+                .title("TITLE").message("MESSAGE").sendDeleted(true)
+                .build();
+        addTestPersonalMessageInfo(testPersonalMessageInfo00, testPersonalMessageInfo01, testPersonalMessageInfo02);
+        init();
+
+        String accountId = getAccountId(common04);
+
+        PersonalMessageInfoSearch search = PersonalMessageInfoSearch.builder().build();
+        PersonalMessageInfoList personalMessageInfoList = this.personalMessageService.getSendPersonalMessageInfoList(accountId, search);
+        Assertions.assertEquals(2, personalMessageInfoList.getTotal());
+        Assertions.assertEquals(0, personalMessageInfoList.getSkip());
+        Assertions.assertEquals(20, personalMessageInfoList.getLimit());
+        Assertions.assertEquals(2, personalMessageInfoList.getPersonalMessageInfoList().size());
+    }
+
+    @Test
+    @DisplayName("송신 목록 조회 - 수신자 삭제 개인 쪽지 포함")
+    public void getSendPersonalMessageListReceiveIncludeDelete() throws Exception {
+        TestPersonalMessageInfo testPersonalMessageInfo00 = TestPersonalMessageInfo.builder()
+                .sender(common05).receiver(systemAdmin)
+                .title("TITLE").message("MESSAGE")
+                .build();
+        TestPersonalMessageInfo testPersonalMessageInfo01 = TestPersonalMessageInfo.builder()
+                .sender(common05).receiver(systemAdmin)
+                .title("TITLE").message("MESSAGE")
+                .build();
+        TestPersonalMessageInfo testPersonalMessageInfo02 = TestPersonalMessageInfo.builder()
+                .sender(common05).receiver(systemAdmin)
+                .title("TITLE").message("MESSAGE").receiveDeleted(true)
+                .build();
+        addTestPersonalMessageInfo(testPersonalMessageInfo00, testPersonalMessageInfo01, testPersonalMessageInfo02);
+        init();
+
+        String accountId = getAccountId(common05);
+
+        PersonalMessageInfoSearch search = PersonalMessageInfoSearch.builder().build();
+        PersonalMessageInfoList personalMessageInfoList = this.personalMessageService.getSendPersonalMessageInfoList(accountId, search);
+        Assertions.assertEquals(3, personalMessageInfoList.getTotal());
+        Assertions.assertEquals(0, personalMessageInfoList.getSkip());
+        Assertions.assertEquals(20, personalMessageInfoList.getLimit());
+        Assertions.assertEquals(3, personalMessageInfoList.getPersonalMessageInfoList().size());
+    }
+
+    @Test
     @DisplayName("수신 목록 조회")
     public void getReceivePersonalMessageList() throws Exception {
         TestPersonalMessageInfo testPersonalMessageInfo00 = TestPersonalMessageInfo.builder()
@@ -306,5 +362,61 @@ public class PersonalMessageServiceSearchTest extends IricomTestSuite {
         Assertions.assertEquals(1, personalMessageInfoList.getSkip());
         Assertions.assertEquals(2, personalMessageInfoList.getLimit());
         Assertions.assertEquals(2, personalMessageInfoList.getPersonalMessageInfoList().size());
+    }
+
+    @Test
+    @DisplayName("수신 목록 조회 - 수신자 삭제 개인 쪽지 포함")
+    public void getReceivePersonalMessageListReceiveIncludeDelete() throws Exception {
+        TestPersonalMessageInfo testPersonalMessageInfo00 = TestPersonalMessageInfo.builder()
+                .sender(common00).receiver(systemAdmin)
+                .title("TITLE").message("MESSAGE")
+                .build();
+        TestPersonalMessageInfo testPersonalMessageInfo01 = TestPersonalMessageInfo.builder()
+                .sender(common00).receiver(systemAdmin)
+                .title("TITLE").message("MESSAGE")
+                .build();
+        TestPersonalMessageInfo testPersonalMessageInfo02 = TestPersonalMessageInfo.builder()
+                .sender(common00).receiver(systemAdmin)
+                .title("TITLE").message("MESSAGE").receiveDeleted(true)
+                .build();
+        addTestPersonalMessageInfo(testPersonalMessageInfo00, testPersonalMessageInfo01, testPersonalMessageInfo02);
+        init();
+
+        String accountId = getAccountId(systemAdmin);
+
+        PersonalMessageInfoSearch search = PersonalMessageInfoSearch.builder().build();
+        PersonalMessageInfoList personalMessageInfoList = this.personalMessageService.getReceivePersonalMessageInfoList(accountId, search);
+        Assertions.assertEquals(2, personalMessageInfoList.getTotal());
+        Assertions.assertEquals(0, personalMessageInfoList.getSkip());
+        Assertions.assertEquals(20, personalMessageInfoList.getLimit());
+        Assertions.assertEquals(2, personalMessageInfoList.getPersonalMessageInfoList().size());
+    }
+
+    @Test
+    @DisplayName("수신 목록 조회 - 발신자 삭제 개인 쪽지 포함")
+    public void getReceivePersonalMessageListSendIncludeDelete() throws Exception {
+        TestPersonalMessageInfo testPersonalMessageInfo00 = TestPersonalMessageInfo.builder()
+                .sender(common00).receiver(systemAdmin)
+                .title("TITLE").message("MESSAGE")
+                .build();
+        TestPersonalMessageInfo testPersonalMessageInfo01 = TestPersonalMessageInfo.builder()
+                .sender(common00).receiver(systemAdmin)
+                .title("TITLE").message("MESSAGE")
+                .build();
+        TestPersonalMessageInfo testPersonalMessageInfo02 = TestPersonalMessageInfo.builder()
+                .sender(common00).receiver(systemAdmin)
+                .title("TITLE").message("MESSAGE").sendDeleted(true)
+                .build();
+        addTestPersonalMessageInfo(testPersonalMessageInfo00, testPersonalMessageInfo01, testPersonalMessageInfo02);
+        init();
+
+        String accountId = getAccountId(systemAdmin);
+
+        PersonalMessageInfoSearch search = PersonalMessageInfoSearch.builder().build();
+        PersonalMessageInfoList personalMessageInfoList = this.personalMessageService.getReceivePersonalMessageInfoList(accountId, search);
+        Assertions.assertEquals(3, personalMessageInfoList.getTotal());
+        Assertions.assertEquals(0, personalMessageInfoList.getSkip());
+        Assertions.assertEquals(20, personalMessageInfoList.getLimit());
+        Assertions.assertEquals(3, personalMessageInfoList.getPersonalMessageInfoList().size());
     }
 }

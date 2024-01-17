@@ -46,6 +46,54 @@ public class PersonalMessageServiceDeleteTest extends IricomTestSuite {
     @Test
     @DisplayName("송신 삭제")
     public void deleteReceivePersonalMessage() throws Exception {
-        // TODO
+        TestPersonalMessageInfo testPersonalMessageInfo = TestPersonalMessageInfo.builder()
+                .sender(common00).receiver(common01)
+                .title("TITLE").message("MESSAGE")
+                .build();
+
+        addTestPersonalMessageInfo(testPersonalMessageInfo);
+        init();
+
+        String accountId = getAccountId(common01);
+        String personalMessageId = getPersonalMessageId(testPersonalMessageInfo);
+        PersonalMessageInfo personalMessageInfo = this.personalMessageService.deletePersonalMessageInfo(accountId, personalMessageId);
+
+        Assertions.assertNotNull(personalMessageInfo);
+        IricomException iricomException = Assertions.assertThrows(IricomException.class, () -> {
+            this.personalMessageService.getPersonalMessageInfo(accountId, personalMessageId);
+        });
+        Assertions.assertEquals(IricomErrorCode.NOT_EXIST_PERSONAL_MESSAGE.getCode(), iricomException.getErrorCode());
+    }
+
+    @Test
+    @DisplayName("존재하지 않는 개인 쪽지 삭제")
+    public void deleteNotExistPersonalMessage() throws Exception {
+        String accountId = getAccountId(common01);
+        String personalMessageId = "NOT_EXIST";
+
+        IricomException iricomException = Assertions.assertThrows(IricomException.class, () -> {
+            this.personalMessageService.getPersonalMessageInfo(accountId, personalMessageId);
+        });
+        Assertions.assertEquals(IricomErrorCode.NOT_EXIST_PERSONAL_MESSAGE.getCode(), iricomException.getErrorCode());
+    }
+
+    @Test
+    @DisplayName("접근 불가능한 개인 쪽지 삭제")
+    public void deleteNotPermissionPersonalMessage() throws Exception {
+        TestPersonalMessageInfo testPersonalMessageInfo = TestPersonalMessageInfo.builder()
+                .sender(common00).receiver(common01)
+                .title("TITLE").message("MESSAGE")
+                .build();
+
+        addTestPersonalMessageInfo(testPersonalMessageInfo);
+        init();
+
+        String accountId = getAccountId(common02);
+        String personalMessageId = getPersonalMessageId(testPersonalMessageInfo);
+
+        IricomException iricomException = Assertions.assertThrows(IricomException.class, () -> {
+            this.personalMessageService.getPersonalMessageInfo(accountId, personalMessageId);
+        });
+        Assertions.assertEquals(IricomErrorCode.NOT_EXIST_PERSONAL_MESSAGE.getCode(), iricomException.getErrorCode());
     }
 }

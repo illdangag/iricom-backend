@@ -13,4 +13,10 @@ public class TestPersonalMessageInfo {
     private String title;
 
     private String message;
+
+    @Builder.Default
+    private boolean sendDeleted = false;
+
+    @Builder.Default
+    private boolean receiveDeleted = false;
 }
