@@ -1,0 +1,22 @@
+== 개인 쪽지
+사용자에게 쪽지를 전송하고 조회
+
+=== 개인 쪽지 전송
+==== PM_001
+operation::PM_001[snippets='curl-request,request-fields,http-response,response-fields']
+
+=== 수신 개인 쪽지 목록 조회
+==== PM_002
+operation::PM_002[snippets='curl-request,request-parameters,http-response,response-fields']
+
+=== 수신 개인 쪽지 조회
+==== PM_003
+operation::PM_003[snippets='curl-request,path-parameters,request-parameters,http-response,response-fields']
+
+=== 송신 개인 쪽지 목록 조회
+==== PM_004
+operation::PM_004[snippets='curl-request,request-parameters,http-response,response-fields']
+
+=== 송신 개인 쪽지 조회
+==== PM_005
+operation::PM_005[snippets='curl-request,path-parameters,request-parameters,http-response,response-fields']

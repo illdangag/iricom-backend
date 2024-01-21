@@ -43,7 +43,7 @@ public class PersonalMessageServiceImpl extends IricomService implements Persona
 
     @Override
     public PersonalMessageInfo createPersonalMessageInfo(Account account, @Valid PersonalMessageInfoCreate personalMessageInfoCreate) {
-        String receiverAccountId = personalMessageInfoCreate.getReceiverAccountId();
+        String receiverAccountId = personalMessageInfoCreate.getReceiveAccountId();
 
         Account receiverAccount = this.getAccount(receiverAccountId);
 
@@ -88,6 +88,31 @@ public class PersonalMessageServiceImpl extends IricomService implements Persona
     }
 
     @Override
+    public PersonalMessageInfo getReceivePersonalMessageInfo(String accountId, String personalMessageId) {
+        Account account = this.getAccount(accountId);
+        return this.getReceivePersonalMessageInfo(account, personalMessageId);
+    }
+
+    @Override
+    public PersonalMessageInfo getReceivePersonalMessageInfo(Account account, String personalMessageId) {
+        PersonalMessage personalMessage = this.getPersonalMessage(personalMessageId);
+
+        // 수신한 개인 쪽지가 아니거나 수신자가 삭제한 메시지인 경우
+        if (!personalMessage.getReceiveAccount().equals(account) || personalMessage.getReceiveDeleted()) {
+            throw new IricomException(IricomErrorCode.NOT_EXIST_PERSONAL_MESSAGE);
+        }
+
+        // 수신 확인 여부 저장
+        boolean receivedConfirm = personalMessage.getReceivedConfirm();
+        if (!receivedConfirm) {
+            personalMessage.setReceivedConfirm(true);
+            this.personalMessageRepository.save(personalMessage);
+        }
+
+        return new PersonalMessageInfo(personalMessage, true);
+    }
+
+    @Override
     public PersonalMessageInfoList getReceivePersonalMessageInfoList(String accountId, @Valid PersonalMessageInfoSearch personalMessageInfoSearch) {
         Account account = this.getAccount(accountId);
         return this.getReceivePersonalMessageInfoList(account, personalMessageInfoSearch);
@@ -111,6 +136,24 @@ public class PersonalMessageServiceImpl extends IricomService implements Persona
                 .limit(limit)
                 .personalMessageInfoList(personalMessageInfoList)
                 .build();
+    }
+
+    @Override
+    public PersonalMessageInfo getSendPersonalMessageInfo(String accountId, String personalMessageId) {
+        Account account = this.getAccount(accountId);
+        return this.getSendPersonalMessageInfo(account, personalMessageId);
+    }
+
+    @Override
+    public PersonalMessageInfo getSendPersonalMessageInfo(Account account, String personalMessageId) {
+        PersonalMessage personalMessage = this.getPersonalMessage(personalMessageId);
+
+        // 송신한 개인 쪽지가 아니거나 송신자가 삭제한 메시지인 경우
+        if (!personalMessage.getSendAccount().equals(account) || personalMessage.getSendDeleted()) {
+            throw new IricomException(IricomErrorCode.NOT_EXIST_PERSONAL_MESSAGE);
+        }
+
+        return new PersonalMessageInfo(personalMessage, true);
     }
 
     @Override

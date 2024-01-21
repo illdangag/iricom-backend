@@ -111,6 +111,15 @@ public class IricomFieldsSnippet {
             ResponseField.builder().path("accounts").description("사용자 목록").build()
     );
 
+    private static final List<ResponseField> personalMessageResponseFieldList = Arrays.asList(
+            ResponseField.builder().path("id").description("아이디").type(JsonFieldType.STRING).build(),
+            ResponseField.builder().path("createDate").description("생성일").type(JsonFieldType.NUMBER).build(),
+            ResponseField.builder().path("updateDate").description("수정일").type(JsonFieldType.NUMBER).build(),
+            ResponseField.builder().path("title").description("제목").type(JsonFieldType.STRING).build(),
+            ResponseField.builder().path("message").description("내용").type(JsonFieldType.STRING).isOptional(true).build(),
+            ResponseField.builder().path("receivedConfirm").description("수신 확인").type(JsonFieldType.BOOLEAN).build()
+    );
+
     private static final List<ResponseField> searchListResponseFieldList = Arrays.asList(
             ResponseField.builder().path("total").description("모든 결과 수").build(),
             ResponseField.builder().path("skip").description("건너 뛸 결과 수").build(),
@@ -175,6 +184,10 @@ public class IricomFieldsSnippet {
 
     public static List<FieldDescriptor> getCommentBlock(String keyPrefix) {
         return getFieldDescriptors(commentBlockResponseFieldList, keyPrefix);
+    }
+
+    public static List<FieldDescriptor> getPersonalMessage(String keyPrefix) {
+        return getFieldDescriptors(personalMessageResponseFieldList, keyPrefix);
     }
 
     public static List<FieldDescriptor> getAccountGroup(String keyPrefix) {

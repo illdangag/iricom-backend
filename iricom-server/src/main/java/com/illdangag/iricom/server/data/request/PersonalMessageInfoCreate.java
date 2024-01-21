@@ -18,6 +18,6 @@ public class PersonalMessageInfoCreate {
     @Size(min = 1, max = 1000, message = "The message must be at least 1 character and less then 100 characters.")
     private String message;
 
-    @NotBlank(message = "The receiverAccountId is required.")
-    private String receiverAccountId;
+    @NotBlank(message = "The receiveAccountId is required.")
+    private String receiveAccountId;
 }

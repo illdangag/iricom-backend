@@ -5,7 +5,6 @@ import com.illdangag.iricom.server.configuration.annotation.Auth;
 import com.illdangag.iricom.server.configuration.annotation.AuthRole;
 import com.illdangag.iricom.server.configuration.annotation.RequestContext;
 import com.illdangag.iricom.server.data.entity.Account;
-import com.illdangag.iricom.server.data.entity.PersonalMessage;
 import com.illdangag.iricom.server.data.request.PersonalMessageInfoCreate;
 import com.illdangag.iricom.server.data.request.PersonalMessageInfoSearch;
 import com.illdangag.iricom.server.data.response.PersonalMessageInfo;
@@ -44,24 +43,13 @@ public class PersonalMessageController {
         return ResponseEntity.status(HttpStatus.OK).body(personalMessageInfo);
     }
 
-    /**
-     * 개인 쪽지 조회
-     */
-    @ApiCallLog(apiCode = "PM_002")
-    @Auth(role = AuthRole.ACCOUNT)
-    @RequestMapping(method = RequestMethod.GET, value = "/{personalMessageId}")
-    public ResponseEntity<PersonalMessageInfo> getPersonalMessage(@PathVariable(value = "personalMessageId") String personalMessageId,
-                                                                  @RequestContext Account account) {
-        PersonalMessageInfo personalMessageInfo = this.personalMessageService.getPersonalMessageInfo(account, personalMessageId);
-        return ResponseEntity.status(HttpStatus.OK).body(personalMessageInfo);
-    }
 
     /**
      * 수신 개인 쪽지 목록 조회
      */
-    @ApiCallLog(apiCode = "PM_003")
+    @ApiCallLog(apiCode = "PM_002")
     @Auth(role = AuthRole.ACCOUNT)
-    @RequestMapping(method = RequestMethod.GET, value = "")
+    @RequestMapping(method = RequestMethod.GET, value = "/receive")
     public ResponseEntity<PersonalMessageInfoList> getReceivePersonalMessageList(@RequestParam(name = "skip", defaultValue = "0", required = false) String skipVariable,
                                                                                  @RequestParam(name = "limit", defaultValue = "20", required = false) String limitVariable,
                                                                                  @RequestParam(name = "type", defaultValue = "post", required = false) String typeVariable,
@@ -88,5 +76,63 @@ public class PersonalMessageController {
         PersonalMessageInfoList personalMessageInfoList = this.personalMessageService.getReceivePersonalMessageInfoList(account, search);
 
         return ResponseEntity.status(HttpStatus.OK).body(personalMessageInfoList);
+    }
+
+    /**
+     * 수신 개인 쪽지 조회
+     */
+    @ApiCallLog(apiCode = "PM_003")
+    @Auth(role = AuthRole.ACCOUNT)
+    @RequestMapping(method = RequestMethod.GET, value = "/receive/{personalMessageId}")
+    public ResponseEntity<PersonalMessageInfo> getReceivePersonalMessage(@PathVariable(value = "personalMessageId") String personalMessageId,
+                                                                         @RequestContext Account account) {
+        PersonalMessageInfo personalMessageInfo = this.personalMessageService.getReceivePersonalMessageInfo(account, personalMessageId);
+        return ResponseEntity.status(HttpStatus.OK).body(personalMessageInfo);
+    }
+
+    /**
+     * 송신 개인 쪽지 목록 조회
+     */
+    @ApiCallLog(apiCode = "PM_004")
+    @Auth(role = AuthRole.ACCOUNT)
+    @RequestMapping(method = RequestMethod.GET, value = "/send")
+    public ResponseEntity<PersonalMessageInfoList> getSendPersonalMessageList(@RequestParam(name = "skip", defaultValue = "0", required = false) String skipVariable,
+                                                                              @RequestParam(name = "limit", defaultValue = "20", required = false) String limitVariable,
+                                                                              @RequestParam(name = "type", defaultValue = "post", required = false) String typeVariable,
+                                                                              @RequestContext Account account) {
+        int skip;
+        int limit;
+
+        try {
+            skip = Integer.parseInt(skipVariable);
+        } catch (Exception exception) {
+            throw new IricomException(IricomErrorCode.INVALID_REQUEST, "Skip value is invalid.");
+        }
+
+        try {
+            limit = Integer.parseInt(limitVariable);
+        } catch (Exception exception) {
+            throw new IricomException(IricomErrorCode.INVALID_REQUEST, "Limit value is invalid.");
+        }
+
+        PersonalMessageInfoSearch search = PersonalMessageInfoSearch.builder()
+                .skip(skip)
+                .limit(limit)
+                .build();
+        PersonalMessageInfoList personalMessageInfoList = this.personalMessageService.getSendPersonalMessageInfoList(account, search);
+
+        return ResponseEntity.status(HttpStatus.OK).body(personalMessageInfoList);
+    }
+
+    /**
+     * 송신 개인 쪽지 조회
+     */
+    @ApiCallLog(apiCode = "PM_005")
+    @Auth(role = AuthRole.ACCOUNT)
+    @RequestMapping(method = RequestMethod.GET, value = "/send/{personalMessageId}")
+    public ResponseEntity<PersonalMessageInfo> getSendPersonalMessage(@PathVariable(value = "personalMessageId") String personalMessageId,
+                                                                      @RequestContext Account account) {
+        PersonalMessageInfo personalMessageInfo = this.personalMessageService.getSendPersonalMessageInfo(account, personalMessageId);
+        return ResponseEntity.status(HttpStatus.OK).body(personalMessageInfo);
     }
 }

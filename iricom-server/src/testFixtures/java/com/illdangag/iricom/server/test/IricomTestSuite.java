@@ -585,7 +585,7 @@ public abstract class IricomTestSuite {
         PersonalMessageInfoCreate personalMessageInfoCreate = PersonalMessageInfoCreate.builder()
                 .title(testPersonalMessageInfo.getTitle())
                 .message(testPersonalMessageInfo.getMessage())
-                .receiverAccountId(accountMap.get(testPersonalMessageInfo.getReceiver()).getId())
+                .receiveAccountId(accountMap.get(testPersonalMessageInfo.getReceiver()).getId())
                 .build();
 
         return this.personalMessageService.createPersonalMessageInfo(accountInfo.getId(), personalMessageInfoCreate);

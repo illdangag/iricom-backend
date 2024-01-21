@@ -30,7 +30,7 @@ public class PersonalMessageServiceCreateTest extends IricomTestSuite {
         String receiveAccountId = getAccountId(common01);
 
         PersonalMessageInfoCreate personalMessageInfoCreate = PersonalMessageInfoCreate.builder()
-                .receiverAccountId(receiveAccountId)
+                .receiveAccountId(receiveAccountId)
                 .title("TITLE").message("MESSAGE")
                 .build();
 
@@ -62,7 +62,7 @@ public class PersonalMessageServiceCreateTest extends IricomTestSuite {
         String receiveAccountId = getAccountId(common01);
 
         PersonalMessageInfoCreate personalMessageInfoCreate = PersonalMessageInfoCreate.builder()
-                .receiverAccountId(receiveAccountId)
+                .receiveAccountId(receiveAccountId)
                 .message("MESSAGE")
                 .build();
 
@@ -78,7 +78,7 @@ public class PersonalMessageServiceCreateTest extends IricomTestSuite {
         String receiveAccountId = getAccountId(common01);
 
         PersonalMessageInfoCreate personalMessageInfoCreate = PersonalMessageInfoCreate.builder()
-                .receiverAccountId(receiveAccountId)
+                .receiveAccountId(receiveAccountId)
                 .title("").message("MESSAGE")
                 .build();
 
@@ -94,7 +94,7 @@ public class PersonalMessageServiceCreateTest extends IricomTestSuite {
         String receiveAccountId = getAccountId(common01);
 
         PersonalMessageInfoCreate personalMessageInfoCreate = PersonalMessageInfoCreate.builder()
-                .receiverAccountId(receiveAccountId)
+                .receiveAccountId(receiveAccountId)
                 .title("        ").message("MESSAGE")
                 .build();
 
@@ -110,7 +110,7 @@ public class PersonalMessageServiceCreateTest extends IricomTestSuite {
         String receiveAccountId = getAccountId(common01);
 
         PersonalMessageInfoCreate personalMessageInfoCreate = PersonalMessageInfoCreate.builder()
-                .receiverAccountId(receiveAccountId)
+                .receiveAccountId(receiveAccountId)
                 .title("TITLE")
                 .build();
 
@@ -126,7 +126,7 @@ public class PersonalMessageServiceCreateTest extends IricomTestSuite {
         String receiveAccountId = getAccountId(common01);
 
         PersonalMessageInfoCreate personalMessageInfoCreate = PersonalMessageInfoCreate.builder()
-                .receiverAccountId(receiveAccountId)
+                .receiveAccountId(receiveAccountId)
                 .title("TITLE").message("")
                 .build();
 
@@ -142,7 +142,7 @@ public class PersonalMessageServiceCreateTest extends IricomTestSuite {
         String receiveAccountId = getAccountId(common01);
 
         PersonalMessageInfoCreate personalMessageInfoCreate = PersonalMessageInfoCreate.builder()
-                .receiverAccountId(receiveAccountId)
+                .receiveAccountId(receiveAccountId)
                 .title("TITLE").message("     ")
                 .build();
 
