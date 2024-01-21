@@ -20,3 +20,7 @@ operation::PM_004[snippets='curl-request,request-parameters,http-response,respon
 === 송신 개인 쪽지 조회
 ==== PM_005
 operation::PM_005[snippets='curl-request,path-parameters,request-parameters,http-response,response-fields']
+
+=== 개인 쪽지 삭제
+==== PM_006
+operation::PM_006[snippets='curl-request,path-parameters,http-response,response-fields']

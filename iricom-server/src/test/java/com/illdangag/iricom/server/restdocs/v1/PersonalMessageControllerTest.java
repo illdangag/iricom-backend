@@ -21,6 +21,7 @@ import static org.springframework.restdocs.headers.HeaderDocumentation.requestHe
 import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document;
 import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.get;
 import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.post;
+import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.delete;
 import static org.springframework.restdocs.operation.preprocess.Preprocessors.*;
 import static org.springframework.restdocs.payload.PayloadDocumentation.*;
 import static org.springframework.restdocs.request.RequestDocumentation.*;
@@ -231,6 +232,48 @@ public class PersonalMessageControllerTest extends IricomTestSuite {
                 .andExpect(status().is(200))
                 .andDo(print())
                 .andDo(document("PM_005",
+                        preprocessRequest(
+                                removeHeaders("Authorization"),
+                                prettyPrint()
+                        ),
+                        preprocessResponse(
+                                prettyPrint()
+                        ),
+                        pathParameters(
+                                parameterWithName("personalMessageId").description("개인 쪽지 아이디")
+                        ),
+                        requestHeaders(
+//                                headerWithName("Authorization").description("firebase 토큰")
+                        ),
+                        requestParameters(
+                        ),
+                        responseFields(fieldDescriptorList.toArray(FieldDescriptor[]::new))
+                ));
+    }
+
+    @Test
+    @DisplayName("개인 쪽지 삭제")
+    public void pm006() throws Exception {
+        TestPersonalMessageInfo testPersonalMessageInfo = TestPersonalMessageInfo.builder()
+                .sender(common01).receiver(common00)
+                .title("Title").message("Message")
+                .build();
+
+        addTestPersonalMessageInfo(testPersonalMessageInfo);
+        init();
+
+        String personalMessageInfoId = getPersonalMessageId(testPersonalMessageInfo);
+
+        MockHttpServletRequestBuilder requestBuilder = delete("/v1/personal/messages/{personalMessageId}", personalMessageInfoId);
+        setAuthToken(requestBuilder, common00);
+
+        List<FieldDescriptor> fieldDescriptorList = new LinkedList<>();
+        fieldDescriptorList.addAll(IricomFieldsSnippet.getPersonalMessage(""));
+
+        mockMvc.perform(requestBuilder)
+                .andExpect(status().is(200))
+                .andDo(print())
+                .andDo(document("PM_006",
                         preprocessRequest(
                                 removeHeaders("Authorization"),
                                 prettyPrint()

@@ -135,4 +135,16 @@ public class PersonalMessageController {
         PersonalMessageInfo personalMessageInfo = this.personalMessageService.getSendPersonalMessageInfo(account, personalMessageId);
         return ResponseEntity.status(HttpStatus.OK).body(personalMessageInfo);
     }
+
+    /**
+     * 개인 쪽지 삭제
+     */
+    @ApiCallLog(apiCode = "PM_006")
+    @Auth(role = AuthRole.ACCOUNT)
+    @RequestMapping(method = RequestMethod.DELETE, value = "/{personalMessageId}")
+    public ResponseEntity<PersonalMessageInfo> deletePersonalMessage(@PathVariable(value = "personalMessageId") String personalMessageId,
+                                                                     @RequestContext Account account) {
+        PersonalMessageInfo personalMessageInfo = this.personalMessageService.deletePersonalMessageInfo(account, personalMessageId);
+        return ResponseEntity.status(HttpStatus.OK).body(personalMessageInfo);
+    }
 }
