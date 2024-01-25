@@ -30,14 +30,14 @@ public class Account {
     private Long id = null;
 
     @Builder.Default
+    @CreationTimestamp
     private LocalDateTime createDate = LocalDateTime.now();
 
     @Builder.Default
-    @CreationTimestamp
+    @UpdateTimestamp
     private LocalDateTime updateDate = LocalDateTime.now();
 
     @Builder.Default
-    @UpdateTimestamp
     private LocalDateTime lastActivityDate = LocalDateTime.now();
 
     @OneToOne
