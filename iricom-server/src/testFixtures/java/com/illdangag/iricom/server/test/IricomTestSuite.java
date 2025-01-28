@@ -1,6 +1,7 @@
 package com.illdangag.iricom.server.test;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.illdangag.iricom.server.confgiuration.interceptor.MockAuthInterceptor;
 import com.illdangag.iricom.server.data.entity.Account;
 import com.illdangag.iricom.server.data.entity.AccountDetail;
 import com.illdangag.iricom.server.data.entity.type.AccountAuth;
@@ -10,9 +11,7 @@ import com.illdangag.iricom.server.data.request.*;
 import com.illdangag.iricom.server.data.response.*;
 import com.illdangag.iricom.server.repository.AccountRepository;
 import com.illdangag.iricom.server.service.*;
-import com.illdangag.iricom.server.test.data.FirebaseTokenResponse;
 import com.illdangag.iricom.server.test.data.wrapper.*;
-import com.illdangag.iricom.server.test.util.FirebaseUtils;
 import com.illdangag.iricom.server.test.util.SearchAllListResponse;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.test.autoconfigure.restdocs.AutoConfigureRestDocs;
@@ -20,7 +19,6 @@ import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMock
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.context.ApplicationContext;
 import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilder;
-import org.springframework.util.StopWatch;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -42,9 +40,9 @@ public abstract class IricomTestSuite {
 
     private final AccountRepository accountRepository;
 
-    // 계정 설정
-    private static final String ACCOUNT_PASSWORD = "111111";
+    private final MockAuthInterceptor mockAuthInterceptor;
 
+    // 계정 설정
     protected static final TestAccountInfo systemAdmin = TestAccountInfo.builder()
             .email("admin@iricom.com").isAdmin(true).nickname("admin").description("system admin").build();
     protected static final TestAccountInfo allBoardAdmin = TestAccountInfo.builder()
@@ -119,6 +117,8 @@ public abstract class IricomTestSuite {
     private static final Map<TestCommentBlockInfo, CommentBlockInfo> commentBlockMap = new HashMap<>();
     private static final Map<TestPersonalMessageInfo, PersonalMessageInfo> personalMessageMap = new HashMap<>();
 
+    private static final Map<TestAccountInfo, String> accountTokenMap = new HashMap<>();
+
     private static boolean isAccountInit = false;
 
     public IricomTestSuite(ApplicationContext context) {
@@ -133,6 +133,8 @@ public abstract class IricomTestSuite {
         this.personalMessageService = context.getBean(PersonalMessageService.class);
 
         this.accountRepository = context.getBean(AccountRepository.class);
+
+        this.mockAuthInterceptor = context.getBean(MockAuthInterceptor.class);
 
         if (isAccountInit) {
             return;
@@ -382,6 +384,9 @@ public abstract class IricomTestSuite {
         this.accountRepository.saveAccountDetail(accountDetail);
         account.setAccountDetail(accountDetail);
         this.accountRepository.saveAccount(account);
+
+        String token = this.mockAuthInterceptor.setAccount(account);
+        accountTokenMap.put(testAccountInfo, token);
 
         return this.accountService.getAccountInfo(String.valueOf(account.getId()));
     }
@@ -635,17 +640,7 @@ public abstract class IricomTestSuite {
     }
 
     protected void setAuthToken(MockHttpServletRequestBuilder builder, TestAccountInfo testAccountInfo) throws Exception {
-        String token = tokenMap.get(testAccountInfo);
-        if (token == null) {
-            StopWatch stopWatch = new StopWatch();
-            stopWatch.start();
-            FirebaseTokenResponse tokenResponse = FirebaseUtils.getToken(testAccountInfo.getEmail(), ACCOUNT_PASSWORD);
-            stopWatch.stop();
-            log.info("Create firebase token - account: {}, execute time: {}", testAccountInfo.getEmail(), stopWatch.getTotalTimeMillis());
-            token = tokenResponse.getIdToken();
-            tokenMap.put(testAccountInfo, token);
-        }
-
+        String token = accountTokenMap.get(testAccountInfo);
         builder.header("Authorization", "Bearer " + token);
     }
 

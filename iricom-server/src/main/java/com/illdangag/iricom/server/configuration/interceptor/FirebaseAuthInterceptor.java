@@ -56,16 +56,14 @@ public class FirebaseAuthInterceptor implements HandlerInterceptor {
             return HandlerInterceptor.super.preHandle(request, response, handler);
         }
 
-        // firebase 토큰이 존재 하면 해당 토큰에 대한 계정 정보를 조회
-        Optional<FirebaseToken> firebaseTokenOptional = this.getFirebaseToken(request);
-        Account account = null;
-        if (firebaseTokenOptional.isPresent()) {
-            // firebase 토큰으로 사용자를 조회
-            FirebaseToken firebaseToken = firebaseTokenOptional.get();
-            account = this.getFirebaseAuthentication(firebaseToken);
-            request.setAttribute("account", account); // 계정 정보를 api endpoint로 전달
-        }
+        String token = this.getAuthToken(request);
+        Optional<Account> accountOptional = this.getAccount(request);
+        accountOptional.ifPresent(account -> request.setAttribute("account", account)); // 계정 정보를 api endpoint로 전달
 
+        return this.preHandleCheckAuthRole(request, response, handler, accountOptional.orElse(null), token != null && !token.isEmpty());
+    }
+
+    private boolean preHandleCheckAuthRole(HttpServletRequest request, HttpServletResponse response, Object handler, Account account, boolean hasToken) throws Exception {
         HandlerMethod handlerMethod = (HandlerMethod) handler;
         Auth auth = handlerMethod.getMethodAnnotation(Auth.class);
 
@@ -76,7 +74,7 @@ public class FirebaseAuthInterceptor implements HandlerInterceptor {
             AuthRole[] requireAuths = auth.role(); // api endpoint에서 요구하는 권한 정보
             List<AuthRole> requireAuthList = requireAuths != null ? Arrays.asList(requireAuths) : Collections.emptyList();
 
-            if (!requireAuthList.isEmpty() && !requireAuthList.contains(AuthRole.NONE) && firebaseTokenOptional.isEmpty()) { // 권한이 필요하지만 firebase 토큰이 존재하지 않는 경우
+            if (!requireAuthList.isEmpty() && !requireAuthList.contains(AuthRole.NONE) && !hasToken) { // 권한이 필요하지만 토큰이 존재하지 않는 경우
                 throw new IricomException(IricomErrorCode.NOT_EXIST_FIREBASE_ID_TOKEN); // 요청의 권한을 확인 할 수 없으므로 오류 처리
             } else {
                 if (requireAuthList.contains(AuthRole.NONE) || requireAuthList.contains(AuthRole.UNREGISTERED_ACCOUNT)) { // 요구하는 권한이 등록되지 않은 사용자
@@ -104,6 +102,7 @@ public class FirebaseAuthInterceptor implements HandlerInterceptor {
             return HandlerInterceptor.super.preHandle(request, response, handler);
         }
     }
+
 
     private void checkAccount(Account account) {
         if (account == null) {
@@ -140,14 +139,23 @@ public class FirebaseAuthInterceptor implements HandlerInterceptor {
         }
     }
 
-    private Optional<FirebaseToken> getFirebaseToken(HttpServletRequest request) throws IricomException {
+    protected String getAuthToken(HttpServletRequest request) {
         String authorization = request.getHeader("Authorization");
 
         if (authorization == null || !authorization.startsWith("Bearer ")) {
+            return null;
+        } else {
+            return authorization.substring(7);
+        }
+    }
+
+    private Optional<FirebaseToken> getFirebaseToken(HttpServletRequest request) throws IricomException {
+        String token = this.getAuthToken(request);
+
+        if (token == null) {
             return Optional.empty();
         }
 
-        String token = authorization.substring(7);
         FirebaseToken firebaseToken;
         try {
             FirebaseAuth firebaseAuth = this.firebaseInitializer.getFirebaseAuth();
@@ -164,6 +172,17 @@ public class FirebaseAuthInterceptor implements HandlerInterceptor {
         }
 
         return Optional.of(firebaseToken);
+    }
+
+    protected Optional<Account> getAccount(HttpServletRequest request) {
+        Optional<FirebaseToken> firebaseTokenOptional = this.getFirebaseToken(request);
+        if (firebaseTokenOptional.isEmpty()) {
+            return Optional.empty();
+        } else {
+            FirebaseToken firebaseToken = firebaseTokenOptional.get();
+            Account account = this.getFirebaseAuthentication(firebaseToken);
+            return Optional.of(account);
+        }
     }
 
     /**
