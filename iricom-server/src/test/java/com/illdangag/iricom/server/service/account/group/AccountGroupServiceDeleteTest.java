@@ -20,26 +20,32 @@ public class AccountGroupServiceDeleteTest extends IricomTestSuite {
     @Autowired
     private AccountGroupService accountGroupService;
 
-    private final TestAccountGroupInfo testAccountGroupInfo00 = TestAccountGroupInfo.builder()
-            .title("testAccountGroupInfo00").description("description").build();
-
     @Autowired
     public AccountGroupServiceDeleteTest(ApplicationContext context) {
         super(context);
-
-        addTestAccountGroupInfo(testAccountGroupInfo00);
-        init();
     }
 
     @Test
     @DisplayName("계정 그룹 삭제")
     public void delete() throws Exception {
-        String accountGroupId = getAccountGroup(testAccountGroupInfo00).getId();
+        // 계정 그룹 생성
+        TestAccountGroupInfo accountGroup = TestAccountGroupInfo.builder()
+                .title("testAccountGroupInfo00")
+                .description("description")
+                .build();
+        this.setAccountGroup(accountGroup);
 
-        accountGroupService.deleteAccountGroupInfo(accountGroupId);
+        // 삭제 전에 계정 그룹 조회 시도
+        Assertions.assertDoesNotThrow(() -> {
+            accountGroupService.getAccountGroupInfo(accountGroup.getId());
+        });
 
+        // 계정 그룹 삭제
+        accountGroupService.deleteAccountGroupInfo(accountGroup.getId());
+
+        // 삭제한 계정 그룹으로 조회 시도
         Assertions.assertThrows(IricomException.class, () -> {
-            accountGroupService.getAccountGroupInfo(accountGroupId);
+            accountGroupService.getAccountGroupInfo(accountGroup.getId());
         });
     }
 }

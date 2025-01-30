@@ -155,6 +155,7 @@ public class AccountGroupServiceImpl extends IricomService implements AccountGro
                     .map(item -> AccountGroupAccount.builder()
                             .accountGroup(accountGroup).account(item).build())
                     .collect(Collectors.toList());
+            accountGroup.setAccountGroupAccountList(accountGroupAccountList);
         }
 
         List<AccountGroupBoard> accountGroupBoardList = null;
@@ -164,9 +165,10 @@ public class AccountGroupServiceImpl extends IricomService implements AccountGro
                     .map(item -> AccountGroupBoard.builder()
                             .accountGroup(accountGroup).board(item).build())
                     .collect(Collectors.toList());
+            accountGroup.setAccountGroupBoardList(accountGroupBoardList);
         }
 
-        this.accountGroupRepository.updateAccountGroup(accountGroup, accountGroupAccountList, accountGroupBoardList);
+        this.accountGroupRepository.saveAccountGroup(accountGroup);
         return new AccountGroupInfo(accountGroup);
     }
 

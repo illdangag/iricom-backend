@@ -2,6 +2,7 @@ package com.illdangag.iricom.server.test.data.wrapper;
 
 import lombok.Builder;
 import lombok.Getter;
+import lombok.Setter;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -9,6 +10,9 @@ import java.util.List;
 @Getter
 @Builder
 public class TestAccountGroupInfo {
+    @Setter
+    private String id;
+
     private String title;
 
     private String description;

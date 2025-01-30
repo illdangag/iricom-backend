@@ -8,6 +8,7 @@ import com.illdangag.iricom.server.exception.IricomException;
 import com.illdangag.iricom.server.service.AccountGroupService;
 import com.illdangag.iricom.server.test.IricomTestSuite;
 import com.illdangag.iricom.server.test.data.wrapper.TestAccountGroupInfo;
+import com.illdangag.iricom.server.test.data.wrapper.TestAccountInfo;
 import com.illdangag.iricom.server.test.data.wrapper.TestBoardInfo;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.Assertions;
@@ -20,45 +21,24 @@ import javax.transaction.Transactional;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @DisplayName("service: 계정 그룹 - 수정")
-@Slf4j
 @Transactional
 public class AccountGroupServiceUpdateTest extends IricomTestSuite {
     @Autowired
     private AccountGroupService accountGroupService;
 
-    private final TestBoardInfo testBoardInfo00 = TestBoardInfo.builder()
-            .title("testBoardInfo00").isEnabled(true).adminList(Collections.singletonList(allBoardAdmin)).build();
-    private final TestBoardInfo testBoardInfo01 = TestBoardInfo.builder()
-            .title("testBoardInfo01").isEnabled(true).adminList(Collections.singletonList(allBoardAdmin)).build();
-    private final TestBoardInfo testBoardInfo02 = TestBoardInfo.builder()
-            .title("testBoardInfo02").isEnabled(true).adminList(Collections.singletonList(allBoardAdmin)).build();
-
-    private final TestAccountGroupInfo testAccountGroupInfo00 = TestAccountGroupInfo.builder()
-            .title("testAccountGroupInfo00").description("description").build();
-    private final TestAccountGroupInfo testAccountGroupInfo01 = TestAccountGroupInfo.builder()
-            .title("testAccountGroupInfo01").description("description").build();
-    private final TestAccountGroupInfo testAccountGroupInfo02 = TestAccountGroupInfo.builder()
-            .title("testAccountGroupInfo02").description("description")
-            .accountList(Arrays.asList(common00, common01)).boardList(Arrays.asList(testBoardInfo00, testBoardInfo01)).build();
-    private final TestAccountGroupInfo testAccountGroupInfo03 = TestAccountGroupInfo.builder()
-            .title("testAccountGroupInfo03").description("description").build();
-
     public AccountGroupServiceUpdateTest(ApplicationContext context) {
         super(context);
-
-        addTestBoardInfo(testBoardInfo00, testBoardInfo01, testBoardInfo02);
-        addTestAccountGroupInfo(testAccountGroupInfo00, testAccountGroupInfo01, testAccountGroupInfo02, testAccountGroupInfo03);
-
-        init();
     }
 
     @Test
     @DisplayName("제목, 설명")
     public void updateTitleDescription() throws Exception {
-        AccountGroupInfo testAccountGroup = getAccountGroup(testAccountGroupInfo00);
-        String accountGroupId = testAccountGroup.getId();
+        // 계정 그룹 생성
+        TestAccountGroupInfo testAccountGroupInfo = this.setRandomAccountGroup(1).get(0);
+        String accountGroupId = testAccountGroupInfo.getId();
 
         String title = "Update account group";
         String description = "update description";
@@ -78,10 +58,13 @@ public class AccountGroupServiceUpdateTest extends IricomTestSuite {
     @Test
     @DisplayName("계정이 등록되지 않은 그룹에 계정 추가")
     public void updateAccountEmptyAccountGroup() throws Exception {
-        AccountGroupInfo testAccountGroup = getAccountGroup(testAccountGroupInfo01);
-        String accountGroupId = testAccountGroup.getId();
+        // 계정 그룹 생성
+        TestAccountGroupInfo accountGroup = this.setRandomAccountGroup(1).get(0);
+        String accountGroupId = accountGroup.getId();
 
-        String accountId = getAccountId(common00);
+        // 계정 생성
+        TestAccountInfo account = this.setRandomAccount(1).get(0);
+        String accountId = account.getId();
 
         AccountGroupInfoUpdate accountGroupInfoUpdate = AccountGroupInfoUpdate.builder()
                 .accountIdList(Collections.singletonList(accountId))
@@ -97,10 +80,13 @@ public class AccountGroupServiceUpdateTest extends IricomTestSuite {
     @Test
     @DisplayName("게시판이 등록되지 않은 그룹에 게시판 추가")
     public void updateBoardEmptyAccountGroup() throws Exception {
-        AccountGroupInfo testAccountGroup = getAccountGroup(testAccountGroupInfo01);
-        String accountGroupId = testAccountGroup.getId();
+        // 계정 그룹 생성
+        TestAccountGroupInfo accountGroup = this.setRandomAccountGroup(1).get(0);
+        String accountGroupId = accountGroup.getId();
 
-        String boardId = getBoardId(testBoardInfo00);
+        // 게시판 생성
+        TestBoardInfo board = this.setRandomBoard(1).get(0);
+        String boardId = board.getId();
 
         AccountGroupInfoUpdate accountGroupInfoUpdate = AccountGroupInfoUpdate.builder()
                 .boardIdList(Arrays.asList(String.valueOf(boardId)))
@@ -116,72 +102,113 @@ public class AccountGroupServiceUpdateTest extends IricomTestSuite {
     @Test
     @DisplayName("계정이 등록된 그룹에 다른 계정 목록으로 수정")
     public void updateAccountAlreadyAccountGroup() throws Exception {
-        AccountGroupInfo testAccountGroup = getAccountGroup(testAccountGroupInfo02);
-        String accountGroupId = testAccountGroup.getId();
+        // 계정 생성
+        List<TestAccountInfo> preAccountList = this.setRandomAccount(2);
+        List<String> preAccountIdList = preAccountList.stream()
+                .map(TestAccountInfo::getId)
+                .sorted()
+                .collect(Collectors.toList());
+        List<TestAccountInfo> postAccountList = this.setRandomAccount(3);
+        List<String> postAccountIdList = postAccountList.stream()
+                .map(TestAccountInfo::getId)
+                .sorted()
+                .collect(Collectors.toList());
 
-        String accountId00 = getAccountId(testAccountGroupInfo02.getAccountList().get(0));
-        String accountId01 = getAccountId(common02);
-
-        String boardId00 = getBoardId(testAccountGroupInfo02.getBoardList().get(0));
-        String boardId01 = getBoardId(testAccountGroupInfo02.getBoardList().get(1));
-
-        AccountGroupInfoUpdate accountGroupInfoUpdate = AccountGroupInfoUpdate.builder()
-                .accountIdList(Arrays.asList(accountId00, accountId01))
+        // 계정 그룹 생성
+        TestAccountGroupInfo accountGroup = TestAccountGroupInfo.builder()
+                .title("title")
+                .description("description")
+                .accountList(preAccountList)
                 .build();
+        this.setAccountGroup(accountGroup);
+        String accountGroupId = accountGroup.getId();
 
-        AccountGroupInfo accountGroupInfo = accountGroupService.updateAccountGroupInfo(accountGroupId, accountGroupInfoUpdate);
+        // 수정 전 조회
+        AccountGroupInfo accountGroupInfo = this.accountGroupService.getAccountGroupInfo(accountGroupId);
+        List<String> accountIdList = accountGroupInfo.getAccountInfoList().stream()
+                .map(AccountInfo::getId)
+                .sorted()
+                .collect(Collectors.toList());
+        Assertions.assertArrayEquals(preAccountIdList.toArray(), accountIdList.toArray());
 
-        List<AccountInfo> accountInfoList = accountGroupInfo.getAccountInfoList();
-        Assertions.assertEquals(2, accountInfoList.size());
-        AccountInfo accountInfo00 = accountInfoList.get(0);
-        AccountInfo accountInfo01 = accountInfoList.get(1);
-        Assertions.assertEquals(accountId00, accountInfo00.getId());
-        Assertions.assertEquals(accountId01, accountInfo01.getId());
+        // 수정
+        AccountGroupInfoUpdate update = AccountGroupInfoUpdate.builder()
+                .accountIdList(postAccountIdList)
+                .build();
+        AccountGroupInfo updatedAccountGroupInfo = this.accountGroupService.updateAccountGroupInfo(accountGroupId, update);
+        List<String> updatedAccountIdList = updatedAccountGroupInfo.getAccountInfoList().stream()
+                .map(AccountInfo::getId)
+                .sorted()
+                        .collect(Collectors.toList());
+        Assertions.assertArrayEquals(postAccountIdList.toArray(), updatedAccountIdList.toArray());
 
-        List<BoardInfo> boardInfoList = accountGroupInfo.getBoardInfoList();
-        Assertions.assertEquals(2, boardInfoList.size());
-        BoardInfo boardInfo00 = boardInfoList.get(0);
-        BoardInfo boardInfo01 = boardInfoList.get(1);
-        Assertions.assertEquals(boardId00, boardInfo00.getId());
-        Assertions.assertEquals(boardId01, boardInfo01.getId());
+        // 다시 조회
+        AccountGroupInfo getAccountGroupInfo = this.accountGroupService.getAccountGroupInfo(accountGroupId);
+        List<String> getAccountIdList = getAccountGroupInfo.getAccountInfoList().stream()
+                .map(AccountInfo::getId)
+                .sorted()
+                .collect(Collectors.toList());
+        Assertions.assertArrayEquals(postAccountIdList.toArray(), getAccountIdList.toArray());
     }
 
     @Test
     @DisplayName("게시판이 등록된 그룹에 다른 게시판 목록으로 수정")
     public void updateBoardAlreadyAccountGroup() throws Exception {
-        AccountGroupInfo testAccountGroup = getAccountGroup(testAccountGroupInfo02);
-        String accountGroupId = testAccountGroup.getId();
+        // 게시판 생성
+        List<TestBoardInfo> preBoardList = this.setRandomBoard(2);
+        List<String> preBoardIdList = preBoardList.stream()
+                .map(TestBoardInfo::getId)
+                .sorted()
+                .collect(Collectors.toList());
+        List<TestBoardInfo> postBoardList = this.setRandomBoard(3);
+        List<String> postBoardIdList = postBoardList.stream()
+                .map(TestBoardInfo::getId)
+                .sorted()
+                .collect(Collectors.toList());
 
-        String accountId00 = getAccountId(testAccountGroupInfo02.getAccountList().get(0));
-        String accountId01 = getAccountId(testAccountGroupInfo02.getAccountList().get(1));
+        // 계정 그룹 생성
+        TestAccountGroupInfo accountGroup = TestAccountGroupInfo.builder()
+                .title("title")
+                .description("description")
+                .boardList(preBoardList)
+                .build();
+        this.setAccountGroup(accountGroup);
+        String accountGroupId = accountGroup.getId();
 
-        String boardId00 = getBoardId(testAccountGroupInfo02.getBoardList().get(0));
-        String boardId01 = getBoardId(testBoardInfo02);
+        // 수정 전 조회
+        AccountGroupInfo accountGroupInfo = this.accountGroupService.getAccountGroupInfo(accountGroupId);
+        List<String> boardIdList = accountGroupInfo.getBoardInfoList().stream()
+                .map(BoardInfo::getId)
+                .sorted()
+                .collect(Collectors.toList());
+        Assertions.assertArrayEquals(preBoardIdList.toArray(), boardIdList.toArray());
 
-        AccountGroupInfoUpdate accountGroupInfoUpdate = AccountGroupInfoUpdate.builder()
-                .boardIdList(Arrays.asList(boardId00, boardId01))
+        AccountGroupInfoUpdate update = AccountGroupInfoUpdate.builder()
+                .boardIdList(postBoardIdList)
                 .build();
 
-        AccountGroupInfo accountGroupInfo = accountGroupService.updateAccountGroupInfo(accountGroupId, accountGroupInfoUpdate);
+        // 수정
+        AccountGroupInfo updatedAccountGroupInfo = this.accountGroupService.updateAccountGroupInfo(accountGroupId, update);
+        List<String> updatedBoardIdList = updatedAccountGroupInfo.getBoardInfoList().stream()
+                .map(BoardInfo::getId)
+                .sorted()
+                .collect(Collectors.toList());
+        Assertions.assertArrayEquals(postBoardIdList.toArray(), updatedBoardIdList.toArray());
 
-        List<AccountInfo> accountInfoList = accountGroupInfo.getAccountInfoList();
-        Assertions.assertEquals(2, accountInfoList.size());
-        AccountInfo accountInfo00 = accountInfoList.get(0);
-        AccountInfo accountInfo01 = accountInfoList.get(1);
-        Assertions.assertEquals(accountId00, accountInfo00.getId());
-        Assertions.assertEquals(accountId01, accountInfo01.getId());
-
-        List<BoardInfo> boardInfoList = accountGroupInfo.getBoardInfoList();
-        Assertions.assertEquals(2, boardInfoList.size());
-        BoardInfo boardInfo00 = boardInfoList.get(0);
-        BoardInfo boardInfo01 = boardInfoList.get(1);
-        Assertions.assertEquals(boardId00, boardInfo00.getId());
-        Assertions.assertEquals(boardId01, boardInfo01.getId());
+        // 수정 후 조회
+        AccountGroupInfo getAccountGroupInfo = this.accountGroupService.getAccountGroupInfo(accountGroupId);
+        List<String> getBoardIdList = getAccountGroupInfo.getBoardInfoList().stream()
+                .map(BoardInfo::getId)
+                .sorted()
+                .collect(Collectors.toList());
+        Assertions.assertArrayEquals(postBoardIdList.toArray(), getBoardIdList.toArray());
     }
 
     @Test
     @DisplayName("존재하지 않는 계정 그룹")
     public void updateNotExistAccountGroup() throws Exception {
+        this.setRandomAccountGroup(5);
+
         String accountGroupId = "NOT_EXIST_ACCOUNT_GROUP";
 
         AccountGroupInfoUpdate accountGroupInfoUpdate = AccountGroupInfoUpdate.builder()
@@ -197,8 +224,8 @@ public class AccountGroupServiceUpdateTest extends IricomTestSuite {
     @Test
     @DisplayName("존재하지 않는 계정을 추가")
     public void updateNotExistAccount() throws Exception {
-        AccountGroupInfo testAccountGroup = getAccountGroup(testAccountGroupInfo03);
-        String accountGroupId = testAccountGroup.getId();
+        TestAccountGroupInfo accountGroup = this.setRandomAccountGroup(1).get(0);
+        String accountGroupId = accountGroup.getId();
 
         AccountGroupInfoUpdate accountGroupInfoUpdate = AccountGroupInfoUpdate.builder()
                 .accountIdList(Arrays.asList("NOT_EXIST_ACCOUNT"))
@@ -212,8 +239,8 @@ public class AccountGroupServiceUpdateTest extends IricomTestSuite {
     @Test
     @DisplayName("존재하지 않는 게시판을 추가")
     public void updateNotExistBoard() throws Exception {
-        AccountGroupInfo testAccountGroup = getAccountGroup(testAccountGroupInfo03);
-        String accountGroupId = testAccountGroup.getId();
+        TestAccountGroupInfo accountGroup = this.setRandomAccountGroup(1).get(0);
+        String accountGroupId = accountGroup.getId();
 
         AccountGroupInfoUpdate accountGroupInfoUpdate = AccountGroupInfoUpdate.builder()
                 .boardIdList(Arrays.asList("NOT_EXIST_BOARD"))

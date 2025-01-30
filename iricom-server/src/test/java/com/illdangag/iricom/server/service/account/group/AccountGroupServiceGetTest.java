@@ -7,8 +7,8 @@ import com.illdangag.iricom.server.exception.IricomException;
 import com.illdangag.iricom.server.service.AccountGroupService;
 import com.illdangag.iricom.server.test.IricomTestSuite;
 import com.illdangag.iricom.server.test.data.wrapper.TestAccountGroupInfo;
+import com.illdangag.iricom.server.test.data.wrapper.TestAccountInfo;
 import com.illdangag.iricom.server.test.data.wrapper.TestBoardInfo;
-import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -16,70 +16,87 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 
 import javax.transaction.Transactional;
-import java.util.Arrays;
-import java.util.Collections;
+import java.util.List;
 
 @DisplayName("service: 계정 그룹 - 조회")
-@Slf4j
 @Transactional
 public class AccountGroupServiceGetTest extends IricomTestSuite {
     @Autowired
     private AccountGroupService accountGroupService;
 
-    private final TestBoardInfo testBoardInfo00 = TestBoardInfo.builder()
-            .title("testBoardInfo00").isEnabled(true).adminList(Collections.singletonList(allBoardAdmin)).build();
-    private final TestBoardInfo testBoardInfo01 = TestBoardInfo.builder()
-            .title("testBoardInfo01").isEnabled(true).adminList(Collections.singletonList(allBoardAdmin)).build();
-
-    private final TestAccountGroupInfo testAccountGroupInfo00 = TestAccountGroupInfo.builder()
-            .title("testAccountGroupInfo00").description("description")
-            .accountList(Arrays.asList(common00, common01)).boardList(Arrays.asList(testBoardInfo00, testBoardInfo01)).build();
-
     public AccountGroupServiceGetTest(ApplicationContext context) {
         super(context);
-
-        addTestBoardInfo(testBoardInfo00, testBoardInfo01);
-        addTestAccountGroupInfo(testAccountGroupInfo00);
-
-        init();
     }
 
     @Test
     @DisplayName("그룹 정보 조회")
-    void get() {
-        AccountGroupInfo testAccountGroup = getAccountGroup(testAccountGroupInfo00);
-        String accountGroupId = testAccountGroup.getId();
+    void getAccountGroup() {
+        // 계정 그룹 생성
+        TestAccountGroupInfo accountGroup = TestAccountGroupInfo.builder()
+                .title("title")
+                .description("description")
+                .build();
+        this.setAccountGroup(accountGroup);
 
-        String[] accountIds = testAccountGroupInfo00.getAccountList().stream()
-                .map(AccountGroupServiceGetTest.this::getAccount)
-                .map(item -> String.valueOf(item.getId()))
-                .toArray(String[]::new);
-        String[] boardIds = testAccountGroupInfo00.getBoardList().stream()
-                .map(AccountGroupServiceGetTest.this::getBoardId)
-                .toArray(String[]::new);
-
-        AccountGroupInfo accountGroupInfo = accountGroupService.getAccountGroupInfo(accountGroupId);
+        AccountGroupInfo accountGroupInfo = accountGroupService.getAccountGroupInfo(accountGroup.getId());
 
         Assertions.assertNotNull(accountGroupInfo);
-        Assertions.assertEquals(testAccountGroup.getTitle(), accountGroupInfo.getTitle());
-        Assertions.assertEquals(testAccountGroup.getDescription(), accountGroupInfo.getDescription());
+        Assertions.assertEquals(accountGroup.getId(), accountGroupInfo.getId());
+    }
 
-        String[] accountInfoIds = accountGroupInfo.getAccountInfoList().stream()
+    @Test
+    @DisplayName("그룹에 추가된 게시판 및 멤버 목록 조회")
+    void getAddedAccountAndBoardAccountGroup() {
+        // 계정 생성
+        List<TestAccountInfo> accountList = this.setRandomAccount(5);
+        String[] accountIds = accountList.stream()
+                .map(TestAccountInfo::getId)
+                .sorted()
+                .toArray(String[]::new);
+
+        // 게시판 생성
+        List<TestBoardInfo> boardList = this.setRandomBoard(5);
+        String[] boardIds = boardList.stream()
+                .map(TestBoardInfo::getId)
+                .sorted()
+                .toArray(String[]::new);
+
+        // 계정 그룹 생성
+        TestAccountGroupInfo accountGroup = TestAccountGroupInfo.builder()
+                .title("title")
+                .description("description")
+                .accountList(accountList)
+                .boardList(boardList)
+                .build();
+        this.setAccountGroup(accountGroup);
+
+        AccountGroupInfo accountGroupInfo = accountGroupService.getAccountGroupInfo(accountGroup.getId());
+        String[] groupAccountIds = accountGroupInfo.getAccountInfoList().stream()
                 .map(AccountInfo::getId)
+                .sorted()
                 .toArray(String[]::new);
-        String[] boardInfoIds = accountGroupInfo.getBoardInfoList().stream()
+        String[] groupBoardIds = accountGroupInfo.getBoardInfoList().stream()
                 .map(BoardInfo::getId)
+                .sorted()
                 .toArray(String[]::new);
 
-        Assertions.assertArrayEquals(accountIds, accountInfoIds);
-        Assertions.assertArrayEquals(boardIds, boardInfoIds);
+        Assertions.assertNotNull(accountGroupInfo);
+        Assertions.assertArrayEquals(accountIds, groupAccountIds);
+        Assertions.assertArrayEquals(boardIds, groupBoardIds);
     }
 
     @Test
     @DisplayName("존재하지 않는 그룹 조회")
     void getNotExistAccountGroup() throws Exception {
-        String accountGroupId = "NOT_EXIST_ACCOUNT_GROUP";
+        List<TestAccountGroupInfo> accountGroupInfoList = this.setRandomAccountGroup(5);
 
+        // 생성한 그룹은 조회 가능
+        Assertions.assertDoesNotThrow(() -> {
+            accountGroupService.getAccountGroupInfo(accountGroupInfoList.get(0).getId());
+        });
+
+        // 존재하지 않는 ID로는 조회 불가능
+        String accountGroupId = "NOT_EXIST_ACCOUNT_GROUP";
         Assertions.assertThrows(IricomException.class, () -> {
             accountGroupService.getAccountGroupInfo(accountGroupId);
         });

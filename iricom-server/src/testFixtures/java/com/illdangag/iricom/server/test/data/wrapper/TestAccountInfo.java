@@ -2,10 +2,14 @@ package com.illdangag.iricom.server.test.data.wrapper;
 
 import lombok.Builder;
 import lombok.Getter;
+import lombok.Setter;
 
 @Getter
 @Builder
 public class TestAccountInfo {
+    @Setter
+    private String id;
+
     private String email;
 
     @Builder.Default

@@ -2,6 +2,7 @@ package com.illdangag.iricom.server.test.data.wrapper;
 
 import lombok.Builder;
 import lombok.Getter;
+import lombok.Setter;
 
 import java.util.LinkedList;
 import java.util.List;
@@ -9,6 +10,10 @@ import java.util.List;
 @Getter
 @Builder
 public class TestBoardInfo {
+    @Setter
+    @Builder.Default
+    private String id = "";
+
     @Builder.Default
     private String title = "";
 

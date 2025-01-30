@@ -72,6 +72,7 @@ public class AccountGroupRepositoryImpl implements AccountGroupRepository {
                     .filter(item -> !dbAccountGroupAccountList.contains(item)).collect(Collectors.toList());
             removeAccountGroupAccountList = dbAccountGroupAccountList.stream()
                     .filter(item -> !accountGroupAccountList.contains(item)).collect(Collectors.toList());
+            accountGroup.setAccountGroupAccountList(addAccountGroupAccountList);
         } else {
             addAccountGroupAccountList = Collections.emptyList();
             removeAccountGroupAccountList = Collections.emptyList();
@@ -86,16 +87,19 @@ public class AccountGroupRepositoryImpl implements AccountGroupRepository {
                     .filter(item -> !dbAccountGroupBoardList.contains(item)).collect(Collectors.toList());
             removeAccountGroupBoardList = dbAccountGroupBoardList.stream()
                     .filter(item -> !accountGroupBoardList.contains(item)).collect(Collectors.toList());
+            accountGroup.setAccountGroupBoardList(addAccountGroupBoardList);
         } else {
             addAccountGroupBoardList = Collections.emptyList();
             removeAccountGroupBoardList = Collections.emptyList();
         }
 
-        this.entityManager.merge(accountGroup);
-        addAccountGroupAccountList.forEach(item -> this.entityManager.persist(item));
+//        addAccountGroupAccountList.forEach(item -> this.entityManager.persist(item));
         removeAccountGroupAccountList.forEach(item -> this.entityManager.remove(item));
-        addAccountGroupBoardList.forEach(item -> this.entityManager.persist(item));
+//        addAccountGroupBoardList.forEach(item -> this.entityManager.persist(item));
         removeAccountGroupBoardList.forEach(item -> this.entityManager.remove(item));
+
+        this.entityManager.merge(accountGroup);
+
         this.entityManager.flush();
     }
 

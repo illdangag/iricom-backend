@@ -147,35 +147,86 @@ public abstract class IricomTestSuite {
     /**
      * 계정 생성
      */
+    protected List<TestAccountInfo> setRandomAccount(int count) {
+        List<TestAccountInfo> accountList = new ArrayList<>();
+        for (int i = 0; i < count; i++) {
+            String randomText = UUID.randomUUID().toString();
+            String email = randomText + "@iricom.com";
+            String nickname = randomText.substring(0, 20);
+            String description = randomText;
+            TestAccountInfo testAccountInfo = TestAccountInfo.builder()
+                    .email(email).nickname(nickname).description(description).build();
+            accountList.add(testAccountInfo);
+        }
+        setAccount(accountList);
+        return accountList;
+    }
+
+    protected void setAccount(TestAccountInfo ... testAccountInfos) {
+        for (TestAccountInfo testAccountInfo : testAccountInfos) {
+            this.setAccount(testAccountInfo);
+        }
+    }
+
     protected void setAccount(List<TestAccountInfo> testAccountInfoList) {
         for (TestAccountInfo testAccountInfo : testAccountInfoList) {
-            Set<TestAccountInfo> keySet = accountMap.keySet();
-            if (keySet.contains(testAccountInfo)) {
-                continue;
-            }
+            this.setAccount(testAccountInfo);
+        }
+    }
 
-            AccountInfo accountInfo = this.createAccount(testAccountInfo);
-            accountMap.put(testAccountInfo, accountInfo);
+    protected void setAccount(TestAccountInfo testAccountInfo) {
+//        Set<TestAccountInfo> keySet = accountMap.keySet();
+//        if (keySet.contains(testAccountInfo)) {
+//            return;
+//        }
 
-            if (!testAccountInfo.isUnregistered()) {
-                this.updateAccountDetail(testAccountInfo, accountInfo);
-            }
+        AccountInfo accountInfo = this.createAccount(testAccountInfo);
+        testAccountInfo.setId(accountInfo.getId());
+        accountMap.put(testAccountInfo, accountInfo);
+
+        if (!testAccountInfo.isUnregistered()) {
+            this.updateAccountDetail(testAccountInfo, accountInfo);
         }
     }
 
     /**
      * 게시판 생성
      */
+    protected List<TestBoardInfo> setRandomBoard(int count) {
+        List<TestBoardInfo> boardList = new ArrayList<>();
+        for (int i = 0; i < count; i++) {
+            String randomText = UUID.randomUUID().toString();
+            String title = randomText.substring(0, 20);
+            String description = randomText;
+            TestBoardInfo testBoardInfo = TestBoardInfo.builder()
+                    .title(title).description(description).isEnabled(true).build();
+            boardList.add(testBoardInfo);
+        }
+        this.setBoard(boardList);
+        return boardList;
+    }
+
+    protected void setBoard(TestBoardInfo ... testBoardInfos) {
+        for (TestBoardInfo testBoardInfo : testBoardInfos) {
+            this.setBoard(testBoardInfo);
+        }
+    }
+
     protected void setBoard(List<TestBoardInfo> testBoardInfoList) {
         for (TestBoardInfo testBoardInfo : testBoardInfoList) {
-            BoardInfo boardInfo = this.createBoard(testBoardInfo);
-            boardMap.put(testBoardInfo, boardInfo);
+            this.setBoard(testBoardInfo);
+        }
+    }
 
-            for (TestAccountInfo testAccountInfo : testBoardInfo.getAdminList()) {
-                String accountId = accountMap.get(testAccountInfo).getId().toString();
-                String boardId = boardInfo.getId();
-                this.createBoardAdmin(accountId, boardId);
-            }
+    private void setBoard(TestBoardInfo testBoardInfo) {
+        BoardInfo boardInfo = this.createBoard(testBoardInfo);
+        testBoardInfo.setId(boardInfo.getId());
+        boardMap.put(testBoardInfo, boardInfo);
+
+        for (TestAccountInfo testAccountInfo : testBoardInfo.getAdminList()) {
+            String accountId = testAccountInfo.getId();
+            String boardId = boardInfo.getId();
+            this.createBoardAdmin(accountId, boardId);
         }
     }
 
@@ -286,11 +337,49 @@ public abstract class IricomTestSuite {
     /**
      * 계정 그룹 생성
      */
+    protected List<TestAccountGroupInfo> setRandomAccountGroup(int count) {
+        List<TestAccountGroupInfo> accountGroupList = new ArrayList<>();
+        for (int i = 0; i < count; i++) {
+            String randomText = UUID.randomUUID().toString();
+            String title = randomText.substring(0, 20);
+            String description = randomText;
+
+            TestAccountGroupInfo testAccountGroupInfo = TestAccountGroupInfo.builder()
+                    .title(title).description(description).build();
+            accountGroupList.add(testAccountGroupInfo);
+            this.setAccountGroup(testAccountGroupInfo);
+        }
+        return accountGroupList;
+    }
+
     protected void setAccountGroup(List<TestAccountGroupInfo> testAccountGroupInfoList) {
-        testAccountGroupInfoList.forEach(item -> {
-            AccountGroupInfo accountGroupInfo = this.setAccountGroup(item);
-            accountGroupMap.put(item, accountGroupInfo);
-        });
+        testAccountGroupInfoList.forEach(this::setAccountGroup);
+    }
+
+    protected void setAccountGroup(TestAccountGroupInfo ... testAccountGroupInfoList) {
+        for (TestAccountGroupInfo testAccountGroupInfo : testAccountGroupInfoList) {
+            setAccountGroup(testAccountGroupInfo);
+        }
+    }
+
+    private void setAccountGroup(TestAccountGroupInfo testAccountGroupInfo) {
+        List<String> accountIdList = testAccountGroupInfo.getAccountList().stream()
+                .map(TestAccountInfo::getId)
+                .collect(Collectors.toList());
+
+        List<String> boaredIdList = testAccountGroupInfo.getBoardList().stream()
+                .map(TestBoardInfo::getId)
+                .collect(Collectors.toList());
+
+        AccountGroupInfoCreate accountGroupInfoCreate = AccountGroupInfoCreate.builder()
+                .title(testAccountGroupInfo.getTitle())
+                .description(testAccountGroupInfo.getDescription())
+                .accountIdList(accountIdList)
+                .boardIdList(boaredIdList)
+                .build();
+        AccountGroupInfo accountGroupInfo = this.accountGroupService.createAccountGroupInfo(accountGroupInfoCreate);
+        testAccountGroupInfo.setId(accountGroupInfo.getId());
+        accountGroupMap.put(testAccountGroupInfo, accountGroupInfo);
     }
 
     /**
@@ -611,26 +700,6 @@ public abstract class IricomTestSuite {
         }
 
         return result;
-    }
-
-    private AccountGroupInfo setAccountGroup(TestAccountGroupInfo testAccountGroupInfo) {
-        List<String> accountIdList = testAccountGroupInfo.getAccountList().stream()
-                .map(testAccountInfo -> accountMap.get(testAccountInfo))
-                .map(account -> String.valueOf(account.getId()))
-                .collect(Collectors.toList());
-
-        List<String> boaredIdList = testAccountGroupInfo.getBoardList().stream()
-                .map(testBoardInfo -> boardMap.get(testBoardInfo))
-                .map(boardInfo -> boardInfo.getId())
-                .collect(Collectors.toList());
-
-        AccountGroupInfoCreate accountGroupInfoCreate = AccountGroupInfoCreate.builder()
-                .title(testAccountGroupInfo.getTitle())
-                .description(testAccountGroupInfo.getDescription())
-                .accountIdList(accountIdList)
-                .boardIdList(boaredIdList)
-                .build();
-        return this.accountGroupService.createAccountGroupInfo(accountGroupInfoCreate);
     }
 
     private void deleteAccountGroup(TestAccountGroupInfo testAccountGroupInfo) {

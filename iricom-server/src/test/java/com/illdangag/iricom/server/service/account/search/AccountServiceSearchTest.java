@@ -1,11 +1,10 @@
 package com.illdangag.iricom.server.service.account.search;
 
 import com.illdangag.iricom.server.data.request.AccountInfoSearch;
-import com.illdangag.iricom.server.data.response.AccountInfo;
 import com.illdangag.iricom.server.data.response.AccountInfoList;
 import com.illdangag.iricom.server.service.AccountService;
 import com.illdangag.iricom.server.test.IricomTestSuite;
-import lombok.extern.slf4j.Slf4j;
+import com.illdangag.iricom.server.test.data.wrapper.TestAccountInfo;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -15,7 +14,6 @@ import org.springframework.context.ApplicationContext;
 import javax.transaction.Transactional;
 
 @DisplayName("service: 계정 - 검색")
-@Slf4j
 @Transactional
 public class AccountServiceSearchTest extends IricomTestSuite {
     @Autowired
@@ -28,8 +26,15 @@ public class AccountServiceSearchTest extends IricomTestSuite {
     @Test
     @DisplayName("상세 정보가 등록된 계정을 이메일로 조회")
     public void searchRegisteredAccount() throws Exception {
+        TestAccountInfo testAccount = TestAccountInfo.builder()
+                .email("accountSearchTest00@iricom.com")
+                .nickname("accountSearchTest00")
+                .description("this is accountSearchTest00.")
+                .build();
+        this.setAccount(testAccount);
+
         AccountInfoSearch accountInfoSearch = AccountInfoSearch.builder()
-                .keyword("common00@iricom.com")
+                .keyword("accountSearchTest00@iricom.com")
                 .build();
 
         AccountInfoList accountInfoList = accountService.getAccountInfoList(accountInfoSearch);
@@ -40,8 +45,15 @@ public class AccountServiceSearchTest extends IricomTestSuite {
     @Test
     @DisplayName("상세 정보가 등록된 계정을 닉네임으로 조회")
     public void searchRegisteredAccountByNickname() throws Exception {
+        TestAccountInfo testAccount = TestAccountInfo.builder()
+                .email("accountSearchTest01@iricom.com")
+                .nickname("accountSearchTest01")
+                .description("this is accountSearchTest01.")
+                .build();
+        this.setAccount(testAccount);
+
         AccountInfoSearch accountInfoSearch = AccountInfoSearch.builder()
-                .keyword(common02.getNickname())
+                .keyword("accountSearchTest01")
                 .build();
 
         AccountInfoList accountInfoList = accountService.getAccountInfoList(accountInfoSearch);
@@ -52,11 +64,16 @@ public class AccountServiceSearchTest extends IricomTestSuite {
     @Test
     @DisplayName("상세 정보가 등록되지 않은 계정을 이메일로 조회")
     public void searchUnregisteredAccount() throws Exception {
-        AccountInfo accountInfo = getAccount(unknown00);
+        TestAccountInfo testAccount = TestAccountInfo.builder()
+                .email("accountSearchTest02@iricom.com")
+                .nickname("")
+                .description("")
+                .isUnregistered(true)
+                .build();
+        this.setAccount(testAccount);
 
-        Assertions.assertNotNull(accountInfo);
         AccountInfoSearch accountInfoSearch = AccountInfoSearch.builder()
-                .keyword(accountInfo.getEmail())
+                .keyword("accountSearchTest02@iricom.com")
                 .build();
 
         AccountInfoList accountInfoList = accountService.getAccountInfoList(accountInfoSearch);
