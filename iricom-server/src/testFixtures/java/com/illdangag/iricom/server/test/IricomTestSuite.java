@@ -6,6 +6,7 @@ import com.illdangag.iricom.server.data.entity.Account;
 import com.illdangag.iricom.server.data.entity.AccountDetail;
 import com.illdangag.iricom.server.data.entity.type.AccountAuth;
 import com.illdangag.iricom.server.data.entity.type.PostState;
+import com.illdangag.iricom.server.data.entity.type.PostType;
 import com.illdangag.iricom.server.data.entity.type.ReportType;
 import com.illdangag.iricom.server.data.request.*;
 import com.illdangag.iricom.server.data.response.*;
@@ -217,12 +218,33 @@ public abstract class IricomTestSuite {
         return boardList;
     }
 
+    protected List<TestBoardInfo> setRandomBoard(List<TestAccountInfo> boardAdminTestAccountInfoList, int count) {
+        List<TestBoardInfo> boardList = new ArrayList<>();
+        for (int i = 0; i < count; i++) {
+            TestBoardInfo testBoardInfo = this.setRandomBoard(boardAdminTestAccountInfoList);
+            boardList.add(testBoardInfo);
+        }
+        return boardList;
+    }
+
     protected TestBoardInfo setRandomBoard() {
         String randomText = UUID.randomUUID().toString();
         String title = randomText.substring(0, 20);
         String description = randomText;
         TestBoardInfo testBoardInfo = TestBoardInfo.builder()
                 .title(title).description(description).isEnabled(true).build();
+        this.setBoard(testBoardInfo);
+        return testBoardInfo;
+    }
+
+    protected TestBoardInfo setRandomBoard(List<TestAccountInfo> boardAdminTestAccountInfoList) {
+        String randomText = UUID.randomUUID().toString();
+        String title = randomText.substring(0, 20);
+        String description = randomText;
+        TestBoardInfo testBoardInfo = TestBoardInfo.builder()
+                .title(title).description(description)
+                .adminList(boardAdminTestAccountInfoList)
+                .isEnabled(true).build();
         this.setBoard(testBoardInfo);
         return testBoardInfo;
     }
@@ -254,6 +276,26 @@ public abstract class IricomTestSuite {
     /**
      * 게시물 생성
      */
+    protected List<TestPostInfo> setRandomPost(TestBoardInfo testBoardInfo, TestAccountInfo testAccountInfo, int count) {
+        List<TestPostInfo> postList = new ArrayList<>();
+        for (int i = 0; i < count; i++) {
+            TestPostInfo testPostInfo = this.setRandomPost(testBoardInfo, testAccountInfo);
+            postList.add(testPostInfo);
+        }
+        return postList;
+    }
+
+    protected TestPostInfo setRandomPost(TestBoardInfo testBoardInfo, TestAccountInfo testAccountInfo) {
+        String randomText = UUID.randomUUID().toString();
+        TestPostInfo testPostInfo = TestPostInfo.builder()
+                .title(randomText).content(randomText).isAllowComment(true)
+                .postType(PostType.POST).postState(PostState.PUBLISH)
+                .creator(testAccountInfo).board(testBoardInfo)
+                .build();
+        this.setPost(testPostInfo);
+        return testPostInfo;
+    }
+
     protected void setPost(List<TestPostInfo> testPostInfoList) {
         testPostInfoList.forEach(this::setPost);
     }
