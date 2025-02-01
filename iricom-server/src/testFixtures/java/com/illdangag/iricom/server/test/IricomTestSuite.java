@@ -150,16 +150,32 @@ public abstract class IricomTestSuite {
     protected List<TestAccountInfo> setRandomAccount(int count) {
         List<TestAccountInfo> accountList = new ArrayList<>();
         for (int i = 0; i < count; i++) {
-            String randomText = UUID.randomUUID().toString();
-            String email = randomText + "@iricom.com";
-            String nickname = randomText.substring(0, 20);
-            String description = randomText;
-            TestAccountInfo testAccountInfo = TestAccountInfo.builder()
-                    .email(email).nickname(nickname).description(description).build();
+            TestAccountInfo testAccountInfo = this.setRandomAccount();
             accountList.add(testAccountInfo);
         }
-        setAccount(accountList);
         return accountList;
+    }
+
+    protected TestAccountInfo setRandomAccount() {
+        String randomText = UUID.randomUUID().toString();
+        String email = randomText + "@iricom.com";
+        String nickname = randomText.substring(0, 20);
+        String description = randomText;
+        TestAccountInfo testAccountInfo = TestAccountInfo.builder()
+                .email(email).nickname(nickname).description(description).build();
+        setAccount(testAccountInfo);
+        return testAccountInfo;
+    }
+
+    protected TestAccountInfo setRandomUnregisteredAccount() {
+        String randomText = UUID.randomUUID().toString();
+        String email = randomText + "@iricom.com";
+        String nickname = randomText.substring(0, 20);
+        String description = randomText;
+        TestAccountInfo testAccountInfo = TestAccountInfo.builder()
+                .email(email).nickname(nickname).description(description).isUnregistered(true).build();
+        setAccount(testAccountInfo);
+        return testAccountInfo;
     }
 
     protected void setAccount(TestAccountInfo ... testAccountInfos) {
@@ -195,15 +211,20 @@ public abstract class IricomTestSuite {
     protected List<TestBoardInfo> setRandomBoard(int count) {
         List<TestBoardInfo> boardList = new ArrayList<>();
         for (int i = 0; i < count; i++) {
-            String randomText = UUID.randomUUID().toString();
-            String title = randomText.substring(0, 20);
-            String description = randomText;
-            TestBoardInfo testBoardInfo = TestBoardInfo.builder()
-                    .title(title).description(description).isEnabled(true).build();
+            TestBoardInfo testBoardInfo = this.setRandomBoard();
             boardList.add(testBoardInfo);
         }
-        this.setBoard(boardList);
         return boardList;
+    }
+
+    protected TestBoardInfo setRandomBoard() {
+        String randomText = UUID.randomUUID().toString();
+        String title = randomText.substring(0, 20);
+        String description = randomText;
+        TestBoardInfo testBoardInfo = TestBoardInfo.builder()
+                .title(title).description(description).isEnabled(true).build();
+        this.setBoard(testBoardInfo);
+        return testBoardInfo;
     }
 
     protected void setBoard(TestBoardInfo ... testBoardInfos) {
@@ -234,13 +255,23 @@ public abstract class IricomTestSuite {
      * 게시물 생성
      */
     protected void setPost(List<TestPostInfo> testPostInfoList) {
-        for (TestPostInfo testPostInfo : testPostInfoList) {
-            PostInfo postInfo = this.createPost(testPostInfo);
-            postMap.put(testPostInfo, postInfo);
+        testPostInfoList.forEach(this::setPost);
+    }
 
-            if (testPostInfo.getPostState() == PostState.PUBLISH) {
-                this.publishPost(testPostInfo);
-            }
+    protected void setPost(TestPostInfo ... testPostInfoList) {
+        for (TestPostInfo testPostInfo : testPostInfoList) {
+            this.setPost(testPostInfo);
+        }
+    }
+
+    private void setPost(TestPostInfo testPostInfo) {
+        PostInfo postInfo = this.createPost(testPostInfo);
+        testPostInfo.setId(postInfo.getId());
+
+        postMap.put(testPostInfo, postInfo);
+
+        if (testPostInfo.getPostState() == PostState.PUBLISH) {
+            this.publishPost(testPostInfo);
         }
     }
 
@@ -248,22 +279,27 @@ public abstract class IricomTestSuite {
      * 댓글 생성
      */
     protected void setComment(List<TestCommentInfo> testCommentInfoList) {
-        List<TestCommentInfo> filteredList = testCommentInfoList.stream()
-                .filter(item -> {
-                    TestCommentInfo referenceTestCommentInfo = item.getReferenceComment();
-                    Set<TestCommentInfo> keySet = commentMap.keySet();
-                    if (item.getReferenceComment() == null || keySet.contains(referenceTestCommentInfo)) {
-                        CommentInfo commentInfo = this.createComment(item);
-                        commentMap.put(item, commentInfo);
-                        return false;
-                    } else {
-                        return true;
-                    }
-                }).collect(Collectors.toList());
+        testCommentInfoList.forEach(this::setComment);
+    }
 
-        if (!filteredList.isEmpty()) {
-            setComment(filteredList);
+    protected void setComment(TestCommentInfo ... testCommentInfoList) {
+        for (TestCommentInfo testCommentInfo : testCommentInfoList) {
+            this.setComment(testCommentInfo);
         }
+    }
+
+    private void setComment(TestCommentInfo testCommentInfo) {
+        // 상위 댓글이 존재하는지 확인
+        Set<TestCommentInfo> keySet = commentMap.keySet();
+
+        TestCommentInfo referenceTestCommentInfo = testCommentInfo.getReferenceComment();
+        if (referenceTestCommentInfo != null && !keySet.contains(referenceTestCommentInfo)) { // 상위 댓글이 아직 생성되지 않은 경우
+            this.setComment(referenceTestCommentInfo); // 상위 댓글 생성
+        }
+
+        CommentInfo commentInfo = this.createComment(testCommentInfo); // 댓글 생성
+        testCommentInfo.setId(commentInfo.getId());
+        commentMap.put(testCommentInfo, commentInfo);
     }
 
     /**
