@@ -3,14 +3,14 @@ package com.illdangag.iricom.server.data.request;
 import lombok.Builder;
 import lombok.Getter;
 
-import javax.validation.constraints.NotNull;
+import javax.validation.constraints.NotBlank;
 
 @Getter
 @Builder
 public class BoardAdminInfoCreate {
-    @NotNull(message = "The account id is required.")
+    @NotBlank(message = "The account id is required.")
     private String accountId;
 
-    @NotNull(message = "The board id is required.")
+    @NotBlank(message = "The board id is required.")
     private String boardId;
 }
