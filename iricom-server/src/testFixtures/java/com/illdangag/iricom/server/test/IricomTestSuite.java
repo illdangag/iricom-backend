@@ -29,6 +29,11 @@ import java.util.stream.Collectors;
 @AutoConfigureMockMvc
 @AutoConfigureRestDocs
 public abstract class IricomTestSuite {
+    protected static final String TEXT_10 = "0123456789";
+    protected static final String TEXT_50 = TEXT_10 + TEXT_10 + TEXT_10 + TEXT_10 + TEXT_10;
+    protected static final String TEXT_100 = TEXT_50 + TEXT_50;
+    protected static final String TEXT_200 = TEXT_100 + TEXT_100;
+
     private final AccountService accountService;
     private final BoardService boardService;
     private final BoardAuthorizationService boardAuthorizationService;
@@ -227,6 +232,15 @@ public abstract class IricomTestSuite {
         return boardList;
     }
 
+    protected List<TestBoardInfo> setRandomBoard(List<TestAccountInfo> boardAdminTestAccountInfoList, boolean enabled, boolean unDisclosed, int count) {
+        List<TestBoardInfo> boardList = new ArrayList<>();
+        for (int i = 0; i < count; i++) {
+            TestBoardInfo testBoardInfo = this.setRandomBoard(boardAdminTestAccountInfoList, enabled, unDisclosed);
+            boardList.add(testBoardInfo);
+        }
+        return boardList;
+    }
+
     protected TestBoardInfo setRandomBoard() {
         String randomText = UUID.randomUUID().toString();
         String title = randomText.substring(0, 20);
@@ -245,6 +259,18 @@ public abstract class IricomTestSuite {
                 .title(title).description(description)
                 .adminList(boardAdminTestAccountInfoList)
                 .isEnabled(true).build();
+        this.setBoard(testBoardInfo);
+        return testBoardInfo;
+    }
+
+    protected TestBoardInfo setRandomBoard(List<TestAccountInfo> boardAdminTestAccountInfoList, boolean enabled, boolean undisclosed) {
+        String randomText = UUID.randomUUID().toString();
+        String title = randomText.substring(0, 20);
+        String description = randomText;
+        TestBoardInfo testBoardInfo = TestBoardInfo.builder()
+                .title(title).description(description)
+                .adminList(boardAdminTestAccountInfoList)
+                .isEnabled(enabled).undisclosed(undisclosed).build();
         this.setBoard(testBoardInfo);
         return testBoardInfo;
     }

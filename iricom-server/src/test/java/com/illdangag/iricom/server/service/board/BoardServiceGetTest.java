@@ -2,11 +2,12 @@ package com.illdangag.iricom.server.service.board;
 
 import com.illdangag.iricom.server.data.response.BoardInfo;
 import com.illdangag.iricom.server.exception.IricomException;
+import com.illdangag.iricom.server.service.AccountGroupService;
 import com.illdangag.iricom.server.service.BoardService;
 import com.illdangag.iricom.server.test.IricomTestSuite;
 import com.illdangag.iricom.server.test.data.wrapper.TestAccountGroupInfo;
+import com.illdangag.iricom.server.test.data.wrapper.TestAccountInfo;
 import com.illdangag.iricom.server.test.data.wrapper.TestBoardInfo;
-import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -18,112 +19,185 @@ import java.util.Arrays;
 import java.util.Collections;
 
 @DisplayName("service: 게시판 - 조회")
-@Slf4j
 @Transactional
 public class BoardServiceGetTest extends IricomTestSuite {
     @Autowired
     private BoardService boardService;
-
-    // 게시판
-    private final TestBoardInfo disclosedBoard00 = TestBoardInfo.builder()
-            .title("disclosedBoard00").isEnabled(true).undisclosed(false)
-            .adminList(Collections.singletonList(allBoardAdmin)).build();
-    private final TestBoardInfo undisclosedBoard00 = TestBoardInfo.builder()
-            .title("undisclosedBoard00").isEnabled(true).undisclosed(true)
-            .adminList(Collections.singletonList(allBoardAdmin)).build();
-    private final TestBoardInfo undisclosedBoard01 = TestBoardInfo.builder()
-            .title("undisclosedBoard01").isEnabled(true).undisclosed(true)
-            .adminList(Collections.singletonList(allBoardAdmin)).build();
-    private final TestBoardInfo undisclosedBoard02 = TestBoardInfo.builder()
-            .title("undisclosedBoard03").isEnabled(true).undisclosed(true)
-            .adminList(Collections.singletonList(allBoardAdmin)).build();
-
-    // 게정 그룹
-    private final TestAccountGroupInfo testAccountGroupInfo00 = TestAccountGroupInfo.builder()
-            .title("testAccountGroupInfo00").description("description")
-            .accountList(Arrays.asList(common00)).boardList(Arrays.asList(undisclosedBoard00))
-            .build();
+    @Autowired
+    private AccountGroupService accountGroupService;
 
     @Autowired
     public BoardServiceGetTest(ApplicationContext context) {
         super(context);
-
-        addTestBoardInfo(disclosedBoard00, undisclosedBoard00, undisclosedBoard01, undisclosedBoard02);
-        addTestAccountGroupInfo(testAccountGroupInfo00);
-        init();
     }
 
     @Test
     @DisplayName("공개 게시판 조회")
     public void getDisclosed() throws Exception {
-        String boardId = getBoardId(disclosedBoard00);
-        BoardInfo boardInfo = boardService.getBoardInfo(boardId);
+        // 게시판 생성
+        TestBoardInfo board = this.setRandomBoard(Collections.emptyList(), true, false);
 
+        // 게시판 조회
+        BoardInfo boardInfo = boardService.getBoardInfo(board.getId());
         Assertions.assertNotNull(boardInfo);
+        Assertions.assertEquals(board.getId(), boardInfo.getId());
     }
 
     @Test
-    @DisplayName("비공개 게시판 조회")
+    @DisplayName("권한 없이 비공개 게시판 조회")
     public void getUndisclosed() throws Exception {
-        String boardId = getBoardId(undisclosedBoard00);
+        // 게시판 생성
+        TestBoardInfo board = this.setRandomBoard(Collections.emptyList(), true, true);
 
-        Assertions.assertThrows(IricomException.class, () -> {
-            boardService.getBoardInfo(boardId);
+        // 권한 없이 게시판 조회
+        IricomException exception = Assertions.assertThrows(IricomException.class, () -> {
+            boardService.getBoardInfo(board.getId());
         });
+        Assertions.assertEquals("03000000", exception.getErrorCode());
+    }
+
+    @Test
+    @DisplayName("시스템 관리자 계정으로 비공개 게시판 조회")
+    public void getUndisclosedBySystemAdmin() throws Exception {
+        // 게시판 생성
+        TestBoardInfo board = this.setRandomBoard(Collections.emptyList(), true, true);
+
+        BoardInfo boardInfo = boardService.getBoardInfo(systemAdmin.getId(), board.getId());
+        Assertions.assertNotNull(boardInfo);
+        Assertions.assertEquals(board.getId(), boardInfo.getId());
     }
 
     @Test
     @DisplayName("계정 그룹에 포함된 비공개 게시판")
     public void getUndisclosedInAccountGroup() throws Exception {
-        String accountId = getAccountId(testAccountGroupInfo00.getAccountList().get(0));
-        String boardId = getBoardId(undisclosedBoard00);
+        // 계정 생성
+        TestAccountInfo account = this.setRandomAccount();
+        TestAccountInfo otherAccount = this.setRandomAccount();
+        // 게시판 생성
+        TestBoardInfo disClosedBoard = this.setRandomBoard();
+        TestBoardInfo undisclosedBoard = this.setRandomBoard(Collections.emptyList(), true, true);
+        // 계정 그룹 생성
+        TestAccountGroupInfo accountGroup = TestAccountGroupInfo.builder()
+                .title("title").description("description")
+                .accountList(Arrays.asList(account)).boardList(Arrays.asList(disClosedBoard, undisclosedBoard))
+                .build();
+        this.setAccountGroup(accountGroup);
 
-        BoardInfo boardInfo = boardService.getBoardInfo(accountId, boardId);
+        // 계정 그룹에 포함된 계정으로 게시판 조회
+        Assertions.assertDoesNotThrow(() -> {
+            // 공개 게시판이라 조회 가능
+            boardService.getBoardInfo(account.getId(), disClosedBoard.getId());
+            // 비공개 게시판이지만 계정 그룹에 포함되어 있어 조회 가능
+            boardService.getBoardInfo(account.getId(), undisclosedBoard.getId());
+        });
 
-        Assertions.assertNotNull(boardInfo);
+        // 계정 그룹에 포함되지 않은 계정으로 게시판 조회
+        Assertions.assertDoesNotThrow(() -> {
+            // 공개 게시판이라 조회 가능
+            boardService.getBoardInfo(otherAccount.getId(), disClosedBoard.getId());
+        });
+        IricomException exception = Assertions.assertThrows(IricomException.class, () -> {
+            // 비공개 게시판이라 조회 불가능
+            boardService.getBoardInfo(otherAccount.getId(), undisclosedBoard.getId());
+        });
+        Assertions.assertEquals("03000000", exception.getErrorCode());
     }
 
     @Test
     @DisplayName("계정 그룹에 포함되지 않은 비공개 게시판")
     public void getUndisclosedNotInAccountGroup() throws Exception {
-        String accountId = getAccountId(common00);
-        String boardId = getBoardId(undisclosedBoard01);
+        // 계정 생성
+        TestAccountInfo group0Account = this.setRandomAccount();
+        TestAccountInfo group1Account = this.setRandomAccount();
+        // 게시판 생성
+        TestBoardInfo group0Board = this.setRandomBoard(Collections.emptyList(), true, true);
+        TestBoardInfo group1Board = this.setRandomBoard(Collections.emptyList(), true, true);
+        // 계정 그룹 생성
+        TestAccountGroupInfo accountGroup0 = TestAccountGroupInfo.builder()
+                .title("title").description("description")
+                .accountList(Arrays.asList(group0Account)).boardList(Arrays.asList(group0Board))
+                .build();
+        TestAccountGroupInfo accountGroup1 = TestAccountGroupInfo.builder()
+                .title("title").description("description")
+                .accountList(Arrays.asList(group1Account)).boardList(Arrays.asList(group1Board))
+                .build();
+        this.setAccountGroup(accountGroup0, accountGroup1);
 
-        Assertions.assertThrows(IricomException.class, () -> {
-            boardService.getBoardInfo(accountId, boardId);
+        // 1번 그룹 계정의 게시판 조회
+        Assertions.assertDoesNotThrow(() -> {
+            // 1번 그룹에 포함된 게시판은 조회 가능
+            boardService.getBoardInfo(group0Account.getId(), group0Board.getId());
+        });
+        IricomException exception0 = Assertions.assertThrows(IricomException.class, () -> {
+            // 2번 그룹에 포함된 게시판은 조회 불가능
+            boardService.getBoardInfo(group0Account.getId(), group1Board.getId());
+        });
+        Assertions.assertEquals("03000000", exception0.getErrorCode());
+
+        // 2번 그룹 계정의 게시판 조회
+        IricomException exception1 = Assertions.assertThrows(IricomException.class, () -> {
+            // 1번 그룹에 포함된 게시판은 조회 불가능
+            boardService.getBoardInfo(group1Account.getId(), group0Board.getId());
+        });
+        Assertions.assertEquals("03000000", exception1.getErrorCode());
+        Assertions.assertDoesNotThrow(() -> {
+            // 2번 그룹에 포함된 게시판은 조회 가능
+            boardService.getBoardInfo(group1Account.getId(), group1Board.getId());
         });
     }
 
     @Test
     @DisplayName("삭제된 계정 그룹에 포함된 비공개 게시판 조회")
     public void getUndisclosedBoardAndDeletedAccountGroup() throws Exception {
-        String accountId = getAccountId(common00);
-        String boardId = getBoardId(undisclosedBoard02);
+        // 계정 생성
+        TestAccountInfo account = this.setRandomAccount();
+        // 게시판 생성
+        TestBoardInfo board = this.setRandomBoard(Collections.emptyList(), true, true);
+        // 계정 그룹 생성
+        TestAccountGroupInfo accountGroup = TestAccountGroupInfo.builder()
+                .title("title").description("description")
+                .accountList(Arrays.asList(account)).boardList(Arrays.asList(board))
+                .build();
+        this.setAccountGroup(accountGroup);
 
-        Assertions.assertThrows(IricomException.class, () -> {
-            boardService.getBoardInfo(accountId, boardId);
+        // 게시판 조회
+        Assertions.assertDoesNotThrow(() -> {
+            // 그룹에 포함된 게시판은 조회 가능
+            boardService.getBoardInfo(account.getId(), board.getId());
         });
+
+        // 계정 그룹 삭제
+        accountGroupService.deleteAccountGroupInfo(accountGroup.getId());
+        IricomException exception = Assertions.assertThrows(IricomException.class, () -> {
+            // 계정 그룹이 삭제된 후에는 게시판 조회 불가능
+            boardService.getBoardInfo(account.getId(), board.getId());
+        });
+        Assertions.assertEquals("03000000", exception.getErrorCode());
     }
 
     @Test
     @DisplayName("시스템 관리자가 비공개 게시판 조회")
     public void getUndisclosedBoardBySystemAdmin() throws Exception {
-        String accountId = getAccountId(systemAdmin);
-        String boardId = getBoardId(undisclosedBoard00);
+        // 게시판 생성
+        TestBoardInfo board = this.setRandomBoard(Collections.emptyList(), true, true);
 
-        BoardInfo boardInfo = boardService.getBoardInfo(accountId, boardId);
-
-        Assertions.assertNotNull(boardInfo);
+        // 게시판 조회
+        Assertions.assertDoesNotThrow(() -> {
+            boardService.getBoardInfo(systemAdmin.getId(), board.getId());
+        });
     }
 
     @Test
     @DisplayName("게시판 관리자가 비공개 게시판 조회")
     public void getUndisclosedBoardByBoardAdmin() throws Exception {
-        String accountId = getAccountId(allBoardAdmin);
-        String boardId = getBoardId(undisclosedBoard01);
+        // 계정 생성
+        TestAccountInfo account = this.setRandomAccount();
+        // 게시판 생성
+        TestBoardInfo board = this.setRandomBoard(Arrays.asList(account), true, true);
 
-        BoardInfo boardInfo = boardService.getBoardInfo(accountId, boardId);
-
-        Assertions.assertNotNull(boardInfo);
+        // 게시판 조회
+        Assertions.assertDoesNotThrow(() -> {
+            boardService.getBoardInfo(account.getId(), board.getId());
+        });
     }
 }

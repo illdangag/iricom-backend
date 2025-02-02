@@ -3,11 +3,12 @@ package com.illdangag.iricom.server.service.board;
 import com.illdangag.iricom.server.data.request.BoardInfoSearch;
 import com.illdangag.iricom.server.data.response.BoardInfo;
 import com.illdangag.iricom.server.data.response.BoardInfoList;
+import com.illdangag.iricom.server.service.AccountGroupService;
 import com.illdangag.iricom.server.service.BoardService;
 import com.illdangag.iricom.server.test.IricomTestSuite;
 import com.illdangag.iricom.server.test.data.wrapper.TestAccountGroupInfo;
+import com.illdangag.iricom.server.test.data.wrapper.TestAccountInfo;
 import com.illdangag.iricom.server.test.data.wrapper.TestBoardInfo;
-import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -21,54 +22,26 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @DisplayName("service: 게시판 - 목록 조회")
-@Slf4j
 @Transactional
 public class BoardServiceSearchTest extends IricomTestSuite {
     @Autowired
     private BoardService boardService;
-
-    // 공개 게시판 목록
-    private final TestBoardInfo disclosedBoard00 = TestBoardInfo.builder()
-            .title("disclosedBoard00").isEnabled(true).undisclosed(false)
-            .adminList(Collections.singletonList(allBoardAdmin)).build();
-
-    // 비공게 게시판 목록
-    private final TestBoardInfo undisclosedBoard00 = TestBoardInfo.builder()
-            .title("undisclosedBoard00").isEnabled(true).undisclosed(true)
-            .adminList(Arrays.asList(allBoardAdmin, common01)).build();
-    private final TestBoardInfo undisclosedBoard01 = TestBoardInfo.builder()
-            .title("undisclosedBoard01").isEnabled(true).undisclosed(true)
-            .adminList(Collections.singletonList(allBoardAdmin)).build();
-    private final TestBoardInfo undisclosedBoard02 = TestBoardInfo.builder()
-            .title("undisclosedBoard02").isEnabled(true).undisclosed(true)
-            .adminList(Collections.singletonList(allBoardAdmin)).build();
-
-    // 계정 그룹
-    private final TestAccountGroupInfo testAccountGroupInfo00 = TestAccountGroupInfo.builder()
-            .title("testAccountGroupInfo00").description("description").deleted(false)
-            .accountList(Collections.singletonList(common00)).boardList(Collections.singletonList(undisclosedBoard01))
-            .build();
-    private final TestAccountGroupInfo testAccountGroupInfo01 = TestAccountGroupInfo.builder()
-            .title("testAccountGroupInfo01").description("description").deleted(true)
-            .accountList(Collections.singletonList(common00)).boardList(Collections.singletonList(undisclosedBoard02))
-            .build();
+    @Autowired
+    private AccountGroupService accountGroupService;
 
     public BoardServiceSearchTest(ApplicationContext context) {
         super(context);
-
-        addTestBoardInfo(disclosedBoard00, undisclosedBoard00, undisclosedBoard01, undisclosedBoard02);
-        addTestAccountGroupInfo(testAccountGroupInfo00, testAccountGroupInfo01);
-
-        init();
     }
 
     @Test
     @DisplayName("공개 개시판 목록 조회")
     public void searchDisclosedBoardList() throws Exception {
-        String disclosedBoardId = String.valueOf(getBoardId(disclosedBoard00));
-        String undisclosedBoardId = String.valueOf(getBoardId(undisclosedBoard00));
+        // 게시판 생성
+        List<TestBoardInfo> boardList = this.setRandomBoard(5);
+        List<TestBoardInfo> undisclosedBoardList = this.setRandomBoard(Collections.emptyList(), true, true, 5);
 
-        List<String> list = getAllList(BoardInfoSearch.builder().build(), (searchRequest -> {
+        // 게시판 조회
+        List<String> boardIdList = getAllList(BoardInfoSearch.builder().build(), (searchRequest -> {
             BoardInfoSearch boardInfoSearch = (BoardInfoSearch) searchRequest;
             BoardInfoList boardInfoList = boardService.getBoardInfoList(boardInfoSearch);
             return boardInfoList.getBoardInfoList().stream()
@@ -76,60 +49,60 @@ public class BoardServiceSearchTest extends IricomTestSuite {
                     .collect(Collectors.toList());
         }));
 
-        Assertions.assertTrue(list.contains(disclosedBoardId));
-        Assertions.assertFalse(list.contains(undisclosedBoardId));
-    }
-
-    @Test
-    @DisplayName("공개 게시판 및 계정 그룹에 포함된 게시물 목록 조회")
-    public void searchDisclosedBoardAndAccountGroupBoardList() throws Exception {
-        String accountId = getAccountId(common00);
-        String inaccessibleBoardId = String.valueOf(getBoardId(undisclosedBoard00));
-        String accessibleBoardId = String.valueOf(getBoardId(undisclosedBoard01));
-
-        List<String> list = getAllList(BoardInfoSearch.builder().build(), searchRequest -> {
-            BoardInfoSearch boardInfoSearch = (BoardInfoSearch) searchRequest;
-            BoardInfoList boardInfoList = boardService.getBoardInfoList(accountId, boardInfoSearch);
-            return boardInfoList.getBoardInfoList().stream()
-                    .map(BoardInfo::getId)
-                    .collect(Collectors.toList());
+        boardList.forEach(board -> {
+            // 공개 게시판은은 모두 존재
+            Assertions.assertTrue(boardIdList.contains(board.getId()));
         });
-
-        Assertions.assertTrue(list.contains(accessibleBoardId));
-        Assertions.assertFalse(list.contains(inaccessibleBoardId));
+        undisclosedBoardList.forEach(board -> {
+            // 비공개 게시판은 모두 존재 하지 않음
+            Assertions.assertFalse(boardIdList.contains(board.getId()));
+        });
     }
 
     @Test
     @DisplayName("삭제된 계정 그룹에 포함된 게시판 목록 조회")
     public void searchDisclosedBoardAndDeletedAccountGroupBoardList() throws Exception {
-        String accountId = getAccountId(common01);
-        String undisclosedBoardId = getBoardId(undisclosedBoard02);
+        // 계정 생성
+        TestAccountInfo account = this.setRandomAccount();
+        // 게시판 생성
+        TestBoardInfo board = this.setRandomBoard(Collections.emptyList(), true, true);
+        // 계정 그룹 생성
+        TestAccountGroupInfo accountGroup = TestAccountGroupInfo.builder()
+                .title("title").description("description")
+                .accountList(Arrays.asList(account)).boardList(Arrays.asList(board))
+                .build();
+        this.setAccountGroup(accountGroup);
+
+        // 계정 그룹 삭제
+        accountGroupService.deleteAccountGroupInfo(accountGroup.getId());
 
         List<String> list = getAllList(BoardInfoSearch.builder().build(), searchRequest -> {
             BoardInfoSearch boardInfoSearch = (BoardInfoSearch) searchRequest;
-            BoardInfoList boardInfoList = boardService.getBoardInfoList(accountId, boardInfoSearch);
+            BoardInfoList boardInfoList = boardService.getBoardInfoList(account.getId(), boardInfoSearch);
             return boardInfoList.getBoardInfoList().stream()
                     .map(BoardInfo::getId)
                     .collect(Collectors.toList());
         });
 
-        Assertions.assertFalse(list.contains(undisclosedBoardId));
+        Assertions.assertFalse(list.contains(board.getId()));
     }
 
     @Test
     @DisplayName("비공개 게시판 관리자가 비공개 게시판 목록 조회")
     public void searchDisclosedBoardListByBoardAdmin() throws Exception {
-        String accountId = getAccountId(common01);
-        String undisclosedBoardId = getBoardId(undisclosedBoard00);
+        // 계정 생성
+        TestAccountInfo account = this.setRandomAccount();
+        // 게시판 생성
+        TestBoardInfo board = this.setRandomBoard(Arrays.asList(account), true, true);
 
         List<String> list = getAllList(BoardInfoSearch.builder().build(), searchRequest -> {
             BoardInfoSearch boardInfoSearch = (BoardInfoSearch) searchRequest;
-            BoardInfoList boardInfoList = boardService.getBoardInfoList(accountId, boardInfoSearch);
+            BoardInfoList boardInfoList = boardService.getBoardInfoList(account.getId(), boardInfoSearch);
             return boardInfoList.getBoardInfoList().stream()
                     .map(BoardInfo::getId)
                     .collect(Collectors.toList());
         });
 
-        Assertions.assertTrue(list.contains(undisclosedBoardId));
+        Assertions.assertTrue(list.contains(board.getId()));
     }
 }

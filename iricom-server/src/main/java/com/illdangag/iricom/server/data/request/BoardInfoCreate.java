@@ -5,7 +5,7 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
-import javax.validation.constraints.NotNull;
+import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Size;
 
 @Getter
@@ -13,7 +13,7 @@ import javax.validation.constraints.Size;
 @NoArgsConstructor
 @AllArgsConstructor
 public class BoardInfoCreate {
-    @NotNull(message = "The title is required.")
+    @NotBlank(message = "The title is required.")
     @Size(min = 1, max = 50, message = "The title must be at least 1 character and less than 50 characters.")
     private String title;
 
