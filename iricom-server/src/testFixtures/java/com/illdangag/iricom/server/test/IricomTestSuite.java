@@ -197,11 +197,6 @@ public abstract class IricomTestSuite {
     }
 
     protected void setAccount(TestAccountInfo testAccountInfo) {
-//        Set<TestAccountInfo> keySet = accountMap.keySet();
-//        if (keySet.contains(testAccountInfo)) {
-//            return;
-//        }
-
         AccountInfo accountInfo = this.createAccount(testAccountInfo);
         testAccountInfo.setId(accountInfo.getId());
         accountMap.put(testAccountInfo, accountInfo);
@@ -346,6 +341,49 @@ public abstract class IricomTestSuite {
     /**
      * 댓글 생성
      */
+    protected List<TestCommentInfo> setRandomComment(TestPostInfo testPostInfo, TestCommentInfo referenceComment, TestAccountInfo testAccountInfo, int count) {
+        List<TestCommentInfo> commentList = new ArrayList<>();
+        for (int i = 0; i < count; i++) {
+            TestCommentInfo testCommentInfo = this.setRandomComment(testPostInfo, referenceComment, testAccountInfo, false);
+            commentList.add(testCommentInfo);
+        }
+        return commentList;
+    }
+
+    protected List<TestCommentInfo> setRandomComment(TestPostInfo testPostInfo, TestAccountInfo testAccountInfo, int count) {
+        List<TestCommentInfo> commentList = new ArrayList<>();
+        for (int i = 0; i < count; i++) {
+            TestCommentInfo testCommentInfo = this.setRandomComment(testPostInfo, null, testAccountInfo, false);
+            commentList.add(testCommentInfo);
+        }
+        return commentList;
+    }
+
+    protected TestCommentInfo setRandomComment(TestPostInfo testPostInfo, TestAccountInfo testAccountInfo, boolean deleted) {
+        return this.setRandomComment(testPostInfo, null, testAccountInfo, deleted);
+    }
+
+    protected TestCommentInfo setRandomComment(TestPostInfo testPostInfo, TestAccountInfo testAccountInfo) {
+        return this.setRandomComment(testPostInfo, null, testAccountInfo, false);
+    }
+
+    protected TestCommentInfo setRandomComment(TestPostInfo testPostInfo, TestCommentInfo referenceComment, TestAccountInfo testAccountInfo) {
+        return this.setRandomComment(testPostInfo, referenceComment, testAccountInfo, false);
+    }
+
+    protected TestCommentInfo setRandomComment(TestPostInfo testPostInfo, TestCommentInfo referenceComment, TestAccountInfo testAccountInfo, boolean deleted) {
+        String randomText = UUID.randomUUID().toString();
+        TestCommentInfo testCommentInfo = TestCommentInfo.builder()
+                .post(testPostInfo)
+                .referenceComment(referenceComment)
+                .creator(testAccountInfo)
+                .content(randomText)
+                .deleted(deleted)
+                .build();
+        this.setComment(testCommentInfo);
+        return testCommentInfo;
+    }
+
     protected void setComment(List<TestCommentInfo> testCommentInfoList) {
         testCommentInfoList.forEach(this::setComment);
     }
@@ -367,6 +405,11 @@ public abstract class IricomTestSuite {
 
         CommentInfo commentInfo = this.createComment(testCommentInfo); // 댓글 생성
         testCommentInfo.setId(commentInfo.getId());
+
+        if (testCommentInfo.isDeleted()) {
+            this.deleteComment(testCommentInfo);
+        }
+
         commentMap.put(testCommentInfo, commentInfo);
     }
 
@@ -702,9 +745,8 @@ public abstract class IricomTestSuite {
         AccountInfo accountInfo = accountMap.get(testAccountInfo);
         BoardInfo boardInfo = boardMap.get(testBoardInfo);
         PostInfo postInfo = postMap.get(testPostInfo);
-        CommentInfo commentInfo = commentMap.get(testCommentInfo);
 
-        this.commentService.deleteComment(accountInfo.getId(), boardInfo.getId(), postInfo.getId(), commentInfo.getId());
+        this.commentService.deleteComment(accountInfo.getId(), testBoardInfo.getId(), testPostInfo.getId(), testCommentInfo.getId());
     }
 
 

@@ -1,11 +1,10 @@
 package com.illdangag.iricom.server.service.comment;
 
-import com.illdangag.iricom.server.data.entity.type.PostState;
-import com.illdangag.iricom.server.data.entity.type.PostType;
 import com.illdangag.iricom.server.data.response.CommentInfo;
 import com.illdangag.iricom.server.exception.IricomException;
 import com.illdangag.iricom.server.service.CommentService;
 import com.illdangag.iricom.server.test.IricomTestSuite;
+import com.illdangag.iricom.server.test.data.wrapper.TestAccountInfo;
 import com.illdangag.iricom.server.test.data.wrapper.TestBoardInfo;
 import com.illdangag.iricom.server.test.data.wrapper.TestCommentInfo;
 import com.illdangag.iricom.server.test.data.wrapper.TestPostInfo;
@@ -17,7 +16,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 
 import javax.transaction.Transactional;
-import java.util.Collections;
 
 @DisplayName("service: 댓글 - 삭제")
 @Slf4j
@@ -26,62 +24,26 @@ public class CommentServiceDeleteTest extends IricomTestSuite {
     @Autowired
     private CommentService commentService;
 
-    // 게시판
-    private final TestBoardInfo testBoardInfo00 = TestBoardInfo.builder()
-            .title("testBoardInfo00").isEnabled(true).adminList(Collections.singletonList(allBoardAdmin)).build();
-    // 게시물
-    private final TestPostInfo testPostInfo00 = TestPostInfo.builder()
-            .title("testPostInfo00").content("testPostInfo00").isAllowComment(true)
-            .postType(PostType.POST).postState(PostState.PUBLISH)
-            .creator(common00).board(testBoardInfo00)
-            .build();
-    // 댓글
-    private final TestCommentInfo testCommentInfo00 = TestCommentInfo.builder()
-            .content("testCommentInfo00").creator(common00).post(testPostInfo00)
-            .build();
-    private final TestCommentInfo testCommentInfo01 = TestCommentInfo.builder()
-            .content("testCommentInfo01").creator(common00).post(testPostInfo00)
-            .build();
-    private final TestCommentInfo testCommentInfo02 = TestCommentInfo.builder()
-            .content("testCommentInfo02").creator(common00).post(testPostInfo00)
-            .referenceComment(testCommentInfo01)
-            .build();
-    private final TestCommentInfo testCommentInfo03 = TestCommentInfo.builder()
-            .content("testCommentInfo03").creator(common00).post(testPostInfo00)
-            .build();
-    private final TestCommentInfo testCommentInfo04 = TestCommentInfo.builder()
-            .content("testCommentInfo04").creator(common00).post(testPostInfo00)
-            .referenceComment(testCommentInfo03)
-            .build();
-    private final TestCommentInfo testCommentInfo05 = TestCommentInfo.builder()
-            .content("testCommentInfo05").creator(common00).post(testPostInfo00)
-            .build();
-
     @Autowired
     public CommentServiceDeleteTest(ApplicationContext context) {
         super(context);
-
-        addTestBoardInfo(testBoardInfo00);
-        addTestPostInfo(testPostInfo00);
-        addTestCommentInfo(testCommentInfo00, testCommentInfo01, testCommentInfo02, testCommentInfo03,
-                testCommentInfo04, testCommentInfo05);
-
-        init();
     }
 
     @Test
     @DisplayName("삭제")
     public void deleteComment() throws Exception {
-        TestCommentInfo targetCommentInfo = testCommentInfo00;
+        // 계정 생성
+        TestAccountInfo account = this.setRandomAccount();
+        // 게시판 생성
+        TestBoardInfo board = this.setRandomBoard();
+        // 게시물 생성
+        TestPostInfo post = this.setRandomPost(board, account);
+        // 댓글 생성
+        TestCommentInfo comment = this.setRandomComment(post, account);
 
-        String accountId = getAccountId(targetCommentInfo.getCreator());
-        String boardId = getBoardId(targetCommentInfo.getPost().getBoard());
-        String postId = getPostId(targetCommentInfo.getPost());
-        String commentId = getCommentId(targetCommentInfo);
+        CommentInfo commentInfo = this.commentService.deleteComment(account.getId(), board.getId(), post.getId(), comment.getId());
 
-        CommentInfo commentInfo = this.commentService.deleteComment(accountId, boardId, postId, commentId);
-
-        Assertions.assertEquals(commentId, commentInfo.getId());
+        Assertions.assertEquals(comment.getId(), commentInfo.getId());
         Assertions.assertEquals(true, commentInfo.getDeleted());
         Assertions.assertNull(commentInfo.getContent());
     }
@@ -89,33 +51,47 @@ public class CommentServiceDeleteTest extends IricomTestSuite {
     @Test
     @DisplayName("대댓글이 달린 댓글 삭제")
     public void deleteHasNestedComment() throws Exception {
-        TestCommentInfo targetCommentInfo = testCommentInfo01;
+        // 계정 생성
+        TestAccountInfo account = this.setRandomAccount();
+        // 게시판 생성
+        TestBoardInfo board = this.setRandomBoard();
+        // 게시물 생성
+        TestPostInfo post = this.setRandomPost(board, account);
+        // 댓글 생성
+        TestCommentInfo comment00 = this.setRandomComment(post, account);
+        // 대댓글 생성
+        TestCommentInfo comment01 = this.setRandomComment(post, comment00, account);
 
-        String accountId = getAccountId(targetCommentInfo.getCreator());
-        String boardId = getBoardId(targetCommentInfo.getPost().getBoard());
-        String postId = getPostId(targetCommentInfo.getPost());
-        String commentId = getCommentId(targetCommentInfo);
+        // 댓글 삭제
+        CommentInfo commentInfo00 = this.commentService.deleteComment(account.getId(), board.getId(), post.getId(), comment00.getId());
+        Assertions.assertEquals(comment00.getId(), commentInfo00.getId());
+        Assertions.assertEquals(true, commentInfo00.getDeleted());
+        Assertions.assertNull(commentInfo00.getContent());
 
-        CommentInfo commentInfo = this.commentService.deleteComment(accountId, boardId, postId, commentId);
-
-        Assertions.assertEquals(commentId, commentInfo.getId());
-        Assertions.assertEquals(true, commentInfo.getDeleted());
-        Assertions.assertNull(commentInfo.getContent());
+        // 대댓글은 삭제 되지 않은 것을 확인
+        CommentInfo commentInfo01 = this.commentService.getComment(board.getId(), post.getId(), comment01.getId());
+        Assertions.assertEquals(comment01.getId(), commentInfo01.getId());
+        Assertions.assertEquals(false, commentInfo01.getDeleted());
+        Assertions.assertNotNull(commentInfo01.getContent());
     }
 
     @Test
     @DisplayName("대댓글 삭제")
     public void deleteNestedComment() throws Exception {
-        TestCommentInfo targetCommentInfo = testCommentInfo04;
+        // 계정 생성
+        TestAccountInfo account = this.setRandomAccount();
+        // 게시판 생성
+        TestBoardInfo board = this.setRandomBoard();
+        // 게시물 생성
+        TestPostInfo post = this.setRandomPost(board, account);
+        // 댓글 생성
+        TestCommentInfo comment00 = this.setRandomComment(post, account);
+        // 대댓글 생성
+        TestCommentInfo comment01 = this.setRandomComment(post, comment00, account);
 
-        String accountId = getAccountId(targetCommentInfo.getCreator());
-        String boardId = getBoardId(targetCommentInfo.getPost().getBoard());
-        String postId = getPostId(targetCommentInfo.getPost());
-        String commentId = getCommentId(targetCommentInfo);
+        CommentInfo commentInfo = this.commentService.deleteComment(account.getId(), board.getId(), post.getId(), comment01.getId());
 
-        CommentInfo commentInfo = this.commentService.deleteComment(accountId, boardId, postId, commentId);
-
-        Assertions.assertEquals(commentId, commentInfo.getId());
+        Assertions.assertEquals(comment01.getId(), commentInfo.getId());
         Assertions.assertEquals(true, commentInfo.getDeleted());
         Assertions.assertNull(commentInfo.getContent());
     }
@@ -123,15 +99,19 @@ public class CommentServiceDeleteTest extends IricomTestSuite {
     @Test
     @DisplayName("존재하지 않는 댓글 삭제")
     public void notExistComment() throws Exception {
-        TestCommentInfo targetCommentInfo = testCommentInfo00;
+        // 계정 생성
+        TestAccountInfo account = this.setRandomAccount();
+        // 게시판 생성
+        TestBoardInfo board = this.setRandomBoard();
+        // 게시물 생성
+        TestPostInfo post = this.setRandomPost(board, account);
+        // 댓글 생성
+        this.setRandomComment(post, account);
 
-        String accountId = getAccountId(targetCommentInfo.getCreator());
-        String boardId = getBoardId(targetCommentInfo.getPost().getBoard());
-        String postId = getPostId(targetCommentInfo.getPost());
         String commentId = "NOT_EXIST_COMMENT";
 
         IricomException iricomException = Assertions.assertThrows(IricomException.class, () -> {
-            this.commentService.deleteComment(accountId, boardId, postId, commentId);
+            this.commentService.deleteComment(account.getId(), board.getId(), post.getId(), commentId);
         });
 
         Assertions.assertEquals("05000000", iricomException.getErrorCode());
@@ -141,19 +121,21 @@ public class CommentServiceDeleteTest extends IricomTestSuite {
     @Test
     @DisplayName("자신이 작성하지 않은 댓글 삭제")
     public void notCreator() throws Exception {
-        TestCommentInfo targetCommentInfo = testCommentInfo05;
-
-        String creatorId = getAccountId(targetCommentInfo.getCreator());
-        String accountId = getAccountId(common01);
-        String boardId = getBoardId(targetCommentInfo.getPost().getBoard());
-        String postId = getPostId(targetCommentInfo.getPost());
-        String commentId = getCommentId(targetCommentInfo);
+        // 계정 생성
+        TestAccountInfo account00 = this.setRandomAccount();
+        TestAccountInfo account01 = this.setRandomAccount();
+        // 게시판 생성
+        TestBoardInfo board = this.setRandomBoard();
+        // 게시물 생성
+        TestPostInfo post = this.setRandomPost(board, account00);
+        // 댓글 생성
+        TestCommentInfo comment00 = this.setRandomComment(post, account00);
 
         IricomException iricomException = Assertions.assertThrows(IricomException.class, () -> {
-            this.commentService.deleteComment(accountId, boardId, postId, commentId);
+            this.commentService.deleteComment(account01.getId(), board.getId(), post.getId(), comment00.getId());
         });
 
-        Assertions.assertNotEquals(creatorId, accountId);
+        Assertions.assertNotEquals(account00.getId(), account01.getId());
         Assertions.assertEquals("05000004", iricomException.getErrorCode());
         Assertions.assertEquals("Invalid authorization.", iricomException.getMessage());
     }
