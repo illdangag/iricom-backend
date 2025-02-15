@@ -563,6 +563,41 @@ public abstract class IricomTestSuite {
         });
     }
 
+    protected List<TestPersonalMessageInfo> setRandomPersonalMessage(TestAccountInfo sender, TestAccountInfo receiver, int count) {
+        return this.setRandomPersonalMessage(sender, receiver, false, false, count);
+    }
+
+    protected List<TestPersonalMessageInfo> setRandomPersonalMessage(TestAccountInfo sender, TestAccountInfo receiver, boolean sendDeleted, boolean receiveDelete, int count) {
+        List<TestPersonalMessageInfo> personalMessageList = new ArrayList<>();
+
+        for (int i = 0; i < count; i++) {
+            TestPersonalMessageInfo testPersonalMessageInfo = this.setRandomPersonalMessage(sender, receiver, sendDeleted, receiveDelete);
+            personalMessageList.add(testPersonalMessageInfo);
+        }
+
+        return personalMessageList;
+    }
+
+    protected TestPersonalMessageInfo setRandomPersonalMessage(TestAccountInfo sender, TestAccountInfo receiver) {
+        return this.setRandomPersonalMessage(sender, receiver, false, false);
+    }
+
+    protected TestPersonalMessageInfo setRandomPersonalMessage(TestAccountInfo sender, TestAccountInfo receiver, boolean sendDeleted, boolean receiveDeleted) {
+        String randomText = UUID.randomUUID().toString();
+        TestPersonalMessageInfo testPersonalMessageInfo = TestPersonalMessageInfo.builder()
+                .sender(sender)
+                .receiver(receiver)
+                .title(randomText)
+                .message(randomText)
+                .sendDeleted(sendDeleted)
+                .receiveDeleted(receiveDeleted)
+                .build();
+        PersonalMessageInfo personalMessage = this.createPersonalMessage(testPersonalMessageInfo);
+        testPersonalMessageInfo.setId(personalMessage.getId());
+        this.deletePersonalMessage(testPersonalMessageInfo);
+        return testPersonalMessageInfo;
+    }
+
     /**
      * 개인 쪽지 전송
      */
@@ -835,13 +870,13 @@ public abstract class IricomTestSuite {
         PersonalMessageInfo result = null;
         if (testPersonalMessageInfo.isSendDeleted()) {
             String accountId = getAccountId(testPersonalMessageInfo.getSender());
-            String personalMessageId = getPersonalMessageId(testPersonalMessageInfo);
+            String personalMessageId = testPersonalMessageInfo.getId();
             result = this.personalMessageService.deletePersonalMessageInfo(accountId, personalMessageId);
         }
 
         if (testPersonalMessageInfo.isReceiveDeleted()) {
             String accountId = getAccountId(testPersonalMessageInfo.getReceiver());
-            String personalMessageId = getPersonalMessageId(testPersonalMessageInfo);
+            String personalMessageId = testPersonalMessageInfo.getId();
             result = this.personalMessageService.deletePersonalMessageInfo(accountId, personalMessageId);
         }
 

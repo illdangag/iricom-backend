@@ -5,6 +5,7 @@ import com.illdangag.iricom.server.exception.IricomErrorCode;
 import com.illdangag.iricom.server.exception.IricomException;
 import com.illdangag.iricom.server.service.PersonalMessageService;
 import com.illdangag.iricom.server.test.IricomTestSuite;
+import com.illdangag.iricom.server.test.data.wrapper.TestAccountInfo;
 import com.illdangag.iricom.server.test.data.wrapper.TestPersonalMessageInfo;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
@@ -27,30 +28,30 @@ public class PersonalMessageServiceGetTest extends IricomTestSuite {
     @Test
     @DisplayName("조회")
     public void getPersonalMessage() throws Exception {
-        TestPersonalMessageInfo testPersonalMessageInfo = TestPersonalMessageInfo.builder()
-                .sender(common00).receiver(common01)
-                .title("TITLE").message("MESSAGE")
-                .build();
+        // 계정 생성
+        TestAccountInfo sender = this.setRandomAccount();
+        TestAccountInfo receiver = this.setRandomAccount();
+        // 개인 쪽지 생성
+        TestPersonalMessageInfo personalMessage = this.setRandomPersonalMessage(sender, receiver);
 
-        addTestPersonalMessageInfo(testPersonalMessageInfo);
-        init();
+        PersonalMessageInfo personalMessageInfo = this.personalMessageService.getPersonalMessageInfo(sender.getId(), personalMessage.getId());
 
-        String sendAccountId = getAccountId(common00);
-
-        PersonalMessageInfo personalMessageInfo = getPersonalMessage(testPersonalMessageInfo);
-        this.personalMessageService.getPersonalMessageInfo(sendAccountId, personalMessageInfo.getId());
-
-        Assertions.assertEquals(testPersonalMessageInfo.getTitle(), personalMessageInfo.getTitle());
-        Assertions.assertEquals(testPersonalMessageInfo.getMessage(), personalMessageInfo.getMessage());
+        Assertions.assertEquals(personalMessage.getId(), personalMessageInfo.getId());
+        Assertions.assertEquals(personalMessage.getTitle(), personalMessageInfo.getTitle());
+        Assertions.assertEquals(personalMessage.getMessage(), personalMessageInfo.getMessage());
     }
 
     @Test
     @DisplayName("존재하지 않는 개인 쪽지 조회")
     public void getNotExistPersonalMessage() throws Exception {
-        String accountId = getAccountId(common00);
+        // 계정 생성
+        TestAccountInfo sender = this.setRandomAccount();
+        TestAccountInfo receiver = this.setRandomAccount();
+        // 개인 쪽지 생성
+        this.setRandomPersonalMessage(sender, receiver);
 
         IricomException iricomException = Assertions.assertThrows(IricomException.class, () -> {
-            this.personalMessageService.getPersonalMessageInfo(accountId, "NOT_EXIST_ID");
+            this.personalMessageService.getPersonalMessageInfo(sender.getId(), "NOT_EXIST_ID");
         });
 
         Assertions.assertEquals(IricomErrorCode.NOT_EXIST_PERSONAL_MESSAGE.getCode(), iricomException.getErrorCode());
@@ -59,20 +60,15 @@ public class PersonalMessageServiceGetTest extends IricomTestSuite {
     @Test
     @DisplayName("다른 계정이 보내거나 받은 개인 쪽지 조회")
     public void getOtherPersonalMessage() throws Exception {
-        TestPersonalMessageInfo testPersonalMessageInfo = TestPersonalMessageInfo.builder()
-                .sender(common00).receiver(common01)
-                .title("TITLE").message("MESSAGE")
-                .build();
-
-        addTestPersonalMessageInfo(testPersonalMessageInfo);
-        init();
-
-        String accountId = getAccountId(common02);
-
-        PersonalMessageInfo personalMessageInfo = getPersonalMessage(testPersonalMessageInfo);
+        // 계정 생성
+        TestAccountInfo sender = this.setRandomAccount();
+        TestAccountInfo receiver = this.setRandomAccount();
+        TestAccountInfo other = this.setRandomAccount();
+        // 개인 쪽지 생성
+        TestPersonalMessageInfo personalMessage = this.setRandomPersonalMessage(sender, receiver);
 
         IricomException iricomException = Assertions.assertThrows(IricomException.class, () -> {
-            this.personalMessageService.getPersonalMessageInfo(accountId, personalMessageInfo.getId());
+            this.personalMessageService.getPersonalMessageInfo(other.getId(), personalMessage.getId());
         });
 
         Assertions.assertEquals(IricomErrorCode.NOT_EXIST_PERSONAL_MESSAGE.getCode(), iricomException.getErrorCode());
@@ -81,85 +77,66 @@ public class PersonalMessageServiceGetTest extends IricomTestSuite {
     @Test
     @DisplayName("수신자가 내용 확인 시 수신 확인")
     public void getPersonalMessageReceivedConfirm() throws Exception {
-        TestPersonalMessageInfo testPersonalMessageInfo = TestPersonalMessageInfo.builder()
-                .sender(common00).receiver(common01)
-                .title("TITLE").message("MESSAGE")
-                .build();
+        // 계정 생성
+        TestAccountInfo sender = this.setRandomAccount();
+        TestAccountInfo receiver = this.setRandomAccount();
+        // 개인 쪽지 생성
+        TestPersonalMessageInfo personalMessage = this.setRandomPersonalMessage(sender, receiver);
 
-        addTestPersonalMessageInfo(testPersonalMessageInfo);
-        init();
+        // 수신자가 확인 하기전 발신자가 조회
+        PersonalMessageInfo senderPersonalMessageInfo = this.personalMessageService.getPersonalMessageInfo(sender.getId(), personalMessage.getId());
+        Assertions.assertFalse(senderPersonalMessageInfo.getReceivedConfirm()); // 수신자 확인전
 
-        String accountId = getAccountId(common01);
-        PersonalMessageInfo personalMessageInfo = getPersonalMessage(testPersonalMessageInfo);
+        // 수신자가 해당 내용 조회
+        PersonalMessageInfo receiverPersonalMessageInfo = this.personalMessageService.getPersonalMessageInfo(receiver.getId(), personalMessage.getId());
+        Assertions.assertTrue(receiverPersonalMessageInfo.getReceivedConfirm()); // 수신자 확인
 
-        PersonalMessageInfo resultPersonalMessageInfo = this.personalMessageService.getPersonalMessageInfo(accountId, personalMessageInfo.getId());
-        Assertions.assertTrue(resultPersonalMessageInfo.getReceivedConfirm());
+        // 수신자가 확인 후 발신자가 조회
+        PersonalMessageInfo confirmPersonalMessageInfo = this.personalMessageService.getPersonalMessageInfo(sender.getId(), personalMessage.getId());
+        Assertions.assertTrue(confirmPersonalMessageInfo.getReceivedConfirm()); // 수신자 확인후
     }
 
     @Test
-    @DisplayName("발신자가 내용 확인시 수식 확인 하지 않음")
-    public void getPersonalMessageSendConfirm() throws Exception {
-        TestPersonalMessageInfo testPersonalMessageInfo = TestPersonalMessageInfo.builder()
-                .sender(common00).receiver(common01)
-                .title("TITLE").message("MESSAGE")
-                .build();
-
-        addTestPersonalMessageInfo(testPersonalMessageInfo);
-        init();
-
-        String accountId = getAccountId(common00);
-        String personalMessageInfoId = getPersonalMessageId(testPersonalMessageInfo);
-
-        PersonalMessageInfo resultPersonalMessageInfo = this.personalMessageService.getPersonalMessageInfo(accountId, personalMessageInfoId);
-        Assertions.assertFalse(resultPersonalMessageInfo.getReceivedConfirm());
-    }
-
-    @Test
-    @DisplayName("송신 메시지 조회")
+    @DisplayName("발신 메시지 조회")
     public void getReceivePersonalMessage() throws Exception {
-        TestPersonalMessageInfo testPersonalMessageInfo = TestPersonalMessageInfo.builder()
-                .sender(common00).receiver(common01)
-                .title("TITLE").message("MESSAGE")
-                .build();
+        // 계정 생성
+        TestAccountInfo sender = this.setRandomAccount();
+        TestAccountInfo receiver = this.setRandomAccount();
+        // 개인 쪽지 생성
+        TestPersonalMessageInfo personalMessage = this.setRandomPersonalMessage(sender, receiver);
 
-        addTestPersonalMessageInfo(testPersonalMessageInfo);
-        init();
-
-        String accountId = getAccountId(common01);
-        String personalMessageInfoId = getPersonalMessageId(testPersonalMessageInfo);
-
-        PersonalMessageInfo personalMessageInfo = this.personalMessageService.getReceivePersonalMessageInfo(accountId, personalMessageInfoId);
+        PersonalMessageInfo personalMessageInfo = this.personalMessageService.getSendPersonalMessageInfo(sender.getId(), personalMessage.getId());
         Assertions.assertNotNull(personalMessageInfo);
-        Assertions.assertEquals(personalMessageInfoId, personalMessageInfo.getId());
+        Assertions.assertEquals(personalMessage.getId(), personalMessageInfo.getId());
     }
 
     @Test
-    @DisplayName("존재하지 않는 송신 메시지 조회")
+    @DisplayName("존재하지 않는 발신 메시지 조회")
     public void getNotExistReceivePersonalMessage() throws Exception {
-        String accountId = getAccountId(common01);
+        // 계정 생성
+        TestAccountInfo sender = this.setRandomAccount();
+        TestAccountInfo receiver = this.setRandomAccount();
+        // 개인 쪽지 생성
+        this.setRandomPersonalMessage(sender, receiver);
 
         IricomException iricomException = Assertions.assertThrows(IricomException.class, () -> {
-            this.personalMessageService.getReceivePersonalMessageInfo(accountId, "NOT_EXIST");
+            this.personalMessageService.getSendPersonalMessageInfo(sender.getId(), "NOT_EXIST_PERSONAL_MESSAGE_ID");
         });
         Assertions.assertEquals(IricomErrorCode.NOT_EXIST_PERSONAL_MESSAGE.getCode(), iricomException.getErrorCode());
     }
 
     @Test
-    @DisplayName("송신하지 않은 송신 메시지 조회")
+    @DisplayName("발신하지 않은 발신 메시지 조회")
     public void getNotReceivePersonalMessage() throws Exception {
-        TestPersonalMessageInfo testPersonalMessageInfo = TestPersonalMessageInfo.builder()
-                .sender(common00).receiver(common01)
-                .title("TITLE").message("MESSAGE")
-                .build();
-
-        addTestPersonalMessageInfo(testPersonalMessageInfo);
-        init();
-
-        String accountId = getAccountId(common00);
-        String personalMessageInfoId = getPersonalMessageId(testPersonalMessageInfo);
+        // 계정 생성
+        TestAccountInfo sender = this.setRandomAccount();
+        TestAccountInfo receiver = this.setRandomAccount();
+        TestAccountInfo other = this.setRandomAccount();
+        // 개인 쪽지 생성
+        TestPersonalMessageInfo personalMessage = this.setRandomPersonalMessage(sender, receiver);
 
         IricomException iricomException = Assertions.assertThrows(IricomException.class, () -> {
-            this.personalMessageService.getReceivePersonalMessageInfo(accountId, personalMessageInfoId);
+            this.personalMessageService.getReceivePersonalMessageInfo(other.getId(), personalMessage.getId());
         });
         Assertions.assertEquals(IricomErrorCode.NOT_EXIST_PERSONAL_MESSAGE.getCode(), iricomException.getErrorCode());
     }
@@ -167,49 +144,44 @@ public class PersonalMessageServiceGetTest extends IricomTestSuite {
     @Test
     @DisplayName("수신 메시지 조회")
     public void getSendPersonalMessage() throws Exception {
-        TestPersonalMessageInfo testPersonalMessageInfo = TestPersonalMessageInfo.builder()
-                .sender(common00).receiver(common01)
-                .title("TITLE").message("MESSAGE")
-                .build();
+        // 계정 생성
+        TestAccountInfo sender = this.setRandomAccount();
+        TestAccountInfo receiver = this.setRandomAccount();
+        // 개인 쪽지 생성
+        TestPersonalMessageInfo personalMessage = this.setRandomPersonalMessage(sender, receiver);
 
-        addTestPersonalMessageInfo(testPersonalMessageInfo);
-        init();
-
-        String accountId = getAccountId(common00);
-        String personalMessageInfoId = getPersonalMessageId(testPersonalMessageInfo);
-
-        PersonalMessageInfo personalMessageInfo = this.personalMessageService.getSendPersonalMessageInfo(accountId, personalMessageInfoId);
+        PersonalMessageInfo personalMessageInfo = this.personalMessageService.getReceivePersonalMessageInfo(receiver.getId(), personalMessage.getId());
         Assertions.assertNotNull(personalMessageInfo);
-        Assertions.assertEquals(personalMessageInfoId, personalMessageInfo.getId());
+        Assertions.assertEquals(personalMessage.getId(), personalMessageInfo.getId());
     }
 
     @Test
     @DisplayName("존재하지 않는 수신 메시지 조회")
     public void getNotExistSendPersonalMessage() throws Exception {
-        String accountId = getAccountId(common01);
+        // 계정 생성
+        TestAccountInfo sender = this.setRandomAccount();
+        TestAccountInfo receiver = this.setRandomAccount();
+        // 개인 쪽지 생성
+        this.setRandomPersonalMessage(sender, receiver);
 
         IricomException iricomException = Assertions.assertThrows(IricomException.class, () -> {
-            this.personalMessageService.getSendPersonalMessageInfo(accountId, "NOT_EXIST");
+            this.personalMessageService.getSendPersonalMessageInfo(receiver.getId(), "NOT_EXIST_PERSONAL_MESSAGE_ID");
         });
         Assertions.assertEquals(IricomErrorCode.NOT_EXIST_PERSONAL_MESSAGE.getCode(), iricomException.getErrorCode());
     }
 
     @Test
-    @DisplayName("송신하지 않은 송신 메시지 조회")
+    @DisplayName("수신 하지 않은 수신 메시지 조회")
     public void getNotSendPersonalMessage() throws Exception {
-        TestPersonalMessageInfo testPersonalMessageInfo = TestPersonalMessageInfo.builder()
-                .sender(common00).receiver(common01)
-                .title("TITLE").message("MESSAGE")
-                .build();
-
-        addTestPersonalMessageInfo(testPersonalMessageInfo);
-        init();
-
-        String accountId = getAccountId(common01);
-        String personalMessageInfoId = getPersonalMessageId(testPersonalMessageInfo);
+        // 계정 생성
+        TestAccountInfo sender = this.setRandomAccount();
+        TestAccountInfo receiver = this.setRandomAccount();
+        TestAccountInfo other = this.setRandomAccount();
+        // 개인 쪽지 생성
+        TestPersonalMessageInfo personalMessage = this.setRandomPersonalMessage(sender, receiver);
 
         IricomException iricomException = Assertions.assertThrows(IricomException.class, () -> {
-            this.personalMessageService.getSendPersonalMessageInfo(accountId, personalMessageInfoId);
+            this.personalMessageService.getSendPersonalMessageInfo(other.getId(), personalMessage.getId());
         });
         Assertions.assertEquals(IricomErrorCode.NOT_EXIST_PERSONAL_MESSAGE.getCode(), iricomException.getErrorCode());
     }

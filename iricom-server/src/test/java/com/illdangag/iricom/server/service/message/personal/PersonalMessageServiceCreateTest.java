@@ -4,6 +4,7 @@ import com.illdangag.iricom.server.data.request.PersonalMessageInfoCreate;
 import com.illdangag.iricom.server.data.response.PersonalMessageInfo;
 import com.illdangag.iricom.server.service.PersonalMessageService;
 import com.illdangag.iricom.server.test.IricomTestSuite;
+import com.illdangag.iricom.server.test.data.wrapper.TestAccountInfo;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -26,15 +27,16 @@ public class PersonalMessageServiceCreateTest extends IricomTestSuite {
     @Test
     @DisplayName("쪽지 생성")
     public void createPersonalMessage() throws Exception {
-        String sendAccountId = getAccountId(common00);
-        String receiveAccountId = getAccountId(common01);
+        // 계정 생성
+        TestAccountInfo sender = this.setRandomAccount();
+        TestAccountInfo receiver = this.setRandomAccount();
 
         PersonalMessageInfoCreate personalMessageInfoCreate = PersonalMessageInfoCreate.builder()
-                .receiveAccountId(receiveAccountId)
+                .receiveAccountId(receiver.getId())
                 .title("TITLE").message("MESSAGE")
                 .build();
 
-        PersonalMessageInfo personalMessageInfo = this.personalMessageService.createPersonalMessageInfo(sendAccountId, personalMessageInfoCreate);
+        PersonalMessageInfo personalMessageInfo = this.personalMessageService.createPersonalMessageInfo(sender.getId(), personalMessageInfoCreate);
         Assertions.assertNotNull(personalMessageInfo);
         Assertions.assertNotNull(personalMessageInfo.getId());
         Assertions.assertEquals("TITLE", personalMessageInfo.getTitle());
@@ -44,110 +46,117 @@ public class PersonalMessageServiceCreateTest extends IricomTestSuite {
     @Test
     @DisplayName("수신자 미설정")
     public void notExistReceiver() throws Exception {
-        String sendAccountId = getAccountId(common00);
+        // 계정 생성
+        TestAccountInfo sender = this.setRandomAccount();
 
         PersonalMessageInfoCreate personalMessageInfoCreate = PersonalMessageInfoCreate.builder()
                 .title("TITLE").message("MESSAGE")
                 .build();
 
         Assertions.assertThrows(ConstraintViolationException.class, () -> {
-            this.personalMessageService.createPersonalMessageInfo(sendAccountId, personalMessageInfoCreate);
+            this.personalMessageService.createPersonalMessageInfo(sender.getId(), personalMessageInfoCreate);
         });
     }
 
     @Test
     @DisplayName("제목 미설정")
     public void notExistTitle() throws Exception {
-        String sendAccountId = getAccountId(common00);
-        String receiveAccountId = getAccountId(common01);
+        // 계정 생성
+        TestAccountInfo sender = this.setRandomAccount();
+        TestAccountInfo receiver = this.setRandomAccount();
 
         PersonalMessageInfoCreate personalMessageInfoCreate = PersonalMessageInfoCreate.builder()
-                .receiveAccountId(receiveAccountId)
+                .receiveAccountId(receiver.getId())
                 .message("MESSAGE")
                 .build();
 
         Assertions.assertThrows(ConstraintViolationException.class, () -> {
-            this.personalMessageService.createPersonalMessageInfo(sendAccountId, personalMessageInfoCreate);
+            this.personalMessageService.createPersonalMessageInfo(sender.getId(), personalMessageInfoCreate);
         });
     }
 
     @Test
     @DisplayName("제목 빈문자열")
     public void emptyTitle() throws Exception {
-        String sendAccountId = getAccountId(common00);
-        String receiveAccountId = getAccountId(common01);
+        // 계정 생성
+        TestAccountInfo sender = this.setRandomAccount();
+        TestAccountInfo receiver = this.setRandomAccount();
 
         PersonalMessageInfoCreate personalMessageInfoCreate = PersonalMessageInfoCreate.builder()
-                .receiveAccountId(receiveAccountId)
+                .receiveAccountId(receiver.getId())
                 .title("").message("MESSAGE")
                 .build();
 
         Assertions.assertThrows(ConstraintViolationException.class, () -> {
-            this.personalMessageService.createPersonalMessageInfo(sendAccountId, personalMessageInfoCreate);
+            this.personalMessageService.createPersonalMessageInfo(sender.getId(), personalMessageInfoCreate);
         });
     }
 
     @Test
     @DisplayName("제목 공백 문자열")
     public void whiteSpaceTitle() throws Exception {
-        String sendAccountId = getAccountId(common00);
-        String receiveAccountId = getAccountId(common01);
+        // 계정 생성
+        TestAccountInfo sender = this.setRandomAccount();
+        TestAccountInfo receiver = this.setRandomAccount();
 
         PersonalMessageInfoCreate personalMessageInfoCreate = PersonalMessageInfoCreate.builder()
-                .receiveAccountId(receiveAccountId)
+                .receiveAccountId(receiver.getId())
                 .title("        ").message("MESSAGE")
                 .build();
 
         Assertions.assertThrows(ConstraintViolationException.class, () -> {
-            this.personalMessageService.createPersonalMessageInfo(sendAccountId, personalMessageInfoCreate);
+            this.personalMessageService.createPersonalMessageInfo(sender.getId(), personalMessageInfoCreate);
         });
     }
 
     @Test
     @DisplayName("내용 미설정")
     public void notExistMessage() throws Exception {
-        String sendAccountId = getAccountId(common00);
-        String receiveAccountId = getAccountId(common01);
+        // 계정 생성
+        TestAccountInfo sender = this.setRandomAccount();
+        TestAccountInfo receiver = this.setRandomAccount();
 
         PersonalMessageInfoCreate personalMessageInfoCreate = PersonalMessageInfoCreate.builder()
-                .receiveAccountId(receiveAccountId)
+                .receiveAccountId(receiver.getId())
                 .title("TITLE")
                 .build();
 
         Assertions.assertThrows(ConstraintViolationException.class, () -> {
-            this.personalMessageService.createPersonalMessageInfo(sendAccountId, personalMessageInfoCreate);
+            this.personalMessageService.createPersonalMessageInfo(sender.getId(), personalMessageInfoCreate);
         });
     }
 
     @Test
     @DisplayName("내용 빈문자열")
     public void emptyMessage() throws Exception {
-        String sendAccountId = getAccountId(common00);
-        String receiveAccountId = getAccountId(common01);
+        // 계정 생성
+        TestAccountInfo sender = this.setRandomAccount();
+        TestAccountInfo receiver = this.setRandomAccount();
 
         PersonalMessageInfoCreate personalMessageInfoCreate = PersonalMessageInfoCreate.builder()
-                .receiveAccountId(receiveAccountId)
+                .receiveAccountId(receiver.getId())
                 .title("TITLE").message("")
                 .build();
 
         Assertions.assertThrows(ConstraintViolationException.class, () -> {
-            this.personalMessageService.createPersonalMessageInfo(sendAccountId, personalMessageInfoCreate);
+            this.personalMessageService.createPersonalMessageInfo(sender.getId(), personalMessageInfoCreate);
         });
     }
 
     @Test
     @DisplayName("내용 빈문자열")
     public void whiteSpaceMessage() throws Exception {
-        String sendAccountId = getAccountId(common00);
-        String receiveAccountId = getAccountId(common01);
+        // 계정 생성
+        TestAccountInfo sender = this.setRandomAccount();
+        TestAccountInfo receiver = this.setRandomAccount();
 
         PersonalMessageInfoCreate personalMessageInfoCreate = PersonalMessageInfoCreate.builder()
-                .receiveAccountId(receiveAccountId)
+                .receiveAccountId(receiver.getId())
                 .title("TITLE").message("     ")
                 .build();
 
         Assertions.assertThrows(ConstraintViolationException.class, () -> {
-            this.personalMessageService.createPersonalMessageInfo(sendAccountId, personalMessageInfoCreate);
+            this.personalMessageService.createPersonalMessageInfo(sender.getId(), personalMessageInfoCreate);
         });
     }
 }
