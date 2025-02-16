@@ -7,6 +7,7 @@ import com.illdangag.iricom.server.data.response.PostInfo;
 import com.illdangag.iricom.server.exception.IricomException;
 import com.illdangag.iricom.server.service.PostService;
 import com.illdangag.iricom.server.test.IricomTestSuite;
+import com.illdangag.iricom.server.test.data.wrapper.TestAccountInfo;
 import com.illdangag.iricom.server.test.data.wrapper.TestBoardInfo;
 import com.illdangag.iricom.server.test.data.wrapper.TestPostInfo;
 import lombok.extern.slf4j.Slf4j;
@@ -27,99 +28,27 @@ public class PostServiceUpdateTest extends IricomTestSuite {
     @Autowired
     private PostService postService;
 
-    // 공개 게시판
-    private final TestBoardInfo testBoardInfo00 = TestBoardInfo.builder()
-            .title("testBoardInfo00").adminList(Collections.singletonList(allBoardAdmin))
-            .isEnabled(true).build();
-    private final TestBoardInfo testBoardInfo01 = TestBoardInfo.builder()
-            .title("testBoardInfo01").adminList(Collections.singletonList(allBoardAdmin))
-            .isEnabled(true).build();
-    // 비활성화 게시판
-    private final TestBoardInfo disabledTestBoardInfo00 = TestBoardInfo.builder()
-            .title("disabledTestBoardInfo00").adminList(Collections.singletonList(allBoardAdmin))
-            .isEnabled(false).build();
-    // 비공개 게시판
-    private final TestBoardInfo undisclosedBoardInfo00 = TestBoardInfo.builder()
-            .title("undisclosedBoardInfo00").adminList(Collections.singletonList(allBoardAdmin))
-            .isEnabled(true).undisclosed(true).build();
-    // 공지 사항 전용 게시판
-    private final TestBoardInfo notificationTestBoardInfo00 = TestBoardInfo.builder()
-            .title("notificationTestBoardInfo00").adminList(Collections.singletonList(allBoardAdmin))
-            .isEnabled(true).undisclosed(false).notificationOnly(true).build();
-
-    // 게시물
-    private final TestPostInfo temporaryTestPostInfo00 = TestPostInfo.builder()
-            .title("temporaryTestPostInfo00").content("temporaryTestPostInfo00").isAllowComment(true)
-            .postType(PostType.POST).postState(PostState.TEMPORARY)
-            .creator(common00).board(testBoardInfo00).build();
-    private final TestPostInfo publishTestPostInfo00 = TestPostInfo.builder()
-            .title("publishTestPostInfo00").content("publishTestPostInfo00").isAllowComment(true)
-            .postType(PostType.POST).postState(PostState.PUBLISH)
-            .creator(common00).board(testBoardInfo00).build();
-    private final TestPostInfo publishTestPostInfo01 = TestPostInfo.builder()
-            .title("publishTestPostInfo00").content("publishTestPostInfo00").isAllowComment(true)
-            .postType(PostType.POST).postState(PostState.PUBLISH)
-            .creator(common00).board(testBoardInfo00).build();
-    private final TestPostInfo temporaryTestNotificationInfo00 = TestPostInfo.builder()
-            .title("temporaryTestNotificationInfo00").content("temporaryTestNotificationInfo00").isAllowComment(true)
-            .postType(PostType.NOTIFICATION).postState(PostState.TEMPORARY)
-            .creator(allBoardAdmin).board(testBoardInfo00).build();
-    private final TestPostInfo publishTestNotificationInfo00 = TestPostInfo.builder()
-            .title("temporaryTestNotificationInfo00").content("temporaryTestNotificationInfo00").isAllowComment(true)
-            .postType(PostType.NOTIFICATION).postState(PostState.TEMPORARY)
-            .creator(allBoardAdmin).board(testBoardInfo00).build();
-    private final TestPostInfo disabledBoardTestPostInfo00 = TestPostInfo.builder()
-            .title("disabledBoardTestPostInfo00").content("disabledBoardTestPostInfo00").isAllowComment(true)
-            .postType(PostType.POST).postState(PostState.PUBLISH)
-            .creator(common00).board(disabledTestBoardInfo00).build();
-    private final TestPostInfo publishTestPostInfo02 = TestPostInfo.builder()
-            .title("publishTestPostInfo02").content("publishTestPostInfo02").isAllowComment(true)
-            .postType(PostType.POST).postState(PostState.PUBLISH)
-            .creator(common00).board(notificationTestBoardInfo00).build();
-    private final TestPostInfo temporaryTestNotificationInfo01 = TestPostInfo.builder()
-            .title("temporaryTestNotificationInfo01").content("temporaryTestNotificationInfo01").isAllowComment(true)
-            .postType(PostType.NOTIFICATION).postState(PostState.TEMPORARY)
-            .creator(allBoardAdmin).board(notificationTestBoardInfo00).build();
-    private final TestPostInfo temporaryTestNotificationInfo02 = TestPostInfo.builder()
-            .title("temporaryTestNotificationInfo02").content("temporaryTestNotificationInfo00").isAllowComment(true)
-            .postType(PostType.POST).postState(PostState.TEMPORARY)
-            .creator(common00).board(testBoardInfo00).build();
-    private final TestPostInfo temporaryTestNotificationInfo03 = TestPostInfo.builder()
-            .title("temporaryTestNotificationInfo02").content("temporaryTestNotificationInfo00").isAllowComment(true)
-            .postType(PostType.POST).postState(PostState.TEMPORARY)
-            .creator(allBoardAdmin).board(testBoardInfo00).build();
-    private final TestPostInfo temporaryTestNotificationInfo04 = TestPostInfo.builder()
-            .title("temporaryTestNotificationInfo02").content("temporaryTestNotificationInfo00").isAllowComment(true)
-            .postType(PostType.POST).postState(PostState.TEMPORARY)
-            .creator(allBoardAdmin).board(notificationTestBoardInfo00).build();
-
     @Autowired
     public PostServiceUpdateTest(ApplicationContext context) {
         super(context);
-
-        addTestBoardInfo(testBoardInfo00, testBoardInfo01, disabledTestBoardInfo00, undisclosedBoardInfo00, notificationTestBoardInfo00);
-        addTestPostInfo(temporaryTestPostInfo00,
-                publishTestPostInfo00, publishTestPostInfo01, publishTestPostInfo02,
-                temporaryTestNotificationInfo00,
-                publishTestNotificationInfo00, disabledBoardTestPostInfo00, temporaryTestNotificationInfo01, temporaryTestNotificationInfo02,
-                temporaryTestNotificationInfo03, temporaryTestNotificationInfo04);
-
-        init();
     }
 
     @Test
     @DisplayName("발행하지 않은 게시물")
     public void updateTemporaryPost() {
-        String boardId = getBoardId(temporaryTestPostInfo00.getBoard());
-        String postId = getPostId(temporaryTestPostInfo00);
-        String accountId = getAccountId(temporaryTestPostInfo00.getCreator());
+        // 계정 생성
+        TestAccountInfo account = this.setRandomAccount();
+        // 게시판 생성
+        TestBoardInfo board = this.setRandomBoard();
+        // 게시물 생성
+        TestPostInfo post = this.setRandomPost(board, account, PostType.POST, PostState.TEMPORARY);
 
         PostInfoUpdate postInfoUpdate = PostInfoUpdate.builder()
                 .title("update title")
                 .content("update content")
                 .build();
 
-        PostInfo postInfo = this.postService.updatePostInfo(accountId, boardId, postId, postInfoUpdate);
+        PostInfo postInfo = this.postService.updatePostInfo(account.getId(), board.getId(), post.getId(), postInfoUpdate);
 
         Assertions.assertEquals("update title", postInfo.getTitle());
         Assertions.assertEquals("update content", postInfo.getContent());
@@ -129,16 +58,19 @@ public class PostServiceUpdateTest extends IricomTestSuite {
     @Test
     @DisplayName("발행한 게시물")
     public void updatePublishPost() {
-        String boardId = getBoardId(publishTestPostInfo00.getBoard());
-        String postId = getPostId(publishTestPostInfo00);
-        String accountId = getAccountId(publishTestPostInfo00.getCreator());
+        // 계정 생성
+        TestAccountInfo account = this.setRandomAccount();
+        // 게시판 생성
+        TestBoardInfo board = this.setRandomBoard();
+        // 게시물 생성
+        TestPostInfo post = this.setRandomPost(board, account, PostType.POST, PostState.PUBLISH);
 
         PostInfoUpdate postInfoUpdate = PostInfoUpdate.builder()
                 .title("update title")
                 .content("update content")
                 .build();
 
-        PostInfo postInfo = this.postService.updatePostInfo(accountId, boardId, postId, postInfoUpdate);
+        PostInfo postInfo = this.postService.updatePostInfo(account.getId(), board.getId(), post.getId(), postInfoUpdate);
 
         Assertions.assertEquals("update title", postInfo.getTitle());
         Assertions.assertEquals("update content", postInfo.getContent());
@@ -148,16 +80,19 @@ public class PostServiceUpdateTest extends IricomTestSuite {
     @Test
     @DisplayName("발행하지 않은 공지사항")
     public void updateTemporaryNotification() {
-        String boardId = getBoardId(temporaryTestNotificationInfo00.getBoard());
-        String postId = getPostId(temporaryTestNotificationInfo00);
-        String accountId = getAccountId(temporaryTestNotificationInfo00.getCreator());
+        // 계정 생성
+        TestAccountInfo account = this.setRandomAccount();
+        // 게시판 생성
+        TestBoardInfo board = this.setRandomBoard(Collections.singletonList(account));
+        // 게시물 생성
+        TestPostInfo post = this.setRandomPost(board, account, PostType.NOTIFICATION, PostState.TEMPORARY);
 
         PostInfoUpdate postInfoUpdate = PostInfoUpdate.builder()
                 .title("update title")
                 .content("update content")
                 .build();
 
-        PostInfo postInfo = this.postService.updatePostInfo(accountId, boardId, postId, postInfoUpdate);
+        PostInfo postInfo = this.postService.updatePostInfo(account.getId(), board.getId(), post.getId(), postInfoUpdate);
 
         Assertions.assertEquals("update title", postInfo.getTitle());
         Assertions.assertEquals("update content", postInfo.getContent());
@@ -167,16 +102,19 @@ public class PostServiceUpdateTest extends IricomTestSuite {
     @Test
     @DisplayName("발행한 공지사항")
     public void updatePublishNotification() {
-        String boardId = getBoardId(publishTestNotificationInfo00.getBoard());
-        String postId = getPostId(publishTestNotificationInfo00);
-        String accountId = getAccountId(publishTestNotificationInfo00.getCreator());
+        // 계정 생성
+        TestAccountInfo account = this.setRandomAccount();
+        // 게시판 생성
+        TestBoardInfo board = this.setRandomBoard(Collections.singletonList(account));
+        // 게시물 생성
+        TestPostInfo post = this.setRandomPost(board, account, PostType.NOTIFICATION, PostState.PUBLISH);
 
         PostInfoUpdate postInfoUpdate = PostInfoUpdate.builder()
                 .title("update title")
                 .content("update content")
                 .build();
 
-        PostInfo postInfo = this.postService.updatePostInfo(accountId, boardId, postId, postInfoUpdate);
+        PostInfo postInfo = this.postService.updatePostInfo(account.getId(), board.getId(), post.getId(), postInfoUpdate);
 
         Assertions.assertEquals("update title", postInfo.getTitle());
         Assertions.assertEquals("update content", postInfo.getContent());
@@ -186,9 +124,13 @@ public class PostServiceUpdateTest extends IricomTestSuite {
     @Test
     @DisplayName("작성자가 다른 게시물")
     public void updateOtherCreator() {
-        String accountId = getAccountId(common01);
-        String boardId = getBoardId(publishTestPostInfo01.getBoard());
-        String postId = getPostId(publishTestPostInfo01);
+        // 계정 생성
+        TestAccountInfo account = this.setRandomAccount();
+        TestAccountInfo other = this.setRandomAccount();
+        // 게시판 생성
+        TestBoardInfo board = this.setRandomBoard();
+        // 게시물 생성
+        TestPostInfo post = this.setRandomPost(board, account);
 
         PostInfoUpdate postInfoUpdate = PostInfoUpdate.builder()
                 .title("update title")
@@ -196,7 +138,7 @@ public class PostServiceUpdateTest extends IricomTestSuite {
                 .build();
 
         IricomException iricomException = Assertions.assertThrows(IricomException.class, () -> {
-            this.postService.updatePostInfo(accountId, boardId, postId, postInfoUpdate);
+            this.postService.updatePostInfo(other.getId(), board.getId(), post.getId(), postInfoUpdate);
         });
 
         Assertions.assertEquals("04000002", iricomException.getErrorCode());
@@ -206,40 +148,50 @@ public class PostServiceUpdateTest extends IricomTestSuite {
     @Test
     @DisplayName("제목이 빈 문자열")
     public void emptyTitle() {
-        String boardId = getBoardId(publishTestPostInfo00.getBoard());
-        String postId = getPostId(publishTestPostInfo00);
-        String accountId = getAccountId(publishTestPostInfo00.getCreator());
+        // 계정 생성
+        TestAccountInfo account = this.setRandomAccount();
+        // 게시판 생성
+        TestBoardInfo board = this.setRandomBoard();
+        // 게시물 생성
+        TestPostInfo post = this.setRandomPost(board, account);
 
         PostInfoUpdate postInfoUpdate = PostInfoUpdate.builder()
                 .title("")
                 .build();
 
         Assertions.assertThrows(ConstraintViolationException.class, () -> {
-            this.postService.updatePostInfo(accountId, boardId, postId, postInfoUpdate);
+            this.postService.updatePostInfo(account.getId(), board.getId(), post.getId(), postInfoUpdate);
         });
     }
 
     @Test
     @DisplayName("제목이 긴 문자열")
     public void overflowTitle() {
-        String boardId = getBoardId(publishTestPostInfo00.getBoard());
-        String postId = getPostId(publishTestPostInfo00);
-        String accountId = getAccountId(publishTestPostInfo00.getCreator());
+        // 계정 생성
+        TestAccountInfo account = this.setRandomAccount();
+        // 게시판 생성
+        TestBoardInfo board = this.setRandomBoard();
+        // 게시물 생성
+        TestPostInfo post = this.setRandomPost(board, account);
 
         PostInfoUpdate postInfoUpdate = PostInfoUpdate.builder()
-                .title("01234567890123456789012345678901234567890")
+                .title(TEXT_10 + TEXT_10 + TEXT_10 + TEXT_10 + "0")
                 .build();
 
         Assertions.assertThrows(ConstraintViolationException.class, () -> {
-            this.postService.updatePostInfo(accountId, boardId, postId, postInfoUpdate);
+            this.postService.updatePostInfo(account.getId(), board.getId(), post.getId(), postInfoUpdate);
         });
     }
 
     @Test
     @DisplayName("존재하지 않는 게시판")
     public void notExistBoard() {
-        String postId = getPostId(publishTestPostInfo00);
-        String accountId = getAccountId(publishTestPostInfo00.getCreator());
+        // 계정 생성
+        TestAccountInfo account = this.setRandomAccount();
+        // 게시판 생성
+        TestBoardInfo board = this.setRandomBoard();
+        // 게시물 생성
+        TestPostInfo post = this.setRandomPost(board, account);
 
         String boardId = "NOT_EXIST_BOARD";
 
@@ -249,7 +201,7 @@ public class PostServiceUpdateTest extends IricomTestSuite {
                 .build();
 
         IricomException iricomException = Assertions.assertThrows(IricomException.class, () -> {
-            this.postService.updatePostInfo(accountId, boardId, postId, postInfoUpdate);
+            this.postService.updatePostInfo(account.getId(), boardId, post.getId(), postInfoUpdate);
         });
 
         Assertions.assertEquals("03000000", iricomException.getErrorCode());
@@ -259,9 +211,13 @@ public class PostServiceUpdateTest extends IricomTestSuite {
     @Test
     @DisplayName("일치하지 않는 게시판")
     public void notMatchBoard() {
-        String boardId = getBoardId(testBoardInfo01);
-        String postId = getPostId(publishTestPostInfo00);
-        String accountId = getAccountId(publishTestPostInfo00.getCreator());
+        // 계정 생성
+        TestAccountInfo account = this.setRandomAccount();
+        // 게시판 생성
+        TestBoardInfo board = this.setRandomBoard();
+        TestBoardInfo otherBoard = this.setRandomBoard();
+        // 게시물 생성
+        TestPostInfo post = this.setRandomPost(board, account);
 
         PostInfoUpdate postInfoUpdate = PostInfoUpdate.builder()
                 .title("not matched board")
@@ -269,7 +225,7 @@ public class PostServiceUpdateTest extends IricomTestSuite {
                 .build();
 
         IricomException iricomException = Assertions.assertThrows(IricomException.class, () -> {
-            this.postService.updatePostInfo(accountId, boardId, postId, postInfoUpdate);
+            this.postService.updatePostInfo(account.getId(), otherBoard.getId(), post.getId(), postInfoUpdate);
         });
 
         Assertions.assertEquals("04000000", iricomException.getErrorCode());
@@ -279,9 +235,14 @@ public class PostServiceUpdateTest extends IricomTestSuite {
     @Test
     @DisplayName("비활성화 게시판")
     public void disabledBoard() {
-        String boardId = getBoardId(disabledBoardTestPostInfo00.getBoard());
-        String postId = getPostId(disabledBoardTestPostInfo00);
-        String accountId = getAccountId(disabledBoardTestPostInfo00.getCreator());
+        // 계정 생성
+        TestAccountInfo account = this.setRandomAccount();
+        // 게시판 생성
+        TestBoardInfo board = this.setRandomBoard();
+        // 게시물 생성
+        TestPostInfo post = this.setRandomPost(board, account);
+        // 게시판 비활성화
+        this.setDisabledBoard(Collections.singletonList(board));
 
         PostInfoUpdate postInfoUpdate = PostInfoUpdate.builder()
                 .title("disabled board post")
@@ -289,7 +250,7 @@ public class PostServiceUpdateTest extends IricomTestSuite {
                 .build();
 
         IricomException iricomException = Assertions.assertThrows(IricomException.class, () -> {
-            this.postService.updatePostInfo(accountId, boardId, postId, postInfoUpdate);
+            this.postService.updatePostInfo(account.getId(), board.getId(), post.getId(), postInfoUpdate);
         });
 
         Assertions.assertEquals("03000001", iricomException.getErrorCode());
@@ -299,9 +260,13 @@ public class PostServiceUpdateTest extends IricomTestSuite {
     @Test
     @DisplayName("공지사항 전용 게시판의 일반 게시물")
     public void updatePostOnlyNotification() {
-        String boardId = getBoardId(publishTestPostInfo02.getBoard());
-        String postId = getPostId(publishTestPostInfo02);
-        String accountId = getAccountId(publishTestPostInfo02.getCreator());
+        // 계정 생성
+        TestAccountInfo account = this.setRandomAccount();
+        // 게시판 생성
+        TestBoardInfo board = this.setRandomBoard();
+        // 게시물 생성 후 공지사항 전용 게시판으로 변경
+        TestPostInfo post = this.setRandomPost(board, account);
+        this.setNotificationOnlyBoard(Collections.singletonList(board));
 
         PostInfoUpdate postInfoUpdate = PostInfoUpdate.builder()
                 .title("notification only board post")
@@ -309,7 +274,7 @@ public class PostServiceUpdateTest extends IricomTestSuite {
                 .build();
 
         IricomException iricomException = Assertions.assertThrows(IricomException.class, () -> {
-            this.postService.updatePostInfo(accountId, boardId, postId, postInfoUpdate);
+            this.postService.updatePostInfo(account.getId(), board.getId(), post.getId(), postInfoUpdate);
         });
 
         Assertions.assertEquals("04000013", iricomException.getErrorCode());
@@ -319,16 +284,21 @@ public class PostServiceUpdateTest extends IricomTestSuite {
     @Test
     @DisplayName("공지 사항 전용 게시판에 공지 사항 게시물")
     public void updateNotificationOnlyNotification() {
-        String boardId = getBoardId(temporaryTestNotificationInfo01.getBoard());
-        String postId = getPostId(temporaryTestNotificationInfo01);
-        String accountId = getAccountId(temporaryTestNotificationInfo01.getCreator());
+        // 계정 생성
+        TestAccountInfo account = this.setRandomAccount();
+        // 게시판 생성
+        TestBoardInfo board = this.setRandomBoard(Collections.singletonList(account));
+        // 게시물 생성
+        TestPostInfo post = this.setRandomPost(board, account, PostType.NOTIFICATION, PostState.PUBLISH);
+        // 공지사항 전용 게시판으로 변경
+        this.setNotificationOnlyBoard(Collections.singletonList(board));
 
         PostInfoUpdate postInfoUpdate = PostInfoUpdate.builder()
                 .title("notification only board notification")
                 .content("update content")
                 .build();
 
-        PostInfo postInfo = this.postService.updatePostInfo(accountId, boardId, postId, postInfoUpdate);
+        PostInfo postInfo = this.postService.updatePostInfo(account.getId(), board.getId(), post.getId(), postInfoUpdate);
 
         Assertions.assertEquals("notification only board notification", postInfo.getTitle());
         Assertions.assertEquals("update content", postInfo.getContent());
@@ -337,9 +307,12 @@ public class PostServiceUpdateTest extends IricomTestSuite {
     @Test
     @DisplayName("일반 계정이 일반 게시판의 일반 게시물을 공지 사항으로 변경")
     public void switchPostToNotificationByAccount() {
-        String boardId = getBoardId(temporaryTestNotificationInfo02.getBoard());
-        String postId = getPostId(temporaryTestNotificationInfo02);
-        String accountId = getAccountId(temporaryTestNotificationInfo02.getCreator());
+        // 계정 생성
+        TestAccountInfo account = this.setRandomAccount();
+        // 게시판 생성
+        TestBoardInfo board = this.setRandomBoard();
+        // 게시물 생성
+        TestPostInfo post = this.setRandomPost(board, account, PostType.POST, PostState.PUBLISH);
 
         PostInfoUpdate postInfoUpdate = PostInfoUpdate.builder()
                 .title("switch post to notification")
@@ -348,7 +321,7 @@ public class PostServiceUpdateTest extends IricomTestSuite {
                 .build();
 
         IricomException iricomException = Assertions.assertThrows(IricomException.class, () -> {
-            this.postService.updatePostInfo(accountId, boardId, postId, postInfoUpdate);
+            this.postService.updatePostInfo(account.getId(), board.getId(), post.getId(), postInfoUpdate);
         });
 
         Assertions.assertEquals("04000001", iricomException.getErrorCode());
@@ -358,9 +331,12 @@ public class PostServiceUpdateTest extends IricomTestSuite {
     @Test
     @DisplayName("게시판 관리자가 일반 게시판의 일반 게시물을 공지 사항으로 변경")
     public void switchPostToNotificationByBoardAdmin() {
-        String boardId = getBoardId(temporaryTestNotificationInfo03.getBoard());
-        String postId = getPostId(temporaryTestNotificationInfo03);
-        String accountId = getAccountId(temporaryTestNotificationInfo03.getCreator());
+        // 계정 생성
+        TestAccountInfo account = this.setRandomAccount();
+        // 게시판 생성
+        TestBoardInfo board = this.setRandomBoard(Collections.singletonList(account));
+        // 게시물 생성
+        TestPostInfo post = this.setRandomPost(board, account, PostType.POST, PostState.PUBLISH);
 
         PostInfoUpdate postInfoUpdate = PostInfoUpdate.builder()
                 .title("switch post to notification")
@@ -368,20 +344,24 @@ public class PostServiceUpdateTest extends IricomTestSuite {
                 .type(PostType.NOTIFICATION)
                 .build();
 
-        PostInfo postInfo = this.postService.updatePostInfo(accountId, boardId, postId, postInfoUpdate);
+        PostInfo postInfo = this.postService.updatePostInfo(account.getId(), board.getId(), post.getId(), postInfoUpdate);
 
         Assertions.assertEquals("switch post to notification", postInfo.getTitle());
         Assertions.assertEquals("switch post to notification content", postInfo.getContent());
         Assertions.assertEquals("notification", postInfo.getType());
-        Assertions.assertEquals(boardId, postInfo.getBoardId());
+        Assertions.assertEquals(board.getId(), postInfo.getBoardId());
     }
 
     @Test
     @DisplayName("공지 사항 전용 게시판의 일반 게시물을 공지 사항으로 변경")
     public void switchPostToNotificationNotificationOnlyBoard() {
-        String boardId = getBoardId(temporaryTestNotificationInfo04.getBoard());
-        String postId = getPostId(temporaryTestNotificationInfo04);
-        String accountId = getAccountId(temporaryTestNotificationInfo04.getCreator());
+        // 계정 생성
+        TestAccountInfo account = this.setRandomAccount();
+        // 게시판 생성
+        TestBoardInfo board = this.setRandomBoard(Collections.singletonList(account));
+        // 게시물 생성
+        TestPostInfo post = this.setRandomPost(board, account, PostType.POST, PostState.PUBLISH);
+        this.setNotificationOnlyBoard(Collections.singletonList(board));
 
         PostInfoUpdate postInfoUpdate = PostInfoUpdate.builder()
                 .title("switch post to notification")
@@ -389,11 +369,11 @@ public class PostServiceUpdateTest extends IricomTestSuite {
                 .type(PostType.NOTIFICATION)
                 .build();
 
-        PostInfo postInfo = this.postService.updatePostInfo(accountId, boardId, postId, postInfoUpdate);
+        PostInfo postInfo = this.postService.updatePostInfo(account.getId(), board.getId(), post.getId(), postInfoUpdate);
 
         Assertions.assertEquals("switch post to notification", postInfo.getTitle());
         Assertions.assertEquals("switch post to notification content", postInfo.getContent());
         Assertions.assertEquals("notification", postInfo.getType());
-        Assertions.assertEquals(boardId, postInfo.getBoardId());
+        Assertions.assertEquals(board.getId(), postInfo.getBoardId());
     }
 }

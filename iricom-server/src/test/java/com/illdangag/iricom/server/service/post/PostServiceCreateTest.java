@@ -7,7 +7,7 @@ import com.illdangag.iricom.server.exception.IricomException;
 import com.illdangag.iricom.server.service.AccountService;
 import com.illdangag.iricom.server.service.PostService;
 import com.illdangag.iricom.server.test.IricomTestSuite;
-import com.illdangag.iricom.server.test.data.wrapper.TestAccountGroupInfo;
+import com.illdangag.iricom.server.test.data.wrapper.TestAccountInfo;
 import com.illdangag.iricom.server.test.data.wrapper.TestBoardInfo;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.Assertions;
@@ -36,14 +36,10 @@ public class PostServiceCreateTest extends IricomTestSuite {
     @Test
     @DisplayName("닉네임이 등록되지 않은 사용자")
     public void postUnregisteredAccount() {
-        TestBoardInfo testBoardInfo = TestBoardInfo.builder()
-                .title("testBoardInfo").isEnabled(true).build();
-
-        addTestBoardInfo(testBoardInfo);
-        init();
-
-        String accountId = getAccountId(unknown00);
-        String boardId = getBoardId(testBoardInfo);
+        // 계정 생성
+        TestAccountInfo account = this.setRandomUnregisteredAccount();
+        // 게시판 생성
+        TestBoardInfo board = this.setRandomBoard();
 
         PostInfoCreate postInfoCreate = PostInfoCreate.builder()
                 .title("Unregistered account post title")
@@ -52,20 +48,20 @@ public class PostServiceCreateTest extends IricomTestSuite {
                 .build();
 
         Assertions.assertThrows(IricomException.class, () -> {
-            postService.createPostInfo(accountId, boardId, postInfoCreate);
+            postService.createPostInfo(account.getId(), board.getId(), postInfoCreate);
         });
     }
 
     @Test
     @DisplayName("계정 그룹에 포함되지 않은 비공개 게시판")
     public void postUndisclosedBoard() {
-        TestBoardInfo testBoardInfo = TestBoardInfo.builder()
-                .title("testBoardInfo").isEnabled(true).undisclosed(true).build();
-        addTestBoardInfo(testBoardInfo);
-        init();
-
-        String accountId = getAccountId(common01);
-        String boardId = getBoardId(testBoardInfo);
+        // 계정 생성
+        TestAccountInfo account = this.setRandomAccount();
+        TestAccountInfo other = this.setRandomAccount();
+        // 게시판 생성
+        TestBoardInfo board = this.setRandomBoard(true, true);
+        // 계정 그룹 생성
+        this.setRandomAccountGroup(Collections.singletonList(account), Collections.singletonList(board));
 
         PostInfoCreate postInfoCreate = PostInfoCreate.builder()
                 .title("Unregistered account post title")
@@ -73,28 +69,22 @@ public class PostServiceCreateTest extends IricomTestSuite {
                 .type(PostType.POST)
                 .build();
 
-        Assertions.assertThrows(IricomException.class, () -> {
-            postService.createPostInfo(accountId, boardId, postInfoCreate);
+        IricomException exception = Assertions.assertThrows(IricomException.class, () -> {
+            postService.createPostInfo(other.getId(), board.getId(), postInfoCreate);
         });
+        Assertions.assertNotNull(exception);
+        Assertions.assertEquals("03000000", exception.getErrorCode());
     }
 
     @Test
     @DisplayName("계정 그룹에 포함된 비공개 게시판")
     public void postUndisclosedBoardInAccountGroup() {
-        TestBoardInfo testBoardInfo = TestBoardInfo.builder()
-                .title("testBoardInfo").isEnabled(true).undisclosed(true).build();
-
-        TestAccountGroupInfo testAccountGroupInfo = TestAccountGroupInfo.builder()
-                .title("testAccountGroupInfo").description("description")
-                .accountList(Collections.singletonList(common00)).boardList(Collections.singletonList(testBoardInfo))
-                .build();
-
-        addTestBoardInfo(testBoardInfo);
-        addTestAccountGroupInfo(testAccountGroupInfo);
-        init();
-
-        String accountId = getAccountId(common00);
-        String boardId = getBoardId(testBoardInfo);
+        // 계정 생성
+        TestAccountInfo account = this.setRandomAccount();
+        // 게시판 생성
+        TestBoardInfo board = this.setRandomBoard(true, true);
+        // 계정 그룹 생성
+        this.setRandomAccountGroup(Collections.singletonList(account), Collections.singletonList(board));
 
         PostInfoCreate postInfoCreate = PostInfoCreate.builder()
                 .title("Unregistered account post title")
@@ -102,21 +92,20 @@ public class PostServiceCreateTest extends IricomTestSuite {
                 .type(PostType.POST)
                 .build();
 
-        postService.createPostInfo(accountId, boardId, postInfoCreate);
+        Assertions.assertDoesNotThrow(() -> {
+            postService.createPostInfo(account.getId(), board.getId(), postInfoCreate);
+        });
     }
 
     @Test
     @DisplayName("게시물 발행 후 포인트 추가")
     public void addPostPoint() {
-        TestBoardInfo testBoardInfo = TestBoardInfo.builder()
-                .title("testBoardInfo").isEnabled(true).undisclosed(false).build();
+        // 계정 생성
+        TestAccountInfo account = this.setRandomAccount();
+        // 게시판 생성
+        TestBoardInfo board = this.setRandomBoard();
 
-        addTestBoardInfo(testBoardInfo);
-        init();
-
-        String accountId = getAccountId(common00);
-        String boardId = getBoardId(testBoardInfo);
-        long beforePoint = this.accountService.getAccountInfo(String.valueOf(accountId)).getPoint();
+        long beforePoint = this.accountService.getAccountInfo(account.getId()).getPoint();
 
         PostInfoCreate postInfoCreate = PostInfoCreate.builder()
                 .title("add point")
@@ -124,10 +113,10 @@ public class PostServiceCreateTest extends IricomTestSuite {
                 .type(PostType.POST)
                 .build();
 
-        PostInfo postInfo = postService.createPostInfo(accountId, boardId, postInfoCreate);
-        postService.publishPostInfo(accountId, postInfo.getBoardId(), postInfo.getId());
+        PostInfo postInfo = postService.createPostInfo(account.getId(), board.getId(), postInfoCreate);
+        postService.publishPostInfo(account.getId(), postInfo.getBoardId(), postInfo.getId());
 
-        long afterPoint = this.accountService.getAccountInfo(accountId).getPoint();
+        long afterPoint = this.accountService.getAccountInfo(account.getId()).getPoint();
         Assertions.assertTrue(beforePoint < afterPoint);
     }
 }

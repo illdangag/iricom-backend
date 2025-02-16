@@ -1,14 +1,12 @@
 package com.illdangag.iricom.server.service.post;
 
-import com.illdangag.iricom.server.data.entity.type.PostState;
-import com.illdangag.iricom.server.data.entity.type.PostType;
 import com.illdangag.iricom.server.data.request.PostInfoSearch;
 import com.illdangag.iricom.server.data.response.PostInfo;
 import com.illdangag.iricom.server.data.response.PostInfoList;
 import com.illdangag.iricom.server.exception.IricomException;
 import com.illdangag.iricom.server.service.PostService;
 import com.illdangag.iricom.server.test.IricomTestSuite;
-import com.illdangag.iricom.server.test.data.wrapper.TestAccountGroupInfo;
+import com.illdangag.iricom.server.test.data.wrapper.TestAccountInfo;
 import com.illdangag.iricom.server.test.data.wrapper.TestBoardInfo;
 import com.illdangag.iricom.server.test.data.wrapper.TestPostInfo;
 import lombok.extern.slf4j.Slf4j;
@@ -38,81 +36,39 @@ public class PostServiceSearchTest extends IricomTestSuite {
     @Test
     @DisplayName("공개 게시판")
     public void getPostListDisclosedBoard() {
-        TestBoardInfo testBoardInfo = TestBoardInfo.builder()
-                .title("testBoardInfo").isEnabled(true).adminList(Collections.singletonList(allBoardAdmin)).build();
-
-        TestPostInfo testPostInfo00 = TestPostInfo.builder()
-                .title("testPostInfo00").content("content").isAllowComment(true)
-                .postType(PostType.POST).postState(PostState.PUBLISH)
-                .creator(common00).board(testBoardInfo).build();
-        TestPostInfo testPostInfo01 = TestPostInfo.builder()
-                .title("testPostInfo01").content("content").isAllowComment(true)
-                .postType(PostType.POST).postState(PostState.PUBLISH)
-                .creator(common00).board(testBoardInfo).build();
-        TestPostInfo testPostInfo02 = TestPostInfo.builder()
-                .title("testPostInfo02").content("content").isAllowComment(true)
-                .postType(PostType.POST).postState(PostState.PUBLISH)
-                .creator(common00).board(testBoardInfo).build();
-
-        addTestBoardInfo(testBoardInfo);
-        addTestPostInfo(testPostInfo00, testPostInfo01, testPostInfo02);
-        init();
-
-        String boardId = getBoardId(testBoardInfo);
-        String postId = getPostId(testPostInfo00);
+        // 계정 생성
+        TestAccountInfo account = this.setRandomAccount();
+        // 게시판 생성
+        TestBoardInfo board = this.setRandomBoard();
+        // 게시물 생성
+        this.setRandomPost(board, account, 13);
 
         PostInfoSearch postInfoSearch = PostInfoSearch.builder()
                 .skip(0).limit(100)
                 .build();
 
-        PostInfoList postInfoList = postService.getPublishPostInfoList(boardId, postInfoSearch);
-
-        List<String> postIdList = postInfoList.getPostInfoList().stream()
-                .map(PostInfo::getId)
-                .collect(Collectors.toList());
-
-        Assertions.assertEquals(3, postInfoList.getTotal());
-        Assertions.assertTrue(postIdList.contains(postId));
+        PostInfoList postInfoList = postService.getPublishPostInfoList(board.getId(), postInfoSearch);
+        Assertions.assertEquals(13, postInfoList.getTotal());
     }
 
     @Test
     @DisplayName("권한을 사용하지 않고 비공개 게시판")
     public void getPostListUndisclosedBoard() {
-        TestBoardInfo testBoardInfo = TestBoardInfo.builder()
-                .title("testBoardInfo").isEnabled(true).undisclosed(true)
-                .adminList(Collections.singletonList(allBoardAdmin)).build();
-
-        TestPostInfo testPostInfo00 = TestPostInfo.builder()
-                .title("testPostInfo00").content("content").isAllowComment(true)
-                .postType(PostType.POST).postState(PostState.PUBLISH)
-                .creator(common00).board(testBoardInfo).build();
-        TestPostInfo testPostInfo01 = TestPostInfo.builder()
-                .title("testPostInfo01").content("content").isAllowComment(true)
-                .postType(PostType.POST).postState(PostState.PUBLISH)
-                .creator(common00).board(testBoardInfo).build();
-        TestPostInfo testPostInfo02 = TestPostInfo.builder()
-                .title("testPostInfo02").content("content").isAllowComment(true)
-                .postType(PostType.POST).postState(PostState.PUBLISH)
-                .creator(common00).board(testBoardInfo).build();
-
-        TestAccountGroupInfo testAccountGroupInfo = TestAccountGroupInfo.builder()
-                .title("testAccountGroupInfo").description("description").deleted(false)
-                .accountList(Collections.singletonList(common00)).boardList(Collections.singletonList(testBoardInfo))
-                .build();
-
-        addTestBoardInfo(testBoardInfo);
-        addTestPostInfo(testPostInfo00, testPostInfo01, testPostInfo02);
-        addTestAccountGroupInfo(testAccountGroupInfo);
-        init();
-
-        String boardId = getBoardId(testBoardInfo);
+        // 계정 생성
+        TestAccountInfo account = this.setRandomAccount();
+        // 게시판 생성
+        TestBoardInfo board = this.setRandomBoard(true, true);
+        // 계정 그룹 생성
+        this.setRandomAccountGroup(Collections.singletonList(account), Collections.singletonList(board));
+        // 게시물 생성
+        this.setRandomPost(board, account, 13);
 
         PostInfoSearch postInfoSearch = PostInfoSearch.builder()
                 .skip(0).limit(100)
                 .build();
 
         IricomException iricomException = Assertions.assertThrows(IricomException.class, () -> {
-            postService.getPublishPostInfoList(boardId, postInfoSearch);
+            postService.getPublishPostInfoList(board.getId(), postInfoSearch);
         });
 
         Assertions.assertEquals("03000000", iricomException.getErrorCode());
@@ -122,83 +78,61 @@ public class PostServiceSearchTest extends IricomTestSuite {
     @Test
     @DisplayName("계정 그룹에 포함된 비공개 게시판")
     public void getPostListUndisclosedBoardInAccountGroup() {
-        TestBoardInfo testBoardInfo = TestBoardInfo.builder()
-                .title("testBoardInfo").isEnabled(true).undisclosed(true)
-                .adminList(Collections.singletonList(allBoardAdmin)).build();
-
-        TestPostInfo testPostInfo00 = TestPostInfo.builder()
-                .title("testPostInfo00").content("content").isAllowComment(true)
-                .postType(PostType.POST).postState(PostState.PUBLISH)
-                .creator(common00).board(testBoardInfo).build();
-        TestPostInfo testPostInfo01 = TestPostInfo.builder()
-                .title("testPostInfo01").content("content").isAllowComment(true)
-                .postType(PostType.POST).postState(PostState.PUBLISH)
-                .creator(common00).board(testBoardInfo).build();
-        TestPostInfo testPostInfo02 = TestPostInfo.builder()
-                .title("testPostInfo02").content("content").isAllowComment(true)
-                .postType(PostType.POST).postState(PostState.PUBLISH)
-                .creator(common00).board(testBoardInfo).build();
-
-        TestAccountGroupInfo testAccountGroupInfo = TestAccountGroupInfo.builder()
-                .title("testAccountGroupInfo").description("description").deleted(false)
-                .accountList(Collections.singletonList(common00)).boardList(Collections.singletonList(testBoardInfo))
-                .build();
-
-        addTestBoardInfo(testBoardInfo);
-        addTestPostInfo(testPostInfo00, testPostInfo01, testPostInfo02);
-        addTestAccountGroupInfo(testAccountGroupInfo);
-        init();
-
-        String accountId = getAccountId(common00);
-        String boardId = getBoardId(testBoardInfo);
-        String postId = getPostId(testPostInfo00);
+        // 계정 생성
+        TestAccountInfo account = this.setRandomAccount();
+        // 게시판 생성
+        TestBoardInfo board = this.setRandomBoard(true, true);
+        // 계정 그룹 생성
+        this.setRandomAccountGroup(Collections.singletonList(account), Collections.singletonList(board));
+        // 게시물 생성
+        this.setRandomPost(board, account, 13);
 
         PostInfoSearch postInfoSearch = PostInfoSearch.builder()
                 .skip(0).limit(100)
                 .build();
 
-        PostInfoList postInfoList = postService.getPublishPostInfoList(accountId, boardId, postInfoSearch);
+        PostInfoList postInfoList = postService.getPublishPostInfoList(account.getId(), board.getId(), postInfoSearch);
 
-        List<String> postIdList = postInfoList.getPostInfoList().stream()
-                .map(PostInfo::getId)
-                .collect(Collectors.toList());
-
-        Assertions.assertEquals(3, postInfoList.getTotal());
-        Assertions.assertTrue(postIdList.contains(postId));
+        Assertions.assertEquals(13, postInfoList.getTotal());
     }
 
     @Test
     @DisplayName("계정이 작성한 게시물 조회")
     public void getAccountCreatedPost() {
-        TestBoardInfo testBoardInfo = TestBoardInfo.builder()
-                .title("testBoardInfo").isEnabled(true).adminList(Collections.singletonList(allBoardAdmin)).build();
+        // 계정 생성
+        TestAccountInfo account = this.setRandomAccount();
+        TestAccountInfo otherAccount = this.setRandomAccount();
+        // 게시판 생성
+        TestBoardInfo board = this.setRandomBoard();
+        // 게시물 생성
+        List<TestPostInfo> postList = this.setRandomPost(board, account, 13);
+        List<TestPostInfo> otherPostList = this.setRandomPost(board, otherAccount, 4);
 
-        TestPostInfo testPostInfo00 = TestPostInfo.builder()
-                .title("testPostInfo00").content("content").isAllowComment(true)
-                .postType(PostType.POST).postState(PostState.PUBLISH)
-                .creator(common00).board(testBoardInfo).build();
-        TestPostInfo testPostInfo01 = TestPostInfo.builder()
-                .title("testPostInfo01").content("content").isAllowComment(true)
-                .postType(PostType.POST).postState(PostState.PUBLISH)
-                .creator(common00).board(testBoardInfo).build();
+        List<String> postIdList = postList.stream()
+                .map(TestPostInfo::getId)
+                .sorted()
+                .collect(Collectors.toList());
+        List<String> otherPostIdList = otherPostList.stream()
+                .map(TestPostInfo::getId)
+                .sorted()
+                .collect(Collectors.toList());
 
-        addTestBoardInfo(testBoardInfo);
-        addTestPostInfo(testPostInfo00, testPostInfo01);
-        init();
+        PostInfoSearch postInfoSearch = PostInfoSearch.builder()
+                .skip(0).limit(100)
+                .build();
+        PostInfoList postInfoList = postService.getPostInfoList(account.getId(), postInfoSearch);
+        List<String> postIdResultList = postInfoList.getPostInfoList().stream()
+                .map(PostInfo::getId)
+                .sorted()
+                .collect(Collectors.toList());
+        Assertions.assertArrayEquals(postIdList.toArray(), postIdResultList.toArray());
 
-        String accountId = getAccountId(common00);
-        String postId00 = getPostId(testPostInfo00);
-        String postId01 = getPostId(testPostInfo01);
 
-        List<String> list = getAllList(PostInfoSearch.builder().build(), searchRequest -> {
-            PostInfoSearch postInfoSearch = (PostInfoSearch) searchRequest;
-            PostInfoList postInfoList = postService.getPostInfoList(accountId, postInfoSearch);
-            return postInfoList.getPostInfoList().stream()
-                    .map(PostInfo::getId)
-                    .collect(Collectors.toList());
-        });
-
-        Assertions.assertTrue(list.contains(postId00));
-        Assertions.assertTrue(list.contains(postId01));
+        PostInfoList otherPostInfoList = postService.getPostInfoList(otherAccount.getId(), postInfoSearch);
+        List<String> otherPostIdResultList = otherPostInfoList.getPostInfoList().stream()
+                .map(PostInfo::getId)
+                .sorted()
+                .collect(Collectors.toList());
+        Assertions.assertArrayEquals(otherPostIdList.toArray(), otherPostIdResultList.toArray());
     }
 }

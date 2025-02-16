@@ -7,6 +7,7 @@ import com.illdangag.iricom.server.exception.IricomException;
 import com.illdangag.iricom.server.service.PostService;
 import com.illdangag.iricom.server.test.IricomTestSuite;
 import com.illdangag.iricom.server.test.data.wrapper.TestAccountGroupInfo;
+import com.illdangag.iricom.server.test.data.wrapper.TestAccountInfo;
 import com.illdangag.iricom.server.test.data.wrapper.TestBoardInfo;
 import com.illdangag.iricom.server.test.data.wrapper.TestPostInfo;
 import lombok.extern.slf4j.Slf4j;
@@ -99,15 +100,16 @@ public class PostServiceDeleteTest extends IricomTestSuite {
     @Test
     @DisplayName("게시물 삭제")
     public void deletePost() {
-        TestPostInfo targetPostInfo = testPostInfo00;
+        // 계정 생성
+        TestAccountInfo account = this.setRandomAccount();
+        // 게시판 생성
+        TestBoardInfo board = this.setRandomBoard();
+        // 게시물 생성
+        TestPostInfo post = this.setRandomPost(board, account);
 
-        String accountId = getAccountId(targetPostInfo.getCreator());
-        String boardId = getBoardId(targetPostInfo.getBoard());
-        String postId = getPostId(targetPostInfo);
+        PostInfo postInfo = this.postService.deletePostInfo(account.getId(), board.getId(), post.getId());
 
-        PostInfo postInfo = this.postService.deletePostInfo(accountId, boardId, postId);
-
-        Assertions.assertEquals(postId, postInfo.getId());
+        Assertions.assertEquals(post.getId(), postInfo.getId());
         Assertions.assertTrue(postInfo.getDeleted());
         Assertions.assertNull(postInfo.getContent());
     }
@@ -115,18 +117,19 @@ public class PostServiceDeleteTest extends IricomTestSuite {
     @Test
     @DisplayName("자신이 작성하지 않은 게시물 삭제")
     public void notCreator() {
-        TestPostInfo targetPostInfo = testPostInfo01;
-
-        String accountId = getAccountId(common01);
-        String creatorId = getAccountId(targetPostInfo.getCreator());
-        String boardId = getBoardId(targetPostInfo.getBoard());
-        String postId = getPostId(targetPostInfo);
+        // 계정 생성
+        TestAccountInfo account = this.setRandomAccount();
+        TestAccountInfo other = this.setRandomAccount();
+        // 게시판 생성
+        TestBoardInfo board = this.setRandomBoard();
+        // 게시물 생성
+        TestPostInfo post = this.setRandomPost(board, account);
 
         IricomException iricomException = Assertions.assertThrows(IricomException.class, () -> {
-            this.postService.deletePostInfo(accountId, boardId, postId);
+            this.postService.deletePostInfo(other.getId(), board.getId(), post.getId());
         });
 
-        Assertions.assertNotEquals(creatorId, accountId);
+        Assertions.assertNotEquals(account.getId(), other.getId());
         Assertions.assertEquals("04000002", iricomException.getErrorCode());
         Assertions.assertEquals("Invalid authorization.", iricomException.getMessage());
     }
@@ -134,14 +137,17 @@ public class PostServiceDeleteTest extends IricomTestSuite {
     @Test
     @DisplayName("비활성화 게시판의 게시물 삭제")
     public void disabledBoard() {
-        TestPostInfo targetPostInfo = testPostInfo02;
-
-        String creatorId = getAccountId(targetPostInfo.getCreator());
-        String boardId = getBoardId(targetPostInfo.getBoard());
-        String postId = getPostId(targetPostInfo);
+        // 계정 생성
+        TestAccountInfo account = this.setRandomAccount();
+        // 게시판 생성
+        TestBoardInfo board = this.setRandomBoard();
+        // 게시물 생성
+        TestPostInfo post = this.setRandomPost(board, account);
+        // 게시판 비활성화
+        this.setDisabledBoard(Collections.singletonList(board));
 
         IricomException iricomException = Assertions.assertThrows(IricomException.class, () -> {
-            this.postService.deletePostInfo(creatorId, boardId, postId);
+            this.postService.deletePostInfo(account.getId(), board.getId(), post.getId());
         });
 
         Assertions.assertEquals("03000001", iricomException.getErrorCode());
@@ -151,14 +157,18 @@ public class PostServiceDeleteTest extends IricomTestSuite {
     @Test
     @DisplayName("권한 없는 비공개 게시판의 게시물 삭제")
     public void noAuthUndisclosedBoard() {
-        TestPostInfo targetPostInfo = testPostInfo03;
-
-        String creatorId = getAccountId(targetPostInfo.getCreator());
-        String boardId = getBoardId(targetPostInfo.getBoard());
-        String postId = getPostId(targetPostInfo);
+        // 계정 생성
+        TestAccountInfo account = this.setRandomAccount();
+        TestAccountInfo other = this.setRandomAccount();
+        // 게시판 생성
+        TestBoardInfo board = this.setRandomBoard(true, true);
+        // 계정 그룹 생성
+        this.setRandomAccountGroup(Collections.singletonList(account), Collections.singletonList(board));
+        // 게시물 생성
+        TestPostInfo post = this.setRandomPost(board, account);
 
         IricomException iricomException = Assertions.assertThrows(IricomException.class, () -> {
-            this.postService.deletePostInfo(creatorId, boardId, postId);
+            this.postService.deletePostInfo(other.getId(), board.getId(), post.getId());
         });
 
         Assertions.assertEquals("03000000", iricomException.getErrorCode());
@@ -168,44 +178,51 @@ public class PostServiceDeleteTest extends IricomTestSuite {
     @Test
     @DisplayName("권한이 있는 비공게 게시판의 게시물 삭제")
     public void undisclosedBoard() {
-        TestPostInfo targetPostInfo = testPostInfo04;
+        // 계정 생성
+        TestAccountInfo account = this.setRandomAccount();
+        // 게시판 생성
+        TestBoardInfo board = this.setRandomBoard(true, true);
+        // 계정 그룹 생성
+        this.setRandomAccountGroup(Collections.singletonList(account), Collections.singletonList(board));
+        // 게시물 생성
+        TestPostInfo post = this.setRandomPost(board, account);
 
-        String creatorId = getAccountId(targetPostInfo.getCreator());
-        String boardId = getBoardId(targetPostInfo.getBoard());
-        String postId = getPostId(targetPostInfo);
+        PostInfo postInfo = this.postService.deletePostInfo(account.getId(), board.getId(), post.getId());
 
-        PostInfo postInfo = this.postService.deletePostInfo(creatorId, boardId, postId);
-
-        Assertions.assertEquals(postId, postInfo.getId());
+        Assertions.assertEquals(post.getId(), postInfo.getId());
         Assertions.assertNull(postInfo.getContent());
     }
 
     @Test
     @DisplayName("공지 사항 삭제")
     public void deleteNotification() {
-        TestPostInfo targetPostInfo = testPostInfo05;
+        // 계정 생성
+        TestAccountInfo account = this.setRandomAccount();
+        // 게시판 생성
+        TestBoardInfo board = this.setRandomBoard(Collections.singletonList(account));
+        // 게시물 생성
+        TestPostInfo post = this.setRandomPost(board, account, PostType.NOTIFICATION, PostState.PUBLISH);
 
-        String creatorId = getAccountId(targetPostInfo.getCreator());
-        String boardId = getBoardId(targetPostInfo.getBoard());
-        String postId = getPostId(targetPostInfo);
+        PostInfo postInfo = this.postService.deletePostInfo(account.getId(), board.getId(), post.getId());
 
-        PostInfo postInfo = this.postService.deletePostInfo(creatorId, boardId, postId);
-
-        Assertions.assertEquals(postId, postInfo.getId());
+        Assertions.assertEquals(post.getId(), postInfo.getId());
         Assertions.assertNull(postInfo.getContent());
     }
 
     @Test
     @DisplayName("게시판 관리자에서 삭제된 계정이 공지 사항 게시물 삭제")
     public void deleteNoAuthNotification() {
-        TestPostInfo targetPostInfo = testPostInfo06;
-
-        String creatorId = getAccountId(targetPostInfo.getCreator());
-        String boardId = getBoardId(targetPostInfo.getBoard());
-        String postId = getPostId(targetPostInfo);
+        // 계정 생성
+        TestAccountInfo account = this.setRandomAccount();
+        // 게시판 생성
+        TestBoardInfo board = this.setRandomBoard(Collections.singletonList(account));
+        // 게시물 생성
+        TestPostInfo post = this.setRandomPost(board, account, PostType.NOTIFICATION, PostState.PUBLISH);
+        // 게시판 관리자 삭제
+        this.deleteBoardAdmin(board, Collections.singletonList(account));
 
         IricomException iricomException = Assertions.assertThrows(IricomException.class, () -> {
-            this.postService.deletePostInfo(creatorId, boardId, postId);
+            this.postService.deletePostInfo(account.getId(), board.getId(), post.getId());
         });
 
         Assertions.assertEquals("04000001", iricomException.getErrorCode());

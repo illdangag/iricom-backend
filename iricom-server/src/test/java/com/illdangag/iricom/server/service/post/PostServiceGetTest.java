@@ -1,14 +1,12 @@
 package com.illdangag.iricom.server.service.post;
 
 import com.illdangag.iricom.server.data.entity.type.PostState;
-import com.illdangag.iricom.server.data.entity.type.PostType;
 import com.illdangag.iricom.server.data.response.PostInfo;
 import com.illdangag.iricom.server.exception.IricomException;
 import com.illdangag.iricom.server.service.PostService;
 import com.illdangag.iricom.server.test.IricomTestSuite;
-import com.illdangag.iricom.server.test.data.wrapper.TestAccountGroupInfo;
+import com.illdangag.iricom.server.test.data.wrapper.TestAccountInfo;
 import com.illdangag.iricom.server.test.data.wrapper.TestBoardInfo;
-import com.illdangag.iricom.server.test.data.wrapper.TestPostBlockInfo;
 import com.illdangag.iricom.server.test.data.wrapper.TestPostInfo;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.Assertions;
@@ -35,22 +33,14 @@ public class PostServiceGetTest extends IricomTestSuite {
     @Test
     @DisplayName("공개된 게시판의 게시물을 권한 없이 조회")
     public void getDisclosedBoardPost() {
-        TestBoardInfo testBoardInfo = TestBoardInfo.builder()
-                .title("testBoardInfo").isEnabled(true)
-                .adminList(Collections.singletonList(allBoardAdmin)).build();
+        // 계정 생성
+        TestAccountInfo account = this.setRandomAccount();
+        // 게시판 생성
+        TestBoardInfo board = this.setRandomBoard();
+        // 게시물 생성
+        TestPostInfo post = this.setRandomPost(board, account);
 
-        TestPostInfo testPostInfo = TestPostInfo.builder()
-                .title("testPostInfo").content("content").isAllowComment(true)
-                .postType(PostType.POST).postState(PostState.PUBLISH)
-                .creator(common00).board(testBoardInfo).build();
-
-        addTestBoardInfo(testBoardInfo);
-        addTestPostInfo(testPostInfo);
-        init();
-
-        String boardId = getBoardId(testBoardInfo);
-        String postId = getPostId(testPostInfo);
-        PostInfo postInfo = postService.getPostInfo(boardId, postId, PostState.PUBLISH, true);
+        PostInfo postInfo = postService.getPostInfo(board.getId(), post.getId(), PostState.PUBLISH, true);
 
         Assertions.assertNotNull(postInfo);
     }
@@ -58,57 +48,35 @@ public class PostServiceGetTest extends IricomTestSuite {
     @Test
     @DisplayName("비공개 게시판의 게시물 조회")
     public void getUndisclosedBoardPost() {
-        TestBoardInfo testBoardInfo = TestBoardInfo.builder()
-                .title("testBoardInfo").isEnabled(true).undisclosed(true)
-                .adminList(Collections.singletonList(allBoardAdmin)).build();
-
-        TestPostInfo testPostInfo = TestPostInfo.builder()
-                .title("testPostInfo").content("content").isAllowComment(true)
-                .postType(PostType.POST).postState(PostState.PUBLISH)
-                .creator(common00).board(testBoardInfo).build();
-
-        TestAccountGroupInfo testAccountGroupInfo = TestAccountGroupInfo.builder()
-                .title("testAccountGroupInfo").description("description")
-                .accountList(Collections.singletonList(common00))
-                .boardList(Collections.singletonList(testBoardInfo))
-                .build();
-
-        addTestBoardInfo(testBoardInfo);
-        addTestPostInfo(testPostInfo);
-        addTestAccountGroupInfo(testAccountGroupInfo);
-        init();
-
-        String boardId = getBoardId(testBoardInfo);
-        String postId = getPostId(testPostInfo);
+        // 계정 생성
+        TestAccountInfo account = this.setRandomAccount();
+        // 게시판 생성
+        TestBoardInfo board = this.setRandomBoard(true, true);
+        // 계정 그룹 생성
+        this.setRandomAccountGroup(Collections.singletonList(account), Collections.singletonList(board));
+        // 게시물 생성
+        TestPostInfo post = this.setRandomPost(board, account);
 
         Assertions.assertThrows(IricomException.class, () -> {
-            postService.getPostInfo(boardId, postId, PostState.PUBLISH, true);
+            postService.getPostInfo(board.getId(), post.getId(), PostState.PUBLISH, true);
         });
     }
 
     @Test
     @DisplayName("차단된 게시물 조회")
     public void getBlockedPost() {
-        TestBoardInfo testBoardInfo = TestBoardInfo.builder()
-                .title("testBoardInfo").isEnabled(true).undisclosed(false)
-                .adminList(Collections.singletonList(allBoardAdmin)).build();
+        // 계정 생성
+        TestAccountInfo account = this.setRandomAccount();
+        // 게시판 생성
+        TestBoardInfo board = this.setRandomBoard();
+        // 게시물 생성
+        TestPostInfo post = this.setRandomPost(board, account);
+        // 게시물 차단
+        this.setRandomPostBlock(post);
 
-        TestPostInfo testPostInfo = TestPostInfo.builder()
-                .title("testPostInfo").content("content").isAllowComment(true)
-                .postType(PostType.POST).postState(PostState.PUBLISH)
-                .creator(common00).board(testBoardInfo).build();
-
-        TestPostBlockInfo testPostBlockInfo = TestPostBlockInfo.builder()
-                .account(systemAdmin).post(testPostInfo).reason("Block")
-                .build();
-
-        addTestBoardInfo(testBoardInfo);
-        addTestPostInfo(testPostInfo);
-        addTestPostBlockInfo(testPostBlockInfo);
-        init();
-
-        String boardId = getBoardId(testBoardInfo);
-        String postId = getPostId(testPostInfo);
-        PostInfo postInfo = postService.getPostInfo(boardId, postId, PostState.PUBLISH, true);
+        PostInfo postInfo = postService.getPostInfo(board.getId(), post.getId(), PostState.PUBLISH, true);
+        Assertions.assertNotNull(postInfo);
+        Assertions.assertTrue(postInfo.getBlocked());
+        Assertions.assertNull(postInfo.getContent());
     }
 }
