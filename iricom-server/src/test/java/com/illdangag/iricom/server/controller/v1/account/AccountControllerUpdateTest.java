@@ -1,7 +1,7 @@
 package com.illdangag.iricom.server.controller.v1.account;
 
 import com.illdangag.iricom.server.test.IricomTestSuite;
-import com.illdangag.iricom.server.test.data.wrapper.TestBoardInfo;
+import com.illdangag.iricom.server.test.data.wrapper.TestAccountInfo;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
@@ -30,13 +30,6 @@ public class AccountControllerUpdateTest extends IricomTestSuite {
     @Autowired
     public AccountControllerUpdateTest(ApplicationContext context) {
         super(context);
-
-        TestBoardInfo testBoardInfo = TestBoardInfo.builder()
-                .title("testBoardInfo").isEnabled(true).adminList(Collections.singletonList(allBoardAdmin)).build();
-
-        addTestBoardInfo(testBoardInfo);
-
-        init();
     }
 
     @Nested
@@ -44,7 +37,10 @@ public class AccountControllerUpdateTest extends IricomTestSuite {
     class SelfUpdate {
         @Test
         @DisplayName("닉네임, 설명")
-        public void nicknameAndDescription() throws Exception {
+        void nicknameAndDescription() throws Exception {
+            // 계정 생성
+            TestAccountInfo account = setRandomAccount();
+
             Map<String, Object> requestBody = new HashMap<>();
             requestBody.put("nickname", "common00_00");
             requestBody.put("description", "update_description");
@@ -52,7 +48,7 @@ public class AccountControllerUpdateTest extends IricomTestSuite {
             MockHttpServletRequestBuilder requestBuilder = patch("/v1/accounts/")
                     .content(getJsonString(requestBody))
                     .contentType(MediaType.APPLICATION_JSON);
-            setAuthToken(requestBuilder, common00);
+            setAuthToken(requestBuilder, account);
 
             mockMvc.perform(requestBuilder)
                     .andExpect(status().is(200))
@@ -63,14 +59,17 @@ public class AccountControllerUpdateTest extends IricomTestSuite {
 
         @Test
         @DisplayName("닉네임")
-        public void nickname() throws Exception {
+        void nickname() throws Exception {
+            // 계정 생성
+            TestAccountInfo account = setRandomAccount();
+
             Map<String, Object> requestBody = new HashMap<>();
             requestBody.put("nickname", "common00_01");
 
             MockHttpServletRequestBuilder requestBuilder = patch("/v1/accounts/")
                     .content(getJsonString(requestBody))
                     .contentType(MediaType.APPLICATION_JSON);
-            setAuthToken(requestBuilder, common00);
+            setAuthToken(requestBuilder, account);
 
             mockMvc.perform(requestBuilder)
                     .andExpect(status().is(200))
@@ -80,14 +79,17 @@ public class AccountControllerUpdateTest extends IricomTestSuite {
 
         @Test
         @DisplayName("설명")
-        public void description() throws Exception {
+        void description() throws Exception {
+            // 계정 생성
+            TestAccountInfo account = setRandomAccount();
+
             Map<String, Object> requestBody = new HashMap<>();
             requestBody.put("description", "only_description");
 
             MockHttpServletRequestBuilder requestBuilder = patch("/v1/accounts/")
                     .content(getJsonString(requestBody))
                     .contentType(MediaType.APPLICATION_JSON);
-            setAuthToken(requestBuilder, common00);
+            setAuthToken(requestBuilder, account);
 
             mockMvc.perform(requestBuilder)
                     .andExpect(status().is(200))
@@ -97,14 +99,17 @@ public class AccountControllerUpdateTest extends IricomTestSuite {
 
         @Test
         @DisplayName("닉네임 빈 문자열")
-        public void emptyNickname() throws Exception {
+        void emptyNickname() throws Exception {
+            // 계정 생성
+            TestAccountInfo account = setRandomAccount();
+
             Map<String, Object> requestBody = new HashMap<>();
             requestBody.put("description", "");
 
             MockHttpServletRequestBuilder requestBuilder = patch("/v1/accounts/")
                     .content(getJsonString(requestBody))
                     .contentType(MediaType.APPLICATION_JSON);
-            setAuthToken(requestBuilder, common00);
+            setAuthToken(requestBuilder, account);
 
             mockMvc.perform(requestBuilder)
                     .andExpect(status().is(200))
@@ -114,14 +119,17 @@ public class AccountControllerUpdateTest extends IricomTestSuite {
 
         @Test
         @DisplayName("닉네임 문자열의 길이 초과")
-        public void overflowNickname() throws Exception {
+        void overflowNickname() throws Exception {
+            // 계정 생성
+            TestAccountInfo account = setRandomAccount();
+
             Map<String, Object> requestBody = new HashMap<>();
             requestBody.put("nickname", "012345678901234567890");
 
             MockHttpServletRequestBuilder requestBuilder = patch("/v1/accounts/")
                     .content(getJsonString(requestBody))
                     .contentType(MediaType.APPLICATION_JSON);
-            setAuthToken(requestBuilder, common00);
+            setAuthToken(requestBuilder, account);
 
             mockMvc.perform(requestBuilder)
                     .andExpect(status().is(400))
@@ -131,14 +139,17 @@ public class AccountControllerUpdateTest extends IricomTestSuite {
 
         @Test
         @DisplayName("설명 문자열을 빈 문자열")
-        public void emptyDescription() throws Exception {
+        void emptyDescription() throws Exception {
+            // 계정 생성
+            TestAccountInfo account = setRandomAccount();
+
             Map<String, Object> requestBody = new HashMap<>();
-            requestBody.put("nickname", "012345678901234567890");
+            requestBody.put("nickname", TEXT_10 + TEXT_10 + "0");
 
             MockHttpServletRequestBuilder requestBuilder = patch("/v1/accounts/")
                     .content(getJsonString(requestBody))
                     .contentType(MediaType.APPLICATION_JSON);
-            setAuthToken(requestBuilder, common00);
+            setAuthToken(requestBuilder, account);
 
             mockMvc.perform(requestBuilder)
                     .andExpect(status().is(400))
@@ -148,14 +159,17 @@ public class AccountControllerUpdateTest extends IricomTestSuite {
 
         @Test
         @DisplayName("설명 문자열의 길이 초과")
-        public void overflowDescription() throws Exception {
+        void overflowDescription() throws Exception {
+            // 계정 생성
+            TestAccountInfo account = setRandomAccount();
+
             Map<String, Object> requestBody = new HashMap<>();
-            requestBody.put("description", "01234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890");
+            requestBody.put("description", TEXT_100 + "0");
 
             MockHttpServletRequestBuilder requestBuilder = patch("/v1/accounts/")
                     .content(getJsonString(requestBody))
                     .contentType(MediaType.APPLICATION_JSON);
-            setAuthToken(requestBuilder, common00);
+            setAuthToken(requestBuilder, account);
 
             mockMvc.perform(requestBuilder)
                     .andExpect(status().is(400))
@@ -165,14 +179,18 @@ public class AccountControllerUpdateTest extends IricomTestSuite {
 
         @Test
         @DisplayName("닉네임 중복")
-        public void duplicateNickname() throws Exception {
+        void duplicateNickname() throws Exception {
+            // 계정 생성
+            TestAccountInfo account00 = setRandomAccount();
+            TestAccountInfo account01 = setRandomAccount();
+
             Map<String, Object> requestBody = new HashMap<>();
-            requestBody.put("nickname", "admin");
+            requestBody.put("nickname", account01.getNickname());
 
             MockHttpServletRequestBuilder requestBuilder = patch("/v1/accounts/")
                     .content(getJsonString(requestBody))
                     .contentType(MediaType.APPLICATION_JSON);
-            setAuthToken(requestBuilder, common00);
+            setAuthToken(requestBuilder, account00);
 
             mockMvc.perform(requestBuilder)
                     .andExpect(status().is(400))
@@ -187,7 +205,10 @@ public class AccountControllerUpdateTest extends IricomTestSuite {
 
         @Test
         @DisplayName("닉네임과 설명 수정")
-        public void nicknameAndDescription() throws Exception {
+        void nicknameAndDescription() throws Exception {
+            // 계정 생성
+            TestAccountInfo account = setRandomUnregisteredAccount();
+
             Map<String, Object> requestBody = new HashMap<>();
             requestBody.put("nickname", "update_unknown01");
             requestBody.put("description", "update_description");
@@ -195,7 +216,7 @@ public class AccountControllerUpdateTest extends IricomTestSuite {
             MockHttpServletRequestBuilder requestBuilder = patch("/v1/accounts/")
                     .content(getJsonString(requestBody))
                     .contentType(MediaType.APPLICATION_JSON);
-            setAuthToken(requestBuilder, unknown01);
+            setAuthToken(requestBuilder, account);
 
             mockMvc.perform(requestBuilder)
                     .andExpect(status().is(200))
@@ -206,14 +227,17 @@ public class AccountControllerUpdateTest extends IricomTestSuite {
 
         @Test
         @DisplayName("닉네임 수정")
-        public void nickname() throws Exception {
+        void nickname() throws Exception {
+            // 계정 생성
+            TestAccountInfo account = setRandomUnregisteredAccount();
+
             Map<String, Object> requestBody = new HashMap<>();
             requestBody.put("nickname", "update_unknown02");
 
             MockHttpServletRequestBuilder requestBuilder = patch("/v1/accounts/")
                     .content(getJsonString(requestBody))
                     .contentType(MediaType.APPLICATION_JSON);
-            setAuthToken(requestBuilder, unknown02);
+            setAuthToken(requestBuilder, account);
 
             mockMvc.perform(requestBuilder)
                     .andExpect(status().is(200))
@@ -223,14 +247,17 @@ public class AccountControllerUpdateTest extends IricomTestSuite {
 
         @Test
         @DisplayName("닉네임을 빈 문자열로 수정")
-        public void emptyNickname() throws Exception {
+        void emptyNickname() throws Exception {
+            // 계정 생성
+            TestAccountInfo account = setRandomUnregisteredAccount();
+
             Map<String, Object> requestBody = new HashMap<>();
             requestBody.put("nickname", "");
 
             MockHttpServletRequestBuilder requestBuilder = patch("/v1/accounts/")
                     .content(getJsonString(requestBody))
                     .contentType(MediaType.APPLICATION_JSON);
-            setAuthToken(requestBuilder, unknown00);
+            setAuthToken(requestBuilder, account);
 
             mockMvc.perform(requestBuilder)
                     .andExpect(status().is(400))
@@ -240,14 +267,17 @@ public class AccountControllerUpdateTest extends IricomTestSuite {
 
         @Test
         @DisplayName("설명 수정")
-        public void description() throws Exception {
+        void description() throws Exception {
+            // 계정 생성
+            TestAccountInfo account = setRandomUnregisteredAccount();
+
             Map<String, Object> requestBody = new HashMap<>();
             requestBody.put("description", "update_description");
 
             MockHttpServletRequestBuilder requestBuilder = patch("/v1/accounts/")
                     .content(getJsonString(requestBody))
                     .contentType(MediaType.APPLICATION_JSON);
-            setAuthToken(requestBuilder, unknown00);
+            setAuthToken(requestBuilder, account);
 
             mockMvc.perform(requestBuilder)
                     .andExpect(status().is(400))
@@ -257,14 +287,17 @@ public class AccountControllerUpdateTest extends IricomTestSuite {
 
         @Test
         @DisplayName("빈 문자열로 설명 수정")
-        public void emptyDescription() throws Exception {
+        void emptyDescription() throws Exception {
+            // 계정 생성
+            TestAccountInfo account = setRandomUnregisteredAccount();
+
             Map<String, Object> requestBody = new HashMap<>();
             requestBody.put("description", "");
 
             MockHttpServletRequestBuilder requestBuilder = patch("/v1/accounts/")
                     .content(getJsonString(requestBody))
                     .contentType(MediaType.APPLICATION_JSON);
-            setAuthToken(requestBuilder, unknown00);
+            setAuthToken(requestBuilder, account);
 
             mockMvc.perform(requestBuilder)
                     .andExpect(status().is(400))
@@ -279,14 +312,15 @@ public class AccountControllerUpdateTest extends IricomTestSuite {
 
         @Test
         @DisplayName("시스템 관리자가 다른 계정 정보 수정")
-        public void updateOtherAccountBySystemAdmin() throws Exception {
-            String accountId = getAccountId(common00);
+        void updateOtherAccountBySystemAdmin() throws Exception {
+            // 계정 생성
+            TestAccountInfo account = setRandomAccount();
 
             Map<String, Object> requestBody = new HashMap<>();
             requestBody.put("nickname", "admin_update");
             requestBody.put("description", "admin_update");
 
-            MockHttpServletRequestBuilder requestBuilder = patch("/v1/accounts/" + accountId)
+            MockHttpServletRequestBuilder requestBuilder = patch("/v1/accounts/{id}", account.getId())
                     .content(getJsonString(requestBody))
                     .contentType(MediaType.APPLICATION_JSON);
             setAuthToken(requestBuilder, systemAdmin);
@@ -300,17 +334,21 @@ public class AccountControllerUpdateTest extends IricomTestSuite {
 
         @Test
         @DisplayName("게시판 관리자가 다른 계정 정보 수정")
-        public void updateOtherAccountByBoardAdmin() throws Exception {
-            String accountId = getAccountId(common00);
+        void updateOtherAccountByBoardAdmin() throws Exception {
+            // 계정 생성
+            TestAccountInfo account = setRandomAccount();
+            TestAccountInfo boardAdminAccount = setRandomAccount();
+            // 게시판 생성
+            setRandomBoard(Collections.singletonList(boardAdminAccount));
 
             Map<String, Object> requestBody = new HashMap<>();
             requestBody.put("nickname", "board_update");
             requestBody.put("description", "board_update");
 
-            MockHttpServletRequestBuilder requestBuilder = patch("/v1/accounts/" + accountId)
+            MockHttpServletRequestBuilder requestBuilder = patch("/v1/accounts/{id}", account.getId())
                     .content(getJsonString(requestBody))
                     .contentType(MediaType.APPLICATION_JSON);
-            setAuthToken(requestBuilder, enableBoardAdmin);
+            setAuthToken(requestBuilder, boardAdminAccount);
 
             mockMvc.perform(requestBuilder)
                     .andExpect(status().is(401))
@@ -320,17 +358,19 @@ public class AccountControllerUpdateTest extends IricomTestSuite {
 
         @Test
         @DisplayName("일반 계정이 다른 계정 정보 수정")
-        public void updateOtherAccountByAccount() throws Exception {
-            String accountId = getAccountId(common00);
+        void updateOtherAccountByAccount() throws Exception {
+            // 계정 생성
+            TestAccountInfo account = setRandomAccount();
+            TestAccountInfo otherAccount = setRandomAccount();
 
             Map<String, Object> requestBody = new HashMap<>();
             requestBody.put("nickname", "common_update");
             requestBody.put("description", "common_update");
 
-            MockHttpServletRequestBuilder requestBuilder = patch("/v1/accounts/" + accountId)
+            MockHttpServletRequestBuilder requestBuilder = patch("/v1/accounts/{id}", account.getId())
                     .content(getJsonString(requestBody))
                     .contentType(MediaType.APPLICATION_JSON);
-            setAuthToken(requestBuilder, common01);
+            setAuthToken(requestBuilder, otherAccount);
 
             mockMvc.perform(requestBuilder)
                     .andExpect(status().is(401))
@@ -340,17 +380,18 @@ public class AccountControllerUpdateTest extends IricomTestSuite {
 
         @Test
         @DisplayName("일반 계정이 본인 계정을 수정")
-        public void updateAccount() throws Exception {
-            String accountId = getAccountId(common00);
+        void updateAccount() throws Exception {
+            // 계정 생성
+            TestAccountInfo account = setRandomAccount();
 
             Map<String, Object> requestBody = new HashMap<>();
             requestBody.put("nickname", "self_update");
             requestBody.put("description", "self_update");
 
-            MockHttpServletRequestBuilder requestBuilder = patch("/v1/accounts/" + accountId)
+            MockHttpServletRequestBuilder requestBuilder = patch("/v1/accounts/{id}", account.getId())
                     .content(getJsonString(requestBody))
                     .contentType(MediaType.APPLICATION_JSON);
-            setAuthToken(requestBuilder, common00);
+            setAuthToken(requestBuilder, account);
 
             mockMvc.perform(requestBuilder)
                     .andExpect(status().is(401))

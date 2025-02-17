@@ -174,10 +174,9 @@ public abstract class IricomTestSuite {
     protected TestAccountInfo setRandomUnregisteredAccount() {
         String randomText = UUID.randomUUID().toString();
         String email = randomText + "@iricom.com";
-        String nickname = randomText.substring(0, 20);
         String description = randomText;
         TestAccountInfo testAccountInfo = TestAccountInfo.builder()
-                .email(email).nickname(nickname).description(description).isUnregistered(true).build();
+                .email(email).nickname("").description(description).isUnregistered(true).build();
         setAccount(testAccountInfo);
         return testAccountInfo;
     }
@@ -319,13 +318,20 @@ public abstract class IricomTestSuite {
     }
 
     protected TestPostInfo setRandomPost(TestBoardInfo testBoardInfo, TestAccountInfo testAccountInfo, PostType postType, PostState postState) {
+        return this.setRandomPost(testBoardInfo, testAccountInfo, postType, postState, true);
+    }
+
+    protected TestPostInfo setRandomPost(TestBoardInfo testBoardInfo, TestAccountInfo testAccountInfo, PostType postType, PostState postState, boolean isAllowComment) {
         String randomText = UUID.randomUUID().toString();
         TestPostInfo testPostInfo = TestPostInfo.builder()
-                .title(randomText).content(randomText).isAllowComment(true)
+                .title(randomText).content(randomText).isAllowComment(isAllowComment)
                 .postType(postType).postState(postState)
                 .creator(testAccountInfo).board(testBoardInfo)
                 .build();
         this.setPost(testPostInfo);
+        if (!testPostInfo.isAllowComment()) {
+            this.updateDisabledAllowComment(testPostInfo);
+        }
         return testPostInfo;
     }
 

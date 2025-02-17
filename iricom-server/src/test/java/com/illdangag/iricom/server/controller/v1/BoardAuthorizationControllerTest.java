@@ -1,6 +1,7 @@
 package com.illdangag.iricom.server.controller.v1;
 
 import com.illdangag.iricom.server.test.IricomTestSuite;
+import com.illdangag.iricom.server.test.data.wrapper.TestAccountInfo;
 import com.illdangag.iricom.server.test.data.wrapper.TestBoardInfo;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.DisplayName;
@@ -12,6 +13,7 @@ import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilder;
 
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
@@ -27,16 +29,9 @@ public class BoardAuthorizationControllerTest extends IricomTestSuite {
     @Autowired
     MockMvc mockMvc;
 
-    private final TestBoardInfo testBoardInfo00 = TestBoardInfo.builder()
-            .title("restDoc").isEnabled(true).adminList(Collections.singletonList(allBoardAdmin)).build();
-
     @Autowired
     public BoardAuthorizationControllerTest(ApplicationContext context) {
         super(context);
-
-        addTestBoardInfo(testBoardInfo00);
-
-        init();
     }
 
     @Nested
@@ -49,13 +44,15 @@ public class BoardAuthorizationControllerTest extends IricomTestSuite {
 
             @Test
             @DisplayName("생성")
-            public void create() throws Exception {
-                String accountId = getAccountId(toEnableBoardAdmin);
-                String boardId = getBoardId(testBoardInfo00);
+            void create() throws Exception {
+                // 계정 생성
+                TestAccountInfo account = setRandomAccount();
+                // 게시판 생성
+                TestBoardInfo board = setRandomBoard();
 
                 Map<String, Object> requestBody = new HashMap<>();
-                requestBody.put("accountId", accountId);
-                requestBody.put("boardId", boardId);
+                requestBody.put("accountId", account.getId());
+                requestBody.put("boardId", board.getId());
 
                 MockHttpServletRequestBuilder requestBuilder = post("/v1/auth/boards")
                         .content(getJsonString(requestBody))
@@ -69,12 +66,15 @@ public class BoardAuthorizationControllerTest extends IricomTestSuite {
 
             @Test
             @DisplayName("존재하지 않는 게시판")
-            public void notExistBoard() throws Exception {
-                String accountId = getAccountId(toEnableBoardAdmin);
+            void notExistBoard() throws Exception {
+                // 계정 생성
+                TestAccountInfo account = setRandomAccount();
+                // 게시판 생성
+                setRandomBoard();
 
                 Map<String, Object> requestBody = new HashMap<>();
-                requestBody.put("accountId", accountId);
-                requestBody.put("boardId", "unknown");
+                requestBody.put("accountId", account.getId());
+                requestBody.put("boardId", "UNKNOWN_BOARD_ID");
 
                 MockHttpServletRequestBuilder requestBuilder = post("/v1/auth/boards")
                         .content(getJsonString(requestBody))
@@ -89,12 +89,13 @@ public class BoardAuthorizationControllerTest extends IricomTestSuite {
 
             @Test
             @DisplayName("존재하지 않는 계정")
-            public void notExistAccount() throws Exception {
-                String boardId = getBoardId(testBoardInfo00);
+            void notExistAccount() throws Exception {
+                // 게시판 생성
+                TestBoardInfo board = setRandomBoard();
 
                 Map<String, Object> requestBody = new HashMap<>();
-                requestBody.put("accountId", "unknown");
-                requestBody.put("boardId", boardId);
+                requestBody.put("accountId", "UNKNOWN_BOARD_ID");
+                requestBody.put("boardId", board.getId());
 
                 MockHttpServletRequestBuilder requestBuilder = post("/v1/auth/boards")
                         .content(getJsonString(requestBody))
@@ -112,19 +113,22 @@ public class BoardAuthorizationControllerTest extends IricomTestSuite {
             class AuthTest {
 
                 @Test
-                @DisplayName("게시판 관리자 계정으로 생성")
-                public void boardAdminAuth() throws Exception {
-                    String accountId = getAccountId(common00);
-                    String boardId = getBoardId(testBoardInfo00);
+                @DisplayName("게시판 관리자 계정으로 다른 게시판 관리자 추가")
+                void boardAdminAuth() throws Exception {
+                    // 계정 생성
+                    TestAccountInfo account = setRandomAccount();
+                    TestAccountInfo otherAccount = setRandomAccount();
+                    // 게시판 생성
+                    TestBoardInfo board = setRandomBoard(Collections.singletonList(account));
 
                     Map<String, Object> requestBody = new HashMap<>();
-                    requestBody.put("accountId", accountId);
-                    requestBody.put("boardId", boardId);
+                    requestBody.put("accountId", otherAccount.getId());
+                    requestBody.put("boardId", board.getId());
 
                     MockHttpServletRequestBuilder requestBuilder = post("/v1/auth/boards")
                             .content(getJsonString(requestBody))
                             .contentType(MediaType.APPLICATION_JSON);
-                    setAuthToken(requestBuilder, enableBoardAdmin);
+                    setAuthToken(requestBuilder, account);
 
                     mockMvc.perform(requestBuilder)
                             .andExpect(status().is(401))
@@ -139,13 +143,15 @@ public class BoardAuthorizationControllerTest extends IricomTestSuite {
 
             @Test
             @DisplayName("삭제")
-            public void deleteBoardAdmin() throws Exception {
-                String accountId = getAccountId(toDisableBoardAdmin);
-                String boardId = getBoardId(testBoardInfo00);
+            void deleteBoardAdmin() throws Exception {
+                // 계정 생성
+                TestAccountInfo account = setRandomAccount();
+                // 게시판 생성
+                TestBoardInfo board = setRandomBoard(Collections.singletonList(account));
 
                 Map<String, Object> requestBody = new HashMap<>();
-                requestBody.put("accountId", accountId);
-                requestBody.put("boardId", boardId);
+                requestBody.put("accountId", account.getId());
+                requestBody.put("boardId", board.getId());
 
                 MockHttpServletRequestBuilder requestBuilder = delete("/v1/auth/boards")
                         .content(getJsonString(requestBody))
@@ -159,12 +165,15 @@ public class BoardAuthorizationControllerTest extends IricomTestSuite {
 
             @Test
             @DisplayName("존재하지 않는 게시판")
-            public void notExistBoard() throws Exception {
-                String accountId = getAccountId(toDisableBoardAdmin);
+            void notExistBoard() throws Exception {
+                // 계정 생성
+                TestAccountInfo account = setRandomAccount();
+                // 게시판 생성
+                setRandomBoard(Collections.singletonList(account));
 
                 Map<String, Object> requestBody = new HashMap<>();
-                requestBody.put("accountId", accountId);
-                requestBody.put("boardId", "unknown");
+                requestBody.put("accountId", account.getId());
+                requestBody.put("boardId", "UNKNOWN_BOARD_ID");
 
                 MockHttpServletRequestBuilder requestBuilder = delete("/v1/auth/boards")
                         .content(getJsonString(requestBody))
@@ -179,12 +188,15 @@ public class BoardAuthorizationControllerTest extends IricomTestSuite {
 
             @Test
             @DisplayName("존재하지 않는 계정")
-            public void notExistAccount() throws Exception {
-                String boardId = getBoardId(testBoardInfo00);
+            void notExistAccount() throws Exception {
+                // 계정 생성
+                TestAccountInfo account = setRandomAccount();
+                // 게시판 생성
+                TestBoardInfo board = setRandomBoard(Collections.singletonList(account));
 
                 Map<String, Object> requestBody = new HashMap<>();
-                requestBody.put("accountId", "unknown");
-                requestBody.put("boardId", boardId);
+                requestBody.put("accountId", "UNKNOWN_ACCOUNT_ID");
+                requestBody.put("boardId", board.getId());
 
                 MockHttpServletRequestBuilder requestBuilder = delete("/v1/auth/boards")
                         .content(getJsonString(requestBody))
@@ -202,19 +214,22 @@ public class BoardAuthorizationControllerTest extends IricomTestSuite {
             class AuthTest {
 
                 @Test
-                @DisplayName("게시판 관리자 계정으로 생성")
-                public void boardAdminAuth() throws Exception {
-                    String accountId = getAccountId(common00);
-                    String boardId = getBoardId(testBoardInfo00);
+                @DisplayName("게시판 관리자 계정으로 다른 게시판 관리자 삭제")
+                void boardAdminAuth() throws Exception {
+                    // 계정 생성
+                    TestAccountInfo account = setRandomAccount();
+                    TestAccountInfo otherAccount = setRandomAccount();
+                    // 게시판 생성
+                    TestBoardInfo board = setRandomBoard(Arrays.asList(account, otherAccount));
 
                     Map<String, Object> requestBody = new HashMap<>();
-                    requestBody.put("accountId", accountId);
-                    requestBody.put("boardId", boardId);
+                    requestBody.put("accountId", account.getId());
+                    requestBody.put("boardId", board.getId());
 
                     MockHttpServletRequestBuilder requestBuilder = delete("/v1/auth/boards")
                             .content(getJsonString(requestBody))
                             .contentType(MediaType.APPLICATION_JSON);
-                    setAuthToken(requestBuilder, common00);
+                    setAuthToken(requestBuilder, otherAccount);
 
                     mockMvc.perform(requestBuilder)
                             .andExpect(status().is(401))
@@ -229,7 +244,12 @@ public class BoardAuthorizationControllerTest extends IricomTestSuite {
 
             @Test
             @DisplayName("목록 조회")
-            public void getList() throws Exception {
+            void getList() throws Exception {
+                // 계정 생성
+                TestAccountInfo account = setRandomAccount();
+                // 게시판 생성
+                setRandomBoard(Collections.singletonList(account));
+
                 MockHttpServletRequestBuilder requestBuilder = get("/v1/auth/boards");
                 setAuthToken(requestBuilder, systemAdmin);
 
@@ -244,9 +264,14 @@ public class BoardAuthorizationControllerTest extends IricomTestSuite {
 
             @Test
             @DisplayName("게시판 제목으로 조회")
-            public void getListByKeyword() throws Exception {
+            void getListByKeyword() throws Exception {
+                // 계정 생성
+                TestAccountInfo account = setRandomAccount();
+                // 게시판 생성
+                TestBoardInfo board = setRandomBoard(Collections.singletonList(account));
+
                 MockHttpServletRequestBuilder requestBuilder = get("/v1/auth/boards")
-                        .param("keyword", testBoardInfo00.getTitle());
+                        .param("keyword", board.getTitle());
                 setAuthToken(requestBuilder, systemAdmin);
 
                 mockMvc.perform(requestBuilder)
@@ -260,9 +285,14 @@ public class BoardAuthorizationControllerTest extends IricomTestSuite {
 
             @Test
             @DisplayName("게시판 관리자 계정으로 조회")
-            public void boardAdminAuth() throws Exception {
+            void boardAdminAuth() throws Exception {
+                // 계정 생성
+                TestAccountInfo account = setRandomAccount();
+                // 게시판 생성
+                setRandomBoard(Collections.singletonList(account));
+
                 MockHttpServletRequestBuilder requestBuilder = get("/v1/auth/boards");
-                setAuthToken(requestBuilder, enableBoardAdmin);
+                setAuthToken(requestBuilder, account);
 
                 mockMvc.perform(requestBuilder)
                         .andExpect(status().is(401))
@@ -272,9 +302,15 @@ public class BoardAuthorizationControllerTest extends IricomTestSuite {
 
             @Test
             @DisplayName("일반 계정으로 조회")
-            public void accountAuth() throws Exception {
+            void accountAuth() throws Exception {
+                // 계정 생성
+                TestAccountInfo account = setRandomAccount();
+                TestAccountInfo otherAccount = setRandomAccount();
+                // 게시판 생성
+                setRandomBoard(Collections.singletonList(account));
+
                 MockHttpServletRequestBuilder requestBuilder = get("/v1/auth/boards");
-                setAuthToken(requestBuilder, common00);
+                setAuthToken(requestBuilder, otherAccount);
 
                 mockMvc.perform(requestBuilder)
                         .andExpect(status().is(401))
@@ -289,9 +325,13 @@ public class BoardAuthorizationControllerTest extends IricomTestSuite {
 
             @Test
             @DisplayName("조회")
-            public void getInfo() throws Exception {
-                String boardId = getBoardId(testBoardInfo00);
-                MockHttpServletRequestBuilder requestBuilder = get("/v1/auth/boards/{boardId}", boardId);
+            void getInfo() throws Exception {
+                // 계정 생성
+                TestAccountInfo account = setRandomAccount();
+                // 게시판 생성
+                TestBoardInfo board = setRandomBoard(Collections.singletonList(account));
+
+                MockHttpServletRequestBuilder requestBuilder = get("/v1/auth/boards/{boardId}", board.getId());
                 setAuthToken(requestBuilder, systemAdmin);
 
                 mockMvc.perform(requestBuilder)

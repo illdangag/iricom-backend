@@ -1,6 +1,7 @@
 package com.illdangag.iricom.server.controller.v1.account;
 
 import com.illdangag.iricom.server.test.IricomTestSuite;
+import com.illdangag.iricom.server.test.data.wrapper.TestAccountInfo;
 import com.illdangag.iricom.server.test.data.wrapper.TestBoardInfo;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.DisplayName;
@@ -28,25 +29,15 @@ public class AccountControllerGetTest extends IricomTestSuite {
     @Autowired
     public AccountControllerGetTest(ApplicationContext context) {
         super(context);
-
-        TestBoardInfo testBoardInfo = TestBoardInfo.builder()
-                .title("testBoardInfo").isEnabled(true).adminList(Collections.singletonList(allBoardAdmin)).build();
-
-        addTestBoardInfo(testBoardInfo);
-
-        init();
     }
 
     @Nested
     @DisplayName("정보")
     class GetInfo {
-
         @Test
         @DisplayName("시스템 관리자의 본인 계정 정보 조회")
-        public void getSystemAccountInfo() throws Exception {
-            String accountId = getAccountId(systemAdmin);
-
-            MockHttpServletRequestBuilder requestBuilder = get("/v1/accounts/" + accountId);
+        void getSystemAccountInfo() throws Exception {
+            MockHttpServletRequestBuilder requestBuilder = get("/v1/accounts/{id}", systemAdmin.getId());
             setAuthToken(requestBuilder, systemAdmin);
 
             mockMvc.perform(requestBuilder)
@@ -58,30 +49,34 @@ public class AccountControllerGetTest extends IricomTestSuite {
 
         @Test
         @DisplayName("게시판 관리자의 본인 계정 정보 조회")
-        public void getBoardAccountInfo() throws Exception {
-            String accountId = getAccountId(allBoardAdmin);
+        void getBoardAccountInfo() throws Exception {
+            // 계정 생성
+            TestAccountInfo account = setRandomAccount();
+            // 게시판 생성
+            setRandomBoard(Collections.singletonList(account));
 
-            MockHttpServletRequestBuilder requestBuilder = get("/v1/accounts/" + accountId);
-            setAuthToken(requestBuilder, allBoardAdmin);
+            MockHttpServletRequestBuilder requestBuilder = get("/v1/accounts/{id}", account.getId());
+            setAuthToken(requestBuilder, account);
 
             mockMvc.perform(requestBuilder)
                     .andExpect(status().is(200))
-                    .andExpect(jsonPath("$.email").value(allBoardAdmin.getEmail()))
+                    .andExpect(jsonPath("$.email").value(account.getEmail()))
                     .andExpect(jsonPath("$.auth").value("boardAdmin"))
                     .andDo(print());
         }
 
         @Test
         @DisplayName("일반 계정의 본인 계정 정보 조회")
-        public void getAccountInfo() throws Exception {
-            String accountId = getAccountId(common00);
+        void getAccountInfo() throws Exception {
+            // 계정 생성
+            TestAccountInfo account = setRandomAccount();
 
-            MockHttpServletRequestBuilder requestBuilder = get("/v1/accounts/" + accountId);
-            setAuthToken(requestBuilder, common00);
+            MockHttpServletRequestBuilder requestBuilder = get("/v1/accounts/{id}", account.getId());
+            setAuthToken(requestBuilder, account);
 
             mockMvc.perform(requestBuilder)
                     .andExpect(status().is(200))
-                    .andExpect(jsonPath("$.email").value(common00.getEmail()))
+                    .andExpect(jsonPath("$.email").value(account.getEmail()))
                     .andDo(print());
         }
     }
@@ -91,9 +86,12 @@ public class AccountControllerGetTest extends IricomTestSuite {
     class ListInfo {
         @Test
         @DisplayName("목록 조회")
-        public void getAccountInfoList() throws Exception {
+        void getAccountInfoList() throws Exception {
+            // 계정 생성
+            TestAccountInfo account = setRandomAccount();
+
             MockHttpServletRequestBuilder requestBuilder = get("/v1/accounts/");
-            setAuthToken(requestBuilder, common00);
+            setAuthToken(requestBuilder, account);
 
             mockMvc.perform(requestBuilder)
                     .andExpect(status().is(200))
@@ -105,10 +103,13 @@ public class AccountControllerGetTest extends IricomTestSuite {
 
         @Test
         @DisplayName("skip")
-        public void useSkip() throws Exception {
+        void useSkip() throws Exception {
+            // 계정 생성
+            TestAccountInfo account = setRandomAccount();
+
             MockHttpServletRequestBuilder requestBuilder = get("/v1/accounts/")
                     .param("skip", "2");
-            setAuthToken(requestBuilder, common00);
+            setAuthToken(requestBuilder, account);
 
             mockMvc.perform(requestBuilder)
                     .andExpect(status().is(200))
@@ -120,10 +121,13 @@ public class AccountControllerGetTest extends IricomTestSuite {
 
         @Test
         @DisplayName("limit")
-        public void useLimit() throws Exception {
+        void useLimit() throws Exception {
+            // 계정 생성
+            TestAccountInfo account = setRandomAccount();
+
             MockHttpServletRequestBuilder requestBuilder = get("/v1/accounts/")
                     .param("limit", "2");
-            setAuthToken(requestBuilder, common00);
+            setAuthToken(requestBuilder, account);
 
             mockMvc.perform(requestBuilder)
                     .andExpect(status().is(200))
@@ -136,10 +140,13 @@ public class AccountControllerGetTest extends IricomTestSuite {
 
         @Test
         @DisplayName("keyword, email")
-        public void useEmailKeyword() throws Exception {
+        void useEmailKeyword() throws Exception {
+            // 계정 생성
+            TestAccountInfo account = setRandomAccount();
+
             MockHttpServletRequestBuilder requestBuilder = get("/v1/accounts/")
-                    .param("keyword", common00.getEmail());
-            setAuthToken(requestBuilder, common00);
+                    .param("keyword", account.getEmail());
+            setAuthToken(requestBuilder, account);
 
             mockMvc.perform(requestBuilder)
                     .andExpect(status().is(200))
@@ -152,10 +159,13 @@ public class AccountControllerGetTest extends IricomTestSuite {
 
         @Test
         @DisplayName("keyword, 존재하지 않는 email")
-        public void useNotExistEmailKeyword() throws Exception {
+        void useNotExistEmailKeyword() throws Exception {
+            // 계정 생성
+            TestAccountInfo account = setRandomAccount();
+
             MockHttpServletRequestBuilder requestBuilder = get("/v1/accounts/")
                     .param("keyword", "NOT_EXIST");
-            setAuthToken(requestBuilder, common00);
+            setAuthToken(requestBuilder, account);
 
             mockMvc.perform(requestBuilder)
                     .andExpect(status().is(200))
