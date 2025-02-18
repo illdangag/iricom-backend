@@ -4,10 +4,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.illdangag.iricom.server.confgiuration.interceptor.MockAuthInterceptor;
 import com.illdangag.iricom.server.data.entity.Account;
 import com.illdangag.iricom.server.data.entity.AccountDetail;
-import com.illdangag.iricom.server.data.entity.type.AccountAuth;
-import com.illdangag.iricom.server.data.entity.type.PostState;
-import com.illdangag.iricom.server.data.entity.type.PostType;
-import com.illdangag.iricom.server.data.entity.type.ReportType;
+import com.illdangag.iricom.server.data.entity.type.*;
 import com.illdangag.iricom.server.data.request.*;
 import com.illdangag.iricom.server.data.response.*;
 import com.illdangag.iricom.server.repository.AccountRepository;
@@ -497,7 +494,7 @@ public abstract class IricomTestSuite {
     /**
      * 게시물에 댓글 설정 비활성화
      */
-    protected void setDisabledCommentBoard(List<TestPostInfo> testPostInfoList) {
+    protected void setDisabledCommentPost(List<TestPostInfo> testPostInfoList) {
         testPostInfoList.stream()
                 .filter(item -> !item.isAllowComment())
                 .forEach(this::updateDisabledAllowComment);
@@ -707,7 +704,7 @@ public abstract class IricomTestSuite {
         this.setBlockPost(testPostBlockInfoList);
         this.setBlockComment(testCommentBlockInfoList);
         this.setDeletedComment(testCommentInfoList);
-        this.setDisabledCommentBoard(testPostInfoList);
+        this.setDisabledCommentPost(testPostInfoList);
         this.setDisabledBoard(testBoardInfoList);
         this.setNotificationOnlyBoard(testBoardInfoList);
         this.deleteAccountGroup(testAccountGroupInfoList);
@@ -802,14 +799,11 @@ public abstract class IricomTestSuite {
         return this.postService.createPostInfo(account.getId(), testPostInfo.getBoard().getId(), postInfoCreate);
     }
 
-    private void updateDisabledAllowComment(TestPostInfo testPostInfo) {
-        AccountInfo accountInfo = accountMap.get(testPostInfo.getCreator());
-        PostInfo postInfo = postMap.get(testPostInfo);
-
+    protected void updateDisabledAllowComment(TestPostInfo testPostInfo) {
         PostInfoUpdate postInfoUpdate = PostInfoUpdate.builder()
                 .allowComment(false)
                 .build();
-        this.postService.updatePostInfo(accountInfo.getId(), testPostInfo.getBoard().getId(), postInfo.getId(), postInfoUpdate);
+        this.postService.updatePostInfo(testPostInfo.getCreator().getId(), testPostInfo.getBoard().getId(), testPostInfo.getId(), postInfoUpdate);
 
         if (testPostInfo.getPostState() == PostState.PUBLISH) {
             this.publishPost(testPostInfo);
@@ -918,6 +912,12 @@ public abstract class IricomTestSuite {
                 .reason(testCommentBlockInfo.getReason())
                 .build();
         return blockService.blockComment(accountInfo.getId(), boardId, postId, commentId, commentBlockInfoCreate);
+    }
+
+    protected void setVoteComment(TestCommentInfo comment, TestAccountInfo account, VoteType voteType) {
+        TestPostInfo post = comment.getPost();
+        TestBoardInfo board = post.getBoard();
+        this.commentService.voteComment(account.getId(), board.getId(), post.getId(), comment.getId(), voteType);
     }
 
     private PersonalMessageInfo createPersonalMessage(TestPersonalMessageInfo testPersonalMessageInfo) {
