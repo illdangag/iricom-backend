@@ -694,24 +694,24 @@ public abstract class IricomTestSuite {
     }
 
     protected void init() {
-        this.setBoard(testBoardInfoList);
-        this.setAccountGroup(testAccountGroupInfoList);
-        this.setPost(testPostInfoList);
-        this.setComment(testCommentInfoList);
-        this.setPostReport(testPostReportInfoList);
-        this.setCommentReport(testCommentReportInfoList);
-
-        this.setBlockPost(testPostBlockInfoList);
-        this.setBlockComment(testCommentBlockInfoList);
-        this.setDeletedComment(testCommentInfoList);
-        this.setDisabledCommentPost(testPostInfoList);
-        this.setDisabledBoard(testBoardInfoList);
-        this.setNotificationOnlyBoard(testBoardInfoList);
-        this.deleteAccountGroup(testAccountGroupInfoList);
-        this.deleteBoardAdmin(testBoardInfoList);
-
-        this.createPersonalMessage(testPersonalMessageInfoList);
-        this.deletePersonalMessage(testPersonalMessageInfoList);
+//        this.setBoard(testBoardInfoList);
+//        this.setAccountGroup(testAccountGroupInfoList);
+//        this.setPost(testPostInfoList);
+//        this.setComment(testCommentInfoList);
+//        this.setPostReport(testPostReportInfoList);
+//        this.setCommentReport(testCommentReportInfoList);
+//
+//        this.setBlockPost(testPostBlockInfoList);
+//        this.setBlockComment(testCommentBlockInfoList);
+//        this.setDeletedComment(testCommentInfoList);
+//        this.setDisabledCommentPost(testPostInfoList);
+//        this.setDisabledBoard(testBoardInfoList);
+//        this.setNotificationOnlyBoard(testBoardInfoList);
+//        this.deleteAccountGroup(testAccountGroupInfoList);
+//        this.deleteBoardAdmin(testBoardInfoList);
+//
+//        this.createPersonalMessage(testPersonalMessageInfoList);
+//        this.deletePersonalMessage(testPersonalMessageInfoList);
     }
 
     private AccountInfo createAccount(TestAccountInfo testAccountInfo) {
@@ -747,7 +747,7 @@ public abstract class IricomTestSuite {
         BoardInfoCreate boardInfoCreate = BoardInfoCreate.builder()
                 .title(testBoardInfo.getTitle())
                 .description(testBoardInfo.getDescription())
-                .enabled(true)
+                .enabled(testBoardInfo.isEnabled())
                 .undisclosed(testBoardInfo.isUndisclosed())
                 .build();
 
