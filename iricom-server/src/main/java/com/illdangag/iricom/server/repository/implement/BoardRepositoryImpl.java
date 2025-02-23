@@ -141,6 +141,30 @@ public class BoardRepositoryImpl implements BoardRepository {
     }
 
     @Override
+    public List<Board> getBoardListInBoardAdmin(Account account, int offset, int limit) {
+        String jpql = "SELECT b" +
+                " FROM Board b, BoardAdmin ba" +
+                " WHERE ba.board = b AND ba.account = :account";
+
+        TypedQuery<Board> query = this.entityManager.createQuery(jpql, Board.class)
+                .setParameter("account", account)
+                .setFirstResult(offset)
+                .setMaxResults(limit);
+        return query.getResultList();
+    }
+
+    @Override
+    public long getBoardCountInBoardAdmin(Account account) {
+        String jpql = "SELECT COUNT(1)" +
+                " FROM Board b, BoardAdmin ba" +
+                " WHERE ba.board = b AND ba.account = :account";
+
+        TypedQuery<Long> query = this.entityManager.createQuery(jpql, Long.class)
+                .setParameter("account", account);
+        return query.getSingleResult();
+    }
+
+    @Override
     public void save(Board board) {
         if (board.getId() == null) {
             this.entityManager.persist(board);

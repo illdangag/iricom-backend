@@ -3,6 +3,7 @@ package com.illdangag.iricom.server.controller.v1;
 import com.illdangag.iricom.server.data.entity.type.PostState;
 import com.illdangag.iricom.server.data.entity.type.PostType;
 import com.illdangag.iricom.server.test.IricomTestSuite;
+import com.illdangag.iricom.server.test.data.wrapper.TestAccountInfo;
 import com.illdangag.iricom.server.test.data.wrapper.TestBoardInfo;
 import com.illdangag.iricom.server.test.data.wrapper.TestCommentInfo;
 import com.illdangag.iricom.server.test.data.wrapper.TestPostInfo;
@@ -71,12 +72,6 @@ public class ReportControllerTest extends IricomTestSuite {
     @Autowired
     public ReportControllerTest(ApplicationContext context) {
         super(context);
-
-        addTestBoardInfo(testBoardInfo00, testBoardInfo01, testBoardInfo02);
-        addTestPostInfo(testPostInfo00, testPostInfo01, testPostInfo02, testPostInfo03);
-        addTestCommentInfo(testCommentInfo00, testCommentInfo01, testCommentInfo02, testCommentInfo03);
-
-        init();
     }
 
     @Nested
@@ -89,18 +84,22 @@ public class ReportControllerTest extends IricomTestSuite {
 
             @Test
             @DisplayName("게시물 신고")
-            public void reportPost() throws Exception {
-                String boardId = getBoardId(testPostInfo00.getBoard());
-                String postId = getPostId(testPostInfo00);
+            void reportPost() throws Exception {
+                // 계정 생성
+                TestAccountInfo account = setRandomAccount();
+                // 게시판 생성
+                TestBoardInfo board = setRandomBoard();
+                // 게시물 생성
+                TestPostInfo post = setRandomPost(board, account);
 
                 Map<String, Object> requestBody = new HashMap<>();
                 requestBody.put("type", "hate");
                 requestBody.put("reason", "This is a hateful post.");
 
-                MockHttpServletRequestBuilder requestBuilder = post("/v1/report/post/boards/{boardId}/posts/{postId}", boardId, postId)
+                MockHttpServletRequestBuilder requestBuilder = post("/v1/report/post/boards/{boardId}/posts/{postId}", board.getId(), post.getId())
                         .content(getJsonString(requestBody))
                         .contentType(MediaType.APPLICATION_JSON);
-                setAuthToken(requestBuilder, common00);
+                setAuthToken(requestBuilder, account);
 
                 mockMvc.perform(requestBuilder)
                         .andExpect(status().is(200))
@@ -115,18 +114,22 @@ public class ReportControllerTest extends IricomTestSuite {
 
             @Test
             @DisplayName("게시물 중복 신고")
-            public void duplicateReportPost() throws Exception {
-                String boardId = getBoardId(testPostInfo00.getBoard());
-                String postId = getPostId(testPostInfo01);
+            void duplicateReportPost() throws Exception {
+                // 계정 생성
+                TestAccountInfo account = setRandomAccount();
+                // 게시판 생성
+                TestBoardInfo board = setRandomBoard();
+                // 게시물 생성
+                TestPostInfo post = setRandomPost(board, account);
 
                 Map<String, Object> requestBody = new HashMap<>();
                 requestBody.put("type", "hate");
                 requestBody.put("reason", "This is a hateful post.");
 
-                MockHttpServletRequestBuilder requestBuilder = post("/v1/report/post/boards/{boardId}/posts/{postId}", boardId, postId)
+                MockHttpServletRequestBuilder requestBuilder = post("/v1/report/post/boards/{boardId}/posts/{postId}", board.getId(), post.getId())
                         .content(getJsonString(requestBody))
                         .contentType(MediaType.APPLICATION_JSON);
-                setAuthToken(requestBuilder, common00);
+                setAuthToken(requestBuilder, account);
 
                 mockMvc.perform(requestBuilder)
                         .andExpect(status().is(200))
@@ -146,19 +149,25 @@ public class ReportControllerTest extends IricomTestSuite {
             }
 
             @Test
-            @DisplayName("게시물이 포함되지 않은 게시판")
-            public void notMatchedBoardPost() throws Exception {
-                String postId = getPostId(testPostInfo01);
-                String boardId = getBoardId(testBoardInfo01);
+            @DisplayName("다른 게시판의 게시물")
+            void notMatchedBoardPost() throws Exception {
+                // 계정 생성
+                TestAccountInfo account = setRandomAccount();
+                // 게시판 생성
+                TestBoardInfo board = setRandomBoard();
+                TestBoardInfo otherBoard = setRandomBoard();
+                // 게시물 생성
+                TestPostInfo post = setRandomPost(board, account);
+                setRandomPost(otherBoard, account);
 
                 Map<String, Object> requestBody = new HashMap<>();
                 requestBody.put("type", "hate");
                 requestBody.put("reason", "This is a hateful post.");
 
-                MockHttpServletRequestBuilder requestBuilder = post("/v1/report/post/boards/{boardId}/posts/{postId}", boardId, postId)
+                MockHttpServletRequestBuilder requestBuilder = post("/v1/report/post/boards/{boardId}/posts/{postId}", otherBoard.getId(), post.getId())
                         .content(getJsonString(requestBody))
                         .contentType(MediaType.APPLICATION_JSON);
-                setAuthToken(requestBuilder, common00);
+                setAuthToken(requestBuilder, account);
 
                 mockMvc.perform(requestBuilder)
                         .andExpect(status().is(404))
@@ -169,17 +178,21 @@ public class ReportControllerTest extends IricomTestSuite {
 
             @Test
             @DisplayName("존재하지 않는 게시물")
-            public void notExistPost() throws Exception {
-                String boardId = getBoardId(testBoardInfo00);
+            void notExistPost() throws Exception {
+                // 계정 생성
+                TestAccountInfo account = setRandomAccount();
+                // 게시판 생성
+                TestBoardInfo board = setRandomBoard();
+
 
                 Map<String, Object> requestBody = new HashMap<>();
                 requestBody.put("type", "hate");
                 requestBody.put("reason", "This is a hateful post.");
 
-                MockHttpServletRequestBuilder requestBuilder = post("/v1/report/post/boards/" + boardId + "/posts/NOT_EXIST_POST")
+                MockHttpServletRequestBuilder requestBuilder = post("/v1/report/post/boards/{boardId}/posts/{postId}", board.getId(), "unknown")
                         .content(getJsonString(requestBody))
                         .contentType(MediaType.APPLICATION_JSON);
-                setAuthToken(requestBuilder, common00);
+                setAuthToken(requestBuilder, account);
 
                 mockMvc.perform(requestBuilder)
                         .andExpect(status().is(404))
@@ -190,17 +203,22 @@ public class ReportControllerTest extends IricomTestSuite {
 
             @Test
             @DisplayName("존재하지 않는 게시판")
-            public void notExistBoard() throws Exception {
-                String postId = getPostId(testPostInfo00);
+            void notExistBoard() throws Exception {
+                // 계정 생성
+                TestAccountInfo account = setRandomAccount();
+                // 게시판 생성
+                TestBoardInfo board = setRandomBoard();
+                // 게시물 생성
+                TestPostInfo post = setRandomPost(board, account);
 
                 Map<String, Object> requestBody = new HashMap<>();
                 requestBody.put("type", "hate");
                 requestBody.put("reason", "This is a hateful post.");
 
-                MockHttpServletRequestBuilder requestBuilder = post("/v1/report/post/boards/NOT_EXIST_BOARD/posts/{postId}", postId)
+                MockHttpServletRequestBuilder requestBuilder = post("/v1/report/post/boards/{boardId}/posts/{postId}", "unknown", post.getId())
                         .content(getJsonString(requestBody))
                         .contentType(MediaType.APPLICATION_JSON);
-                setAuthToken(requestBuilder, common00);
+                setAuthToken(requestBuilder, account);
 
                 mockMvc.perform(requestBuilder)
                         .andExpect(status().is(404))
@@ -215,16 +233,21 @@ public class ReportControllerTest extends IricomTestSuite {
         class ReportComment {
             @Test
             @DisplayName("댓글 신고")
-            public void reportComment() throws Exception {
-                String commentId = getCommentId(testCommentInfo00);
-                String postId = getPostId(testCommentInfo00.getPost());
-                String boardId = getBoardId(testCommentInfo00.getPost().getBoard());
+            void reportComment() throws Exception {
+                // 계정 생성
+                TestAccountInfo account = setRandomAccount();
+                // 게시판 생성
+                TestBoardInfo board = setRandomBoard();
+                // 게시물 생성
+                TestPostInfo post = setRandomPost(board, account);
+                // 댓글 생성
+                TestCommentInfo comment = setRandomComment(post, account);
 
                 Map<String, Object> requestBody = new HashMap<>();
                 requestBody.put("type", "hate");
                 requestBody.put("reason", "This is a hateful comment.");
 
-                MockHttpServletRequestBuilder requestBuilder = post("/v1/report/comment/boards/{boardId}/posts/{postId}/comments/{commentId}", boardId, postId, commentId)
+                MockHttpServletRequestBuilder requestBuilder = post("/v1/report/comment/boards/{boardId}/posts/{postId}/comments/{commentId}", board.getId(), post.getId(), comment.getId())
                         .content(getJsonString(requestBody))
                         .contentType(MediaType.APPLICATION_JSON);
                 setAuthToken(requestBuilder, common00);
@@ -236,19 +259,24 @@ public class ReportControllerTest extends IricomTestSuite {
 
             @Test
             @DisplayName("댓글 중복 신고")
-            public void testCase01() throws Exception {
-                String commentId = getCommentId(testCommentInfo01);
-                String postId = getPostId(testCommentInfo01.getPost());
-                String boardId = getBoardId(testCommentInfo01.getPost().getBoard());
+            void testCase01() throws Exception {
+                // 계정 생성
+                TestAccountInfo account = setRandomAccount();
+                // 게시판 생성
+                TestBoardInfo board = setRandomBoard();
+                // 게시물 생성
+                TestPostInfo post = setRandomPost(board, account);
+                // 댓글 생성
+                TestCommentInfo comment = setRandomComment(post, account);
 
                 Map<String, Object> requestBody = new HashMap<>();
                 requestBody.put("type", "hate");
                 requestBody.put("reason", "This is a hateful comment.");
 
-                MockHttpServletRequestBuilder requestBuilder = post("/v1/report/comment/boards/{boardId}/posts/{postId}/comments/{commentId}", boardId, postId, commentId)
+                MockHttpServletRequestBuilder requestBuilder = post("/v1/report/comment/boards/{boardId}/posts/{postId}/comments/{commentId}", board.getId(), post.getId(), comment.getId())
                         .content(getJsonString(requestBody))
                         .contentType(MediaType.APPLICATION_JSON);
-                setAuthToken(requestBuilder, common00);
+                setAuthToken(requestBuilder, account);
 
                 mockMvc.perform(requestBuilder)
                         .andExpect(status().is(200))
@@ -263,15 +291,21 @@ public class ReportControllerTest extends IricomTestSuite {
 
             @Test
             @DisplayName("존재하지 않는 게시판")
-            public void testCase02() throws Exception {
-                String commentId = getCommentId(testCommentInfo00);
-                String postId = getPostId(testCommentInfo00.getPost());
+            void testCase02() throws Exception {
+                // 계정 생성
+                TestAccountInfo account = setRandomAccount();
+                // 게시판 생성
+                TestBoardInfo board = setRandomBoard();
+                // 게시물 생성
+                TestPostInfo post = setRandomPost(board, account);
+                // 댓글 생성
+                TestCommentInfo comment = setRandomComment(post, account);
 
                 Map<String, Object> requestBody = new HashMap<>();
                 requestBody.put("type", "hate");
                 requestBody.put("reason", "This is a hateful comment.");
 
-                MockHttpServletRequestBuilder requestBuilder = post("/v1/report/comment/boards/{boardId}/posts/{postId}/comments/{commentId}", "NOT_EXIST_BOARD", postId, commentId)
+                MockHttpServletRequestBuilder requestBuilder = post("/v1/report/comment/boards/{boardId}/posts/{postId}/comments/{commentId}", "unknown", post.getId(), comment.getId())
                         .content(getJsonString(requestBody))
                         .contentType(MediaType.APPLICATION_JSON);
                 setAuthToken(requestBuilder, common00);
@@ -285,18 +319,24 @@ public class ReportControllerTest extends IricomTestSuite {
 
             @Test
             @DisplayName("존재하지 않는 게시물")
-            public void testCase03() throws Exception {
-                String commentId = getCommentId(testCommentInfo00);
-                String boardId = getBoardId(testCommentInfo00.getPost().getBoard());
+            void testCase03() throws Exception {
+                // 계정 생성
+                TestAccountInfo account = setRandomAccount();
+                // 게시판 생성
+                TestBoardInfo board = setRandomBoard();
+                // 게시물 생성
+                TestPostInfo post = setRandomPost(board, account);
+                // 댓글 생성
+                TestCommentInfo comment = setRandomComment(post, account);
 
                 Map<String, Object> requestBody = new HashMap<>();
                 requestBody.put("type", "hate");
                 requestBody.put("reason", "This is a hateful comment.");
 
-                MockHttpServletRequestBuilder requestBuilder = post("/v1/report/comment/boards/{boardId}/posts/{postId}/comments/{commentId}", boardId, "NOT_EXIST_POST", commentId)
+                MockHttpServletRequestBuilder requestBuilder = post("/v1/report/comment/boards/{boardId}/posts/{postId}/comments/{commentId}", board.getId(), "unknown", comment.getId())
                         .content(getJsonString(requestBody))
                         .contentType(MediaType.APPLICATION_JSON);
-                setAuthToken(requestBuilder, common00);
+                setAuthToken(requestBuilder, account);
 
                 mockMvc.perform(requestBuilder)
                         .andExpect(status().is(404))
@@ -307,15 +347,21 @@ public class ReportControllerTest extends IricomTestSuite {
 
             @Test
             @DisplayName("존재하지 않는 댓글")
-            public void testCase04() throws Exception {
-                String postId = getPostId(testCommentInfo00.getPost());
-                String boardId = getBoardId(testCommentInfo00.getPost().getBoard());
+            void testCase04() throws Exception {
+                // 계정 생성
+                TestAccountInfo account = setRandomAccount();
+                // 게시판 생성
+                TestBoardInfo board = setRandomBoard();
+                // 게시물 생성
+                TestPostInfo post = setRandomPost(board, account);
+                // 댓글 생성
+                setRandomComment(post, account);
 
                 Map<String, Object> requestBody = new HashMap<>();
                 requestBody.put("type", "hate");
                 requestBody.put("reason", "This is a hateful comment.");
 
-                MockHttpServletRequestBuilder requestBuilder = post("/v1/report/comment/boards/{boardId}/posts/{postId}/comments/{commentId}", boardId, postId, "NOT_EXIST_COMMENT")
+                MockHttpServletRequestBuilder requestBuilder = post("/v1/report/comment/boards/{boardId}/posts/{postId}/comments/{commentId}", board.getId(), post.getId(), "unknown")
                         .content(getJsonString(requestBody))
                         .contentType(MediaType.APPLICATION_JSON);
                 setAuthToken(requestBuilder, common00);
@@ -329,19 +375,25 @@ public class ReportControllerTest extends IricomTestSuite {
 
             @Test
             @DisplayName("올바르지 않은 게시판")
-            public void testCase05() throws Exception {
-                String commentId = getCommentId(testCommentInfo00);
-                String postId = getPostId(testCommentInfo00.getPost());
-                String boardId = getBoardId(testBoardInfo01);
+            void testCase05() throws Exception {
+                // 계정 생성
+                TestAccountInfo account = setRandomAccount();
+                // 게시판 생성
+                TestBoardInfo board = setRandomBoard();
+                TestBoardInfo otherBoard = setRandomBoard();
+                // 게시물 생성
+                TestPostInfo post = setRandomPost(board, account);
+                // 댓글 생성
+                TestCommentInfo comment = setRandomComment(post, account);
 
                 Map<String, Object> requestBody = new HashMap<>();
                 requestBody.put("type", "hate");
                 requestBody.put("reason", "This is a hateful comment.");
 
-                MockHttpServletRequestBuilder requestBuilder = post("/v1/report/comment/boards/{boardId}/posts/{postId}/comments/{commentId}", boardId, postId, commentId)
+                MockHttpServletRequestBuilder requestBuilder = post("/v1/report/comment/boards/{boardId}/posts/{postId}/comments/{commentId}", otherBoard.getId(), post.getId(), comment.getId())
                         .content(getJsonString(requestBody))
                         .contentType(MediaType.APPLICATION_JSON);
-                setAuthToken(requestBuilder, common00);
+                setAuthToken(requestBuilder, account);
 
                 mockMvc.perform(requestBuilder)
                         .andExpect(status().is(404))
@@ -352,19 +404,25 @@ public class ReportControllerTest extends IricomTestSuite {
 
             @Test
             @DisplayName("올바르지 않은 게시물")
-            public void testCase06() throws Exception {
-                String commentId = getCommentId(testCommentInfo00);
-                String boardId = getBoardId(testCommentInfo00.getPost().getBoard());
-                String invalidPostId = getPostId(testPostInfo01);
+            void testCase06() throws Exception {
+                // 계정 생성
+                TestAccountInfo account = setRandomAccount();
+                // 게시판 생성
+                TestBoardInfo board = setRandomBoard();
+                // 게시물 생성
+                TestPostInfo post = setRandomPost(board, account);
+                TestPostInfo otherPost = setRandomPost(board, account);
+                // 댓글 생성
+                TestCommentInfo comment = setRandomComment(post, account);
 
                 Map<String, Object> requestBody = new HashMap<>();
                 requestBody.put("type", "hate");
                 requestBody.put("reason", "This is a hateful comment.");
 
-                MockHttpServletRequestBuilder requestBuilder = post("/v1/report/comment/boards/{boardId}/posts/{postId}/comments/{commentId}", boardId, invalidPostId, commentId)
+                MockHttpServletRequestBuilder requestBuilder = post("/v1/report/comment/boards/{boardId}/posts/{postId}/comments/{commentId}", board.getId(), otherPost.getId(), comment.getId())
                         .content(getJsonString(requestBody))
                         .contentType(MediaType.APPLICATION_JSON);
-                setAuthToken(requestBuilder, common00);
+                setAuthToken(requestBuilder, account);
 
                 mockMvc.perform(requestBuilder)
                         .andExpect(status().is(404))
@@ -375,20 +433,26 @@ public class ReportControllerTest extends IricomTestSuite {
 
             @Test
             @DisplayName("올바르지 않은 댓글")
-            public void testCase07() throws Exception {
-                String commentId = getCommentId(testCommentInfo00);
-                String postId = getPostId(testCommentInfo00.getPost());
-                String boardId = getBoardId(testCommentInfo00.getPost().getBoard());
-                String invalidCommentId = getCommentId(testCommentInfo02);
+            void testCase07() throws Exception {
+                // 계정 생성
+                TestAccountInfo account = setRandomAccount();
+                // 게시판 생성
+                TestBoardInfo board = setRandomBoard();
+                // 게시물 생성
+                TestPostInfo post = setRandomPost(board, account);
+                TestPostInfo otherPost = setRandomPost(board, account);
+                // 댓글 생성
+                setRandomComment(post, account);
+                TestCommentInfo otherComment = setRandomComment(otherPost, account);
 
                 Map<String, Object> requestBody = new HashMap<>();
                 requestBody.put("type", "hate");
                 requestBody.put("reason", "This is a hateful comment.");
 
-                MockHttpServletRequestBuilder requestBuilder = post("/v1/report/comment/boards/{boardId}/posts/{postId}/comments/{commentId}", boardId, postId, invalidCommentId)
+                MockHttpServletRequestBuilder requestBuilder = post("/v1/report/comment/boards/{boardId}/posts/{postId}/comments/{commentId}", board.getId(), post.getId(), otherComment.getId())
                         .content(getJsonString(requestBody))
                         .contentType(MediaType.APPLICATION_JSON);
-                setAuthToken(requestBuilder, common00);
+                setAuthToken(requestBuilder, account);
 
                 mockMvc.perform(requestBuilder)
                         .andExpect(status().is(404))
@@ -399,19 +463,26 @@ public class ReportControllerTest extends IricomTestSuite {
 
             @Test
             @DisplayName("비활성화 게시판")
-            public void testCase08() throws Exception {
-                String commentId = getCommentId(testCommentInfo02);
-                String postId = getPostId(testCommentInfo02.getPost());
-                String boardId = getBoardId(testCommentInfo02.getPost().getBoard());
+            void testCase08() throws Exception {
+                // 계정 생성
+                TestAccountInfo account = setRandomAccount();
+                // 게시판 생성
+                TestBoardInfo board = setRandomBoard();
+                // 게시물 생성
+                TestPostInfo post = setRandomPost(board, account);
+                // 댓글 생성
+                TestCommentInfo comment = setRandomComment(post, account);
+                // 게시판 비활성화
+                setDisabledBoard(Collections.singletonList(board));
 
                 Map<String, Object> requestBody = new HashMap<>();
                 requestBody.put("type", "hate");
                 requestBody.put("reason", "This is a hateful comment.");
 
-                MockHttpServletRequestBuilder requestBuilder = post("/v1/report/comment/boards/{boardId}/posts/{postId}/comments/{commentId}", boardId, postId, commentId)
+                MockHttpServletRequestBuilder requestBuilder = post("/v1/report/comment/boards/{boardId}/posts/{postId}/comments/{commentId}", board.getId(), post.getId(), comment.getId())
                         .content(getJsonString(requestBody))
                         .contentType(MediaType.APPLICATION_JSON);
-                setAuthToken(requestBuilder, common00);
+                setAuthToken(requestBuilder, account);
 
                 mockMvc.perform(requestBuilder)
                         .andExpect(status().is(400))
@@ -422,19 +493,26 @@ public class ReportControllerTest extends IricomTestSuite {
 
             @Test
             @DisplayName("댓글을 허용하지 않은 게시물")
-            public void testCase09() throws Exception {
-                String commentId = getCommentId(testCommentInfo03);
-                String postId = getPostId(testCommentInfo03.getPost());
-                String boardId = getBoardId(testCommentInfo03.getPost().getBoard());
+            void testCase09() throws Exception {
+                // 계정 생성
+                TestAccountInfo account = setRandomAccount();
+                // 게시판 생성
+                TestBoardInfo board = setRandomBoard();
+                // 게시물 생성
+                TestPostInfo post = setRandomPost(board, account);
+                // 댓글 생성
+                TestCommentInfo comment = setRandomComment(post, account);
+                // 게시물 댓글 허용하지 않음
+                setDisabledCommentPost(Collections.singletonList(post));
 
                 Map<String, Object> requestBody = new HashMap<>();
                 requestBody.put("type", "hate");
                 requestBody.put("reason", "This is a hateful comment.");
 
-                MockHttpServletRequestBuilder requestBuilder = post("/v1/report/comment/boards/{boardId}/posts/{postId}/comments/{commentId}", boardId, postId, commentId)
+                MockHttpServletRequestBuilder requestBuilder = post("/v1/report/comment/boards/{boardId}/posts/{postId}/comments/{commentId}", board.getId(), post.getId(), comment.getId())
                         .content(getJsonString(requestBody))
                         .contentType(MediaType.APPLICATION_JSON);
-                setAuthToken(requestBuilder, common00);
+                setAuthToken(requestBuilder, account);
 
                 mockMvc.perform(requestBuilder)
                         .andExpect(status().is(400))

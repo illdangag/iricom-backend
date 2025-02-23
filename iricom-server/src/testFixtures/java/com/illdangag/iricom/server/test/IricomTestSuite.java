@@ -496,7 +496,6 @@ public abstract class IricomTestSuite {
      */
     protected void setDisabledCommentPost(List<TestPostInfo> testPostInfoList) {
         testPostInfoList.stream()
-                .filter(item -> !item.isAllowComment())
                 .forEach(this::updateDisabledAllowComment);
     }
 

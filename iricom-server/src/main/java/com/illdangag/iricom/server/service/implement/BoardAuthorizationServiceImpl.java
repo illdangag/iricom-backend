@@ -151,8 +151,8 @@ public class BoardAuthorizationServiceImpl extends IricomService implements Boar
         List<BoardInfo> boardInfoList = null;
         long total = 0;
 
-        List<Board> boardList = this.boardRepository.getBoardList(account, null, null, skip, limit);
-        total = this.boardRepository.getBoardCount(account, null, null);
+        List<Board> boardList = this.boardRepository.getBoardListInBoardAdmin(account, skip, limit);
+        total = this.boardRepository.getBoardCountInBoardAdmin(account);
         boardInfoList = boardList.stream()
                 .map((board) -> {
                     return new BoardInfo(board, null);

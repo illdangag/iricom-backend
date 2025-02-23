@@ -114,6 +114,7 @@ public class InformationControllerTest extends IricomTestSuite {
             TestAccountInfo account = setRandomAccount();
             // 게시판 생성
             setRandomBoard(Collections.singletonList(account), 5);
+            setRandomBoard(2);
 
             MockHttpServletRequestBuilder requestBuilder = get("/v1/infos/admin/boards");
             setAuthToken(requestBuilder, account);

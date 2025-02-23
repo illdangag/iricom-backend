@@ -34,6 +34,16 @@ public interface BoardRepository {
     long getBoardCount(Account account, String title, Boolean enabled);
 
     /**
+     * 게시판 관리자로 등록되어 있는 게시판 목록 조회
+     */
+    List<Board> getBoardListInBoardAdmin(Account account, int offset, int limit);
+
+    /**
+     * 게시판 관리자로 등록되어 있는 게시판 목록 수
+     */
+    long getBoardCountInBoardAdmin(Account account);
+
+    /**
      * 게시판 목록에 대해서 게시판 관리자 조회
      */
     List<BoardAdmin> getBoardAdminList(List<Board> boardList);
