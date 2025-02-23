@@ -1,11 +1,9 @@
 package com.illdangag.iricom.server.restdocs.v1;
 
-import com.illdangag.iricom.server.data.entity.type.PostState;
-import com.illdangag.iricom.server.data.entity.type.PostType;
 import com.illdangag.iricom.server.restdocs.snippet.IricomFieldsSnippet;
 import com.illdangag.iricom.server.test.IricomTestSuite;
+import com.illdangag.iricom.server.test.data.wrapper.TestAccountInfo;
 import com.illdangag.iricom.server.test.data.wrapper.TestBoardInfo;
-import com.illdangag.iricom.server.test.data.wrapper.TestPostInfo;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -41,8 +39,11 @@ public class InformationControllerTest extends IricomTestSuite {
     @Test
     @DisplayName("정보 조회")
     public void if001() throws Exception {
+        // 계정 생성
+        TestAccountInfo account = setRandomAccount();
+
         MockHttpServletRequestBuilder requestBuilder = get("/v1/infos");
-        setAuthToken(requestBuilder, common00);
+        setAuthToken(requestBuilder, account);
 
         List<FieldDescriptor> fieldDescriptorList = new LinkedList<>();
         fieldDescriptorList.addAll(IricomFieldsSnippet.getAccount(""));
@@ -52,6 +53,7 @@ public class InformationControllerTest extends IricomTestSuite {
                 .andDo(print())
                 .andDo(document("IF_001",
                         preprocessRequest(
+                                modifyUris().scheme("https").host("api.iricom.com").removePort(),
                                 removeHeaders("Authorization"),
                                 prettyPrint()
                         ),
@@ -68,21 +70,17 @@ public class InformationControllerTest extends IricomTestSuite {
     @Test
     @DisplayName("작성한 게시물 조회")
     public void if002() throws Exception {
-        TestBoardInfo testBoardInfo00 = TestBoardInfo.builder()
-                .title("testBoardInfo00").isEnabled(true).adminList(Collections.singletonList(allBoardAdmin)).build();
-
-        TestPostInfo testPostInfo00 = TestPostInfo.builder()
-                .title("testPostInfo00").content("content").isAllowComment(true)
-                .postType(PostType.POST).postState(PostState.PUBLISH)
-                .creator(common00).board(testBoardInfo00).build();
-        super.setBoard(Collections.singletonList(testBoardInfo00));
-        super.setPost(Collections.singletonList(testPostInfo00));
-        init();
+        // 계정 생성
+        TestAccountInfo account = setRandomAccount();
+        // 게시판 생성
+        TestBoardInfo board = setRandomBoard();
+        // 게시물 생성
+        setRandomPost(board, account, 9);
 
         MockHttpServletRequestBuilder requestBuilder = get("/v1/infos/posts")
                 .param("skip", "0")
                 .param("limit", "2");
-        setAuthToken(requestBuilder, common00);
+        setAuthToken(requestBuilder, account);
 
         List<FieldDescriptor> fieldDescriptorList = new LinkedList<>();
         fieldDescriptorList.addAll(IricomFieldsSnippet.getSearchList(""));
@@ -94,6 +92,7 @@ public class InformationControllerTest extends IricomTestSuite {
                 .andDo(print())
                 .andDo(document("IF_002",
                         preprocessRequest(
+                                modifyUris().scheme("https").host("api.iricom.com").removePort(),
                                 removeHeaders("Authorization"),
                                 prettyPrint()
                         ),
@@ -114,36 +113,26 @@ public class InformationControllerTest extends IricomTestSuite {
     @Test
     @DisplayName("내 계정이 관리자로 등록된 게시판 목록 조회")
     public void if003() throws Exception {
-        // 게시판
-        TestBoardInfo testBoardInfo00 = TestBoardInfo.builder()
-                .title("testBoardInfo00").isEnabled(true).undisclosed(false)
-                .adminList(Collections.singletonList(common00))
-                .build();
-        TestBoardInfo testBoardInfo01 = TestBoardInfo.builder()
-                .title("testBoardInfo01").isEnabled(true).undisclosed(false)
-                .adminList(Collections.singletonList(common00))
-                .build();
-        TestBoardInfo testBoardInfo02 = TestBoardInfo.builder()
-                .title("testBoardInfo02").isEnabled(true).undisclosed(false)
-                .adminList(Collections.singletonList(common00))
-                .build();
-        addTestBoardInfo(testBoardInfo00, testBoardInfo01, testBoardInfo02);
-        init();
-
-        List<FieldDescriptor> fieldDescriptorList = new LinkedList<>();
-        fieldDescriptorList.addAll(IricomFieldsSnippet.getSearchList(""));
-        fieldDescriptorList.addAll(IricomFieldsSnippet.getBoard("boards.[]."));
+        // 계정 생성
+        TestAccountInfo account = setRandomAccount();
+        // 게시판 생성
+        setRandomBoard(Collections.singletonList(account));
 
         MockHttpServletRequestBuilder requestBuilder = get("/v1/infos/admin/boards")
                 .param("skip", "0")
                 .param("limit", "20");
-        setAuthToken(requestBuilder, common00);
+        setAuthToken(requestBuilder, account);
+
+        List<FieldDescriptor> fieldDescriptorList = new LinkedList<>();
+        fieldDescriptorList.addAll(IricomFieldsSnippet.getSearchList(""));
+        fieldDescriptorList.addAll(IricomFieldsSnippet.getBoard("boards.[]."));
 
         mockMvc.perform(requestBuilder)
                 .andExpect(status().is(200))
                 .andDo(print())
                 .andDo(document("IF_003",
                         preprocessRequest(
+                                modifyUris().scheme("https").host("api.iricom.com").removePort(),
                                 removeHeaders("Authorization"),
                                 prettyPrint()
                         ),

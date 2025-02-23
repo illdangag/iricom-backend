@@ -2,6 +2,7 @@ package com.illdangag.iricom.server.restdocs.v1;
 
 import com.illdangag.iricom.server.restdocs.snippet.IricomFieldsSnippet;
 import com.illdangag.iricom.server.test.IricomTestSuite;
+import com.illdangag.iricom.server.test.data.wrapper.TestAccountInfo;
 import com.illdangag.iricom.server.test.data.wrapper.TestPersonalMessageInfo;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -19,13 +20,10 @@ import java.util.Map;
 
 import static org.springframework.restdocs.headers.HeaderDocumentation.requestHeaders;
 import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document;
-import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.get;
-import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.post;
-import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.delete;
+import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.*;
 import static org.springframework.restdocs.operation.preprocess.Preprocessors.*;
 import static org.springframework.restdocs.payload.PayloadDocumentation.*;
 import static org.springframework.restdocs.request.RequestDocumentation.*;
-import static org.springframework.restdocs.request.RequestDocumentation.parameterWithName;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -41,17 +39,19 @@ public class PersonalMessageControllerTest extends IricomTestSuite {
     @Test
     @DisplayName("개인 쪽지 전송")
     public void pm001() throws Exception {
-        String receiveAccountId = getAccountId(common01);
+        // 계정 생성
+        TestAccountInfo sender = setRandomAccount();
+        TestAccountInfo receiver = setRandomAccount();
 
         Map<String, Object> requestBody = new HashMap<>();
         requestBody.put("title", "Title");
         requestBody.put("message", "Message");
-        requestBody.put("receiveAccountId", receiveAccountId);
+        requestBody.put("receiveAccountId", receiver.getId());
 
         MockHttpServletRequestBuilder requestBuilder = post("/v1/personal/messages")
                 .content(getJsonString(requestBody))
                 .contentType(MediaType.APPLICATION_JSON);
-        setAuthToken(requestBuilder, common00);
+        setAuthToken(requestBuilder, sender);
 
         List<FieldDescriptor> fieldDescriptorList = new LinkedList<>();
         fieldDescriptorList.addAll(IricomFieldsSnippet.getPersonalMessage(""));
@@ -61,6 +61,7 @@ public class PersonalMessageControllerTest extends IricomTestSuite {
                 .andDo(print())
                 .andDo(document("PM_001",
                         preprocessRequest(
+                                modifyUris().scheme("https").host("api.iricom.com").removePort(),
                                 removeHeaders("Authorization"),
                                 prettyPrint()
                         ),
@@ -82,18 +83,16 @@ public class PersonalMessageControllerTest extends IricomTestSuite {
     @Test
     @DisplayName("수신 개인 쪽지 목록 조회")
     public void pm002() throws Exception {
-        TestPersonalMessageInfo testPersonalMessageInfo = TestPersonalMessageInfo.builder()
-                .sender(common01).receiver(common00)
-                .title("Title").message("Message")
-                .build();
-
-        addTestPersonalMessageInfo(testPersonalMessageInfo);
-        init();
+        // 계정 생성
+        TestAccountInfo sender = setRandomAccount();
+        TestAccountInfo receiver = setRandomAccount();
+        // 개인 쪽지 전송
+        this.setRandomPersonalMessage(sender, receiver, 5);
 
         MockHttpServletRequestBuilder requestBuilder = get("/v1/personal/messages/receive")
                 .param("skip", "0")
                 .param("limit", "20");
-        setAuthToken(requestBuilder, common00);
+        setAuthToken(requestBuilder, receiver);
 
         List<FieldDescriptor> fieldDescriptorList = new LinkedList<>();
         fieldDescriptorList.addAll(IricomFieldsSnippet.getSearchList(""));
@@ -104,6 +103,7 @@ public class PersonalMessageControllerTest extends IricomTestSuite {
                 .andDo(print())
                 .andDo(document("PM_002",
                         preprocessRequest(
+                                modifyUris().scheme("https").host("api.iricom.com").removePort(),
                                 removeHeaders("Authorization"),
                                 prettyPrint()
                         ),
@@ -124,20 +124,16 @@ public class PersonalMessageControllerTest extends IricomTestSuite {
     }
 
     @Test
-    @DisplayName("수신 개인 쪽지 목록 조회")
+    @DisplayName("수신 개인 쪽지 정보 조회")
     public void pm003() throws Exception {
-        TestPersonalMessageInfo testPersonalMessageInfo = TestPersonalMessageInfo.builder()
-                .sender(common01).receiver(common00)
-                .title("Title").message("Message")
-                .build();
+        // 계정 생성
+        TestAccountInfo sender = setRandomAccount();
+        TestAccountInfo receiver = setRandomAccount();
+        // 개인 쪽지 전송
+        TestPersonalMessageInfo personalMessage = this.setRandomPersonalMessage(sender, receiver);
 
-        addTestPersonalMessageInfo(testPersonalMessageInfo);
-        init();
-
-        String personalMessageInfoId = getPersonalMessageId(testPersonalMessageInfo);
-
-        MockHttpServletRequestBuilder requestBuilder = get("/v1/personal/messages/receive/{personalMessageId}", personalMessageInfoId);
-        setAuthToken(requestBuilder, common00);
+        MockHttpServletRequestBuilder requestBuilder = get("/v1/personal/messages/receive/{personalMessageId}", personalMessage.getId());
+        setAuthToken(requestBuilder, receiver);
 
         List<FieldDescriptor> fieldDescriptorList = new LinkedList<>();
         fieldDescriptorList.addAll(IricomFieldsSnippet.getPersonalMessage(""));
@@ -147,6 +143,7 @@ public class PersonalMessageControllerTest extends IricomTestSuite {
                 .andDo(print())
                 .andDo(document("PM_003",
                         preprocessRequest(
+                                modifyUris().scheme("https").host("api.iricom.com").removePort(),
                                 removeHeaders("Authorization"),
                                 prettyPrint()
                         ),
@@ -166,20 +163,18 @@ public class PersonalMessageControllerTest extends IricomTestSuite {
     }
 
     @Test
-    @DisplayName("송신 개인 쪽지 목록 조회")
+    @DisplayName("발신 개인 쪽지 목록 조회")
     public void pm004() throws Exception {
-        TestPersonalMessageInfo testPersonalMessageInfo = TestPersonalMessageInfo.builder()
-                .sender(common01).receiver(common00)
-                .title("Title").message("Message")
-                .build();
-
-        addTestPersonalMessageInfo(testPersonalMessageInfo);
-        init();
+        // 계정 생성
+        TestAccountInfo sender = setRandomAccount();
+        TestAccountInfo receiver = setRandomAccount();
+        // 개인 쪽지 발신
+        setRandomPersonalMessage(sender, receiver, 5);
 
         MockHttpServletRequestBuilder requestBuilder = get("/v1/personal/messages/send")
                 .param("skip", "0")
                 .param("limit", "20");
-        setAuthToken(requestBuilder, common01);
+        setAuthToken(requestBuilder, sender);
 
         List<FieldDescriptor> fieldDescriptorList = new LinkedList<>();
         fieldDescriptorList.addAll(IricomFieldsSnippet.getSearchList(""));
@@ -190,6 +185,7 @@ public class PersonalMessageControllerTest extends IricomTestSuite {
                 .andDo(print())
                 .andDo(document("PM_004",
                         preprocessRequest(
+                                modifyUris().scheme("https").host("api.iricom.com").removePort(),
                                 removeHeaders("Authorization"),
                                 prettyPrint()
                         ),
@@ -210,20 +206,16 @@ public class PersonalMessageControllerTest extends IricomTestSuite {
     }
 
     @Test
-    @DisplayName("송신 개인 쪽지 목록 조회")
+    @DisplayName("발신 개인 쪽지 정보 조회")
     public void pm005() throws Exception {
-        TestPersonalMessageInfo testPersonalMessageInfo = TestPersonalMessageInfo.builder()
-                .sender(common01).receiver(common00)
-                .title("Title").message("Message")
-                .build();
+        // 계정 생성
+        TestAccountInfo sender = setRandomAccount();
+        TestAccountInfo receiver = setRandomAccount();
+        // 개인 쪽지 발신
+        TestPersonalMessageInfo personalMessage = setRandomPersonalMessage(sender, receiver);
 
-        addTestPersonalMessageInfo(testPersonalMessageInfo);
-        init();
-
-        String personalMessageInfoId = getPersonalMessageId(testPersonalMessageInfo);
-
-        MockHttpServletRequestBuilder requestBuilder = get("/v1/personal/messages/send/{personalMessageId}", personalMessageInfoId);
-        setAuthToken(requestBuilder, common01);
+        MockHttpServletRequestBuilder requestBuilder = get("/v1/personal/messages/send/{personalMessageId}", personalMessage.getId());
+        setAuthToken(requestBuilder, sender);
 
         List<FieldDescriptor> fieldDescriptorList = new LinkedList<>();
         fieldDescriptorList.addAll(IricomFieldsSnippet.getPersonalMessage(""));
@@ -233,6 +225,7 @@ public class PersonalMessageControllerTest extends IricomTestSuite {
                 .andDo(print())
                 .andDo(document("PM_005",
                         preprocessRequest(
+                                modifyUris().scheme("https").host("api.iricom.com").removePort(),
                                 removeHeaders("Authorization"),
                                 prettyPrint()
                         ),
@@ -254,18 +247,14 @@ public class PersonalMessageControllerTest extends IricomTestSuite {
     @Test
     @DisplayName("개인 쪽지 삭제")
     public void pm006() throws Exception {
-        TestPersonalMessageInfo testPersonalMessageInfo = TestPersonalMessageInfo.builder()
-                .sender(common01).receiver(common00)
-                .title("Title").message("Message")
-                .build();
+        // 계정 생성
+        TestAccountInfo sender = setRandomAccount();
+        TestAccountInfo receiver = setRandomAccount();
+        // 개인 쪽지 발신
+        TestPersonalMessageInfo personalMessage = setRandomPersonalMessage(sender, receiver);
 
-        addTestPersonalMessageInfo(testPersonalMessageInfo);
-        init();
-
-        String personalMessageInfoId = getPersonalMessageId(testPersonalMessageInfo);
-
-        MockHttpServletRequestBuilder requestBuilder = delete("/v1/personal/messages/{personalMessageId}", personalMessageInfoId);
-        setAuthToken(requestBuilder, common00);
+        MockHttpServletRequestBuilder requestBuilder = delete("/v1/personal/messages/{personalMessageId}", personalMessage.getId());
+        setAuthToken(requestBuilder, sender);
 
         List<FieldDescriptor> fieldDescriptorList = new LinkedList<>();
         fieldDescriptorList.addAll(IricomFieldsSnippet.getPersonalMessage(""));
@@ -275,6 +264,7 @@ public class PersonalMessageControllerTest extends IricomTestSuite {
                 .andDo(print())
                 .andDo(document("PM_006",
                         preprocessRequest(
+                                modifyUris().scheme("https").host("api.iricom.com").removePort(),
                                 removeHeaders("Authorization"),
                                 prettyPrint()
                         ),

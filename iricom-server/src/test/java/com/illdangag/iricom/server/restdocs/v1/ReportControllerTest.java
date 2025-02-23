@@ -1,7 +1,5 @@
 package com.illdangag.iricom.server.restdocs.v1;
 
-import com.illdangag.iricom.server.data.entity.type.PostState;
-import com.illdangag.iricom.server.data.entity.type.PostType;
 import com.illdangag.iricom.server.data.entity.type.ReportType;
 import com.illdangag.iricom.server.restdocs.snippet.IricomFieldsSnippet;
 import com.illdangag.iricom.server.test.IricomTestSuite;
@@ -15,7 +13,10 @@ import org.springframework.restdocs.payload.FieldDescriptor;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilder;
 
-import java.util.*;
+import java.util.HashMap;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
 
 import static org.springframework.restdocs.headers.HeaderDocumentation.requestHeaders;
 import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document;
@@ -32,84 +33,29 @@ public class ReportControllerTest extends IricomTestSuite {
     @Autowired
     private MockMvc mockMvc;
 
-    private final TestBoardInfo testBoardInfo00 = TestBoardInfo.builder()
-            .title("testBoardInfo00").isEnabled(true).adminList(Collections.singletonList(allBoardAdmin)).build();
-
-    private final TestPostInfo testPostInfo00 = TestPostInfo.builder()
-            .title("testPostInfo00").content("testPostInfo00").isAllowComment(true)
-            .postType(PostType.POST).postState(PostState.PUBLISH)
-            .creator(allBoardAdmin).board(testBoardInfo00).build();
-
-    private final TestPostInfo testPostInfo01 = TestPostInfo.builder()
-            .title("testPostInfo01").content("testPostInfo01").isAllowComment(true)
-            .postType(PostType.POST).postState(PostState.PUBLISH)
-            .creator(allBoardAdmin).board(testBoardInfo00).build();
-
-    private final TestPostInfo testPostInfo02 = TestPostInfo.builder()
-            .title("testPostInfo02").content("testPostInfo02").isAllowComment(true)
-            .postType(PostType.POST).postState(PostState.PUBLISH)
-            .creator(allBoardAdmin).board(testBoardInfo00).build();
-
-    private final TestPostReportInfo testPostReportInfo00 = TestPostReportInfo.builder()
-            .type(ReportType.HATE).reason("hate report")
-            .reportAccount(common00).post(testPostInfo02).build();
-
-    private final TestCommentInfo testCommentInfo00 = TestCommentInfo.builder()
-            .content("testCommentInfo00")
-            .creator(common00).post(testPostInfo02)
-            .build();
-    private final TestCommentInfo testCommentInfo01 = TestCommentInfo.builder()
-            .content("testCommentInfo01")
-            .creator(common00).post(testPostInfo02).referenceComment(testCommentInfo00)
-            .build();
-    private final TestCommentInfo testCommentInfo02 = TestCommentInfo.builder()
-            .content("testCommentInfo02")
-            .creator(common00).post(testPostInfo02)
-            .build();
-
-    private final TestCommentReportInfo testCommentReportInfo00 = TestCommentReportInfo.builder()
-            .type(ReportType.HATE).reason("hate report")
-            .reportAccount(common00).comment(testCommentInfo01).build();
-
     @Autowired
     public ReportControllerTest(ApplicationContext context) {
         super(context);
-
-        List<TestBoardInfo> testBoardInfoList = Arrays.asList(testBoardInfo00);
-        List<TestPostInfo> testPostInfoList = Arrays.asList(testPostInfo00, testPostInfo01, testPostInfo02);
-
-        List<TestPostReportInfo> testPostReportInfoList = new ArrayList<>();
-        testPostReportInfoList.addAll(super.createTestPostReportInfo(testPostInfo01));
-        testPostReportInfoList.add(testPostReportInfo00);
-
-        List<TestCommentInfo> testCommentInfoList = Arrays.asList(testCommentInfo00, testCommentInfo01, testCommentInfo02);
-
-        List<TestCommentReportInfo> testCommentReportInfoList = new ArrayList<>();
-        testCommentReportInfoList.addAll(super.createTestCommentReportInfo(testCommentInfo02));
-        testCommentReportInfoList.add(testCommentReportInfo00);
-
-        super.setBoard(testBoardInfoList);
-        super.setPost(testPostInfoList);
-        super.setComment(testCommentInfoList);
-
-        super.setPostReport(testPostReportInfoList);
-        super.setCommentReport(testCommentReportInfoList);
     }
 
     @Test
     @DisplayName("게시물 신고")
     public void rp001() throws Exception {
-        String boardId = getBoardId(testPostInfo00.getBoard());
-        String postId = getPostId(testPostInfo00);
+        // 계정 생성
+        TestAccountInfo account = setRandomAccount();
+        // 게시판 생성
+        TestBoardInfo board = setRandomBoard();
+        // 게시물 생성
+        TestPostInfo post = setRandomPost(board, account);
 
         Map<String, Object> requestBody = new HashMap<>();
         requestBody.put("type", "hate");
         requestBody.put("reason", "This is a hateful post.");
 
-        MockHttpServletRequestBuilder requestBuilder = post("/v1/report/post/boards/{boardId}/posts/{postId}", boardId, postId)
+        MockHttpServletRequestBuilder requestBuilder = post("/v1/report/post/boards/{boardId}/posts/{postId}", board.getId(), post.getId())
                 .content(getJsonString(requestBody))
                 .contentType(MediaType.APPLICATION_JSON);
-        setAuthToken(requestBuilder, common00);
+        setAuthToken(requestBuilder, account);
 
         List<FieldDescriptor> fieldDescriptorList = new LinkedList<>();
         fieldDescriptorList.addAll(IricomFieldsSnippet.getPostReport(""));
@@ -122,6 +68,7 @@ public class ReportControllerTest extends IricomTestSuite {
                 .andDo(print())
                 .andDo(document("RP_001",
                         preprocessRequest(
+                                modifyUris().scheme("https").host("api.iricom.com").removePort(),
                                 removeHeaders("Authorization"),
                                 prettyPrint()
                         ),
@@ -146,14 +93,23 @@ public class ReportControllerTest extends IricomTestSuite {
     @Test
     @DisplayName("게시물 신고 목록 조회 (게시판)")
     public void rp002() throws Exception {
-        String boardId = getBoardId(testBoardInfo00);
+        // 계정 생성
+        TestAccountInfo account = setRandomAccount();
+        // 게시판 생성
+        TestBoardInfo board = setRandomBoard();
+        // 게시물 생성
+        List<TestPostInfo> postLIst = setRandomPost(board, account, 10);
+        // 게시물 신고
+        for (TestPostInfo post : postLIst) {
+            setRandomPostReport(post, account, ReportType.HATE, "report comment");
+        }
 
-        MockHttpServletRequestBuilder requestBuilder = get("/v1/report/post/boards/{boardId}", boardId)
+        MockHttpServletRequestBuilder requestBuilder = get("/v1/report/post/boards/{boardId}", board.getId())
                 .param("skip", "0")
                 .param("limit", "5")
                 .param("type", "hate")
                 .param("reason", "report");
-        setAuthToken(requestBuilder, allBoardAdmin);
+        setAuthToken(requestBuilder, systemAdmin);
 
         List<FieldDescriptor> fieldDescriptorList = new LinkedList<>();
         fieldDescriptorList.addAll(IricomFieldsSnippet.getSearchList(""));
@@ -167,6 +123,7 @@ public class ReportControllerTest extends IricomTestSuite {
                 .andDo(print())
                 .andDo(document("RP_002",
                         preprocessRequest(
+                                modifyUris().scheme("https").host("api.iricom.com").removePort(),
                                 removeHeaders("Authorization"),
                                 prettyPrint()
                         ),
@@ -194,15 +151,21 @@ public class ReportControllerTest extends IricomTestSuite {
     @Test
     @DisplayName("게시물 신고 목록 조회 (게시판, 게시물)")
     public void rp003() throws Exception {
-        String boardId = getBoardId(testPostInfo01.getBoard());
-        String postId = getPostId(testPostInfo01);
+        // 계정 생성
+        TestAccountInfo account = setRandomAccount();
+        // 게시판 생성
+        TestBoardInfo board = setRandomBoard();
+        // 게시물 생성
+        TestPostInfo post = setRandomPost(board, account);
+        // 게시물 신고
+        setRandomPostReport(post, account, ReportType.HATE, "report comment");
 
-        MockHttpServletRequestBuilder requestBuilder = get("/v1/report/post/boards/{boardId}/posts/{postId}", boardId, postId)
+        MockHttpServletRequestBuilder requestBuilder = get("/v1/report/post/boards/{boardId}/posts/{postId}", board.getId(), post.getId())
                 .param("skip", "0")
                 .param("limit", "5")
                 .param("type", "hate")
                 .param("reason", "report");
-        setAuthToken(requestBuilder, allBoardAdmin);
+        setAuthToken(requestBuilder, systemAdmin);
 
         List<FieldDescriptor> fieldDescriptorList = new LinkedList<>();
         fieldDescriptorList.addAll(IricomFieldsSnippet.getSearchList(""));
@@ -216,6 +179,7 @@ public class ReportControllerTest extends IricomTestSuite {
                 .andDo(print())
                 .andDo(document("RP_003",
                         preprocessRequest(
+                                modifyUris().scheme("https").host("api.iricom.com").removePort(),
                                 removeHeaders("Authorization"),
                                 prettyPrint()
                         ),
@@ -244,12 +208,17 @@ public class ReportControllerTest extends IricomTestSuite {
     @Test
     @DisplayName("게시물 신고 정보 조회")
     public void rp004() throws Exception {
-        String postReportId = getPostReportId(testPostReportInfo00);
-        String postId = getPostId(testPostReportInfo00.getPost());
-        String boardId = getBoardId(testPostReportInfo00.getPost().getBoard());
+        // 계정 생성
+        TestAccountInfo account = setRandomAccount();
+        // 게시판 생성
+        TestBoardInfo board = setRandomBoard();
+        // 게시물 생성
+        TestPostInfo post = setRandomPost(board, account);
+        // 게시물 신고
+        TestPostReportInfo postReport = setRandomPostReport(post, account);
 
-        MockHttpServletRequestBuilder requestBuilder = get("/v1/report/post/boards/{boardId}/posts/{postId}/reports/{reportId}", boardId, postId, postReportId);
-        setAuthToken(requestBuilder, allBoardAdmin);
+        MockHttpServletRequestBuilder requestBuilder = get("/v1/report/post/boards/{boardId}/posts/{postId}/reports/{reportId}", board.getId(), post.getId(), postReport.getId());
+        setAuthToken(requestBuilder, systemAdmin);
 
         List<FieldDescriptor> fieldDescriptorList = new LinkedList<>();
         fieldDescriptorList.addAll(IricomFieldsSnippet.getPostReport(""));
@@ -262,6 +231,7 @@ public class ReportControllerTest extends IricomTestSuite {
                 .andDo(print())
                 .andDo(document("RP_004",
                         preprocessRequest(
+                                modifyUris().scheme("https").host("api.iricom.com").removePort(),
                                 removeHeaders("Authorization"),
                                 prettyPrint()
                         ),
@@ -285,18 +255,23 @@ public class ReportControllerTest extends IricomTestSuite {
     @Test
     @DisplayName("댓글 신고")
     public void rc001() throws Exception {
-        String commentId = getCommentId(testCommentInfo02);
-        String postId = getPostId(testCommentInfo02.getPost());
-        String boardId = getBoardId(testCommentInfo02.getPost().getBoard());
+        // 계정 생성
+        TestAccountInfo account = setRandomAccount();
+        // 게시판 생성
+        TestBoardInfo board = setRandomBoard();
+        // 게시물 생성
+        TestPostInfo post = setRandomPost(board, account);
+        // 댓글 생성
+        TestCommentInfo comment = setRandomComment(post, account);
 
         Map<String, Object> requestBody = new HashMap<>();
         requestBody.put("type", "hate");
         requestBody.put("reason", "This is a hateful post.");
 
-        MockHttpServletRequestBuilder requestBuilder = post("/v1/report/comment/boards/{boardId}/posts/{postId}/comments/{commentId}", boardId, postId, commentId)
+        MockHttpServletRequestBuilder requestBuilder = post("/v1/report/comment/boards/{boardId}/posts/{postId}/comments/{commentId}", board.getId(), post.getId(), comment.getId())
                 .content(getJsonString(requestBody))
                 .contentType(MediaType.APPLICATION_JSON);
-        setAuthToken(requestBuilder, allBoardAdmin);
+        setAuthToken(requestBuilder, account);
 
         List<FieldDescriptor> fieldDescriptorList = new LinkedList<>();
         fieldDescriptorList.addAll(IricomFieldsSnippet.getCommentReport(""));
@@ -309,6 +284,7 @@ public class ReportControllerTest extends IricomTestSuite {
                 .andDo(print())
                 .andDo(document("RC_001",
                         preprocessRequest(
+                                modifyUris().scheme("https").host("api.iricom.com").removePort(),
                                 removeHeaders("Authorization"),
                                 prettyPrint()
                         ),
@@ -334,16 +310,32 @@ public class ReportControllerTest extends IricomTestSuite {
     }
 
     @Test
-    @DisplayName("게시물 신고 목록 조회 (게시판)")
+    @DisplayName("댓글 신고 목록 조회 (게시판)")
     public void rc002() throws Exception {
-        String boardId = getBoardId(testCommentInfo02.getPost().getBoard());
+        // 계정 생성
+        TestAccountInfo account = setRandomAccount();
+        // 게시판 생성
+        TestBoardInfo board = setRandomBoard();
+        // 게시물 생성
+        TestPostInfo post00 = setRandomPost(board, account);
+        TestPostInfo post01 = setRandomPost(board, account);
+        // 댓글 생성
+        List<TestCommentInfo> commentList00 = setRandomComment(post00, account, 5);
+        List<TestCommentInfo> commentList01 = setRandomComment(post01, account, 10);
+        // 댓글 신고
+        for (TestCommentInfo comment : commentList00) {
+            setRandomCommentReport(comment, account, ReportType.HATE, "report");
+        }
+        for (TestCommentInfo comment : commentList01) {
+            setRandomCommentReport(comment, account);
+        }
 
-        MockHttpServletRequestBuilder requestBuilder = get("/v1/report/comment/boards/{boardId}", boardId)
+        MockHttpServletRequestBuilder requestBuilder = get("/v1/report/comment/boards/{boardId}", board.getId())
                 .param("skip", "0")
                 .param("limit", "5")
                 .param("type", "hate")
                 .param("reason", "report");
-        setAuthToken(requestBuilder, allBoardAdmin);
+        setAuthToken(requestBuilder, systemAdmin);
 
         List<FieldDescriptor> fieldDescriptorList = new LinkedList<>();
         fieldDescriptorList.addAll(IricomFieldsSnippet.getSearchList(""));
@@ -357,6 +349,7 @@ public class ReportControllerTest extends IricomTestSuite {
                 .andDo(print())
                 .andDo(document("RC_002",
                         preprocessRequest(
+                                modifyUris().scheme("https").host("api.iricom.com").removePort(),
                                 removeHeaders("Authorization"),
                                 prettyPrint()
                         ),
@@ -382,17 +375,27 @@ public class ReportControllerTest extends IricomTestSuite {
     }
 
     @Test
-    @DisplayName("게시물 신고 목록 조회 (게시판, 게시물)")
+    @DisplayName("댓글 신고 목록 조회 (게시판, 게시물)")
     public void rc003() throws Exception {
-        String postId = getPostId(testCommentInfo02.getPost());
-        String boardId = getBoardId(testCommentInfo02.getPost().getBoard());
+        // 계정 생성
+        TestAccountInfo account = setRandomAccount();
+        // 게시판 생성
+        TestBoardInfo board = setRandomBoard();
+        // 게시물 생성
+        TestPostInfo post = setRandomPost(board, account);
+        // 댓글 생성
+        List<TestCommentInfo> commentList = setRandomComment(post, account, 5);
+        // 댓글 신고
+        for (TestCommentInfo comment : commentList) {
+            setRandomCommentReport(comment, account, ReportType.HATE, "report");
+        }
 
-        MockHttpServletRequestBuilder requestBuilder = get("/v1/report/comment/boards/{boardId}/posts/{postId}", boardId, postId)
+        MockHttpServletRequestBuilder requestBuilder = get("/v1/report/comment/boards/{boardId}/posts/{postId}", board.getId(), post.getId())
                 .param("skip", "0")
                 .param("limit", "5")
                 .param("type", "hate")
                 .param("reason", "report");
-        setAuthToken(requestBuilder, allBoardAdmin);
+        setAuthToken(requestBuilder, systemAdmin);
 
         List<FieldDescriptor> fieldDescriptorList = new LinkedList<>();
         fieldDescriptorList.addAll(IricomFieldsSnippet.getSearchList(""));
@@ -406,6 +409,7 @@ public class ReportControllerTest extends IricomTestSuite {
                 .andDo(print())
                 .andDo(document("RC_003",
                         preprocessRequest(
+                                modifyUris().scheme("https").host("api.iricom.com").removePort(),
                                 removeHeaders("Authorization"),
                                 prettyPrint()
                         ),
@@ -434,16 +438,23 @@ public class ReportControllerTest extends IricomTestSuite {
     @Test
     @DisplayName("게시물 신고 목록 조회 (게시판, 게시물, 댓글)")
     public void rc004() throws Exception {
-        String commentId = getCommentId(testCommentInfo02);
-        String postId = getPostId(testCommentInfo02.getPost());
-        String boardId = getBoardId(testCommentInfo02.getPost().getBoard());
+        // 계정 생성
+        TestAccountInfo account = setRandomAccount();
+        // 게시판 생성
+        TestBoardInfo board = setRandomBoard();
+        // 게시물 생성
+        TestPostInfo post = setRandomPost(board, account);
+        // 댓글 생성
+        TestCommentInfo comment = setRandomComment(post, account);
+        // 댓글 신고
+        setRandomCommentReport(comment, account, ReportType.HATE, "report");
 
-        MockHttpServletRequestBuilder requestBuilder = get("/v1/report/comment/boards/{boardId}/posts/{postId}/comments/{commentId}", boardId, postId, commentId)
+        MockHttpServletRequestBuilder requestBuilder = get("/v1/report/comment/boards/{boardId}/posts/{postId}/comments/{commentId}", board.getId(), post.getId(), comment.getId())
                 .param("skip", "0")
                 .param("limit", "5")
                 .param("type", "hate")
                 .param("reason", "report");
-        setAuthToken(requestBuilder, allBoardAdmin);
+        setAuthToken(requestBuilder, systemAdmin);
 
         List<FieldDescriptor> fieldDescriptorList = new LinkedList<>();
         fieldDescriptorList.addAll(IricomFieldsSnippet.getSearchList(""));
@@ -457,6 +468,7 @@ public class ReportControllerTest extends IricomTestSuite {
                 .andDo(print())
                 .andDo(document("RC_004",
                         preprocessRequest(
+                                modifyUris().scheme("https").host("api.iricom.com").removePort(),
                                 removeHeaders("Authorization"),
                                 prettyPrint()
                         ),
@@ -486,13 +498,19 @@ public class ReportControllerTest extends IricomTestSuite {
     @Test
     @DisplayName("게시물 신고 정보 조회")
     public void rc005() throws Exception {
-        String commentReportId = getCommentReportId(testCommentReportInfo00);
-        String commentId = getCommentId(testCommentReportInfo00.getComment());
-        String postId = getPostId(testCommentReportInfo00.getComment().getPost());
-        String boardId = getBoardId(testCommentReportInfo00.getComment().getPost().getBoard());
+        // 계정 생성
+        TestAccountInfo account = setRandomAccount();
+        // 게시판 생성
+        TestBoardInfo board = setRandomBoard();
+        // 게시물 생성
+        TestPostInfo post = setRandomPost(board, account);
+        // 댓글 생성
+        TestCommentInfo comment = setRandomComment(post, account);
+        // 댓글 신고
+        TestCommentReportInfo commentReport = setRandomCommentReport(comment, account, ReportType.HATE, "report");
 
-        MockHttpServletRequestBuilder requestBuilder = get("/v1/report/comment/boards/{boardId}/posts/{postId}/comments/{commentId}/reports/{reportId}", boardId, postId, commentId, commentReportId);
-        setAuthToken(requestBuilder, allBoardAdmin);
+        MockHttpServletRequestBuilder requestBuilder = get("/v1/report/comment/boards/{boardId}/posts/{postId}/comments/{commentId}/reports/{reportId}", board.getId(), post.getId(), comment.getId(), commentReport.getId());
+        setAuthToken(requestBuilder, systemAdmin);
 
         List<FieldDescriptor> fieldDescriptorList = new LinkedList<>();
         fieldDescriptorList.addAll(IricomFieldsSnippet.getCommentReport(""));
@@ -505,6 +523,7 @@ public class ReportControllerTest extends IricomTestSuite {
                 .andDo(print())
                 .andDo(document("RC_005",
                         preprocessRequest(
+                                modifyUris().scheme("https").host("api.iricom.com").removePort(),
                                 removeHeaders("Authorization"),
                                 prettyPrint()
                         ),

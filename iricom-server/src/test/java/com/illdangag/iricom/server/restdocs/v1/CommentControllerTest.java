@@ -1,9 +1,8 @@
 package com.illdangag.iricom.server.restdocs.v1;
 
-import com.illdangag.iricom.server.data.entity.type.PostState;
-import com.illdangag.iricom.server.data.entity.type.PostType;
 import com.illdangag.iricom.server.restdocs.snippet.IricomFieldsSnippet;
 import com.illdangag.iricom.server.test.IricomTestSuite;
+import com.illdangag.iricom.server.test.data.wrapper.TestAccountInfo;
 import com.illdangag.iricom.server.test.data.wrapper.TestBoardInfo;
 import com.illdangag.iricom.server.test.data.wrapper.TestCommentInfo;
 import com.illdangag.iricom.server.test.data.wrapper.TestPostInfo;
@@ -16,7 +15,10 @@ import org.springframework.restdocs.payload.FieldDescriptor;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilder;
 
-import java.util.*;
+import java.util.HashMap;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
 
 import static org.springframework.restdocs.headers.HeaderDocumentation.requestHeaders;
 import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document;
@@ -32,56 +34,31 @@ public class CommentControllerTest extends IricomTestSuite {
     @Autowired
     MockMvc mockMvc;
 
-    private static final TestBoardInfo testBoardInfo00 = TestBoardInfo.builder()
-            .title("testBoardInfo00").isEnabled(true).adminList(Collections.singletonList(allBoardAdmin)).build();
-
-    private static final TestPostInfo testPostInfo00 = TestPostInfo.builder()
-            .title("testPostInfo00").content("content").isAllowComment(true)
-            .postType(PostType.POST).postState(PostState.PUBLISH)
-            .creator(common00).board(testBoardInfo00).build();
-
-    private static final TestCommentInfo testCommentInfo00 = TestCommentInfo.builder()
-            .content("testCommentInfo00").creator(common00).post(testPostInfo00)
-            .build();
-    private static final TestCommentInfo testCommentInfo01 = TestCommentInfo.builder()
-            .content("testCommentInfo01").creator(common00).post(testPostInfo00)
-            .build();
-    private static final TestCommentInfo testCommentInfo02 = TestCommentInfo.builder()
-            .content("testCommentInfo02").creator(common00).post(testPostInfo00)
-            .build();
-    private static final TestCommentInfo testCommentInfo03 = TestCommentInfo.builder()
-            .content("testCommentInfo03").creator(common00).post(testPostInfo00)
-            .referenceComment(testCommentInfo00).build();
-
     @Autowired
     public CommentControllerTest(ApplicationContext context) {
         super(context);
-
-        List<TestBoardInfo> testBoardInfoList = Arrays.asList(testBoardInfo00);
-        List<TestPostInfo> testPostInfoList = Arrays.asList(testPostInfo00);
-        List<TestCommentInfo> testCommentInfoList = Arrays.asList(testCommentInfo00, testCommentInfo01,
-                testCommentInfo02, testCommentInfo03);
-
-        super.setBoard(testBoardInfoList);
-        super.setPost(testPostInfoList);
-        super.setComment(testCommentInfoList);
     }
 
     @Test
     @DisplayName("생성")
     public void cm001() throws Exception {
-        String commentId = getCommentId(testCommentInfo00);
-        String postId = getPostId(testCommentInfo00.getPost());
-        String boardId = getBoardId(testCommentInfo00.getPost().getBoard());
+        // 계정 생성
+        TestAccountInfo account = setRandomAccount();
+        // 게시판 생성
+        TestBoardInfo board = setRandomBoard();
+        // 게시물 생성
+        TestPostInfo post = setRandomPost(board, account);
+        // 댓글 생성
+        TestCommentInfo comment = setRandomComment(post, account);
 
         Map<String, Object> requestBody = new HashMap<>();
         requestBody.put("content", "this is content.");
-        requestBody.put("referenceCommentId", commentId);
+        requestBody.put("referenceCommentId", comment.getId());
 
-        MockHttpServletRequestBuilder requestBuilder = post("/v1/boards/{boardId}/posts/{postId}/comments", boardId, postId)
+        MockHttpServletRequestBuilder requestBuilder = post("/v1/boards/{boardId}/posts/{postId}/comments", board.getId(), post.getId())
                 .content(getJsonString(requestBody))
                 .contentType(MediaType.APPLICATION_JSON);
-        setAuthToken(requestBuilder, common01);
+        setAuthToken(requestBuilder, account);
 
         List<FieldDescriptor> fieldDescriptorList = new LinkedList<>();
         fieldDescriptorList.addAll(IricomFieldsSnippet.getComment(""));
@@ -91,6 +68,7 @@ public class CommentControllerTest extends IricomTestSuite {
                 .andExpect(status().is(200))
                 .andDo(print())
                 .andDo(document("CM_001", preprocessRequest(
+                                modifyUris().scheme("https").host("api.iricom.com").removePort(),
                                 removeHeaders("Authorization"),
                                 prettyPrint()
                         ),
@@ -115,18 +93,26 @@ public class CommentControllerTest extends IricomTestSuite {
     @Test
     @DisplayName("목록 조회")
     public void cm002() throws Exception {
-        String commentId = getCommentId(testCommentInfo00);
-        String postId = getPostId(testCommentInfo00.getPost());
-        String boardId = getBoardId(testCommentInfo00.getPost().getBoard());
+        // 계정 생성
+        TestAccountInfo account = setRandomAccount();
+        // 게시판 생성
+        TestBoardInfo board = setRandomBoard();
+        // 게시물 생성
+        TestPostInfo post = setRandomPost(board, account);
+        // 댓글 생성
+        TestCommentInfo comment = setRandomComment(post, account);
+        for (int i = 0; i < 3; i++) {
+            setRandomComment(post, comment, account);
+        }
 
-        MockHttpServletRequestBuilder requestBuilder = get("/v1/boards/{boardId}/posts/{postId}/comments", boardId, postId)
+        MockHttpServletRequestBuilder requestBuilder = get("/v1/boards/{boardId}/posts/{postId}/comments", board.getId(), post.getId())
                 .param("skip", "0")
                 .param("limit", "5")
                 .param("keyword", "")
                 .param("includeComment", "true")
-                .param("referenceCommentId", commentId)
+                .param("referenceCommentId", comment.getId())
                 .param("includeCommentLimit", "5");
-        setAuthToken(requestBuilder, common00);
+        setAuthToken(requestBuilder, account);
 
         List<FieldDescriptor> fieldDescriptorList = new LinkedList<>();
         fieldDescriptorList.addAll(IricomFieldsSnippet.getSearchList(""));
@@ -140,6 +126,7 @@ public class CommentControllerTest extends IricomTestSuite {
                 .andDo(print())
                 .andDo(document("CM_002",
                         preprocessRequest(
+                                modifyUris().scheme("https").host("api.iricom.com").removePort(),
                                 removeHeaders("Authorization"),
                                 prettyPrint()
                         ),
@@ -168,12 +155,17 @@ public class CommentControllerTest extends IricomTestSuite {
     @Test
     @DisplayName("정보 조회")
     public void cm003() throws Exception {
-        String commentId = getCommentId(testCommentInfo00);
-        String postId = getPostId(testCommentInfo00.getPost());
-        String boardId = getBoardId(testCommentInfo00.getPost().getBoard());
+        // 계정 생성
+        TestAccountInfo account = setRandomAccount();
+        // 게시판 생성
+        TestBoardInfo board = setRandomBoard();
+        // 게시물 생성
+        TestPostInfo post = setRandomPost(board, account);
+        // 댓글 생성
+        TestCommentInfo comment = setRandomComment(post, account);
 
-        MockHttpServletRequestBuilder requestBuilder = get("/v1/boards/{boardId}/posts/{postId}/comments/{commentId}", boardId, postId, commentId);
-        setAuthToken(requestBuilder, common00);
+        MockHttpServletRequestBuilder requestBuilder = get("/v1/boards/{boardId}/posts/{postId}/comments/{commentId}", board.getId(), post.getId(), comment.getId());
+        setAuthToken(requestBuilder, account);
 
         List<FieldDescriptor> fieldDescriptorList = new LinkedList<>();
         fieldDescriptorList.addAll(IricomFieldsSnippet.getComment(""));
@@ -184,6 +176,7 @@ public class CommentControllerTest extends IricomTestSuite {
                 .andDo(print())
                 .andDo(document("CM_003",
                         preprocessRequest(
+                                modifyUris().scheme("https").host("api.iricom.com").removePort(),
                                 removeHeaders("Authorization"),
                                 prettyPrint()
                         ),
@@ -205,17 +198,22 @@ public class CommentControllerTest extends IricomTestSuite {
     @Test
     @DisplayName("수정")
     public void cm004() throws Exception {
-        String commentId = getCommentId(testCommentInfo00);
-        String postId = getPostId(testCommentInfo00.getPost());
-        String boardId = getBoardId(testCommentInfo00.getPost().getBoard());
+        // 계정 생성
+        TestAccountInfo account = setRandomAccount();
+        // 게시판 생성
+        TestBoardInfo board = setRandomBoard();
+        // 게시물 생성
+        TestPostInfo post = setRandomPost(board, account);
+        // 댓글 생성
+        TestCommentInfo comment = setRandomComment(post, account);
 
         Map<String, Object> requestBody = new HashMap<>();
         requestBody.put("content", "update_comment");
 
-        MockHttpServletRequestBuilder requestBuilder = patch("/v1/boards/{boardId}/posts/{postId}/comments/{commentId}", boardId, postId, commentId)
+        MockHttpServletRequestBuilder requestBuilder = patch("/v1/boards/{boardId}/posts/{postId}/comments/{commentId}", board.getId(), post.getId(), comment.getId())
                 .content(getJsonString(requestBody))
                 .contentType(MediaType.APPLICATION_JSON);
-        setAuthToken(requestBuilder, common00);
+        setAuthToken(requestBuilder, account);
 
         List<FieldDescriptor> fieldDescriptorList = new LinkedList<>();
         fieldDescriptorList.addAll(IricomFieldsSnippet.getComment(""));
@@ -226,6 +224,7 @@ public class CommentControllerTest extends IricomTestSuite {
                 .andDo(print())
                 .andDo(document("CM_004",
                         preprocessRequest(
+                                modifyUris().scheme("https").host("api.iricom.com").removePort(),
                                 removeHeaders("Authorization"),
                                 prettyPrint()
                         ),
@@ -250,12 +249,17 @@ public class CommentControllerTest extends IricomTestSuite {
     @Test
     @DisplayName("삭제")
     public void cm005() throws Exception {
-        String commentId = getCommentId(testCommentInfo01);
-        String postId = getPostId(testCommentInfo01.getPost());
-        String boardId = getBoardId(testCommentInfo01.getPost().getBoard());
+        // 계정 생성
+        TestAccountInfo account = setRandomAccount();
+        // 게시판 생성
+        TestBoardInfo board = setRandomBoard();
+        // 게시물 생성
+        TestPostInfo post = setRandomPost(board, account);
+        // 댓글 생성
+        TestCommentInfo comment = setRandomComment(post, account);
 
-        MockHttpServletRequestBuilder requestBuilder = delete("/v1/boards/{boardId}/posts/{postId}/comments/{commentId}", boardId, postId, commentId);
-        setAuthToken(requestBuilder, common00);
+        MockHttpServletRequestBuilder requestBuilder = delete("/v1/boards/{boardId}/posts/{postId}/comments/{commentId}", board.getId(), post.getId(), comment.getId());
+        setAuthToken(requestBuilder, account);
 
         List<FieldDescriptor> fieldDescriptorList = new LinkedList<>();
         fieldDescriptorList.addAll(IricomFieldsSnippet.getComment(""));
@@ -266,6 +270,7 @@ public class CommentControllerTest extends IricomTestSuite {
                 .andDo(print())
                 .andDo(document("CM_005",
                         preprocessRequest(
+                                modifyUris().scheme("https").host("api.iricom.com").removePort(),
                                 removeHeaders("Authorization"),
                                 prettyPrint()
                         ),
@@ -287,17 +292,22 @@ public class CommentControllerTest extends IricomTestSuite {
     @Test
     @DisplayName("좋아요 싫어요")
     public void cm006() throws Exception {
-        String commentId = getCommentId(testCommentInfo02);
-        String postId = getPostId(testCommentInfo02.getPost());
-        String boardId = getBoardId(testCommentInfo02.getPost().getBoard());
+        // 계정 생성
+        TestAccountInfo account = setRandomAccount();
+        // 게시판 생성
+        TestBoardInfo board = setRandomBoard();
+        // 게시물 생성
+        TestPostInfo post = setRandomPost(board, account);
+        // 댓글 생성
+        TestCommentInfo comment = setRandomComment(post, account);
 
         Map<String, Object> requestBody = new HashMap<>();
         requestBody.put("type", "upvote");
 
-        MockHttpServletRequestBuilder requestBuilder = patch("/v1/boards/{boardId}/posts/{postId}/comments/{commentId}/vote", boardId, postId, commentId)
+        MockHttpServletRequestBuilder requestBuilder = patch("/v1/boards/{boardId}/posts/{postId}/comments/{commentId}/vote", board.getId(), post.getId(), comment.getId())
                 .content(getJsonString(requestBody))
                 .contentType(MediaType.APPLICATION_JSON);
-        setAuthToken(requestBuilder, common00);
+        setAuthToken(requestBuilder, account);
 
         List<FieldDescriptor> fieldDescriptorList = new LinkedList<>();
         fieldDescriptorList.addAll(IricomFieldsSnippet.getComment(""));
@@ -308,6 +318,7 @@ public class CommentControllerTest extends IricomTestSuite {
                 .andDo(print())
                 .andDo(document("CM_006",
                         preprocessRequest(
+                                modifyUris().scheme("https").host("api.iricom.com").removePort(),
                                 removeHeaders("Authorization"),
                                 prettyPrint()
                         ),

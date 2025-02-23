@@ -434,11 +434,15 @@ public abstract class IricomTestSuite {
 
     protected TestPostReportInfo setRandomPostReport(TestPostInfo post, TestAccountInfo reportAccount, ReportType reportType) {
         String randomText = UUID.randomUUID().toString();
+        return this.setRandomPostReport(post, reportAccount, reportType, randomText);
+    }
+
+    protected TestPostReportInfo setRandomPostReport(TestPostInfo post, TestAccountInfo reportAccount, ReportType reportType, String reason) {
         TestPostReportInfo testPostReportInfo = TestPostReportInfo.builder()
                 .post(post)
                 .reportAccount(reportAccount)
                 .type(reportType)
-                .reason(randomText)
+                .reason(reason)
                 .build();
         this.setPostReport(Collections.singletonList(testPostReportInfo));
         return testPostReportInfo;
@@ -461,25 +465,27 @@ public abstract class IricomTestSuite {
 
     protected TestCommentReportInfo setRandomCommentReport(TestCommentInfo comment, TestAccountInfo reportAccount, ReportType reportType) {
         String randomText = UUID.randomUUID().toString();
+        return this.setRandomCommentReport(comment, reportAccount, reportType, randomText);
+    }
+
+    protected TestCommentReportInfo setRandomCommentReport(TestCommentInfo comment, TestAccountInfo reportAccount, ReportType reportType, String reason) {
         TestCommentReportInfo testCommentReportInfo = TestCommentReportInfo.builder()
                 .comment(comment)
                 .reportAccount(reportAccount)
-                .reason(randomText)
+                .reason(reason)
                 .type(reportType)
                 .build();
-        this.setCommentReport(Collections.singletonList(testCommentReportInfo));
+        this.setCommentReport(testCommentReportInfo);
         return testCommentReportInfo;
     }
 
     /**
      * 댓글 신고
      */
-    protected void setCommentReport(List<TestCommentReportInfo> testCommentReportInfoList) {
-        for (TestCommentReportInfo testCommentReportInfo : testCommentReportInfoList) {
-            CommentReportInfo commentReportInfo = this.reportComment(testCommentReportInfo);
-            testCommentReportInfo.setId(commentReportInfo.getId());
-            commentReportMap.put(testCommentReportInfo, commentReportInfo);
-        }
+    protected void setCommentReport(TestCommentReportInfo testCommentReportInfo) {
+        CommentReportInfo commentReportInfo = this.reportComment(testCommentReportInfo);
+        testCommentReportInfo.setId(commentReportInfo.getId());
+        commentReportMap.put(testCommentReportInfo, commentReportInfo);
     }
 
     /**
@@ -522,9 +528,13 @@ public abstract class IricomTestSuite {
      */
     protected TestPostBlockInfo setRandomPostBlock(TestPostInfo post) {
         String randomText = UUID.randomUUID().toString();
+        return this.setRandomPostBlock(post, randomText);
+    }
+
+    protected TestPostBlockInfo setRandomPostBlock(TestPostInfo post, String reason) {
         TestPostBlockInfo testPostBlockInfo = TestPostBlockInfo.builder()
                 .account(systemAdmin).post(post)
-                .reason(randomText)
+                .reason(reason)
                 .build();
         this.setBlockPost(Collections.singletonList(testPostBlockInfo));
         return testPostBlockInfo;
@@ -849,40 +859,33 @@ public abstract class IricomTestSuite {
 
 
     private PostReportInfo reportPost(TestPostReportInfo testPostReportInfo) {
-        TestAccountInfo reportTestAccountInfo = testPostReportInfo.getReportAccount();
         TestPostInfo testPostInfo = testPostReportInfo.getPost();
 
-        AccountInfo accountInfo = accountMap.get(reportTestAccountInfo);
-        PostInfo postInfo = postMap.get(testPostInfo);
-
         String boardId = testPostInfo.getBoard().getId();
-        String postId = postInfo.getId();
+        String postId = testPostInfo.getId();
+        String accountId = testPostReportInfo.getReportAccount().getId();
 
         PostReportInfoCreate postReportInfoCreate = PostReportInfoCreate.builder()
                 .type(testPostReportInfo.getType())
                 .reason(testPostReportInfo.getReason())
                 .build();
-        return this.reportService.reportPost(accountInfo.getId(), boardId, postId, postReportInfoCreate);
+        return this.reportService.reportPost(accountId, boardId, postId, postReportInfoCreate);
     }
 
 
     private CommentReportInfo reportComment(TestCommentReportInfo testCommentReportInfo) {
-        TestAccountInfo reportTestAccountInfo = testCommentReportInfo.getReportAccount();
         TestCommentInfo testCommentInfo = testCommentReportInfo.getComment();
 
-        AccountInfo accountInfo = accountMap.get(reportTestAccountInfo);
-        CommentInfo commentInfo = commentMap.get(testCommentInfo);
-        PostInfo postInfo = postMap.get(testCommentInfo.getPost());
-
         String boardId = testCommentInfo.getPost().getBoard().getId();
-        String postId = postInfo.getId();
-        String commentId = commentInfo.getId();
+        String postId = testCommentInfo.getPost().getId();
+        String commentId = testCommentInfo.getId();
+        String accountId = testCommentReportInfo.getReportAccount().getId();
 
         CommentReportInfoCreate commentReportInfoCreate = CommentReportInfoCreate.builder()
                 .type(testCommentReportInfo.getType())
                 .reason(testCommentReportInfo.getReason())
                 .build();
-        return this.reportService.reportComment(accountInfo.getId(), boardId, postId, commentId, commentReportInfoCreate);
+        return this.reportService.reportComment(accountId, boardId, postId, commentId, commentReportInfoCreate);
     }
 
     private PostBlockInfo blockPost(TestPostBlockInfo testPostBlockInfo) {

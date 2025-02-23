@@ -1,7 +1,5 @@
 package com.illdangag.iricom.server.service.comment;
 
-import com.illdangag.iricom.server.data.entity.type.PostState;
-import com.illdangag.iricom.server.data.entity.type.PostType;
 import com.illdangag.iricom.server.data.request.CommentInfoUpdate;
 import com.illdangag.iricom.server.data.response.CommentInfo;
 import com.illdangag.iricom.server.exception.IricomException;
@@ -20,7 +18,6 @@ import org.springframework.context.ApplicationContext;
 
 import javax.transaction.Transactional;
 import javax.validation.ConstraintViolationException;
-import java.util.Collections;
 
 @DisplayName("service: 댓글 - 갱신")
 @Slf4j

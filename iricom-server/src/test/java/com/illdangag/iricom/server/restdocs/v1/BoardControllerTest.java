@@ -2,6 +2,7 @@ package com.illdangag.iricom.server.restdocs.v1;
 
 import com.illdangag.iricom.server.restdocs.snippet.IricomFieldsSnippet;
 import com.illdangag.iricom.server.test.IricomTestSuite;
+import com.illdangag.iricom.server.test.data.wrapper.TestAccountInfo;
 import com.illdangag.iricom.server.test.data.wrapper.TestBoardInfo;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -12,7 +13,10 @@ import org.springframework.restdocs.payload.FieldDescriptor;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilder;
 
-import java.util.*;
+import java.util.HashMap;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
 
 import static org.springframework.restdocs.headers.HeaderDocumentation.requestHeaders;
 import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document;
@@ -28,18 +32,9 @@ public class BoardControllerTest extends IricomTestSuite {
     @Autowired
     MockMvc mockMvc;
 
-    private static final TestBoardInfo testBoardInfo00 = TestBoardInfo.builder()
-            .title("testBoardInfo00").isEnabled(true).adminList(Collections.singletonList(allBoardAdmin)).build();
-    private static final TestBoardInfo testBoardInfo01 = TestBoardInfo.builder()
-            .title("testBoardInfo01").isEnabled(true).adminList(Collections.singletonList(allBoardAdmin)).build();
-
     @Autowired
     public BoardControllerTest(ApplicationContext context) {
         super(context);
-
-        List<TestBoardInfo> testBoardInfoList = Arrays.asList(testBoardInfo00, testBoardInfo01);
-
-        super.setBoard(testBoardInfoList);
     }
 
     @Test
@@ -63,6 +58,7 @@ public class BoardControllerTest extends IricomTestSuite {
                 .andDo(print())
                 .andDo(document("BD_001",
                         preprocessRequest(
+                                modifyUris().scheme("https").host("api.iricom.com").removePort(),
                                 removeHeaders("Authorization"),
                                 prettyPrint()
                         ),
@@ -85,11 +81,16 @@ public class BoardControllerTest extends IricomTestSuite {
     @Test
     @DisplayName("목록 조회")
     public void bd002() throws Exception {
+        // 계정 생성
+        TestAccountInfo account = setRandomAccount();
+        // 게시판 생성
+        setRandomBoard(3);
+
         MockHttpServletRequestBuilder requestBuilder = get("/v1/boards")
                 .param("skip", "0")
                 .param("limit", "5")
                 .param("keyword", "Board");
-        setAuthToken(requestBuilder, common00);
+        setAuthToken(requestBuilder, account);
 
         List<FieldDescriptor> fieldDescriptorList = new LinkedList<>();
         fieldDescriptorList.addAll(IricomFieldsSnippet.getSearchList(""));
@@ -100,6 +101,7 @@ public class BoardControllerTest extends IricomTestSuite {
                 .andDo(print())
                 .andDo(document("BD_002",
                         preprocessRequest(
+                                modifyUris().scheme("https").host("api.iricom.com").removePort(),
                                 removeHeaders("Authorization"),
                                 prettyPrint()
                         ),
@@ -121,10 +123,13 @@ public class BoardControllerTest extends IricomTestSuite {
     @Test
     @DisplayName("정보 조회")
     public void bd003() throws Exception {
-        String boardId = getBoardId(testBoardInfo00);
+        // 계정 생성
+        TestAccountInfo account = setRandomAccount();
+        // 게시판 생성
+        TestBoardInfo board = setRandomBoard();
 
-        MockHttpServletRequestBuilder requestBuilder = get("/v1/boards/{id}", boardId);
-        setAuthToken(requestBuilder, common00);
+        MockHttpServletRequestBuilder requestBuilder = get("/v1/boards/{id}", board.getId());
+        setAuthToken(requestBuilder, account);
 
         List<FieldDescriptor> fieldDescriptorList = new LinkedList<>();
         fieldDescriptorList.addAll(IricomFieldsSnippet.getBoard(""));
@@ -134,6 +139,7 @@ public class BoardControllerTest extends IricomTestSuite {
                 .andDo(print())
                 .andDo(document("BD_003",
                         preprocessRequest(
+                                modifyUris().scheme("https").host("api.iricom.com").removePort(),
                                 removeHeaders("Authorization"),
                                 prettyPrint()
                         ),
@@ -153,14 +159,15 @@ public class BoardControllerTest extends IricomTestSuite {
     @Test
     @DisplayName("정보 수정")
     public void testCase03() throws Exception {
-        String boardId = getBoardId(testBoardInfo01);
+        // 게시판 생성
+        TestBoardInfo board = setRandomBoard();
 
         Map<String, Object> requestBody = new HashMap<>();
         requestBody.put("title", "update_title");
         requestBody.put("description", "update_description");
         requestBody.put("enabled", false);
 
-        MockHttpServletRequestBuilder requestBuilder = patch("/v1/boards/{id}", boardId)
+        MockHttpServletRequestBuilder requestBuilder = patch("/v1/boards/{id}", board.getId())
                 .content(getJsonString(requestBody))
                 .contentType(MediaType.APPLICATION_JSON);
         setAuthToken(requestBuilder, systemAdmin);
@@ -173,6 +180,7 @@ public class BoardControllerTest extends IricomTestSuite {
                 .andDo(print())
                 .andDo(document("BD_004",
                         preprocessRequest(
+                                modifyUris().scheme("https").host("api.iricom.com").removePort(),
                                 removeHeaders("Authorization"),
                                 prettyPrint()
                         ),

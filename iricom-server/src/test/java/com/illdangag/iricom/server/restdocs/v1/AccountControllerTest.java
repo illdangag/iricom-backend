@@ -2,6 +2,7 @@ package com.illdangag.iricom.server.restdocs.v1;
 
 import com.illdangag.iricom.server.restdocs.snippet.IricomFieldsSnippet;
 import com.illdangag.iricom.server.test.IricomTestSuite;
+import com.illdangag.iricom.server.test.data.wrapper.TestAccountInfo;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -39,11 +40,14 @@ public class AccountControllerTest extends IricomTestSuite {
     @Test
     @DisplayName("목록 조회")
     public void ac001() throws Exception {
+        // 계정 생성
+        TestAccountInfo account = setRandomAccount();
+
         MockHttpServletRequestBuilder requestBuilder = get("/v1/accounts/")
                 .param("skip", "0")
                 .param("limit", "5")
                 .param("keyword", "common");
-        setAuthToken(requestBuilder, systemAdmin);
+        setAuthToken(requestBuilder, account);
 
         List<FieldDescriptor> fieldDescriptorList = new LinkedList<>();
         fieldDescriptorList.addAll(IricomFieldsSnippet.getSearchList(""));
@@ -54,6 +58,7 @@ public class AccountControllerTest extends IricomTestSuite {
                 .andDo(print())
                 .andDo(document("AC_001",
                         preprocessRequest(
+                                modifyUris().scheme("https").host("api.iricom.com").removePort(),
                                 removeHeaders("Authorization"),
                                 prettyPrint()
                         ),
@@ -61,7 +66,7 @@ public class AccountControllerTest extends IricomTestSuite {
                                 prettyPrint()
                         ),
                         requestHeaders(
-//                                        headerWithName("Authorization").description("firebase 토큰")
+//                                headerWithName("Authorization").description("firebase 토큰")
                         ),
                         requestParameters(
                                 parameterWithName("skip").description("건너 뛸 수"),
@@ -75,10 +80,11 @@ public class AccountControllerTest extends IricomTestSuite {
     @Test
     @DisplayName("정보 조회")
     public void ac002() throws Exception {
-        String accountId = getAccountId(systemAdmin);
+        // 계정 생성
+        TestAccountInfo account = setRandomAccount();
 
-        MockHttpServletRequestBuilder requestBuilder = get("/v1/accounts/{id}", accountId);
-        setAuthToken(requestBuilder, systemAdmin);
+        MockHttpServletRequestBuilder requestBuilder = get("/v1/accounts/{id}", account.getId());
+        setAuthToken(requestBuilder, account);
 
         List<FieldDescriptor> fieldDescriptorList = new LinkedList<>();
         fieldDescriptorList.addAll(IricomFieldsSnippet.getAccount(""));
@@ -88,6 +94,7 @@ public class AccountControllerTest extends IricomTestSuite {
                 .andDo(print())
                 .andDo(document("AC_002",
                         preprocessRequest(
+                                modifyUris().scheme("https").host("api.iricom.com").removePort(),
                                 removeHeaders("Authorization"),
                                 prettyPrint()
                         ),
@@ -108,14 +115,17 @@ public class AccountControllerTest extends IricomTestSuite {
     @Test
     @DisplayName("수정")
     public void ac003() throws Exception {
+        // 계정 생성
+        TestAccountInfo account = setRandomAccount();
+
         Map<String, Object> requestBody = new HashMap<>();
-        requestBody.put("nickname", "common00_00");
+        requestBody.put("nickname", "update_nickname");
         requestBody.put("description", "update_description");
 
         MockHttpServletRequestBuilder requestBuilder = patch("/v1/accounts/")
                 .content(getJsonString(requestBody))
                 .contentType(MediaType.APPLICATION_JSON);
-        setAuthToken(requestBuilder, common00);
+        setAuthToken(requestBuilder, account);
 
         List<FieldDescriptor> fieldDescriptorList = new LinkedList<>();
         fieldDescriptorList.addAll(IricomFieldsSnippet.getAccount(""));
@@ -125,6 +135,7 @@ public class AccountControllerTest extends IricomTestSuite {
                 .andDo(print())
                 .andDo(document("AC_003",
                         preprocessRequest(
+                                modifyUris().scheme("https").host("api.iricom.com").removePort(),
                                 removeHeaders("Authorization"),
                                 prettyPrint()
                         ),
@@ -145,13 +156,14 @@ public class AccountControllerTest extends IricomTestSuite {
     @Test
     @DisplayName("수정")
     public void ac004() throws Exception {
-        String accountId = getAccountId(common00);
+        // 계정 생성
+        TestAccountInfo account = setRandomAccount();
 
         Map<String, Object> requestBody = new HashMap<>();
-        requestBody.put("nickname", "admin_update");
+        requestBody.put("nickname", "new_nickname");
         requestBody.put("description", "admin_update");
 
-        MockHttpServletRequestBuilder requestBuilder = patch("/v1/accounts/{id}", accountId)
+        MockHttpServletRequestBuilder requestBuilder = patch("/v1/accounts/{id}", account.getId())
                 .content(getJsonString(requestBody))
                 .contentType(MediaType.APPLICATION_JSON);
         setAuthToken(requestBuilder, systemAdmin);
@@ -164,6 +176,7 @@ public class AccountControllerTest extends IricomTestSuite {
                 .andDo(print())
                 .andDo(document("AC_004",
                         preprocessRequest(
+                                modifyUris().scheme("https").host("api.iricom.com").removePort(),
                                 removeHeaders("Authorization"),
                                 prettyPrint()
                         ),

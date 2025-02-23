@@ -1,12 +1,10 @@
 package com.illdangag.iricom.server.restdocs.v1;
 
-import com.illdangag.iricom.server.data.entity.type.PostState;
-import com.illdangag.iricom.server.data.entity.type.PostType;
 import com.illdangag.iricom.server.restdocs.snippet.IricomFieldsSnippet;
 import com.illdangag.iricom.server.test.IricomTestSuite;
+import com.illdangag.iricom.server.test.data.wrapper.TestAccountInfo;
 import com.illdangag.iricom.server.test.data.wrapper.TestBoardInfo;
 import com.illdangag.iricom.server.test.data.wrapper.TestCommentInfo;
-import com.illdangag.iricom.server.test.data.wrapper.TestPostBlockInfo;
 import com.illdangag.iricom.server.test.data.wrapper.TestPostInfo;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -17,7 +15,10 @@ import org.springframework.restdocs.payload.FieldDescriptor;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilder;
 
-import java.util.*;
+import java.util.HashMap;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
 
 import static org.springframework.restdocs.headers.HeaderDocumentation.requestHeaders;
 import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document;
@@ -33,72 +34,25 @@ public class BlockControllerTest extends IricomTestSuite {
     @Autowired
     MockMvc mockMvc;
 
-    protected static final TestBoardInfo testBoardInfo00 = TestBoardInfo.builder()
-            .title("boardInfo00").isEnabled(true).adminList(Arrays.asList(systemAdmin, allBoardAdmin))
-            .build();
-
-    protected static final TestPostInfo testPostInfo00 = TestPostInfo.builder()
-            .title("testPostInfo00").content("test contents").isAllowComment(true)
-            .board(testBoardInfo00).creator(common00)
-            .postType(PostType.POST).postState(PostState.PUBLISH)
-            .build();
-
-    protected static final TestPostInfo alreadyPostInfo00 = TestPostInfo.builder()
-            .title("alreadyPostInfo00").content("test contents").isAllowComment(true)
-            .board(testBoardInfo00).creator(common00)
-            .postType(PostType.POST).postState(PostState.PUBLISH)
-            .build();
-    protected static final TestPostInfo alreadyPostInfo01 = TestPostInfo.builder()
-            .title("alreadyPostInfo01").content("test contents").isAllowComment(true)
-            .board(testBoardInfo00).creator(common00)
-            .postType(PostType.POST).postState(PostState.PUBLISH)
-            .build();
-    protected static final TestPostInfo alreadyPostInfo02 = TestPostInfo.builder()
-            .title("alreadyPostInfo02").content("test contents").isAllowComment(true)
-            .board(testBoardInfo00).creator(common00)
-            .postType(PostType.POST).postState(PostState.PUBLISH)
-            .build();
-
-    protected static final TestCommentInfo testCommentInfo00 = TestCommentInfo.builder()
-            .post(testPostInfo00).creator(common00)
-            .content("comment")
-            .build();
-
-    protected static final TestPostBlockInfo postBlockInfo00 = TestPostBlockInfo.builder()
-            .post(alreadyPostInfo00).account(systemAdmin).reason("Already blocked.")
-            .build();
-    protected static final TestPostBlockInfo postBlockInfo01 = TestPostBlockInfo.builder()
-            .post(alreadyPostInfo01).account(systemAdmin).reason("Already blocked.")
-            .build();
-    protected static final TestPostBlockInfo postBlockInfo02 = TestPostBlockInfo.builder()
-            .post(alreadyPostInfo02).account(systemAdmin).reason("Already blocked.")
-            .build();
-
     @Autowired
     public BlockControllerTest(ApplicationContext context) {
         super(context);
-
-        List<TestBoardInfo> testBoardInfoList = Arrays.asList(testBoardInfo00);
-        List<TestPostInfo> testPostInfoList = Arrays.asList(testPostInfo00, alreadyPostInfo00, alreadyPostInfo01, alreadyPostInfo02);
-        List<TestPostBlockInfo> testPostBlockInfoList = Arrays.asList(postBlockInfo00, postBlockInfo01, postBlockInfo02);
-        List<TestCommentInfo> testCommentInfoList = Arrays.asList(testCommentInfo00);
-
-        super.setBoard(testBoardInfoList);
-        super.setPost(testPostInfoList);
-        super.setBlockPost(testPostBlockInfoList);
-        super.setComment(testCommentInfoList);
     }
 
     @Test
     @DisplayName("게시물 차단")
     public void bp001() throws Exception {
-        String boardId = getBoardId(testPostInfo00.getBoard());
-        String postId = getPostId(testPostInfo00);
+        // 계정 생성
+        TestAccountInfo account = setRandomAccount();
+        // 게시판 생성
+        TestBoardInfo board = setRandomBoard();
+        // 게시물 생성
+        TestPostInfo post = setRandomPost(board, account);
 
         Map<String, Object> requestBody = new HashMap<>();
         requestBody.put("reason", "This is blocked.");
 
-        MockHttpServletRequestBuilder requestBuilder = post("/v1/block/post/boards/{boardId}/posts/{postId}", boardId, postId)
+        MockHttpServletRequestBuilder requestBuilder = post("/v1/block/post/boards/{boardId}/posts/{postId}", board.getId(), post.getId())
                 .content(getJsonString(requestBody))
                 .contentType(MediaType.APPLICATION_JSON);
         setAuthToken(requestBuilder, systemAdmin);
@@ -113,6 +67,7 @@ public class BlockControllerTest extends IricomTestSuite {
                 .andDo(print())
                 .andDo(document("BP_001",
                         preprocessRequest(
+                                modifyUris().scheme("https").host("api.iricom.com").removePort(),
                                 removeHeaders("Authorization"),
                                 prettyPrint()
                         ),
@@ -136,6 +91,17 @@ public class BlockControllerTest extends IricomTestSuite {
     @Test
     @DisplayName("차단된 게시물 목록 조회")
     public void bp002() throws Exception {
+        // 계정 생성
+        TestAccountInfo account = setRandomAccount();
+        // 게시판 생성
+        TestBoardInfo board = setRandomBoard();
+        // 게시물 생성
+        List<TestPostInfo> postList = setRandomPost(board, account, 5);
+        // 게시물 차단
+        for (TestPostInfo post : postList) {
+            setRandomPostBlock(post, "already blocked");
+        }
+
         MockHttpServletRequestBuilder requestBuilder = get("/v1/block/post/boards")
                 .param("skip", "0")
                 .param("limit", "5")
@@ -153,6 +119,7 @@ public class BlockControllerTest extends IricomTestSuite {
                 .andDo(print())
                 .andDo(document("BP_002",
                         preprocessRequest(
+                                modifyUris().scheme("https").host("api.iricom.com").removePort(),
                                 removeHeaders("Authorization"),
                                 prettyPrint()
                         ),
@@ -174,9 +141,18 @@ public class BlockControllerTest extends IricomTestSuite {
     @Test
     @DisplayName("차단된 게시물 목록 조회")
     public void bp003() throws Exception {
-        String boardId = getBoardId(testBoardInfo00);
+        // 계정 생성
+        TestAccountInfo account = setRandomAccount();
+        // 게시판 생성
+        TestBoardInfo board = setRandomBoard();
+        // 게시물 생성
+        List<TestPostInfo> postList = setRandomPost(board, account, 5);
+        // 게시물 차단
+        for (TestPostInfo post : postList) {
+            setRandomPostBlock(post, "already blocked");
+        }
 
-        MockHttpServletRequestBuilder requestBuilder = get("/v1/block/post/boards/{boardId}", boardId)
+        MockHttpServletRequestBuilder requestBuilder = get("/v1/block/post/boards/{boardId}", board.getId())
                 .param("skip", "0")
                 .param("limit", "20")
                 .param("reason", "already");
@@ -193,6 +169,7 @@ public class BlockControllerTest extends IricomTestSuite {
                 .andDo(print())
                 .andDo(document("BP_003",
                         preprocessRequest(
+                                modifyUris().scheme("https").host("api.iricom.com").removePort(),
                                 removeHeaders("Authorization"),
                                 prettyPrint()
                         ),
@@ -217,10 +194,16 @@ public class BlockControllerTest extends IricomTestSuite {
     @Test
     @DisplayName("차단된 게시물 정보 조회")
     public void bp004() throws Exception {
-        String boardId = getBoardId(alreadyPostInfo00.getBoard());
-        String postId = getPostId(alreadyPostInfo00);
+        // 계정 생성
+        TestAccountInfo account = setRandomAccount();
+        // 게시판 생성
+        TestBoardInfo board = setRandomBoard();
+        // 게시물 생성
+        TestPostInfo post = setRandomPost(board, account);
+        // 게시물 차단
+        setRandomPostBlock(post, "already blocked");
 
-        MockHttpServletRequestBuilder requestBuilder = get("/v1/block/post/boards/{boardId}/posts/{postId}", boardId, postId);
+        MockHttpServletRequestBuilder requestBuilder = get("/v1/block/post/boards/{boardId}/posts/{postId}", board.getId(), post.getId());
         setAuthToken(requestBuilder, systemAdmin);
 
         List<FieldDescriptor> fieldDescriptorList = new LinkedList<>();
@@ -233,6 +216,7 @@ public class BlockControllerTest extends IricomTestSuite {
                 .andDo(print())
                 .andDo(document("BP_004",
                         preprocessRequest(
+                                modifyUris().scheme("https").host("api.iricom.com").removePort(),
                                 removeHeaders("Authorization"),
                                 prettyPrint()
                         ),
@@ -253,13 +237,19 @@ public class BlockControllerTest extends IricomTestSuite {
     @Test
     @DisplayName("게시물 차단 정보 수정")
     public void bp005() throws Exception {
-        String boardId = getBoardId(alreadyPostInfo01.getBoard());
-        String postId = getPostId(alreadyPostInfo01);
+        // 계정 생성
+        TestAccountInfo account = setRandomAccount();
+        // 게시판 생성
+        TestBoardInfo board = setRandomBoard();
+        // 게시물 생성
+        TestPostInfo post = setRandomPost(board, account);
+        // 게시물 차단
+        setRandomPostBlock(post, "already blocked");
 
         Map<String, Object> requestBody = new HashMap<>();
         requestBody.put("reason", "Reason update.");
 
-        MockHttpServletRequestBuilder requestBuilder = patch("/v1/block/post/boards/{boardId}/posts/{postId}", boardId, postId)
+        MockHttpServletRequestBuilder requestBuilder = patch("/v1/block/post/boards/{boardId}/posts/{postId}", board.getId(), post.getId())
                 .content(getJsonString(requestBody))
                 .contentType(MediaType.APPLICATION_JSON);
         setAuthToken(requestBuilder, systemAdmin);
@@ -274,6 +264,7 @@ public class BlockControllerTest extends IricomTestSuite {
                 .andDo(print())
                 .andDo(document("BP_005",
                         preprocessRequest(
+                                modifyUris().scheme("https").host("api.iricom.com").removePort(),
                                 removeHeaders("Authorization"),
                                 prettyPrint()
                         ),
@@ -297,10 +288,16 @@ public class BlockControllerTest extends IricomTestSuite {
     @Test
     @DisplayName("게시물 차단 해제")
     public void bp006() throws Exception {
-        String boardId = getBoardId(alreadyPostInfo01.getBoard());
-        String postId = getPostId(alreadyPostInfo01);
+        // 계정 생성
+        TestAccountInfo account = setRandomAccount();
+        // 게시판 생성
+        TestBoardInfo board = setRandomBoard();
+        // 게시물 생성
+        TestPostInfo post = setRandomPost(board, account);
+        // 게시물 차단
+        setRandomPostBlock(post, "already blocked");
 
-        MockHttpServletRequestBuilder requestBuilder = delete("/v1/block/post/boards/{boardId}/posts/{postId}", boardId, postId);
+        MockHttpServletRequestBuilder requestBuilder = delete("/v1/block/post/boards/{boardId}/posts/{postId}", board.getId(), post.getId());
         setAuthToken(requestBuilder, systemAdmin);
 
         List<FieldDescriptor> fieldDescriptorList = new LinkedList<>();
@@ -313,6 +310,7 @@ public class BlockControllerTest extends IricomTestSuite {
                 .andDo(print())
                 .andDo(document("BP_006",
                         preprocessRequest(
+                                modifyUris().scheme("https").host("api.iricom.com").removePort(),
                                 removeHeaders("Authorization"),
                                 prettyPrint()
                         ),
@@ -333,14 +331,19 @@ public class BlockControllerTest extends IricomTestSuite {
     @Test
     @DisplayName("댓글 차단")
     public void bc001() throws Exception {
-        String boardId = getBoardId(testBoardInfo00);
-        String postId = getPostId(testPostInfo00);
-        String commentId = getCommentId(testCommentInfo00);
+        // 계정 생성
+        TestAccountInfo account = setRandomAccount();
+        // 게시판 생성
+        TestBoardInfo board = setRandomBoard();
+        // 게시물 생성
+        TestPostInfo post = setRandomPost(board, account);
+        // 댓글 생성
+        TestCommentInfo comment = setRandomComment(post, account);
 
         Map<String, Object> requestBody = new HashMap<>();
         requestBody.put("reason", "This is block.");
 
-        MockHttpServletRequestBuilder requestBuilder = post("/v1/block/comment/boards/{boardId}/posts/{postId}/comments/{commentId}", boardId, postId, commentId)
+        MockHttpServletRequestBuilder requestBuilder = post("/v1/block/comment/boards/{boardId}/posts/{postId}/comments/{commentId}", board.getId(), post.getId(), comment.getId())
                 .content(getJsonString(requestBody))
                 .contentType(MediaType.APPLICATION_JSON);
         setAuthToken(requestBuilder, systemAdmin);
@@ -355,6 +358,7 @@ public class BlockControllerTest extends IricomTestSuite {
                 .andDo(print())
                 .andDo(document("BC_001",
                         preprocessRequest(
+                                modifyUris().scheme("https").host("api.iricom.com").removePort(),
                                 removeHeaders("Authorization"),
                                 prettyPrint()
                         ),

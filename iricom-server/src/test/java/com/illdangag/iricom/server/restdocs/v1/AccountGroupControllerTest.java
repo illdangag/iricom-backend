@@ -1,9 +1,9 @@
 package com.illdangag.iricom.server.restdocs.v1;
 
-import com.illdangag.iricom.server.data.response.AccountGroupInfo;
 import com.illdangag.iricom.server.restdocs.snippet.IricomFieldsSnippet;
 import com.illdangag.iricom.server.test.IricomTestSuite;
 import com.illdangag.iricom.server.test.data.wrapper.TestAccountGroupInfo;
+import com.illdangag.iricom.server.test.data.wrapper.TestAccountInfo;
 import com.illdangag.iricom.server.test.data.wrapper.TestBoardInfo;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -30,47 +30,29 @@ public class AccountGroupControllerTest extends IricomTestSuite {
     @Autowired
     MockMvc mockMvc;
 
-    private static final TestBoardInfo testBoardInfo00 = TestBoardInfo.builder()
-            .title("testBoardInfo00").isEnabled(true).adminList(Collections.singletonList(allBoardAdmin)).build();
-
-    private static final TestAccountGroupInfo testAccountGroupInfo00 = TestAccountGroupInfo.builder()
-            .title("testAccountGroupInfo00").description("description")
-            .accountList(Arrays.asList(common00)).boardList(Arrays.asList(testBoardInfo00))
-            .build();
-    private static final TestAccountGroupInfo testAccountGroupInfo01 = TestAccountGroupInfo.builder()
-            .title("testAccountGroupInfo01").description("description")
-            .accountList(Arrays.asList(common00)).boardList(Arrays.asList(testBoardInfo00))
-            .build();
-    private static final TestAccountGroupInfo testAccountGroupInfo02 = TestAccountGroupInfo.builder()
-            .title("testAccountGroupInfo02").description("description")
-            .accountList(Arrays.asList(common00)).boardList(Arrays.asList(testBoardInfo00))
-            .build();
-
     @Autowired
     public AccountGroupControllerTest(ApplicationContext context) {
         super(context);
-
-        List<TestBoardInfo> testBoardInfoList = Arrays.asList(testBoardInfo00);
-        List<TestAccountGroupInfo> testAccountGroupInfoList = Arrays.asList(testAccountGroupInfo00, testAccountGroupInfo01, testAccountGroupInfo02);
-
-        super.setBoard(testBoardInfoList);
-        super.setAccountGroup(testAccountGroupInfoList);
     }
 
     @Test
     @DisplayName("계정 그룹 생성")
     public void ag001() throws Exception {
-        String accountId = getAccountId(common00);
-        String boardId = getBoardId(testBoardInfo00);
+        // 계정 생성
+        TestAccountInfo account00 = this.setRandomAccount();
+        TestAccountInfo account01 = this.setRandomAccount();
+        // 게시판 생성
+        TestBoardInfo board00 = this.setRandomBoard();
+        TestBoardInfo board01 = this.setRandomBoard();
 
         Map<String, Object> requestBody = new HashMap<>();
         requestBody.put("title", "Account group");
         requestBody.put("description", "account group description");
 
-        List<String> accountIdList = Collections.singletonList(accountId);
+        List<String> accountIdList = Arrays.asList(account00.getId(), account01.getId());
         requestBody.put("accountIds", accountIdList);
 
-        List<String> boardIdList = Collections.singletonList(boardId);
+        List<String> boardIdList = Arrays.asList(board00.getId(), board01.getId());
         requestBody.put("boardIds", boardIdList);
 
         MockHttpServletRequestBuilder requestBuilder = post("/v1/group/account")
@@ -88,6 +70,7 @@ public class AccountGroupControllerTest extends IricomTestSuite {
                 .andDo(print())
                 .andDo(document("AG_001",
                         preprocessRequest(
+                                modifyUris().scheme("https").host("api.iricom.com").removePort(),
                                 removeHeaders("Authorization"),
                                 prettyPrint()
                         ),
@@ -110,6 +93,15 @@ public class AccountGroupControllerTest extends IricomTestSuite {
     @Test
     @DisplayName("계정 그룹 목록 조회")
     public void ag002() throws Exception {
+        // 계정 생성
+        TestAccountInfo account00 = this.setRandomAccount();
+        TestAccountInfo account01 = this.setRandomAccount();
+        // 게시판 생성
+        TestBoardInfo board00 = this.setRandomBoard();
+        TestBoardInfo board01 = this.setRandomBoard();
+        // 계정 그룹 생성
+        setRandomAccountGroup(Arrays.asList(account00, account01), Arrays.asList(board00, board01));
+
         MockHttpServletRequestBuilder requestBuilder = get("/v1/group/account")
                 .param("skip", "0")
                 .param("limit", "5");
@@ -126,6 +118,7 @@ public class AccountGroupControllerTest extends IricomTestSuite {
                 .andDo(print())
                 .andDo(document("AG_002",
                         preprocessRequest(
+                                modifyUris().scheme("https").host("api.iricom.com").removePort(),
                                 removeHeaders("Authorization"),
                                 prettyPrint()
                         ),
@@ -148,9 +141,16 @@ public class AccountGroupControllerTest extends IricomTestSuite {
     @Test
     @DisplayName("계정 그룹 정보 조회")
     public void ag003() throws Exception {
-        AccountGroupInfo accountGroupInfo = getAccountGroup(testAccountGroupInfo00);
+        // 계정 생성
+        TestAccountInfo account00 = this.setRandomAccount();
+        TestAccountInfo account01 = this.setRandomAccount();
+        // 게시판 생성
+        TestBoardInfo board00 = this.setRandomBoard();
+        TestBoardInfo board01 = this.setRandomBoard();
+        // 계정 그룹 생성
+        TestAccountGroupInfo accountGroup = setRandomAccountGroup(Arrays.asList(account00, account01), Arrays.asList(board00, board01));
 
-        MockHttpServletRequestBuilder requestBuilder = get("/v1/group/account/{id}", accountGroupInfo.getId());
+        MockHttpServletRequestBuilder requestBuilder = get("/v1/group/account/{id}", accountGroup.getId());
         setAuthToken(requestBuilder, systemAdmin);
 
         List<FieldDescriptor> fieldDescriptorList = new LinkedList<>();
@@ -163,6 +163,7 @@ public class AccountGroupControllerTest extends IricomTestSuite {
                 .andDo(print())
                 .andDo(document("AG_003",
                         preprocessRequest(
+                                modifyUris().scheme("https").host("api.iricom.com").removePort(),
                                 removeHeaders("Authorization"),
                                 prettyPrint()
                         ),
@@ -185,22 +186,26 @@ public class AccountGroupControllerTest extends IricomTestSuite {
     @Test
     @DisplayName("계정 그룹 정보 수정")
     public void ag004() throws Exception {
-        AccountGroupInfo accountGroupInfo = getAccountGroup(testAccountGroupInfo01);
-
-        String accountId = getAccountId(common00);
-        String boardId = getBoardId(testBoardInfo00);
+        // 계정 생성
+        TestAccountInfo account00 = this.setRandomAccount();
+        TestAccountInfo account01 = this.setRandomAccount();
+        // 게시판 생성
+        TestBoardInfo board00 = this.setRandomBoard();
+        TestBoardInfo board01 = this.setRandomBoard();
+        // 계정 그룹 생성
+        TestAccountGroupInfo accountGroup = setRandomAccountGroup(Collections.singletonList(account00), Collections.singletonList(board00));
 
         Map<String, Object> requestBody = new HashMap<>();
         requestBody.put("title", "Update group title");
         requestBody.put("description", "account group description");
 
-        List<String> accountIdList = Collections.singletonList(accountId);
+        List<String> accountIdList = Collections.singletonList(account01.getId());
         requestBody.put("accountIds", accountIdList);
 
-        List<String> boardIdList = Collections.singletonList(boardId);
+        List<String> boardIdList = Collections.singletonList(board01.getId());
         requestBody.put("boardIds", boardIdList);
 
-        MockHttpServletRequestBuilder requestBuilder = patch("/v1/group/account/{id}", accountGroupInfo.getId())
+        MockHttpServletRequestBuilder requestBuilder = patch("/v1/group/account/{id}", accountGroup.getId())
                 .content(getJsonString(requestBody))
                 .contentType(MediaType.APPLICATION_JSON);
         setAuthToken(requestBuilder, systemAdmin);
@@ -215,6 +220,7 @@ public class AccountGroupControllerTest extends IricomTestSuite {
                 .andDo(print())
                 .andDo(document("AG_004",
                         preprocessRequest(
+                                modifyUris().scheme("https").host("api.iricom.com").removePort(),
                                 removeHeaders("Authorization"),
                                 prettyPrint()
                         ),
@@ -242,9 +248,16 @@ public class AccountGroupControllerTest extends IricomTestSuite {
     @Test
     @DisplayName("계정 그룹 정보 삭제")
     public void ag005() throws Exception {
-        AccountGroupInfo accountGroupInfo = getAccountGroup(testAccountGroupInfo02);
+        // 계정 생성
+        TestAccountInfo account00 = this.setRandomAccount();
+        TestAccountInfo account01 = this.setRandomAccount();
+        // 게시판 생성
+        TestBoardInfo board00 = this.setRandomBoard();
+        TestBoardInfo board01 = this.setRandomBoard();
+        // 계정 그룹 생성
+        TestAccountGroupInfo accountGroup = setRandomAccountGroup(Arrays.asList(account00, account01), Arrays.asList(board00, board01));
 
-        MockHttpServletRequestBuilder requestBuilder = delete("/v1/group/account/{id}", accountGroupInfo.getId());
+        MockHttpServletRequestBuilder requestBuilder = delete("/v1/group/account/{id}", accountGroup.getId());
         setAuthToken(requestBuilder, systemAdmin);
 
         List<FieldDescriptor> fieldDescriptorList = new LinkedList<>();
@@ -257,6 +270,7 @@ public class AccountGroupControllerTest extends IricomTestSuite {
                 .andDo(print())
                 .andDo(document("AG_005",
                         preprocessRequest(
+                                modifyUris().scheme("https").host("api.iricom.com").removePort(),
                                 removeHeaders("Authorization"),
                                 prettyPrint()
                         ),
