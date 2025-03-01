@@ -129,7 +129,7 @@ public class BlockServicePostGetTest extends IricomTestSuite {
     public void getPostBlockInfoUnknown() throws Exception {
         // 계정 생성
         TestAccountInfo account = this.setRandomAccount();
-        TestAccountInfo unregisteredAccount = this.setRandomUnregisteredAccount();
+        TestAccountInfo unregisteredAccount = this.setRandomAccount(true);
         // 게시판 생성
         TestBoardInfo board = this.setRandomBoard();
         // 게시물 생성

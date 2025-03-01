@@ -1,6 +1,7 @@
 package com.illdangag.iricom.storage.service.file;
 
 import com.illdangag.iricom.server.test.IricomTestSuite;
+import com.illdangag.iricom.server.test.data.wrapper.TestAccountInfo;
 import com.illdangag.iricom.storage.data.IricomFileInputStream;
 import com.illdangag.iricom.storage.data.response.FileMetadataInfo;
 import com.illdangag.iricom.storage.file.service.impl.FileStorageServiceImpl;
@@ -30,10 +31,11 @@ public class FileStorageServiceTest extends IricomTestSuite {
 
     @Test
     public void uploadFileTest() {
-        String accountId = getAccountId(common00);
+        // 계정 생성
+        TestAccountInfo account = setRandomAccount();
         InputStream sampleImageInputStream = this.getSampleImageInputStream();
 
-        FileMetadataInfo fileMetadataInfo = this.fileStorageServiceImpl.uploadFile(accountId, IMAGE_FILE_NAME, IMAGE_FILE_CONTENT_TYPE, sampleImageInputStream);
+        FileMetadataInfo fileMetadataInfo = this.fileStorageServiceImpl.uploadFile(account.getId(), IMAGE_FILE_NAME, IMAGE_FILE_CONTENT_TYPE, sampleImageInputStream);
         String fileName = fileMetadataInfo.getName();
 
         Assertions.assertNotNull(fileMetadataInfo.getId());
@@ -43,10 +45,12 @@ public class FileStorageServiceTest extends IricomTestSuite {
 
     @Test
     public void downloadFileTest() {
-        String accountId = getAccountId(common00);
+        // 계정 생성
+        TestAccountInfo account = setRandomAccount();
+
         InputStream sampleImageInputStream = this.getSampleImageInputStream();
 
-        FileMetadataInfo fileMetadataInfo = this.fileStorageServiceImpl.uploadFile(accountId, IMAGE_FILE_NAME, IMAGE_FILE_CONTENT_TYPE, sampleImageInputStream);
+        FileMetadataInfo fileMetadataInfo = this.fileStorageServiceImpl.uploadFile(account.getId(), IMAGE_FILE_NAME, IMAGE_FILE_CONTENT_TYPE, sampleImageInputStream);
 
         String id = fileMetadataInfo.getId();
 
@@ -63,14 +67,15 @@ public class FileStorageServiceTest extends IricomTestSuite {
 
     @Test
     public void deleteFileTest() {
-        String accountId = getAccountId(common00);
+        // 계정 생성
+        TestAccountInfo account = setRandomAccount();
         InputStream sampleImageInputStream = this.getSampleImageInputStream();
 
-        FileMetadataInfo fileMetadataInfo = this.fileStorageServiceImpl.uploadFile(accountId, IMAGE_FILE_NAME, IMAGE_FILE_CONTENT_TYPE, sampleImageInputStream);
+        FileMetadataInfo fileMetadataInfo = this.fileStorageServiceImpl.uploadFile(account.getId(), IMAGE_FILE_NAME, IMAGE_FILE_CONTENT_TYPE, sampleImageInputStream);
 
         String id = fileMetadataInfo.getId();
 
-        FileMetadataInfo deleteFileMetadataInfo = this.fileStorageServiceImpl.deleteFile(accountId, id);
+        FileMetadataInfo deleteFileMetadataInfo = this.fileStorageServiceImpl.deleteFile(account.getId(), id);
         Assertions.assertNotNull(deleteFileMetadataInfo);
     }
 

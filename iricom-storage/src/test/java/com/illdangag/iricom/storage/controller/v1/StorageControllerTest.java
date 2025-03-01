@@ -1,5 +1,6 @@
 package com.illdangag.iricom.storage.controller.v1;
 
+import com.illdangag.iricom.server.test.data.wrapper.TestAccountInfo;
 import com.illdangag.iricom.storage.data.response.FileMetadataInfo;
 import com.illdangag.iricom.storage.test.IricomTestSuiteEx;
 import lombok.extern.slf4j.Slf4j;
@@ -32,12 +33,15 @@ public class StorageControllerTest extends IricomTestSuiteEx {
     @Test
     @DisplayName("업로드 다운로드")
     public void uploadDownloadFileTest() throws Exception {
+        // 계정 생성
+        TestAccountInfo account = setRandomAccount();
+
         InputStream inputStream = this.getSampleImageInputStream();
         MockMultipartFile multipartFile = new MockMultipartFile("file", IMAGE_FILE_NAME, IMAGE_FILE_CONTENT_TYPE, inputStream);
 
         MockHttpServletRequestBuilder uploadRequestBuilder = multipart("/v1/file")
                 .file(multipartFile);
-        setAuthToken(uploadRequestBuilder, common00);
+        setAuthToken(uploadRequestBuilder, account);
 
         String responseBody = mockMvc.perform(uploadRequestBuilder)
                 .andExpect(status().is(200))

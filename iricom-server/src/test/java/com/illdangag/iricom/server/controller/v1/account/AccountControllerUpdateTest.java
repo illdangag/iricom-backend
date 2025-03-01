@@ -207,7 +207,7 @@ public class AccountControllerUpdateTest extends IricomTestSuite {
         @DisplayName("닉네임과 설명 수정")
         void nicknameAndDescription() throws Exception {
             // 계정 생성
-            TestAccountInfo account = setRandomUnregisteredAccount();
+            TestAccountInfo account = setRandomAccount(true);
 
             Map<String, Object> requestBody = new HashMap<>();
             requestBody.put("nickname", "update_unknown01");
@@ -229,7 +229,7 @@ public class AccountControllerUpdateTest extends IricomTestSuite {
         @DisplayName("닉네임 수정")
         void nickname() throws Exception {
             // 계정 생성
-            TestAccountInfo account = setRandomUnregisteredAccount();
+            TestAccountInfo account = setRandomAccount(true);
 
             Map<String, Object> requestBody = new HashMap<>();
             requestBody.put("nickname", "update_unknown02");
@@ -249,7 +249,7 @@ public class AccountControllerUpdateTest extends IricomTestSuite {
         @DisplayName("닉네임을 빈 문자열로 수정")
         void emptyNickname() throws Exception {
             // 계정 생성
-            TestAccountInfo account = setRandomUnregisteredAccount();
+            TestAccountInfo account = setRandomAccount(true);
 
             Map<String, Object> requestBody = new HashMap<>();
             requestBody.put("nickname", "");
@@ -269,7 +269,7 @@ public class AccountControllerUpdateTest extends IricomTestSuite {
         @DisplayName("설명 수정")
         void description() throws Exception {
             // 계정 생성
-            TestAccountInfo account = setRandomUnregisteredAccount();
+            TestAccountInfo account = setRandomAccount(true);
 
             Map<String, Object> requestBody = new HashMap<>();
             requestBody.put("description", "update_description");
@@ -289,7 +289,7 @@ public class AccountControllerUpdateTest extends IricomTestSuite {
         @DisplayName("빈 문자열로 설명 수정")
         void emptyDescription() throws Exception {
             // 계정 생성
-            TestAccountInfo account = setRandomUnregisteredAccount();
+            TestAccountInfo account = setRandomAccount(true);
 
             Map<String, Object> requestBody = new HashMap<>();
             requestBody.put("description", "");

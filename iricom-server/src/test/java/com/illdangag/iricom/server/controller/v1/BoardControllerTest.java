@@ -547,7 +547,7 @@ public class BoardControllerTest extends IricomTestSuite {
                 MockHttpServletRequestBuilder requestBuilder = patch("/v1/boards/{boardId}", board.getId())
                         .content(getJsonString(requestBody))
                         .contentType(MediaType.APPLICATION_JSON);
-                setAuthToken(requestBuilder, allBoardAdmin);
+                setAuthToken(requestBuilder, account);
 
                 mockMvc.perform(requestBuilder)
                         .andExpect(status().is(401))

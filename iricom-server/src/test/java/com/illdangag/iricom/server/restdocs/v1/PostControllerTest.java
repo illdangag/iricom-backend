@@ -103,7 +103,7 @@ public class PostControllerTest extends IricomTestSuite {
                 .param("limit", "5")
                 .param("keyword", "")
                 .param("type", "post");
-        setAuthToken(requestBuilder, common00);
+        setAuthToken(requestBuilder, account);
 
         List<FieldDescriptor> fieldDescriptorList = new LinkedList<>();
         fieldDescriptorList.addAll(IricomFieldsSnippet.getSearchList(""));

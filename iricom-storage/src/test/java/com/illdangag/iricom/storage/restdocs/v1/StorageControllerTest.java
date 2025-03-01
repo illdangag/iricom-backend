@@ -1,5 +1,6 @@
 package com.illdangag.iricom.storage.restdocs.v1;
 
+import com.illdangag.iricom.server.test.data.wrapper.TestAccountInfo;
 import com.illdangag.iricom.storage.data.response.FileMetadataInfo;
 import com.illdangag.iricom.storage.restdocs.snippet.IricomFieldsSnippetEx;
 import com.illdangag.iricom.storage.test.IricomTestSuiteEx;
@@ -39,12 +40,15 @@ public class StorageControllerTest extends IricomTestSuiteEx {
     @Test
     @DisplayName("파일 업로드 및 다운로드")
     public void fl001_fl002() throws Exception {
+        // 계정 생성
+        TestAccountInfo account = setRandomAccount();
+
         InputStream inputStream = this.getSampleImageInputStream();
         MockMultipartFile multipartFile = new MockMultipartFile("file", IMAGE_FILE_NAME, IMAGE_FILE_CONTENT_TYPE, inputStream);
 
         MockHttpServletRequestBuilder uploadRequestBuilder = multipart("/v1/file")
                 .file(multipartFile);
-        setAuthToken(uploadRequestBuilder, common00);
+        setAuthToken(uploadRequestBuilder, account);
 
         List<FieldDescriptor> fieldDescriptorList = new LinkedList<>();
         fieldDescriptorList.addAll(IricomFieldsSnippetEx.getFileMetadata(""));

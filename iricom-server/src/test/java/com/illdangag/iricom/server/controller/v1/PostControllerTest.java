@@ -505,7 +505,7 @@ public class PostControllerTest extends IricomTestSuite {
                         });
 
                 requestBuilder = get("/v1/boards/{boardId}/posts/{postId}", board.getId(), post.getId());
-                setAuthToken(requestBuilder, common00);
+                setAuthToken(requestBuilder, account);
 
                 mockMvc.perform(requestBuilder)
                         .andExpect(status().is(200))
@@ -1140,13 +1140,13 @@ public class PostControllerTest extends IricomTestSuite {
             MockHttpServletRequestBuilder requestBuilder = patch("/v1/boards/{boardId}/posts/{postId}/vote", board.getId(), post.getId())
                     .content(getJsonString(requestBody))
                     .contentType(MediaType.APPLICATION_JSON);
-            setAuthToken(requestBuilder, common01);
+            setAuthToken(requestBuilder, account);
             mockMvc.perform(requestBuilder);
 
             requestBuilder = patch("/v1/boards/{boardId}/posts/{postId}/vote", board.getId(), post.getId())
                     .content(getJsonString(requestBody))
                     .contentType(MediaType.APPLICATION_JSON);
-            setAuthToken(requestBuilder, common01);
+            setAuthToken(requestBuilder, account);
             mockMvc.perform(requestBuilder)
                     .andExpect(status().is(400))
                     .andExpect(jsonPath("$.code").value("04000006"))
@@ -1169,13 +1169,13 @@ public class PostControllerTest extends IricomTestSuite {
             MockHttpServletRequestBuilder requestBuilder = patch("/v1/boards/{boardId}/posts/{postId}/vote", board.getId(), post.getId())
                     .content(getJsonString(requestBody))
                     .contentType(MediaType.APPLICATION_JSON);
-            setAuthToken(requestBuilder, common01);
+            setAuthToken(requestBuilder, account);
             mockMvc.perform(requestBuilder);
 
             requestBuilder = patch("/v1/boards/{boardId}/posts/{postId}/vote", board.getId(), post.getId())
                     .content(getJsonString(requestBody))
                     .contentType(MediaType.APPLICATION_JSON);
-            setAuthToken(requestBuilder, common01);
+            setAuthToken(requestBuilder, account);
             mockMvc.perform(requestBuilder)
                     .andExpect(status().is(400))
                     .andExpect(jsonPath("$.code").value("04000006"))
@@ -1294,7 +1294,7 @@ public class PostControllerTest extends IricomTestSuite {
             TestPostInfo post = setRandomPost(board, account, PostType.POST, PostState.PUBLISH);
 
             MockHttpServletRequestBuilder requestBuilder = patch("/v1/boards/{boardId}/posts/{postId}/vote", board.getId(), post.getId());
-            setAuthToken(requestBuilder, common00);
+            setAuthToken(requestBuilder, account);
 
             mockMvc.perform(requestBuilder)
                     .andExpect(status().is(400))

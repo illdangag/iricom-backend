@@ -6,7 +6,6 @@ import com.illdangag.iricom.server.data.response.PostInfo;
 import com.illdangag.iricom.server.exception.IricomException;
 import com.illdangag.iricom.server.service.PostService;
 import com.illdangag.iricom.server.test.IricomTestSuite;
-import com.illdangag.iricom.server.test.data.wrapper.TestAccountGroupInfo;
 import com.illdangag.iricom.server.test.data.wrapper.TestAccountInfo;
 import com.illdangag.iricom.server.test.data.wrapper.TestBoardInfo;
 import com.illdangag.iricom.server.test.data.wrapper.TestPostInfo;
@@ -18,7 +17,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 
 import javax.transaction.Transactional;
-import java.util.Arrays;
 import java.util.Collections;
 
 @DisplayName("service: 게시물 - 삭제")
@@ -28,73 +26,9 @@ public class PostServiceDeleteTest extends IricomTestSuite {
     @Autowired
     private PostService postService;
 
-    // 게시판
-    private final TestBoardInfo testBoardInfo00 = TestBoardInfo.builder()
-            .title("testBoardInfo00").isEnabled(true).adminList(Arrays.asList(allBoardAdmin, common01))
-            .removeAdminList(Collections.singletonList(common01)).build();
-    private final TestBoardInfo testBoardInfo01 = TestBoardInfo.builder()
-            .title("testBoardInfo01").isEnabled(false).adminList(Collections.singletonList(allBoardAdmin)).build();
-    private final TestBoardInfo testBoardInfo02 = TestBoardInfo.builder()
-            .title("testBoardInfo02").isEnabled(true).undisclosed(true).adminList(Collections.singletonList(allBoardAdmin)).build();
-    private final TestBoardInfo testBoardInfo03 = TestBoardInfo.builder()
-            .title("testBoardInfo03").isEnabled(true).undisclosed(true).adminList(Collections.singletonList(allBoardAdmin)).build();
-    // 게시물
-    private final TestPostInfo testPostInfo00 = TestPostInfo.builder()
-            .title("testPostInfo00").content("testPostInfo00").isAllowComment(true)
-            .postType(PostType.POST).postState(PostState.PUBLISH)
-            .creator(common00).board(testBoardInfo00)
-            .build();
-    private final TestPostInfo testPostInfo01 = TestPostInfo.builder()
-            .title("testPostInfo01").content("testPostInfo01").isAllowComment(true)
-            .postType(PostType.POST).postState(PostState.PUBLISH)
-            .creator(common00).board(testBoardInfo00)
-            .build();
-    private final TestPostInfo testPostInfo02 = TestPostInfo.builder()
-            .title("testPostInfo02").content("testPostInfo02").isAllowComment(true)
-            .postType(PostType.POST).postState(PostState.PUBLISH)
-            .creator(common00).board(testBoardInfo01)
-            .build();
-    private final TestPostInfo testPostInfo03 = TestPostInfo.builder()
-            .title("testPostInfo03").content("testPostInfo03").isAllowComment(true)
-            .postType(PostType.POST).postState(PostState.PUBLISH)
-            .creator(common00).board(testBoardInfo02)
-            .build();
-    private final TestPostInfo testPostInfo04 = TestPostInfo.builder()
-            .title("testPostInfo04").content("testPostInfo04").isAllowComment(true)
-            .postType(PostType.POST).postState(PostState.PUBLISH)
-            .creator(common00).board(testBoardInfo03)
-            .build();
-    private final TestPostInfo testPostInfo05 = TestPostInfo.builder()
-            .title("testPostInfo05").content("testPostInfo05").isAllowComment(true)
-            .postType(PostType.NOTIFICATION).postState(PostState.PUBLISH)
-            .creator(allBoardAdmin).board(testBoardInfo00)
-            .build();
-    private final TestPostInfo testPostInfo06 = TestPostInfo.builder()
-            .title("testPostInfo06").content("testPostInfo05").isAllowComment(true)
-            .postType(PostType.NOTIFICATION).postState(PostState.PUBLISH)
-            .creator(common01).board(testBoardInfo00)
-            .build();
-    // 계정 그룹
-    private final TestAccountGroupInfo testAccountGroupInfo00 = TestAccountGroupInfo.builder()
-            .title("testAccountGroupInfo00").description("description")
-            .accountList(Collections.singletonList(common00)).boardList(Collections.singletonList(testBoardInfo02))
-            .deleted(true)
-            .build();
-    private final TestAccountGroupInfo testAccountGroupInfo01 = TestAccountGroupInfo.builder()
-            .title("testAccountGroupInfo01").description("description")
-            .accountList(Collections.singletonList(common00)).boardList(Collections.singletonList(testBoardInfo03))
-            .build();
-
     @Autowired
     public PostServiceDeleteTest(ApplicationContext context) {
         super(context);
-
-        addTestBoardInfo(testBoardInfo00, testBoardInfo01, testBoardInfo02, testBoardInfo03);
-        addTestPostInfo(testPostInfo00, testPostInfo01, testPostInfo02, testPostInfo03, testPostInfo04, testPostInfo05,
-                testPostInfo06);
-        addTestAccountGroupInfo(testAccountGroupInfo00, testAccountGroupInfo01);
-
-        init();
     }
 
     @Test

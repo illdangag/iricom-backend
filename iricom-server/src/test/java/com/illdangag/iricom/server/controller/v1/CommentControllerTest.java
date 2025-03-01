@@ -112,7 +112,7 @@ public class CommentControllerTest extends IricomTestSuite {
             MockHttpServletRequestBuilder requestBuilder = post("/v1/boards/{boardId}/posts/{postId}/comments", board.getId(), post.getId())
                     .content(getJsonString(requestBody))
                     .contentType(MediaType.APPLICATION_JSON);
-            setAuthToken(requestBuilder, common01);
+            setAuthToken(requestBuilder, account);
 
             mockMvc.perform(requestBuilder)
                     .andExpect(status().is(404))
@@ -246,7 +246,7 @@ public class CommentControllerTest extends IricomTestSuite {
             MockHttpServletRequestBuilder requestBuilder = patch("/v1/boards/{boardId}/posts/{postId}/comments/{commentId}", board.getId(), post.getId(), "UNKNOWN")
                     .content(getJsonString(requestBody))
                     .contentType(MediaType.APPLICATION_JSON);
-            setAuthToken(requestBuilder, common00);
+            setAuthToken(requestBuilder, account);
 
             mockMvc.perform(requestBuilder)
                     .andExpect(status().is(404))
@@ -274,7 +274,7 @@ public class CommentControllerTest extends IricomTestSuite {
             MockHttpServletRequestBuilder requestBuilder = patch("/v1/boards/{boardId}/posts/{postId}/comments/{commentId}", board.getId(), post.getId(), comment.getId())
                     .content(getJsonString(requestBody))
                     .contentType(MediaType.APPLICATION_JSON);
-            setAuthToken(requestBuilder, common00);
+            setAuthToken(requestBuilder, account);
 
             mockMvc.perform(requestBuilder)
                     .andExpect(status().is(400))
@@ -384,7 +384,6 @@ public class CommentControllerTest extends IricomTestSuite {
             TestCommentInfo comment0100 = setRandomComment(post, comment01, account);
             setRandomComment(post, comment0100, account, 3);
 
-
             MockHttpServletRequestBuilder requestBuilder = get("/v1/boards/{boardId}/posts/{postId}/comments", board.getId(), post.getId())
                     .param("includeComment", "true");
             setAuthToken(requestBuilder, account);
@@ -440,7 +439,7 @@ public class CommentControllerTest extends IricomTestSuite {
 
             MockHttpServletRequestBuilder requestBuilder = get("/v1/boards/{boardId}/posts/{postId}/comments", board.getId(), post.getId())
                     .param("limit", "4");
-            setAuthToken(requestBuilder, common00);
+            setAuthToken(requestBuilder, account);
 
             mockMvc.perform(requestBuilder)
                     .andExpect(status().is(200))
@@ -470,7 +469,7 @@ public class CommentControllerTest extends IricomTestSuite {
 
             MockHttpServletRequestBuilder requestBuilder = get("/v1/boards/{boardId}/posts/{postId}/comments", board.getId(), post.getId())
                     .param("referenceCommentId", comment0000.getId());
-            setAuthToken(requestBuilder, common00);
+            setAuthToken(requestBuilder, account);
 
             mockMvc.perform(requestBuilder)
                     .andExpect(status().is(200))
@@ -542,6 +541,7 @@ public class CommentControllerTest extends IricomTestSuite {
             TestPostInfo post = setRandomPost(board, account);
             // 댓글 생성
             TestCommentInfo comment = setRandomComment(post, account);
+            // 댓글 삭제
             setDeletedComment(Collections.singletonList(comment));
 
             MockHttpServletRequestBuilder requestBuilder = delete("/v1/boards/{boardId}/posts/{postId}/comments/{commentId}", board.getId(), post.getId(), comment.getId());
@@ -844,7 +844,7 @@ public class CommentControllerTest extends IricomTestSuite {
             MockHttpServletRequestBuilder requestBuilder = patch("/v1/boards/{boardId}/posts/{postId}/comments/{commentId}/vote", otherBoard.getId(), post.getId(), comment.getId())
                     .content(getJsonString(requestBody))
                     .contentType(MediaType.APPLICATION_JSON);
-            setAuthToken(requestBuilder, common00);
+            setAuthToken(requestBuilder, account);
 
             mockMvc.perform(requestBuilder)
                     .andExpect(status().is(404))
@@ -873,7 +873,7 @@ public class CommentControllerTest extends IricomTestSuite {
             MockHttpServletRequestBuilder requestBuilder = patch("/v1/boards/{boardId}/posts/{postId}/comments/{commentId}/vote", board.getId(), post.getId(), otherComment.getPost())
                     .content(getJsonString(requestBody))
                     .contentType(MediaType.APPLICATION_JSON);
-            setAuthToken(requestBuilder, common00);
+            setAuthToken(requestBuilder, account);
 
             mockMvc.perform(requestBuilder)
                     .andExpect(status().is(404))

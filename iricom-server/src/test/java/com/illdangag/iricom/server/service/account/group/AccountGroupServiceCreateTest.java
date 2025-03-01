@@ -78,26 +78,14 @@ public class AccountGroupServiceCreateTest extends IricomTestSuite {
     @Test
     @DisplayName("게시판 추가")
     public void createAccountGroupWithBoard() throws Exception {
-        // 게시판 관리자 생성
-        TestAccountInfo boardAdminAccount = TestAccountInfo
-                .builder()
-                .email("accountGroup01@iricom.com")
-                .nickname("accountGroup01")
-                .description("this is accountGroup01.")
-                .build();
-        this.setAccount(boardAdminAccount);
-
+        // 계정 생성
+        TestAccountInfo account = setRandomAccount();
         // 게시판 생성
-        TestBoardInfo testBoard = TestBoardInfo.builder()
-                .title("testBoardInfo00")
-                .isEnabled(true)
-                .adminList(Collections.singletonList(boardAdminAccount))
-                .build();
-        this.setBoard(testBoard);
+        TestBoardInfo board = setRandomBoard(Collections.singletonList(account));
 
         String title = "New account group with board";
         String description = "description";
-        String boardId = testBoard.getId();
+        String boardId = board.getId();
 
         AccountGroupInfoCreate accountGroupInfoCreate = AccountGroupInfoCreate.builder()
                 .title(title)
@@ -117,21 +105,10 @@ public class AccountGroupServiceCreateTest extends IricomTestSuite {
     @Test
     @DisplayName("계정과 게시판 추가")
     public void createAccountGroupWithAccountBoard() throws Exception {
-        // 게시판 관리자 생성
-        TestAccountInfo account = TestAccountInfo
-                .builder()
-                .email("accountGroup02@iricom.com")
-                .nickname("accountGroup02")
-                .description("this is accountGroup02.")
-                .build();
-        this.setAccount(account);
-
+        // 계정 생성
+        TestAccountInfo account = setRandomAccount();
         // 게시판 생성
-        TestBoardInfo board = TestBoardInfo.builder()
-                .title("testBoardInfo00")
-                .isEnabled(true)
-                .build();
-        this.setBoard(board);
+        TestBoardInfo board = setRandomBoard(Collections.singletonList(account));
 
         String title = "New account group";
         String description = "description";

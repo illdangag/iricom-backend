@@ -38,17 +38,9 @@ public class BlockServiceCommentUnblockTest extends IricomTestSuite {
         // 게시판 생성
         TestBoardInfo board = this.setRandomBoard(1).get(0);
         // 게시물 생성
-        TestPostInfo post = TestPostInfo.builder()
-                .title("post title").content("content").isAllowComment(true)
-                .postType(PostType.POST).postState(PostState.PUBLISH)
-                .creator(account).board(board)
-                .build();
-        this.setPost(post);
+        TestPostInfo post = setRandomPost(board, account);
         // 댓글 생성
-        TestCommentInfo comment = TestCommentInfo.builder()
-                .content("comment").creator(account).post(post)
-                .build();
-        this.setComment(comment);
+        TestCommentInfo comment = setRandomComment(post, account);
 
         // 댓글 차단
         CommentBlockInfoCreate commentBlockInfoCreate = CommentBlockInfoCreate.builder()
@@ -68,21 +60,11 @@ public class BlockServiceCommentUnblockTest extends IricomTestSuite {
         TestAccountInfo boardAdmin = this.setRandomAccount();
         TestAccountInfo account = this.setRandomAccount();
         // 게시판 생성
-        TestBoardInfo board = TestBoardInfo.builder()
-                .title("board").isEnabled(true).adminList(Collections.singletonList(boardAdmin)).build();
-        this.setBoard(board);
+        TestBoardInfo board = setRandomBoard(Collections.singletonList(boardAdmin));
         // 게시물 생성
-        TestPostInfo post = TestPostInfo.builder()
-                .title("post title").content("content").isAllowComment(true)
-                .postType(PostType.POST).postState(PostState.PUBLISH)
-                .creator(account).board(board)
-                .build();
-        this.setPost(post);
+        TestPostInfo post = setRandomPost(board, account);
         // 댓글 생성
-        TestCommentInfo comment = TestCommentInfo.builder()
-                .content("comment").creator(account).post(post)
-                .build();
-        this.setComment(comment);
+        TestCommentInfo comment = setRandomComment(post, account);
 
         // 댓글 차단
         CommentBlockInfoCreate commentBlockInfoCreate = CommentBlockInfoCreate.builder()
@@ -103,24 +85,12 @@ public class BlockServiceCommentUnblockTest extends IricomTestSuite {
         TestAccountInfo boardAdmin01 = this.setRandomAccount();
         TestAccountInfo account = this.setRandomAccount();
         // 게시판 생성
-        TestBoardInfo board00 = TestBoardInfo.builder()
-                .title("board").isEnabled(true).adminList(Collections.singletonList(boardAdmin00)).build();
-        this.setBoard(board00);
-        TestBoardInfo board01 = TestBoardInfo.builder()
-                .title("board").isEnabled(true).adminList(Collections.singletonList(boardAdmin01)).build();
-        this.setBoard(board01);
+        TestBoardInfo board00 = setRandomBoard(Collections.singletonList(boardAdmin00));
+        setRandomBoard(Collections.singletonList(boardAdmin01));
         // 게시물 생성
-        TestPostInfo post = TestPostInfo.builder()
-                .title("post title").content("content").isAllowComment(true)
-                .postType(PostType.POST).postState(PostState.PUBLISH)
-                .creator(account).board(board00)
-                .build();
-        this.setPost(post);
+        TestPostInfo post = setRandomPost(board00, account);
         // 댓글 생성
-        TestCommentInfo comment = TestCommentInfo.builder()
-                .content("comment").creator(account).post(post)
-                .build();
-        this.setComment(comment);
+        TestCommentInfo comment = setRandomComment(post, account);
 
         // 댓글 차단
         CommentBlockInfoCreate commentBlockInfoCreate = CommentBlockInfoCreate.builder()
@@ -142,21 +112,11 @@ public class BlockServiceCommentUnblockTest extends IricomTestSuite {
         TestAccountInfo boardAdmin = this.setRandomAccount();
         TestAccountInfo account = this.setRandomAccount();
         // 게시판 생성
-        TestBoardInfo board = TestBoardInfo.builder()
-                .title("board").isEnabled(true).adminList(Collections.singletonList(boardAdmin)).build();
-        this.setBoard(board);
+        TestBoardInfo board = setRandomBoard(Collections.singletonList(boardAdmin));
         // 게시물 생성
-        TestPostInfo post = TestPostInfo.builder()
-                .title("post title").content("content").isAllowComment(true)
-                .postType(PostType.POST).postState(PostState.PUBLISH)
-                .creator(account).board(board)
-                .build();
-        this.setPost(post);
+        TestPostInfo post = setRandomPost(board, account);
         // 댓글 생성
-        TestCommentInfo comment = TestCommentInfo.builder()
-                .content("comment").creator(account).post(post)
-                .build();
-        this.setComment(comment);
+        TestCommentInfo comment = setRandomComment(post, account);
 
         // 댓글 차단
         CommentBlockInfoCreate commentBlockInfoCreate = CommentBlockInfoCreate.builder()
@@ -178,23 +138,13 @@ public class BlockServiceCommentUnblockTest extends IricomTestSuite {
         // 계정 생성
         TestAccountInfo boardAdmin = this.setRandomAccount();
         TestAccountInfo account = this.setRandomAccount();
-        TestAccountInfo unregisteredAccount = this.setRandomUnregisteredAccount();
+        TestAccountInfo unregisteredAccount = this.setRandomAccount(true);
         // 게시판 생성
-        TestBoardInfo board = TestBoardInfo.builder()
-                .title("board").isEnabled(true).adminList(Collections.singletonList(boardAdmin)).build();
-        this.setBoard(board);
+        TestBoardInfo board = setRandomBoard(Collections.singletonList(boardAdmin));
         // 게시물 생성
-        TestPostInfo post = TestPostInfo.builder()
-                .title("post title").content("content").isAllowComment(true)
-                .postType(PostType.POST).postState(PostState.PUBLISH)
-                .creator(account).board(board)
-                .build();
-        this.setPost(post);
+        TestPostInfo post = setRandomPost(board, account);
         // 댓글 생성
-        TestCommentInfo comment = TestCommentInfo.builder()
-                .content("comment").creator(account).post(post)
-                .build();
-        this.setComment(comment);
+        TestCommentInfo comment = setRandomComment(post, account);
 
         // 댓글 차단
         CommentBlockInfoCreate commentBlockInfoCreate = CommentBlockInfoCreate.builder()

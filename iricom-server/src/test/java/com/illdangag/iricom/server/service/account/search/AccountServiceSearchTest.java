@@ -26,15 +26,11 @@ public class AccountServiceSearchTest extends IricomTestSuite {
     @Test
     @DisplayName("상세 정보가 등록된 계정을 이메일로 조회")
     public void searchRegisteredAccount() throws Exception {
-        TestAccountInfo testAccount = TestAccountInfo.builder()
-                .email("accountSearchTest00@iricom.com")
-                .nickname("accountSearchTest00")
-                .description("this is accountSearchTest00.")
-                .build();
-        this.setAccount(testAccount);
+        // 계정 생성
+        TestAccountInfo account = setRandomAccount();
 
         AccountInfoSearch accountInfoSearch = AccountInfoSearch.builder()
-                .keyword("accountSearchTest00@iricom.com")
+                .keyword(account.getEmail())
                 .build();
 
         AccountInfoList accountInfoList = accountService.getAccountInfoList(accountInfoSearch);
@@ -45,15 +41,11 @@ public class AccountServiceSearchTest extends IricomTestSuite {
     @Test
     @DisplayName("상세 정보가 등록된 계정을 닉네임으로 조회")
     public void searchRegisteredAccountByNickname() throws Exception {
-        TestAccountInfo testAccount = TestAccountInfo.builder()
-                .email("accountSearchTest01@iricom.com")
-                .nickname("accountSearchTest01")
-                .description("this is accountSearchTest01.")
-                .build();
-        this.setAccount(testAccount);
+        // 계정 생성
+        TestAccountInfo account = setRandomAccount();
 
         AccountInfoSearch accountInfoSearch = AccountInfoSearch.builder()
-                .keyword("accountSearchTest01")
+                .keyword(account.getNickname())
                 .build();
 
         AccountInfoList accountInfoList = accountService.getAccountInfoList(accountInfoSearch);
@@ -64,16 +56,11 @@ public class AccountServiceSearchTest extends IricomTestSuite {
     @Test
     @DisplayName("상세 정보가 등록되지 않은 계정을 이메일로 조회")
     public void searchUnregisteredAccount() throws Exception {
-        TestAccountInfo testAccount = TestAccountInfo.builder()
-                .email("accountSearchTest02@iricom.com")
-                .nickname("")
-                .description("")
-                .isUnregistered(true)
-                .build();
-        this.setAccount(testAccount);
+        // 계정 생성
+        TestAccountInfo account = setRandomAccount(true);
 
         AccountInfoSearch accountInfoSearch = AccountInfoSearch.builder()
-                .keyword("accountSearchTest02@iricom.com")
+                .keyword(account.getEmail())
                 .build();
 
         AccountInfoList accountInfoList = accountService.getAccountInfoList(accountInfoSearch);

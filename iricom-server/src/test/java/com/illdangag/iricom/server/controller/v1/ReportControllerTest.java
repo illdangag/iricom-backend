@@ -32,43 +32,6 @@ public class ReportControllerTest extends IricomTestSuite {
     @Autowired
     MockMvc mockMvc;
 
-    private final TestBoardInfo testBoardInfo00 = TestBoardInfo.builder()
-            .title("testBoardInfo00").isEnabled(true).adminList(Collections.singletonList(allBoardAdmin)).build();
-    private final TestBoardInfo testBoardInfo01 = TestBoardInfo.builder()
-            .title("testBoardInfo01").isEnabled(true).adminList(Collections.singletonList(allBoardAdmin)).build();
-    private final TestBoardInfo testBoardInfo02 = TestBoardInfo.builder()
-            .title("testBoardInfo02").isEnabled(false).adminList(Collections.singletonList(allBoardAdmin)).build();
-
-    private final TestPostInfo testPostInfo00 = TestPostInfo.builder()
-            .title("testPostInfo00").content("testPostInfo00").isAllowComment(true)
-            .postType(PostType.POST).postState(PostState.PUBLISH)
-            .creator(allBoardAdmin).board(testBoardInfo00).build();
-    private final TestPostInfo testPostInfo01 = TestPostInfo.builder()
-            .title("testPostInfo01").content("testPostInfo01").isAllowComment(true)
-            .postType(PostType.POST).postState(PostState.PUBLISH)
-            .creator(allBoardAdmin).board(testBoardInfo00).build();
-    private final TestPostInfo testPostInfo02 = TestPostInfo.builder()
-            .title("testPostInfo02").content("testPostInfo02").isAllowComment(true)
-            .postType(PostType.POST).postState(PostState.PUBLISH)
-            .creator(allBoardAdmin).board(testBoardInfo02).build();
-    private final TestPostInfo testPostInfo03 = TestPostInfo.builder()
-            .title("testPostInfo04").content("testPostInfo04").isAllowComment(false)
-            .postType(PostType.POST).postState(PostState.PUBLISH)
-            .creator(allBoardAdmin).board(testBoardInfo00).build();
-
-    private final TestCommentInfo testCommentInfo00 = TestCommentInfo.builder()
-            .content("testCommentInfo00").creator(common00).post(testPostInfo00)
-            .build();
-    private final TestCommentInfo testCommentInfo01 = TestCommentInfo.builder()
-            .content("testCommentInfo01").creator(common00).post(testPostInfo00)
-            .build();
-    private final TestCommentInfo testCommentInfo02 = TestCommentInfo.builder()
-            .content("testCommentInfo02").creator(common00).post(testPostInfo02)
-            .build();
-    private final TestCommentInfo testCommentInfo03 = TestCommentInfo.builder()
-            .content("testCommentInfo02").creator(common00).post(testPostInfo03)
-            .build();
-
     @Autowired
     public ReportControllerTest(ApplicationContext context) {
         super(context);
@@ -250,7 +213,7 @@ public class ReportControllerTest extends IricomTestSuite {
                 MockHttpServletRequestBuilder requestBuilder = post("/v1/report/comment/boards/{boardId}/posts/{postId}/comments/{commentId}", board.getId(), post.getId(), comment.getId())
                         .content(getJsonString(requestBody))
                         .contentType(MediaType.APPLICATION_JSON);
-                setAuthToken(requestBuilder, common00);
+                setAuthToken(requestBuilder, account);
 
                 mockMvc.perform(requestBuilder)
                         .andExpect(status().is(200))
@@ -308,7 +271,7 @@ public class ReportControllerTest extends IricomTestSuite {
                 MockHttpServletRequestBuilder requestBuilder = post("/v1/report/comment/boards/{boardId}/posts/{postId}/comments/{commentId}", "unknown", post.getId(), comment.getId())
                         .content(getJsonString(requestBody))
                         .contentType(MediaType.APPLICATION_JSON);
-                setAuthToken(requestBuilder, common00);
+                setAuthToken(requestBuilder, account);
 
                 mockMvc.perform(requestBuilder)
                         .andExpect(status().is(404))
@@ -364,7 +327,7 @@ public class ReportControllerTest extends IricomTestSuite {
                 MockHttpServletRequestBuilder requestBuilder = post("/v1/report/comment/boards/{boardId}/posts/{postId}/comments/{commentId}", board.getId(), post.getId(), "unknown")
                         .content(getJsonString(requestBody))
                         .contentType(MediaType.APPLICATION_JSON);
-                setAuthToken(requestBuilder, common00);
+                setAuthToken(requestBuilder, account);
 
                 mockMvc.perform(requestBuilder)
                         .andExpect(status().is(404))

@@ -37,7 +37,7 @@ public class PostServiceCreateTest extends IricomTestSuite {
     @DisplayName("닉네임이 등록되지 않은 사용자")
     public void postUnregisteredAccount() {
         // 계정 생성
-        TestAccountInfo account = this.setRandomUnregisteredAccount();
+        TestAccountInfo account = this.setRandomAccount(true);
         // 게시판 생성
         TestBoardInfo board = this.setRandomBoard();
 

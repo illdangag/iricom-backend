@@ -39,12 +39,7 @@ public class BlockServicePostBlockTest extends IricomTestSuite {
         // 게시판 생성
         TestBoardInfo board = this.setRandomBoard();
         // 게시물 생성
-        TestPostInfo post = TestPostInfo.builder()
-                .title("post title").content("content").isAllowComment(true)
-                .postType(PostType.POST).postState(PostState.PUBLISH)
-                .creator(account).board(board)
-                .build();
-        this.setPost(post);
+        TestPostInfo post = setRandomPost(board, account);
 
         // 게시물 차단
         PostBlockInfoCreate postBlockInfoCreate = PostBlockInfoCreate.builder()
@@ -65,16 +60,10 @@ public class BlockServicePostBlockTest extends IricomTestSuite {
         TestAccountInfo boardAdmin = this.setRandomAccount();
         TestAccountInfo account = this.setRandomAccount();
         // 게시판 생성
-        TestBoardInfo board = TestBoardInfo.builder()
-                .title("board").isEnabled(true).adminList(Collections.singletonList(boardAdmin)).build();
-        this.setBoard(board);
+        TestBoardInfo board = this.setRandomBoard(Collections.singletonList(boardAdmin));
+
         // 게시물 생성
-        TestPostInfo post = TestPostInfo.builder()
-                .title("post title").content("content").isAllowComment(true)
-                .postType(PostType.POST).postState(PostState.PUBLISH)
-                .creator(account).board(board)
-                .build();
-        this.setPost(post);
+        TestPostInfo post = setRandomPost(board, account);
 
         // 게시물 차단
         PostBlockInfoCreate postBlockInfoCreate = PostBlockInfoCreate.builder()
@@ -96,19 +85,10 @@ public class BlockServicePostBlockTest extends IricomTestSuite {
         TestAccountInfo otherBoardAdmin = this.setRandomAccount();
         TestAccountInfo account = this.setRandomAccount();
         // 게시판 생성
-        TestBoardInfo board = TestBoardInfo.builder()
-                .title("board").isEnabled(true).adminList(Collections.singletonList(boardAdmin)).build();
-        this.setBoard(board);
-        TestBoardInfo otherBoard = TestBoardInfo.builder()
-                .title("board").isEnabled(true).adminList(Collections.singletonList(otherBoardAdmin)).build();
-        this.setBoard(otherBoard);
+        TestBoardInfo board = setRandomBoard(Collections.singletonList(boardAdmin));
+        setRandomBoard(Collections.singletonList(otherBoardAdmin));
         // 게시물 생성
-        TestPostInfo post = TestPostInfo.builder()
-                .title("post title").content("content").isAllowComment(true)
-                .postType(PostType.POST).postState(PostState.PUBLISH)
-                .creator(account).board(board)
-                .build();
-        this.setPost(post);
+        TestPostInfo post = setRandomPost(board, account);
 
         PostBlockInfoCreate postBlockInfoCreate = PostBlockInfoCreate.builder()
                 .reason("block")
@@ -127,12 +107,7 @@ public class BlockServicePostBlockTest extends IricomTestSuite {
         // 게시판 생성
         TestBoardInfo board = this.setRandomBoard();
         // 게시물 생성
-        TestPostInfo post = TestPostInfo.builder()
-                .title("post title").content("content").isAllowComment(true)
-                .postType(PostType.POST).postState(PostState.PUBLISH)
-                .creator(account).board(board)
-                .build();
-        this.setPost(post);
+        TestPostInfo post = setRandomPost(board, account);
 
         // 게시물 차단
         PostBlockInfoCreate postBlockInfoCreate = PostBlockInfoCreate.builder()
@@ -149,7 +124,7 @@ public class BlockServicePostBlockTest extends IricomTestSuite {
     public void blockUnknown() throws Exception {
         // 계정 생성
         TestAccountInfo account = this.setRandomAccount();
-        TestAccountInfo unregisteredAccount = this.setRandomUnregisteredAccount();
+        TestAccountInfo unregisteredAccount = this.setRandomAccount(true);
         // 게시판 생성
         TestBoardInfo board = this.setRandomBoard();
         // 게시물 생성

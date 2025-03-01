@@ -28,10 +28,11 @@ public class StorageServiceTest extends IricomTestSuiteEx {
     @Test
     @DisplayName("업로드")
     public void uploadFileTest() {
-        String accountId = getAccountId(common00);
+        // 계정 생성
+        TestAccountInfo account = setRandomAccount();
         InputStream sampleImageInputStream = this.getSampleImageInputStream();
 
-        FileMetadataInfo fileMetadataInfo = this.storageService.uploadFile(accountId, IMAGE_FILE_NAME, IMAGE_FILE_CONTENT_TYPE, sampleImageInputStream);
+        FileMetadataInfo fileMetadataInfo = this.storageService.uploadFile(account.getId(), IMAGE_FILE_NAME, IMAGE_FILE_CONTENT_TYPE, sampleImageInputStream);
         String fileName = fileMetadataInfo.getName();
 
         Assertions.assertNotNull(fileMetadataInfo.getId());
@@ -42,19 +43,12 @@ public class StorageServiceTest extends IricomTestSuiteEx {
     @Test
     @DisplayName("다운로드")
     public void downloadFileTest() {
-        TestAccountInfo testAccountInfo = common00;
+        // 계정 생성
+        TestAccountInfo account = setRandomAccount();
+        // 파일 생성
+        TestFileMetadataInfo fileMetadata = getRandomTestFileMetadataInfo(account);
 
-        TestFileMetadataInfo testFileMetadataInfo = TestFileMetadataInfo.builder()
-                .account(testAccountInfo)
-                .name(IMAGE_FILE_NAME).contentType(IMAGE_FILE_CONTENT_TYPE).inputStream(this.getSampleImageInputStream())
-                .build();
-
-        this.addTestFileMetadataInfo(testFileMetadataInfo);
-        this.init();
-
-        String fileId = this.getFileMetadataInfo(testFileMetadataInfo);
-
-        try (IricomFileInputStream inputStream = this.storageService.downloadFile(fileId)) {
+        try (IricomFileInputStream inputStream = this.storageService.downloadFile(fileMetadata.getId())) {
             String fileName = inputStream.getFileMetadataInfo().getName();
             Assertions.assertNotNull(inputStream);
             Assertions.assertNotEquals(0, inputStream.available());

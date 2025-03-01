@@ -1,7 +1,5 @@
 package com.illdangag.iricom.server.service.report.post;
 
-import com.illdangag.iricom.server.data.entity.type.PostState;
-import com.illdangag.iricom.server.data.entity.type.PostType;
 import com.illdangag.iricom.server.data.entity.type.ReportType;
 import com.illdangag.iricom.server.data.request.PostReportInfoSearch;
 import com.illdangag.iricom.server.data.response.PostReportInfoList;
@@ -29,49 +27,9 @@ public class ReportServicePostSearchTest extends IricomTestSuite {
     @Autowired
     ReportService reportService;
 
-    // 게시판
-    private final TestBoardInfo testBoardInfo00 = TestBoardInfo.builder()
-            .title("testBoardInfo00").isEnabled(true).adminList(Arrays.asList(allBoardAdmin)).build();
-    // 게시물
-    private final TestPostInfo testPostInfo00 = TestPostInfo.builder()
-            .title("testPostInfo00").content("content").isAllowComment(true)
-            .postType(PostType.POST).postState(PostState.PUBLISH)
-            .creator(common00).board(testBoardInfo00).build();
-    private final TestPostInfo testPostInfo01 = TestPostInfo.builder()
-            .title("testPostInfo01").content("content").isAllowComment(true)
-            .postType(PostType.POST).postState(PostState.PUBLISH)
-            .creator(common00).board(testBoardInfo00).build();
-    private final TestPostInfo testPostInfo02 = TestPostInfo.builder()
-            .title("testPostInfo02").content("content").isAllowComment(true)
-            .postType(PostType.POST).postState(PostState.PUBLISH)
-            .creator(common00).board(testBoardInfo00).build();
-    private final TestPostInfo testPostInfo03 = TestPostInfo.builder()
-            .title("testPostInfo03").content("content").isAllowComment(true)
-            .postType(PostType.POST).postState(PostState.PUBLISH)
-            .creator(common00).board(testBoardInfo00).build();
-    // 게시물 신고
-    private final TestPostReportInfo postReport00 = TestPostReportInfo.builder()
-            .type(ReportType.HATE).reason("hate report").reportAccount(common00).post(testPostInfo00)
-            .build();
-    private final TestPostReportInfo postReport01 = TestPostReportInfo.builder()
-            .type(ReportType.POLITICAL).reason("political report").reportAccount(common00).post(testPostInfo01)
-            .build();
-    private final TestPostReportInfo postReport02 = TestPostReportInfo.builder()
-            .type(ReportType.PORNOGRAPHY).reason("pornography report").reportAccount(common00).post(testPostInfo02)
-            .build();
-    private final TestPostReportInfo postReport03 = TestPostReportInfo.builder()
-            .type(ReportType.ETC).reason("etc report").reportAccount(common00).post(testPostInfo03)
-            .build();
-
     @Autowired
     public ReportServicePostSearchTest(ApplicationContext context) {
         super(context);
-
-        addTestBoardInfo(testBoardInfo00);
-        addTestPostInfo(testPostInfo00, testPostInfo01, testPostInfo02, testPostInfo03);
-        addTestPostReportInfo(postReport00, postReport01, postReport02, postReport03);
-
-        init();
     }
 
     @Test
