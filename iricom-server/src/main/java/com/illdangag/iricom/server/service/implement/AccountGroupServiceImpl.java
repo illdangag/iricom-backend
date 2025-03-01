@@ -191,7 +191,7 @@ public class AccountGroupServiceImpl extends IricomService implements AccountGro
                     .distinct()
                     .collect(Collectors.toList());
         } catch (Exception exception) {
-            throw new IricomException(IricomErrorCode.NOT_EXIST_BOARD);
+            return false;
         }
 
         List<Board> boardList = this.boardRepository.getBoardList(idList);
@@ -206,7 +206,7 @@ public class AccountGroupServiceImpl extends IricomService implements AccountGro
         try {
             idList = accountIdList.stream().map(Long::parseLong).collect(Collectors.toList());
         } catch (Exception exception) {
-            throw new IricomException(IricomErrorCode.NOT_EXIST_ACCOUNT);
+            return false;
         }
         return this.accountRepository.existAccount(idList);
     }

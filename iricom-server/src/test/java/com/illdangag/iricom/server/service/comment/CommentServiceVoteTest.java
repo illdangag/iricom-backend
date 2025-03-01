@@ -34,13 +34,13 @@ public class CommentServiceVoteTest extends IricomTestSuite {
     @DisplayName("좋아요")
     public void upvote() throws Exception {
         // 계정 생성
-        TestAccountInfo account = this.setRandomAccount();
+        TestAccountInfo account = setRandomAccount();
         // 게시판 생성
-        TestBoardInfo board = this.setRandomBoard();
+        TestBoardInfo board = setRandomBoard();
         // 게시물 생성
-        TestPostInfo post = this.setRandomPost(board, account);
+        TestPostInfo post = setRandomPost(board, account);
         // 댓글 생성
-        TestCommentInfo comment = this.setRandomComment(post, account);
+        TestCommentInfo comment = setRandomComment(post, account);
 
         CommentInfo commentInfo = commentService.voteComment(account.getId(), board.getId(), post.getId(), comment.getId(), VoteType.UPVOTE);
 
@@ -52,13 +52,13 @@ public class CommentServiceVoteTest extends IricomTestSuite {
     @DisplayName("싫어요")
     public void downvote() throws Exception {
         // 계정 생성
-        TestAccountInfo account = this.setRandomAccount();
+        TestAccountInfo account = setRandomAccount();
         // 게시판 생성
-        TestBoardInfo board = this.setRandomBoard();
+        TestBoardInfo board = setRandomBoard();
         // 게시물 생성
-        TestPostInfo post = this.setRandomPost(board, account);
+        TestPostInfo post = setRandomPost(board, account);
         // 댓글 생성
-        TestCommentInfo comment = this.setRandomComment(post, account);
+        TestCommentInfo comment = setRandomComment(post, account);
 
         CommentInfo commentInfo = commentService.voteComment(account.getId(), board.getId(), post.getId(), comment.getId(), VoteType.DOWNVOTE);
 
@@ -70,13 +70,13 @@ public class CommentServiceVoteTest extends IricomTestSuite {
     @DisplayName("중복 좋아요")
     public void duplicateUpvote() throws Exception {
         // 계정 생성
-        TestAccountInfo account = this.setRandomAccount();
+        TestAccountInfo account = setRandomAccount();
         // 게시판 생성
-        TestBoardInfo board = this.setRandomBoard();
+        TestBoardInfo board = setRandomBoard();
         // 게시물 생성
-        TestPostInfo post = this.setRandomPost(board, account);
+        TestPostInfo post = setRandomPost(board, account);
         // 댓글 생성
-        TestCommentInfo comment = this.setRandomComment(post, account);
+        TestCommentInfo comment = setRandomComment(post, account);
 
         CommentInfo commentInfo = commentService.voteComment(account.getId(), board.getId(), post.getId(), comment.getId(), VoteType.UPVOTE);
         Assertions.assertEquals(1, commentInfo.getUpvote());
@@ -93,13 +93,13 @@ public class CommentServiceVoteTest extends IricomTestSuite {
     @DisplayName("중복 싫어요")
     public void duplicateDownvote() throws Exception {
         // 계정 생성
-        TestAccountInfo account = this.setRandomAccount();
+        TestAccountInfo account = setRandomAccount();
         // 게시판 생성
-        TestBoardInfo board = this.setRandomBoard();
+        TestBoardInfo board = setRandomBoard();
         // 게시물 생성
-        TestPostInfo post = this.setRandomPost(board, account);
+        TestPostInfo post = setRandomPost(board, account);
         // 댓글 생성
-        TestCommentInfo comment = this.setRandomComment(post, account);
+        TestCommentInfo comment = setRandomComment(post, account);
 
         CommentInfo commentInfo = commentService.voteComment(account.getId(), board.getId(), post.getId(), comment.getId(), VoteType.DOWNVOTE);
         Assertions.assertEquals(0, commentInfo.getUpvote());
@@ -116,13 +116,13 @@ public class CommentServiceVoteTest extends IricomTestSuite {
     @DisplayName("삭제된 댓글 좋아요")
     public void upvoteDeletedComment() throws Exception {
         // 계정 생성
-        TestAccountInfo account = this.setRandomAccount();
+        TestAccountInfo account = setRandomAccount();
         // 게시판 생성
-        TestBoardInfo board = this.setRandomBoard();
+        TestBoardInfo board = setRandomBoard();
         // 게시물 생성
-        TestPostInfo post = this.setRandomPost(board, account);
+        TestPostInfo post = setRandomPost(board, account);
         // 댓글 생성
-        TestCommentInfo comment = this.setRandomComment(post, account, true);
+        TestCommentInfo comment = setRandomComment(post, account, true);
 
         IricomException iricomException = Assertions.assertThrows(IricomException.class, () -> {
             commentService.voteComment(account.getId(), board.getId(), post.getId(), comment.getId(), VoteType.UPVOTE);
@@ -135,13 +135,13 @@ public class CommentServiceVoteTest extends IricomTestSuite {
     @DisplayName("삭제된 댓글 싫어요")
     public void downvoteDeletedComment() throws Exception {
         // 계정 생성
-        TestAccountInfo account = this.setRandomAccount();
+        TestAccountInfo account = setRandomAccount();
         // 게시판 생성
-        TestBoardInfo board = this.setRandomBoard();
+        TestBoardInfo board = setRandomBoard();
         // 게시물 생성
-        TestPostInfo post = this.setRandomPost(board, account);
+        TestPostInfo post = setRandomPost(board, account);
         // 댓글 생성
-        TestCommentInfo comment = this.setRandomComment(post, account, true);
+        TestCommentInfo comment = setRandomComment(post, account, true);
 
         IricomException iricomException = Assertions.assertThrows(IricomException.class, () -> {
             commentService.voteComment(account.getId(), board.getId(), post.getId(), comment.getId(), VoteType.DOWNVOTE);

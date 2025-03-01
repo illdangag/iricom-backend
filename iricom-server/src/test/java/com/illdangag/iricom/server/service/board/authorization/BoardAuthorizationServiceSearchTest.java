@@ -33,9 +33,9 @@ public class BoardAuthorizationServiceSearchTest extends IricomTestSuite {
     @DisplayName("검색")
     public void searchBoardAdmin() {
         // 계정 생성
-        TestAccountInfo account = this.setRandomAccount();
+        TestAccountInfo account = setRandomAccount();
         // 게시판 생성
-        TestBoardInfo board = this.setRandomBoard(Arrays.asList(account));
+        TestBoardInfo board = setRandomBoard(Arrays.asList(account));
 
         BoardAdminInfoSearch boardAdminInfoSearch = BoardAdminInfoSearch.builder()
                 .keyword(board.getTitle())
@@ -54,7 +54,7 @@ public class BoardAuthorizationServiceSearchTest extends IricomTestSuite {
     @DisplayName("keyword 빈 문자열")
     public void emptyKeyword() {
         // 게시판 생성
-        this.setRandomBoard();
+        setRandomBoard();
 
         BoardAdminInfoSearch boardAdminInfoSearch = BoardAdminInfoSearch.builder()
                 .keyword("")

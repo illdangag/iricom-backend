@@ -38,11 +38,11 @@ public class CommentServiceCreateTest extends IricomTestSuite {
     @DisplayName("댓글 생성")
     public void createComment() throws Exception {
         // 계정 생성
-        TestAccountInfo account = this.setRandomAccount();
+        TestAccountInfo account = setRandomAccount();
         // 게시판 생성
-        TestBoardInfo board = this.setRandomBoard();
+        TestBoardInfo board = setRandomBoard();
         // 게시물 생성
-        TestPostInfo post = this.setRandomPost(board, account);
+        TestPostInfo post = setRandomPost(board, account);
 
         CommentInfoCreate commentInfoCreate = CommentInfoCreate.builder()
                 .content("댓글 생성")
@@ -59,11 +59,11 @@ public class CommentServiceCreateTest extends IricomTestSuite {
     @DisplayName("내용이 빈 문자열")
     public void emptyContent() throws Exception {
         // 계정 생성
-        TestAccountInfo account = this.setRandomAccount();
+        TestAccountInfo account = setRandomAccount();
         // 게시판 생성
-        TestBoardInfo board = this.setRandomBoard();
+        TestBoardInfo board = setRandomBoard();
         // 게시물 생성
-        TestPostInfo post = this.setRandomPost(board, account);
+        TestPostInfo post = setRandomPost(board, account);
 
         CommentInfoCreate commentInfoCreate = CommentInfoCreate.builder()
                 .content("")
@@ -78,11 +78,11 @@ public class CommentServiceCreateTest extends IricomTestSuite {
     @DisplayName("내용이 긴 문자열")
     public void overflowContent() throws Exception {
         // 계정 생성
-        TestAccountInfo account = this.setRandomAccount();
+        TestAccountInfo account = setRandomAccount();
         // 게시판 생성
-        TestBoardInfo board = this.setRandomBoard();
+        TestBoardInfo board = setRandomBoard();
         // 게시물 생성
-        TestPostInfo post = this.setRandomPost(board, account);
+        TestPostInfo post = setRandomPost(board, account);
 
         CommentInfoCreate commentInfoCreate = CommentInfoCreate.builder()
                 .content(TEXT_200 + "0")
@@ -97,13 +97,13 @@ public class CommentServiceCreateTest extends IricomTestSuite {
     @DisplayName("대댓글 생성")
     public void createNestedComment() throws Exception {
         // 계정 생성
-        TestAccountInfo account = this.setRandomAccount();
+        TestAccountInfo account = setRandomAccount();
         // 게시판 생성
-        TestBoardInfo board = this.setRandomBoard();
+        TestBoardInfo board = setRandomBoard();
         // 게시물 생성
-        TestPostInfo post = this.setRandomPost(board, account);
+        TestPostInfo post = setRandomPost(board, account);
         // 댓글 생성
-        TestCommentInfo comment = this.setRandomComment(post, account);
+        TestCommentInfo comment = setRandomComment(post, account);
 
         CommentInfoCreate commentInfoCreate = CommentInfoCreate.builder()
                 .content("대댓글 생성").referenceCommentId(comment.getId())
@@ -120,11 +120,11 @@ public class CommentServiceCreateTest extends IricomTestSuite {
     @DisplayName("존재하지 않는 댓글에 대댓글")
     public void invalidReferenceComment() throws Exception {
         // 계정 생성
-        TestAccountInfo account = this.setRandomAccount();
+        TestAccountInfo account = setRandomAccount();
         // 게시판 생성
-        TestBoardInfo board = this.setRandomBoard();
+        TestBoardInfo board = setRandomBoard();
         // 게시물 생성
-        TestPostInfo post = this.setRandomPost(board, account);
+        TestPostInfo post = setRandomPost(board, account);
 
         CommentInfoCreate commentInfoCreate = CommentInfoCreate.builder()
                 .content("대댓글 생성").referenceCommentId("NOT_EXIST_COMMENT")
@@ -142,11 +142,11 @@ public class CommentServiceCreateTest extends IricomTestSuite {
     @DisplayName("댓글 작성 후 포인트 추가")
     public void addPointComment() throws Exception {
         // 계정 생성
-        TestAccountInfo account = this.setRandomAccount();
+        TestAccountInfo account = setRandomAccount();
         // 게시판 생성
-        TestBoardInfo board = this.setRandomBoard();
+        TestBoardInfo board = setRandomBoard();
         // 게시물 생성
-        TestPostInfo post = this.setRandomPost(board, account);
+        TestPostInfo post = setRandomPost(board, account);
 
         AccountInfo beforeAccountInfo = this.accountService.getAccountInfo(account.getId());
 

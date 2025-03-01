@@ -87,7 +87,7 @@ public class PersonalMessageControllerTest extends IricomTestSuite {
         TestAccountInfo sender = setRandomAccount();
         TestAccountInfo receiver = setRandomAccount();
         // 개인 쪽지 전송
-        this.setRandomPersonalMessage(sender, receiver, 5);
+        setRandomPersonalMessage(sender, receiver, 5);
 
         MockHttpServletRequestBuilder requestBuilder = get("/v1/personal/messages/receive")
                 .param("skip", "0")
@@ -130,7 +130,7 @@ public class PersonalMessageControllerTest extends IricomTestSuite {
         TestAccountInfo sender = setRandomAccount();
         TestAccountInfo receiver = setRandomAccount();
         // 개인 쪽지 전송
-        TestPersonalMessageInfo personalMessage = this.setRandomPersonalMessage(sender, receiver);
+        TestPersonalMessageInfo personalMessage = setRandomPersonalMessage(sender, receiver);
 
         MockHttpServletRequestBuilder requestBuilder = get("/v1/personal/messages/receive/{personalMessageId}", personalMessage.getId());
         setAuthToken(requestBuilder, receiver);

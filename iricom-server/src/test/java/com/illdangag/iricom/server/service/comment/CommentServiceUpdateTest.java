@@ -35,13 +35,13 @@ public class CommentServiceUpdateTest extends IricomTestSuite {
     @DisplayName("갱신")
     public void updateComment() throws Exception {
         // 계정 생성
-        TestAccountInfo account = this.setRandomAccount();
+        TestAccountInfo account = setRandomAccount();
         // 게시판 생성
-        TestBoardInfo board = this.setRandomBoard();
+        TestBoardInfo board = setRandomBoard();
         // 게시물 생성
-        TestPostInfo post = this.setRandomPost(board, account);
+        TestPostInfo post = setRandomPost(board, account);
         // 댓글 생성
-        TestCommentInfo comment = this.setRandomComment(post, account);
+        TestCommentInfo comment = setRandomComment(post, account);
 
         CommentInfoUpdate commentInfoUpdate = CommentInfoUpdate.builder()
                 .content("update comment")
@@ -57,15 +57,15 @@ public class CommentServiceUpdateTest extends IricomTestSuite {
     @DisplayName("대댓글 갱신")
     public void updateReferenceComment() throws Exception {
         // 계정 생성
-        TestAccountInfo account = this.setRandomAccount();
+        TestAccountInfo account = setRandomAccount();
         // 게시판 생성
-        TestBoardInfo board = this.setRandomBoard();
+        TestBoardInfo board = setRandomBoard();
         // 게시물 생성
-        TestPostInfo post = this.setRandomPost(board, account);
+        TestPostInfo post = setRandomPost(board, account);
         // 댓글 생성
-        TestCommentInfo comment00 = this.setRandomComment(post, account);
+        TestCommentInfo comment00 = setRandomComment(post, account);
         // 대댓글 생성
-        TestCommentInfo comment01 = this.setRandomComment(post, comment00, account);
+        TestCommentInfo comment01 = setRandomComment(post, comment00, account);
 
         CommentInfoUpdate commentInfoUpdate = CommentInfoUpdate.builder()
                 .content("update comment")
@@ -81,13 +81,13 @@ public class CommentServiceUpdateTest extends IricomTestSuite {
     @DisplayName("내용이 빈 문자열")
     public void emptyContent() throws Exception {
         // 계정 생성
-        TestAccountInfo account = this.setRandomAccount();
+        TestAccountInfo account = setRandomAccount();
         // 게시판 생성
-        TestBoardInfo board = this.setRandomBoard();
+        TestBoardInfo board = setRandomBoard();
         // 게시물 생성
-        TestPostInfo post = this.setRandomPost(board, account);
+        TestPostInfo post = setRandomPost(board, account);
         // 댓글 생성
-        TestCommentInfo comment = this.setRandomComment(post, account);
+        TestCommentInfo comment = setRandomComment(post, account);
 
         CommentInfoUpdate commentInfoUpdate = CommentInfoUpdate.builder()
                 .content("")
@@ -102,13 +102,13 @@ public class CommentServiceUpdateTest extends IricomTestSuite {
     @DisplayName("내용이 긴 문자열")
     public void overflowContent() throws Exception {
         // 계정 생성
-        TestAccountInfo account = this.setRandomAccount();
+        TestAccountInfo account = setRandomAccount();
         // 게시판 생성
-        TestBoardInfo board = this.setRandomBoard();
+        TestBoardInfo board = setRandomBoard();
         // 게시물 생성
-        TestPostInfo post = this.setRandomPost(board, account);
+        TestPostInfo post = setRandomPost(board, account);
         // 댓글 생성
-        TestCommentInfo comment = this.setRandomComment(post, account);
+        TestCommentInfo comment = setRandomComment(post, account);
 
         CommentInfoUpdate commentInfoUpdate = CommentInfoUpdate.builder()
                 .content(TEXT_200 + "0")
@@ -123,13 +123,13 @@ public class CommentServiceUpdateTest extends IricomTestSuite {
     @DisplayName("존재하지 않는 댓글")
     public void notExistComment() throws Exception {
         // 계정 생성
-        TestAccountInfo account = this.setRandomAccount();
+        TestAccountInfo account = setRandomAccount();
         // 게시판 생성
-        TestBoardInfo board = this.setRandomBoard();
+        TestBoardInfo board = setRandomBoard();
         // 게시물 생성
-        TestPostInfo post = this.setRandomPost(board, account);
+        TestPostInfo post = setRandomPost(board, account);
         // 댓글 생성
-        this.setRandomComment(post, account);
+        setRandomComment(post, account);
 
         String commentId = "NOT_EXIST_COMMENT";
 
@@ -149,13 +149,13 @@ public class CommentServiceUpdateTest extends IricomTestSuite {
     @DisplayName("존재하지 않는 게시물")
     public void notExistPost() throws Exception {
         // 계정 생성
-        TestAccountInfo account = this.setRandomAccount();
+        TestAccountInfo account = setRandomAccount();
         // 게시판 생성
-        TestBoardInfo board = this.setRandomBoard();
+        TestBoardInfo board = setRandomBoard();
         // 게시물 생성
-        TestPostInfo post = this.setRandomPost(board, account);
+        TestPostInfo post = setRandomPost(board, account);
         // 댓글 생성
-        TestCommentInfo comment = this.setRandomComment(post, account);
+        TestCommentInfo comment = setRandomComment(post, account);
 
         String postId = "NOT_EXIST_POST";
 
@@ -175,13 +175,13 @@ public class CommentServiceUpdateTest extends IricomTestSuite {
     @DisplayName("존재하지 않는 게시판")
     public void notExistBoard() throws Exception {
         // 계정 생성
-        TestAccountInfo account = this.setRandomAccount();
+        TestAccountInfo account = setRandomAccount();
         // 게시판 생성
-        TestBoardInfo board = this.setRandomBoard();
+        TestBoardInfo board = setRandomBoard();
         // 게시물 생성
-        TestPostInfo post = this.setRandomPost(board, account);
+        TestPostInfo post = setRandomPost(board, account);
         // 댓글 생성
-        TestCommentInfo comment = this.setRandomComment(post, account);
+        TestCommentInfo comment = setRandomComment(post, account);
 
         String boardId = "NOT_EXIST_BOARD";
 
@@ -201,15 +201,15 @@ public class CommentServiceUpdateTest extends IricomTestSuite {
     @DisplayName("다른 게시판에 있는 게시물")
     public void invalidBoard() throws Exception {
         // 계정 생성
-        TestAccountInfo account = this.setRandomAccount();
+        TestAccountInfo account = setRandomAccount();
         // 게시판 생성
-        TestBoardInfo board = this.setRandomBoard();
-        TestBoardInfo otherBoard = this.setRandomBoard();
+        TestBoardInfo board = setRandomBoard();
+        TestBoardInfo otherBoard = setRandomBoard();
         // 게시물 생성
-        TestPostInfo post = this.setRandomPost(board, account);
-        this.setRandomPost(otherBoard, account);
+        TestPostInfo post = setRandomPost(board, account);
+        setRandomPost(otherBoard, account);
         // 댓글 생성
-        TestCommentInfo comment = this.setRandomComment(post, account);
+        TestCommentInfo comment = setRandomComment(post, account);
 
         CommentInfoUpdate commentInfoUpdate = CommentInfoUpdate.builder()
                 .content("update comment")
@@ -227,16 +227,16 @@ public class CommentServiceUpdateTest extends IricomTestSuite {
     @DisplayName("다른 게시물에 있는 댓글")
     public void invalidPost() throws Exception {
         // 계정 생성
-        TestAccountInfo account = this.setRandomAccount();
+        TestAccountInfo account = setRandomAccount();
         // 게시판 생성
-        TestBoardInfo board = this.setRandomBoard();
-        TestBoardInfo otherBoard = this.setRandomBoard();
+        TestBoardInfo board = setRandomBoard();
+        TestBoardInfo otherBoard = setRandomBoard();
         // 게시물 생성
-        TestPostInfo post = this.setRandomPost(board, account);
-        TestPostInfo otherPost = this.setRandomPost(otherBoard, account);
+        TestPostInfo post = setRandomPost(board, account);
+        TestPostInfo otherPost = setRandomPost(otherBoard, account);
         // 댓글 생성
-        TestCommentInfo comment = this.setRandomComment(post, account);
-        TestCommentInfo otherComment = this.setRandomComment(otherPost, account);
+        TestCommentInfo comment = setRandomComment(post, account);
+        TestCommentInfo otherComment = setRandomComment(otherPost, account);
 
         CommentInfoUpdate commentInfoUpdate = CommentInfoUpdate.builder()
                 .content("update comment")

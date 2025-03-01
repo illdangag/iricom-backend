@@ -26,10 +26,10 @@ public class PersonalMessageServiceDeleteTest extends IricomTestSuite {
     @DisplayName("수신 삭제")
     public void deleteSendPersonalMessage() throws Exception {
         // 계정 생성
-        TestAccountInfo sender = this.setRandomAccount();
-        TestAccountInfo receiver = this.setRandomAccount();
+        TestAccountInfo sender = setRandomAccount();
+        TestAccountInfo receiver = setRandomAccount();
         // 개인 쪽지 생성
-        TestPersonalMessageInfo personalMessage = this.setRandomPersonalMessage(sender, receiver);
+        TestPersonalMessageInfo personalMessage = setRandomPersonalMessage(sender, receiver);
 
         PersonalMessageInfo personalMessageInfo = this.personalMessageService.deletePersonalMessageInfo(receiver.getId(), personalMessage.getId());
 
@@ -44,10 +44,10 @@ public class PersonalMessageServiceDeleteTest extends IricomTestSuite {
     @DisplayName("송신 삭제")
     public void deleteReceivePersonalMessage() throws Exception {
         // 계정 생성
-        TestAccountInfo sender = this.setRandomAccount();
-        TestAccountInfo receiver = this.setRandomAccount();
+        TestAccountInfo sender = setRandomAccount();
+        TestAccountInfo receiver = setRandomAccount();
         // 개인 쪽지 생성
-        TestPersonalMessageInfo personalMessage = this.setRandomPersonalMessage(sender, receiver);;
+        TestPersonalMessageInfo personalMessage = setRandomPersonalMessage(sender, receiver);;
 
         PersonalMessageInfo personalMessageInfo = this.personalMessageService.deletePersonalMessageInfo(sender.getId(), personalMessage.getId());
 
@@ -62,10 +62,10 @@ public class PersonalMessageServiceDeleteTest extends IricomTestSuite {
     @DisplayName("존재하지 않는 개인 쪽지 삭제")
     public void deleteNotExistPersonalMessage() throws Exception {
         // 계정 생성
-        TestAccountInfo sender = this.setRandomAccount();
-        TestAccountInfo receiver = this.setRandomAccount();
+        TestAccountInfo sender = setRandomAccount();
+        TestAccountInfo receiver = setRandomAccount();
         // 개인 쪽지 생성
-        this.setRandomPersonalMessage(sender, receiver);;
+        setRandomPersonalMessage(sender, receiver);;
 
         String personalMessageId = "NOT_EXIST";
 
@@ -84,11 +84,11 @@ public class PersonalMessageServiceDeleteTest extends IricomTestSuite {
     @DisplayName("다른 사람의 개인 쪽지 삭제")
     public void deleteNotPermissionPersonalMessage() throws Exception {
         // 계정 생성
-        TestAccountInfo sender = this.setRandomAccount();
-        TestAccountInfo receiver = this.setRandomAccount();
-        TestAccountInfo other = this.setRandomAccount();
+        TestAccountInfo sender = setRandomAccount();
+        TestAccountInfo receiver = setRandomAccount();
+        TestAccountInfo other = setRandomAccount();
         // 개인 쪽지 생성
-        TestPersonalMessageInfo personalMessage = this.setRandomPersonalMessage(sender, receiver);;
+        TestPersonalMessageInfo personalMessage = setRandomPersonalMessage(sender, receiver);;
 
         IricomException iricomException = Assertions.assertThrows(IricomException.class, () -> {
             this.personalMessageService.getPersonalMessageInfo(other.getId(), personalMessage.getId());

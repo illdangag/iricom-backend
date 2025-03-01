@@ -41,9 +41,9 @@ public class BlockServiceCommentBlockTest extends IricomTestSuite {
     @DisplayName("시스템 관리자")
     void blockSystemAdmin() {
         // 계정 생성
-        TestAccountInfo account = this.setRandomAccount(1).get(0);
+        TestAccountInfo account = setRandomAccount(1).get(0);
         // 게시판 생성
-        TestBoardInfo board = this.setRandomBoard(1).get(0);
+        TestBoardInfo board = setRandomBoard(1).get(0);
         // 게시물 생성
         TestPostInfo post = setRandomPost(board, account);
         // 댓글 생성
@@ -65,8 +65,8 @@ public class BlockServiceCommentBlockTest extends IricomTestSuite {
     @DisplayName("게시판 관리자")
     void blockBoardAdmin() {
         // 계정 생성
-        TestAccountInfo boardAdmin = this.setRandomAccount();
-        TestAccountInfo account = this.setRandomAccount();
+        TestAccountInfo boardAdmin = setRandomAccount();
+        TestAccountInfo account = setRandomAccount();
         // 게시판 생성
         TestBoardInfo board = setRandomBoard(Collections.singletonList(boardAdmin));
         // 게시물 생성
@@ -91,9 +91,9 @@ public class BlockServiceCommentBlockTest extends IricomTestSuite {
     @DisplayName("다른 게시판 관리자")
     void blockOtherBoardAdmin() {
         // 계정 생성
-        TestAccountInfo boardAdmin00 = this.setRandomAccount();
-        TestAccountInfo boardAdmin01 = this.setRandomAccount();
-        TestAccountInfo account = this.setRandomAccount();
+        TestAccountInfo boardAdmin00 = setRandomAccount();
+        TestAccountInfo boardAdmin01 = setRandomAccount();
+        TestAccountInfo account = setRandomAccount();
         // 게시판 생성
         TestBoardInfo board00 = setRandomBoard(Collections.singletonList(boardAdmin00));
          setRandomBoard(Collections.singletonList(boardAdmin01));
@@ -117,9 +117,9 @@ public class BlockServiceCommentBlockTest extends IricomTestSuite {
     @DisplayName("일반 사용자")
     void blockAccount() {
         // 계정 생성
-        TestAccountInfo account = this.setRandomAccount();
+        TestAccountInfo account = setRandomAccount();
         // 게시판 생성
-        TestBoardInfo board = this.setRandomBoard();
+        TestBoardInfo board = setRandomBoard();
         // 게시물 생성
         TestPostInfo post = setRandomPost(board, account);
         // 댓글 생성
@@ -140,10 +140,10 @@ public class BlockServiceCommentBlockTest extends IricomTestSuite {
     @DisplayName("등록되지 않은 사용자")
     void blockUnknown() {
         // 계정 생성
-        TestAccountInfo account = this.setRandomAccount();
-        TestAccountInfo unregisteredAccount = this.setRandomAccount(true);
+        TestAccountInfo account = setRandomAccount();
+        TestAccountInfo unregisteredAccount = setRandomAccount(true);
         // 게시판 생성
-        TestBoardInfo board = this.setRandomBoard();
+        TestBoardInfo board = setRandomBoard();
         // 게시물 생성
         TestPostInfo post = setRandomPost(board, account);
         // 댓글 생성
@@ -165,9 +165,9 @@ public class BlockServiceCommentBlockTest extends IricomTestSuite {
     @DisplayName("이미 차단된 게시물의 댓글")
     void alreadyBlockPost() {
         // 계정 생성
-        TestAccountInfo account = this.setRandomAccount();
+        TestAccountInfo account = setRandomAccount();
         // 게시판 생성
-        TestBoardInfo board = this.setRandomBoard();
+        TestBoardInfo board = setRandomBoard();
         // 게시물 생성
         TestPostInfo post = setRandomPost(board, account);
         // 댓글 생성
@@ -194,9 +194,9 @@ public class BlockServiceCommentBlockTest extends IricomTestSuite {
     @DisplayName("이미 차단된 댓글")
     void alreadyBlockComment() {
         // 계정 생성
-        TestAccountInfo account = this.setRandomAccount();
+        TestAccountInfo account = setRandomAccount();
         // 게시판 생성
-        TestBoardInfo board = this.setRandomBoard();
+        TestBoardInfo board = setRandomBoard();
         // 게시물 생성
         TestPostInfo post = setRandomPost(board, account);
         // 댓글 생성
@@ -221,9 +221,9 @@ public class BlockServiceCommentBlockTest extends IricomTestSuite {
     @DisplayName("차단된 댓글 조회")
     void getBlockComment() {
         // 계정 생성
-        TestAccountInfo account = this.setRandomAccount();
+        TestAccountInfo account = setRandomAccount();
         // 게시판 생성
-        TestBoardInfo board = this.setRandomBoard();
+        TestBoardInfo board = setRandomBoard();
         // 게시물 생성
         TestPostInfo post = setRandomPost(board, account);
         // 댓글 생성

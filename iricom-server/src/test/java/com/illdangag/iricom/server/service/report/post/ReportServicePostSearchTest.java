@@ -36,14 +36,14 @@ public class ReportServicePostSearchTest extends IricomTestSuite {
     @DisplayName("기본 조회")
     public void searchPostReportInfoList() throws Exception {
         // 계정 생성
-        TestAccountInfo account = this.setRandomAccount();
+        TestAccountInfo account = setRandomAccount();
         // 게시판 생성
-        TestBoardInfo board = this.setRandomBoard();
+        TestBoardInfo board = setRandomBoard();
         // 게시물 생성
-        List<TestPostInfo> postList = this.setRandomPost(board, account, 8);
+        List<TestPostInfo> postList = setRandomPost(board, account, 8);
         // 게시물 신고
         for (TestPostInfo post : postList) {
-            this.setRandomPostReport(post, account);
+            setRandomPostReport(post, account);
         }
 
         PostReportInfoSearch postReportInfoSearch = PostReportInfoSearch.builder()
@@ -60,27 +60,27 @@ public class ReportServicePostSearchTest extends IricomTestSuite {
     @DisplayName("종류")
     public void searchPostReportInfoListByType() throws Exception {
         // 계정 생성
-        TestAccountInfo account = this.setRandomAccount();
+        TestAccountInfo account = setRandomAccount();
         // 게시판 생성
-        TestBoardInfo board = this.setRandomBoard();
+        TestBoardInfo board = setRandomBoard();
         // 게시물 생성
-        this.setRandomPost(board, account, 1);
-        List<TestPostInfo> hatePostList = this.setRandomPost(board, account, 2);
-        List<TestPostInfo> politicalPostList = this.setRandomPost(board, account, 3);
-        List<TestPostInfo> pornographyPostList = this.setRandomPost(board, account, 4);
-        List<TestPostInfo> etcPostList = this.setRandomPost(board, account, 5);
+        setRandomPost(board, account, 1);
+        List<TestPostInfo> hatePostList = setRandomPost(board, account, 2);
+        List<TestPostInfo> politicalPostList = setRandomPost(board, account, 3);
+        List<TestPostInfo> pornographyPostList = setRandomPost(board, account, 4);
+        List<TestPostInfo> etcPostList = setRandomPost(board, account, 5);
         // 게시물 신고
         for (TestPostInfo post : hatePostList) {
-            this.setRandomPostReport(post, account, ReportType.HATE);
+            setRandomPostReport(post, account, ReportType.HATE);
         }
         for (TestPostInfo post : politicalPostList) {
-            this.setRandomPostReport(post, account, ReportType.POLITICAL);
+            setRandomPostReport(post, account, ReportType.POLITICAL);
         }
         for (TestPostInfo post : pornographyPostList) {
-            this.setRandomPostReport(post, account, ReportType.PORNOGRAPHY);
+            setRandomPostReport(post, account, ReportType.PORNOGRAPHY);
         }
         for (TestPostInfo post : etcPostList) {
-            this.setRandomPostReport(post, account, ReportType.ETC);
+            setRandomPostReport(post, account, ReportType.ETC);
         }
 
 
@@ -129,15 +129,15 @@ public class ReportServicePostSearchTest extends IricomTestSuite {
     @DisplayName("skip")
     public void searchPostReportInfoListSkip() throws Exception {
         // 계정 생성
-        TestAccountInfo account = this.setRandomAccount();
+        TestAccountInfo account = setRandomAccount();
         // 게시판 생성
-        TestBoardInfo board = this.setRandomBoard();
+        TestBoardInfo board = setRandomBoard();
         // 게시물 생성
-        this.setRandomPost(board, account, 10);
-        List<TestPostInfo> postList = this.setRandomPost(board, account, 4);
+        setRandomPost(board, account, 10);
+        List<TestPostInfo> postList = setRandomPost(board, account, 4);
         // 게시물 신고
         for (TestPostInfo post : postList) {
-            this.setRandomPostReport(post, account);
+            setRandomPostReport(post, account);
         }
 
         PostReportInfoSearch postReportInfoSearch = PostReportInfoSearch.builder()
@@ -155,15 +155,15 @@ public class ReportServicePostSearchTest extends IricomTestSuite {
     @DisplayName("limit")
     public void searchPostReportInfoListLimit() throws Exception {
         // 계정 생성
-        TestAccountInfo account = this.setRandomAccount();
+        TestAccountInfo account = setRandomAccount();
         // 게시판 생성
-        TestBoardInfo board = this.setRandomBoard();
+        TestBoardInfo board = setRandomBoard();
         // 게시물 생성
-        this.setRandomPost(board, account, 8);
-        List<TestPostInfo> postList = this.setRandomPost(board, account, 4);
+        setRandomPost(board, account, 8);
+        List<TestPostInfo> postList = setRandomPost(board, account, 4);
         // 게시물 신고
         for (TestPostInfo post : postList) {
-            this.setRandomPostReport(post, account);
+            setRandomPostReport(post, account);
         }
 
         PostReportInfoSearch postReportInfoSearch = PostReportInfoSearch.builder()
@@ -181,15 +181,15 @@ public class ReportServicePostSearchTest extends IricomTestSuite {
     @DisplayName("skip, limit")
     public void searchPostReportInfoListSkipLimit() throws Exception {
         // 계정 생성
-        TestAccountInfo account = this.setRandomAccount();
+        TestAccountInfo account = setRandomAccount();
         // 게시판 생성
-        TestBoardInfo board = this.setRandomBoard();
+        TestBoardInfo board = setRandomBoard();
         // 게시물 생성
-        this.setRandomPost(board, account, 2);
-        List<TestPostInfo> postList = this.setRandomPost(board, account, 4);
+        setRandomPost(board, account, 2);
+        List<TestPostInfo> postList = setRandomPost(board, account, 4);
         // 게시물 신고
         for (TestPostInfo post : postList) {
-            this.setRandomPostReport(post, account);
+            setRandomPostReport(post, account);
         }
 
         PostReportInfoSearch postReportInfoSearch = PostReportInfoSearch.builder()
@@ -208,18 +208,18 @@ public class ReportServicePostSearchTest extends IricomTestSuite {
     @DisplayName("reason")
     public void searchPostReportInfoListByReason() throws Exception {
         // 계정 생성
-        TestAccountInfo account = this.setRandomAccount();
+        TestAccountInfo account = setRandomAccount();
         // 게시판 생성
-        TestBoardInfo board = this.setRandomBoard();
+        TestBoardInfo board = setRandomBoard();
         // 게시물 생성
-        List<TestPostInfo> postList = this.setRandomPost(board, account, 4);
-        TestPostInfo post00 = this.setRandomPost(board, account);
-        TestPostInfo post01 = this.setRandomPost(board, account);
-        TestPostInfo post02 = this.setRandomPost(board, account);
-        TestPostInfo post03 = this.setRandomPost(board, account);
+        List<TestPostInfo> postList = setRandomPost(board, account, 4);
+        TestPostInfo post00 = setRandomPost(board, account);
+        TestPostInfo post01 = setRandomPost(board, account);
+        TestPostInfo post02 = setRandomPost(board, account);
+        TestPostInfo post03 = setRandomPost(board, account);
         // 게시물 신고
         for (TestPostInfo post : postList) {
-            this.setRandomPostReport(post, account);
+            setRandomPostReport(post, account);
         }
         List<TestPostReportInfo> reportList = Arrays.asList(
                 TestPostReportInfo.builder()
@@ -290,18 +290,18 @@ public class ReportServicePostSearchTest extends IricomTestSuite {
     @DisplayName("complex")
     public void searchPostReportInfoListByComplex() throws Exception {
         // 계정 생성
-        TestAccountInfo account = this.setRandomAccount();
+        TestAccountInfo account = setRandomAccount();
         // 게시판 생성
-        TestBoardInfo board = this.setRandomBoard();
+        TestBoardInfo board = setRandomBoard();
         // 게시물 생성
-        List<TestPostInfo> postList = this.setRandomPost(board, account, 4);
-        TestPostInfo post00 = this.setRandomPost(board, account);
-        TestPostInfo post01 = this.setRandomPost(board, account);
-        TestPostInfo post02 = this.setRandomPost(board, account);
-        TestPostInfo post03 = this.setRandomPost(board, account);
+        List<TestPostInfo> postList = setRandomPost(board, account, 4);
+        TestPostInfo post00 = setRandomPost(board, account);
+        TestPostInfo post01 = setRandomPost(board, account);
+        TestPostInfo post02 = setRandomPost(board, account);
+        TestPostInfo post03 = setRandomPost(board, account);
         // 게시물 신고
         for (TestPostInfo post : postList) {
-            this.setRandomPostReport(post, account);
+            setRandomPostReport(post, account);
         }
         List<TestPostReportInfo> reportList = Arrays.asList(
                 TestPostReportInfo.builder()

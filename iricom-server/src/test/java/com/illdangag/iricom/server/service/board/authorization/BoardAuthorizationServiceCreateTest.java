@@ -32,9 +32,9 @@ public class BoardAuthorizationServiceCreateTest extends IricomTestSuite {
     @DisplayName("게시판 관리자 생성")
     public void createBoardAdmin() throws Exception {
         // 계정 생성
-        TestAccountInfo account = this.setRandomAccount();
+        TestAccountInfo account = setRandomAccount();
         // 게시판 생성
-        TestBoardInfo board = this.setRandomBoard();
+        TestBoardInfo board = setRandomBoard();
 
         // 게시판 관리자 생성
         BoardAdminInfoCreate boardAdminInfoCreate = BoardAdminInfoCreate.builder()
@@ -51,9 +51,9 @@ public class BoardAuthorizationServiceCreateTest extends IricomTestSuite {
     @DisplayName("이미 관리자로 추가된 게시판에 관리자로 추가")
     public void duplicateCreateBoardAdmin() throws Exception {
         // 계정 생성
-        TestAccountInfo account = this.setRandomAccount();
+        TestAccountInfo account = setRandomAccount();
         // 게시판 생성
-        TestBoardInfo board = this.setRandomBoard();
+        TestBoardInfo board = setRandomBoard();
 
         // 게시판 관리자 생성
         BoardAdminInfoCreate boardAdminInfoCreate = BoardAdminInfoCreate.builder()
@@ -73,7 +73,7 @@ public class BoardAuthorizationServiceCreateTest extends IricomTestSuite {
     @DisplayName("계정을 설정하지 않음")
     public void notExistAccountId() throws Exception {
         // 게시판 생성
-        TestBoardInfo board = this.setRandomBoard();
+        TestBoardInfo board = setRandomBoard();
 
         // 게시판 관리자 생성
         BoardAdminInfoCreate boardAdminInfoCreate = BoardAdminInfoCreate.builder()
@@ -90,7 +90,7 @@ public class BoardAuthorizationServiceCreateTest extends IricomTestSuite {
     @DisplayName("계정에 빈 문자열")
     public void emptyAccountId() throws Exception {
         // 게시판 생성
-        TestBoardInfo board = this.setRandomBoard();
+        TestBoardInfo board = setRandomBoard();
 
         BoardAdminInfoCreate boardAdminInfoCreate = BoardAdminInfoCreate.builder()
                 .boardId(board.getId())
@@ -106,7 +106,7 @@ public class BoardAuthorizationServiceCreateTest extends IricomTestSuite {
     @DisplayName("게시판을 설정하지 않음")
     public void notExistBoardId() {
         // 계정 생성
-        TestAccountInfo account = this.setRandomAccount();
+        TestAccountInfo account = setRandomAccount();
 
         BoardAdminInfoCreate boardAdminInfoCreate = BoardAdminInfoCreate.builder()
                 .boardId(null)
@@ -122,7 +122,7 @@ public class BoardAuthorizationServiceCreateTest extends IricomTestSuite {
     @DisplayName("게시판에 빈 문자열")
     public void emptyBoardId() {
         // 계정 생성
-        TestAccountInfo account = this.setRandomAccount();
+        TestAccountInfo account = setRandomAccount();
 
         BoardAdminInfoCreate boardAdminInfoCreate = BoardAdminInfoCreate.builder()
                 .boardId("")

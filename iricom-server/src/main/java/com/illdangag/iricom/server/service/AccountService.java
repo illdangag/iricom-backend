@@ -7,8 +7,6 @@ import com.illdangag.iricom.server.data.response.AccountInfo;
 import com.illdangag.iricom.server.data.response.AccountInfoList;
 
 import javax.validation.Valid;
-import java.util.List;
-import java.util.Map;
 
 public interface AccountService {
     /**
@@ -17,8 +15,6 @@ public interface AccountService {
     AccountInfo getAccountInfo(String id);
 
     AccountInfo getAccountInfo(Account account);
-
-    Map<Account, AccountInfo> getAccountInfoMap(List<Account> accountList);
 
     /**
      * 계정 목록 조회

@@ -33,11 +33,11 @@ public class ReportServicePostReportTest extends IricomTestSuite {
     @DisplayName("게시물 신고")
     public void reportPost() throws Exception {
         // 계정 생성
-        TestAccountInfo account = this.setRandomAccount();
+        TestAccountInfo account = setRandomAccount();
         // 게시판 생성
-        TestBoardInfo board = this.setRandomBoard();
+        TestBoardInfo board = setRandomBoard();
         // 게시물 생성
-        TestPostInfo post = this.setRandomPost(board, account);
+        TestPostInfo post = setRandomPost(board, account);
 
         PostReportInfoCreate postReportInfoCreate = PostReportInfoCreate.builder()
                 .type(ReportType.ETC)
@@ -51,11 +51,11 @@ public class ReportServicePostReportTest extends IricomTestSuite {
     @DisplayName("중복 게시물 신고")
     public void duplicateReportPost() throws Exception {
         // 계정 생성
-        TestAccountInfo account = this.setRandomAccount();
+        TestAccountInfo account = setRandomAccount();
         // 게시판 생성
-        TestBoardInfo board = this.setRandomBoard();
+        TestBoardInfo board = setRandomBoard();
         // 게시물 생성
-        TestPostInfo post = this.setRandomPost(board, account);
+        TestPostInfo post = setRandomPost(board, account);
 
         PostReportInfoCreate postReportInfoCreate = PostReportInfoCreate.builder()
                 .type(ReportType.ETC)
@@ -75,12 +75,12 @@ public class ReportServicePostReportTest extends IricomTestSuite {
     @DisplayName("게시물의 게시판 불일치")
     public void notMatchPostAndBoard() throws Exception {
         // 계정 생성
-        TestAccountInfo account = this.setRandomAccount();
+        TestAccountInfo account = setRandomAccount();
         // 게시판 생성
-        TestBoardInfo board = this.setRandomBoard();
-        TestBoardInfo otherBoard = this.setRandomBoard();
+        TestBoardInfo board = setRandomBoard();
+        TestBoardInfo otherBoard = setRandomBoard();
         // 게시물 생성
-        TestPostInfo post = this.setRandomPost(board, account);
+        TestPostInfo post = setRandomPost(board, account);
 
         PostReportInfoCreate postReportInfoCreate = PostReportInfoCreate.builder()
                 .type(ReportType.ETC)
@@ -96,11 +96,11 @@ public class ReportServicePostReportTest extends IricomTestSuite {
     @DisplayName("존재하지 않는 게시물")
     public void notExistPost() throws Exception {
         // 계정 생성
-        TestAccountInfo account = this.setRandomAccount();
+        TestAccountInfo account = setRandomAccount();
         // 게시판 생성
-        TestBoardInfo board = this.setRandomBoard();
+        TestBoardInfo board = setRandomBoard();
         // 게시물 생성
-        this.setRandomPost(board, account);
+        setRandomPost(board, account);
 
         PostReportInfoCreate postReportInfoCreate = PostReportInfoCreate.builder()
                 .type(ReportType.ETC)
@@ -116,11 +116,11 @@ public class ReportServicePostReportTest extends IricomTestSuite {
     @DisplayName("존재하지 않는 게시판")
     public void notExistBoard() throws Exception {
         // 계정 생성
-        TestAccountInfo account = this.setRandomAccount();
+        TestAccountInfo account = setRandomAccount();
         // 게시판 생성
-        TestBoardInfo board = this.setRandomBoard();
+        TestBoardInfo board = setRandomBoard();
         // 게시물 생성
-        TestPostInfo post = this.setRandomPost(board, account);
+        TestPostInfo post = setRandomPost(board, account);
 
         PostReportInfoCreate postReportInfoCreate = PostReportInfoCreate.builder()
                 .type(ReportType.ETC)

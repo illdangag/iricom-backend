@@ -31,13 +31,13 @@ public class ReportServicePostGetTest extends IricomTestSuite {
     @DisplayName("기본 조회")
     public void getPostReportInfo() throws Exception {
         // 계정 생성
-        TestAccountInfo account = this.setRandomAccount();
+        TestAccountInfo account = setRandomAccount();
         // 게시판 생성
-        TestBoardInfo board = this.setRandomBoard();
+        TestBoardInfo board = setRandomBoard();
         // 게시물 생성
-        TestPostInfo post = this.setRandomPost(board, account);
+        TestPostInfo post = setRandomPost(board, account);
         // 게시물 신고
-        TestPostReportInfo postReport = this.setRandomPostReport(post, account);
+        TestPostReportInfo postReport = setRandomPostReport(post, account);
 
         PostReportInfo postReportInfo = reportService.getPostReportInfo(systemAdmin.getId(), board.getId(), post.getId(), postReport.getId());
         Assertions.assertEquals(postReport.getId(), postReportInfo.getId());
@@ -47,14 +47,14 @@ public class ReportServicePostGetTest extends IricomTestSuite {
     @DisplayName("올바르지 않은 게시판")
     public void invalidBoard() throws Exception {
         // 계정 생성
-        TestAccountInfo account = this.setRandomAccount();
+        TestAccountInfo account = setRandomAccount();
         // 게시판 생성
-        TestBoardInfo board = this.setRandomBoard();
-        TestBoardInfo otherBoard = this.setRandomBoard();
+        TestBoardInfo board = setRandomBoard();
+        TestBoardInfo otherBoard = setRandomBoard();
         // 게시물 생성
-        TestPostInfo post = this.setRandomPost(board, account);
+        TestPostInfo post = setRandomPost(board, account);
         // 게시물 신고
-        TestPostReportInfo postReport = this.setRandomPostReport(post, account);
+        TestPostReportInfo postReport = setRandomPostReport(post, account);
 
         Assertions.assertThrows(IricomException.class, () -> {
             reportService.getPostReportInfo(systemAdmin.getId(), otherBoard.getId(), post.getId(), postReport.getId());
@@ -65,13 +65,13 @@ public class ReportServicePostGetTest extends IricomTestSuite {
     @DisplayName("존재하지 않는 게시판")
     public void notExistBoard() throws Exception {
         // 계정 생성
-        TestAccountInfo account = this.setRandomAccount();
+        TestAccountInfo account = setRandomAccount();
         // 게시판 생성
-        TestBoardInfo board = this.setRandomBoard();
+        TestBoardInfo board = setRandomBoard();
         // 게시물 생성
-        TestPostInfo post = this.setRandomPost(board, account);
+        TestPostInfo post = setRandomPost(board, account);
         // 게시물 신고
-        TestPostReportInfo postReport = this.setRandomPostReport(post, account);
+        TestPostReportInfo postReport = setRandomPostReport(post, account);
         String boardId = "NOT_EXIST";
 
         Assertions.assertThrows(IricomException.class, () -> {
@@ -83,14 +83,14 @@ public class ReportServicePostGetTest extends IricomTestSuite {
     @DisplayName("올바르지 않은 게시물")
     public void invalidPost() throws Exception {
         // 계정 생성
-        TestAccountInfo account = this.setRandomAccount();
+        TestAccountInfo account = setRandomAccount();
         // 게시판 생성
-        TestBoardInfo board = this.setRandomBoard();
+        TestBoardInfo board = setRandomBoard();
         // 게시물 생성
-        TestPostInfo post = this.setRandomPost(board, account);
-        TestPostInfo otherPost = this.setRandomPost(board, account);
+        TestPostInfo post = setRandomPost(board, account);
+        TestPostInfo otherPost = setRandomPost(board, account);
         // 게시물 신고
-        TestPostReportInfo postReport = this.setRandomPostReport(post, account);
+        TestPostReportInfo postReport = setRandomPostReport(post, account);
 
         Assertions.assertThrows(IricomException.class, () -> {
             reportService.getPostReportInfo(systemAdmin.getId(), board.getId(), otherPost.getId(), postReport.getId());
@@ -101,13 +101,13 @@ public class ReportServicePostGetTest extends IricomTestSuite {
     @DisplayName("존재하지 않은 게시물")
     public void notExistPost() throws Exception {
         // 계정 생성
-        TestAccountInfo account = this.setRandomAccount();
+        TestAccountInfo account = setRandomAccount();
         // 게시판 생성
-        TestBoardInfo board = this.setRandomBoard();
+        TestBoardInfo board = setRandomBoard();
         // 게시물 생성
-        TestPostInfo post = this.setRandomPost(board, account);
+        TestPostInfo post = setRandomPost(board, account);
         // 게시물 신고
-        TestPostReportInfo postReport = this.setRandomPostReport(post, account);
+        TestPostReportInfo postReport = setRandomPostReport(post, account);
         String postId = "NOT_EXIST";
 
         Assertions.assertThrows(IricomException.class, () -> {
@@ -119,13 +119,13 @@ public class ReportServicePostGetTest extends IricomTestSuite {
     @DisplayName("존재하지 않은 신고")
     public void notExistReport() throws Exception {
         // 계정 생성
-        TestAccountInfo account = this.setRandomAccount();
+        TestAccountInfo account = setRandomAccount();
         // 게시판 생성
-        TestBoardInfo board = this.setRandomBoard();
+        TestBoardInfo board = setRandomBoard();
         // 게시물 생성
-        TestPostInfo post = this.setRandomPost(board, account);
+        TestPostInfo post = setRandomPost(board, account);
         // 게시물 신고
-        this.setRandomPostReport(post, account);
+        setRandomPostReport(post, account);
         String postReportId = "NOT_EXIST";
 
         Assertions.assertThrows(IricomException.class, () -> {

@@ -136,9 +136,9 @@ public class BoardServiceCreateTest extends IricomTestSuite {
     @DisplayName("게시판 관리자 권한으로 게시판 생성")
     public void createBoardByBoardAdmin() throws Exception {
         // 계정 생성
-        TestAccountInfo account = this.setRandomAccount();
+        TestAccountInfo account = setRandomAccount();
         // 게시판 생성
-        this.setRandomBoard(Arrays.asList(account));
+        setRandomBoard(Arrays.asList(account));
 
         BoardInfoCreate boardInfoCreate = BoardInfoCreate.builder()
                 .title("new create")

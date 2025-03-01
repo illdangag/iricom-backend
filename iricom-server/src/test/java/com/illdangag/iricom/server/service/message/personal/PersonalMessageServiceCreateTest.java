@@ -28,8 +28,8 @@ public class PersonalMessageServiceCreateTest extends IricomTestSuite {
     @DisplayName("쪽지 생성")
     public void createPersonalMessage() throws Exception {
         // 계정 생성
-        TestAccountInfo sender = this.setRandomAccount();
-        TestAccountInfo receiver = this.setRandomAccount();
+        TestAccountInfo sender = setRandomAccount();
+        TestAccountInfo receiver = setRandomAccount();
 
         PersonalMessageInfoCreate personalMessageInfoCreate = PersonalMessageInfoCreate.builder()
                 .receiveAccountId(receiver.getId())
@@ -47,7 +47,7 @@ public class PersonalMessageServiceCreateTest extends IricomTestSuite {
     @DisplayName("수신자 미설정")
     public void notExistReceiver() throws Exception {
         // 계정 생성
-        TestAccountInfo sender = this.setRandomAccount();
+        TestAccountInfo sender = setRandomAccount();
 
         PersonalMessageInfoCreate personalMessageInfoCreate = PersonalMessageInfoCreate.builder()
                 .title("TITLE").message("MESSAGE")
@@ -62,8 +62,8 @@ public class PersonalMessageServiceCreateTest extends IricomTestSuite {
     @DisplayName("제목 미설정")
     public void notExistTitle() throws Exception {
         // 계정 생성
-        TestAccountInfo sender = this.setRandomAccount();
-        TestAccountInfo receiver = this.setRandomAccount();
+        TestAccountInfo sender = setRandomAccount();
+        TestAccountInfo receiver = setRandomAccount();
 
         PersonalMessageInfoCreate personalMessageInfoCreate = PersonalMessageInfoCreate.builder()
                 .receiveAccountId(receiver.getId())
@@ -79,8 +79,8 @@ public class PersonalMessageServiceCreateTest extends IricomTestSuite {
     @DisplayName("제목 빈문자열")
     public void emptyTitle() throws Exception {
         // 계정 생성
-        TestAccountInfo sender = this.setRandomAccount();
-        TestAccountInfo receiver = this.setRandomAccount();
+        TestAccountInfo sender = setRandomAccount();
+        TestAccountInfo receiver = setRandomAccount();
 
         PersonalMessageInfoCreate personalMessageInfoCreate = PersonalMessageInfoCreate.builder()
                 .receiveAccountId(receiver.getId())
@@ -96,8 +96,8 @@ public class PersonalMessageServiceCreateTest extends IricomTestSuite {
     @DisplayName("제목 공백 문자열")
     public void whiteSpaceTitle() throws Exception {
         // 계정 생성
-        TestAccountInfo sender = this.setRandomAccount();
-        TestAccountInfo receiver = this.setRandomAccount();
+        TestAccountInfo sender = setRandomAccount();
+        TestAccountInfo receiver = setRandomAccount();
 
         PersonalMessageInfoCreate personalMessageInfoCreate = PersonalMessageInfoCreate.builder()
                 .receiveAccountId(receiver.getId())
@@ -113,8 +113,8 @@ public class PersonalMessageServiceCreateTest extends IricomTestSuite {
     @DisplayName("내용 미설정")
     public void notExistMessage() throws Exception {
         // 계정 생성
-        TestAccountInfo sender = this.setRandomAccount();
-        TestAccountInfo receiver = this.setRandomAccount();
+        TestAccountInfo sender = setRandomAccount();
+        TestAccountInfo receiver = setRandomAccount();
 
         PersonalMessageInfoCreate personalMessageInfoCreate = PersonalMessageInfoCreate.builder()
                 .receiveAccountId(receiver.getId())
@@ -130,8 +130,8 @@ public class PersonalMessageServiceCreateTest extends IricomTestSuite {
     @DisplayName("내용 빈문자열")
     public void emptyMessage() throws Exception {
         // 계정 생성
-        TestAccountInfo sender = this.setRandomAccount();
-        TestAccountInfo receiver = this.setRandomAccount();
+        TestAccountInfo sender = setRandomAccount();
+        TestAccountInfo receiver = setRandomAccount();
 
         PersonalMessageInfoCreate personalMessageInfoCreate = PersonalMessageInfoCreate.builder()
                 .receiveAccountId(receiver.getId())
@@ -147,8 +147,8 @@ public class PersonalMessageServiceCreateTest extends IricomTestSuite {
     @DisplayName("내용 빈문자열")
     public void whiteSpaceMessage() throws Exception {
         // 계정 생성
-        TestAccountInfo sender = this.setRandomAccount();
-        TestAccountInfo receiver = this.setRandomAccount();
+        TestAccountInfo sender = setRandomAccount();
+        TestAccountInfo receiver = setRandomAccount();
 
         PersonalMessageInfoCreate personalMessageInfoCreate = PersonalMessageInfoCreate.builder()
                 .receiveAccountId(receiver.getId())

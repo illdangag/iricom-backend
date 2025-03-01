@@ -54,7 +54,7 @@ public class AccountGroupServiceCreateTest extends IricomTestSuite {
     @DisplayName("계정 추가")
     public void createAccountGroupWithAccount() throws Exception {
         // 계정 생성
-        TestAccountInfo testAccount = this.setRandomAccount(1).get(0);
+        TestAccountInfo testAccount = setRandomAccount(1).get(0);
 
         String title = "New account group with account";
         String description = "description";

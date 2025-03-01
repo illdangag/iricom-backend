@@ -30,7 +30,7 @@ public class AccountGroupServiceSearchTest extends IricomTestSuite {
     @Test
     @DisplayName("목록 조회")
     public void getList() throws Exception {
-        List<TestAccountGroupInfo> accountGroupList = this.setRandomAccountGroup(10);
+        List<TestAccountGroupInfo> accountGroupList = setRandomAccountGroup(10);
         List<String> accountGroupIdList = accountGroupList.stream()
                 .map(TestAccountGroupInfo::getId)
                 .collect(Collectors.toList());

@@ -34,17 +34,17 @@ public class ReportServiceCommentSearchTest extends IricomTestSuite {
     @DisplayName("게시판 기준 기본 조회")
     public void getBoardSearch() throws Exception {
         // 계정 생성
-        TestAccountInfo account = this.setRandomAccount();
+        TestAccountInfo account = setRandomAccount();
         // 게시판 생성
-        TestBoardInfo board = this.setRandomBoard();
+        TestBoardInfo board = setRandomBoard();
         // 게시물 생성
-        List<TestPostInfo> postList = this.setRandomPost(board, account, 3);
+        List<TestPostInfo> postList = setRandomPost(board, account, 3);
         // 댓글 생성
         for (TestPostInfo post : postList) {
-            List<TestCommentInfo> commentList = this.setRandomComment(post, account, 10);
+            List<TestCommentInfo> commentList = setRandomComment(post, account, 10);
             // 댓글 신고
             for (TestCommentInfo comment : commentList) {
-                this.setRandomCommentReport(comment, account);
+                setRandomCommentReport(comment, account);
             }
         }
 
@@ -59,17 +59,17 @@ public class ReportServiceCommentSearchTest extends IricomTestSuite {
     @DisplayName("게시물 기준 기본 조회")
     public void getPostSearch() throws Exception {
         // 계정 생성
-        TestAccountInfo account = this.setRandomAccount();
+        TestAccountInfo account = setRandomAccount();
         // 게시판 생성
-        TestBoardInfo board = this.setRandomBoard();
+        TestBoardInfo board = setRandomBoard();
         // 게시물 생성
-        List<TestPostInfo> postList = this.setRandomPost(board, account, 3);
+        List<TestPostInfo> postList = setRandomPost(board, account, 3);
         // 댓글 생성
         for (TestPostInfo post : postList) {
-            List<TestCommentInfo> commentList = this.setRandomComment(post, account, 10);
+            List<TestCommentInfo> commentList = setRandomComment(post, account, 10);
             // 댓글 신고
             for (TestCommentInfo comment : commentList) {
-                this.setRandomCommentReport(comment, account);
+                setRandomCommentReport(comment, account);
             }
         }
         TestPostInfo post = postList.get(0);
@@ -85,19 +85,19 @@ public class ReportServiceCommentSearchTest extends IricomTestSuite {
     @DisplayName("댓글 기준 기본 조회")
     public void getCommentSearch() throws Exception {
         // 계정 생성
-        TestAccountInfo account = this.setRandomAccount();
+        TestAccountInfo account = setRandomAccount();
         // 게시판 생성
-        TestBoardInfo board = this.setRandomBoard();
+        TestBoardInfo board = setRandomBoard();
         // 게시물 생성
-        List<TestPostInfo> postList = this.setRandomPost(board, account, 3);
+        List<TestPostInfo> postList = setRandomPost(board, account, 3);
         String postId = "";
         // 댓글 생성
         String commentId = "";
         for (TestPostInfo post : postList) {
-            List<TestCommentInfo> commentList = this.setRandomComment(post, account, 10);
+            List<TestCommentInfo> commentList = setRandomComment(post, account, 10);
             // 댓글 신고
             for (TestCommentInfo comment : commentList) {
-                this.setRandomCommentReport(comment, account);
+                setRandomCommentReport(comment, account);
                 postId = post.getId();
                 commentId = comment.getId();
             }

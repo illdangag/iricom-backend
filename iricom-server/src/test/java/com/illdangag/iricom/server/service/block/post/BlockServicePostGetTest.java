@@ -17,6 +17,7 @@ import org.springframework.context.ApplicationContext;
 
 import javax.transaction.Transactional;
 import java.util.Arrays;
+import java.util.Collections;
 
 @DisplayName("service: 차단 - 조회")
 @Slf4j
@@ -33,11 +34,11 @@ public class BlockServicePostGetTest extends IricomTestSuite {
     @DisplayName("시스템 관리자")
     public void getPostBlockInfoSystemAdmin() throws Exception {
         // 계정 생성
-        TestAccountInfo account = this.setRandomAccount();
+        TestAccountInfo account = setRandomAccount();
         // 게시판 생성
-        TestBoardInfo board = this.setRandomBoard();
+        TestBoardInfo board = setRandomBoard();
         // 게시물 생성
-        TestPostInfo post = this.setRandomPost(board, account);
+        TestPostInfo post = setRandomPost(board, account);
 
         // 게시물 차단
         PostBlockInfoCreate postBlockInfoCreate = PostBlockInfoCreate.builder()
@@ -56,12 +57,12 @@ public class BlockServicePostGetTest extends IricomTestSuite {
     @DisplayName("게시판 관리자")
     public void getPostBlockInfoBoardAdmin() throws Exception {
         // 계정 생성
-        TestAccountInfo boardAdmin = this.setRandomAccount();
-        TestAccountInfo account = this.setRandomAccount();
+        TestAccountInfo boardAdmin = setRandomAccount();
+        TestAccountInfo account = setRandomAccount();
         // 게시판 생성
-        TestBoardInfo board = this.setRandomBoard(Arrays.asList(boardAdmin));
+        TestBoardInfo board = setRandomBoard(Arrays.asList(boardAdmin));
         // 게시물 생성
-        TestPostInfo post = this.setRandomPost(board, account);
+        TestPostInfo post = setRandomPost(board, account);
 
         // 게시물 차단
         PostBlockInfoCreate postBlockInfoCreate = PostBlockInfoCreate.builder()
@@ -79,14 +80,14 @@ public class BlockServicePostGetTest extends IricomTestSuite {
     @DisplayName("다른 게시판 관리자")
     public void getPostBlockInfoOtherBoardAdmin() throws Exception {
         // 계정 생성
-        TestAccountInfo boardAdmin = this.setRandomAccount();
-        TestAccountInfo otherBoardAdmin = this.setRandomAccount();
-        TestAccountInfo account = this.setRandomAccount();
+        TestAccountInfo boardAdmin = setRandomAccount();
+        TestAccountInfo otherBoardAdmin = setRandomAccount();
+        TestAccountInfo account = setRandomAccount();
         // 게시판 생성
-        TestBoardInfo board = this.setRandomBoard(Arrays.asList(boardAdmin));
-        this.setRandomBoard(Arrays.asList(otherBoardAdmin));
+        TestBoardInfo board = setRandomBoard(Arrays.asList(boardAdmin));
+        setRandomBoard(Arrays.asList(otherBoardAdmin));
         // 게시물 생성
-        TestPostInfo post = this.setRandomPost(board, account);
+        TestPostInfo post = setRandomPost(board, account);
 
         // 게시물 차단
         PostBlockInfoCreate postBlockInfoCreate = PostBlockInfoCreate.builder()
@@ -97,7 +98,6 @@ public class BlockServicePostGetTest extends IricomTestSuite {
         IricomException exception = Assertions.assertThrows(IricomException.class, () -> {
             blockService.getPostBlockInfo(otherBoardAdmin.getId(), board.getId(), post.getId());
         });
-        Assertions.assertNotNull(exception);
         Assertions.assertEquals("04000009", exception.getErrorCode());
     }
 
@@ -105,11 +105,11 @@ public class BlockServicePostGetTest extends IricomTestSuite {
     @DisplayName("일반 사용자")
     public void getPostBlockInfoAccount() throws Exception {
         // 계정 생성
-        TestAccountInfo account = this.setRandomAccount();
+        TestAccountInfo account = setRandomAccount();
         // 게시판 생성
-        TestBoardInfo board = this.setRandomBoard();
+        TestBoardInfo board = setRandomBoard();
         // 게시물 생성
-        TestPostInfo post = this.setRandomPost(board, account);
+        TestPostInfo post = setRandomPost(board, account);
 
         // 게시물 차단
         PostBlockInfoCreate postBlockInfoCreate = PostBlockInfoCreate.builder()
@@ -120,7 +120,6 @@ public class BlockServicePostGetTest extends IricomTestSuite {
         IricomException exception = Assertions.assertThrows(IricomException.class, () -> {
             blockService.getPostBlockInfo(account.getId(), board.getId(), post.getId());
         });
-        Assertions.assertNotNull(exception);
         Assertions.assertEquals("04000009", exception.getErrorCode());
     }
 
@@ -128,12 +127,12 @@ public class BlockServicePostGetTest extends IricomTestSuite {
     @DisplayName("등록되지 않은 사용자")
     public void getPostBlockInfoUnknown() throws Exception {
         // 계정 생성
-        TestAccountInfo account = this.setRandomAccount();
-        TestAccountInfo unregisteredAccount = this.setRandomAccount(true);
+        TestAccountInfo account = setRandomAccount();
+        TestAccountInfo unregisteredAccount = setRandomAccount(true);
         // 게시판 생성
-        TestBoardInfo board = this.setRandomBoard();
+        TestBoardInfo board = setRandomBoard();
         // 게시물 생성
-        TestPostInfo post = this.setRandomPost(board, account);
+        TestPostInfo post = setRandomPost(board, account);
 
         // 게시물 차단
         PostBlockInfoCreate postBlockInfoCreate = PostBlockInfoCreate.builder()
@@ -144,7 +143,36 @@ public class BlockServicePostGetTest extends IricomTestSuite {
         IricomException exception = Assertions.assertThrows(IricomException.class, () -> {
             blockService.getPostBlockInfo(unregisteredAccount.getId(), board.getId(), post.getId());
         });
-        Assertions.assertNotNull(exception);
         Assertions.assertEquals("04000009", exception.getErrorCode());
+    }
+
+    @Test
+    @DisplayName("존재하지 않는 게시물")
+    public void getNotExistPost() {
+        // 계정 생성
+        TestAccountInfo account = setRandomAccount();
+        // 게시판 생성
+        TestBoardInfo board = setRandomBoard();
+
+        IricomException exception = Assertions.assertThrows(IricomException.class, () -> {
+            blockService.getPostBlockInfo(account.getId(), board.getId(), "UNKNOWN");
+        });
+        Assertions.assertEquals("04000000", exception.getErrorCode());
+    }
+
+    @Test
+    @DisplayName("차단하지 않은 게시물")
+    public void getNotBlockPost() {
+        // 계정 생성
+        TestAccountInfo account = setRandomAccount();
+        // 게시판 생성
+        TestBoardInfo board = setRandomBoard(Collections.singletonList(account));
+        // 게시물 생성
+        TestPostInfo post = setRandomPost(board, account);
+
+        IricomException exception = Assertions.assertThrows(IricomException.class, () -> {
+            blockService.getPostBlockInfo(account.getId(), board.getId(), post.getId());
+        });
+        Assertions.assertEquals("07000000", exception.getErrorCode());
     }
 }

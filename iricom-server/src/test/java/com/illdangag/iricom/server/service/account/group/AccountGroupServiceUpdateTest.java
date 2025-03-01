@@ -36,7 +36,7 @@ public class AccountGroupServiceUpdateTest extends IricomTestSuite {
     @DisplayName("제목, 설명")
     public void updateTitleDescription() throws Exception {
         // 계정 그룹 생성
-        TestAccountGroupInfo testAccountGroupInfo = this.setRandomAccountGroup(1).get(0);
+        TestAccountGroupInfo testAccountGroupInfo = setRandomAccountGroup(1).get(0);
         String accountGroupId = testAccountGroupInfo.getId();
 
         String title = "Update account group";
@@ -58,11 +58,11 @@ public class AccountGroupServiceUpdateTest extends IricomTestSuite {
     @DisplayName("계정이 등록되지 않은 그룹에 계정 추가")
     public void updateAccountEmptyAccountGroup() throws Exception {
         // 계정 그룹 생성
-        TestAccountGroupInfo accountGroup = this.setRandomAccountGroup(1).get(0);
+        TestAccountGroupInfo accountGroup = setRandomAccountGroup(1).get(0);
         String accountGroupId = accountGroup.getId();
 
         // 계정 생성
-        TestAccountInfo account = this.setRandomAccount(1).get(0);
+        TestAccountInfo account = setRandomAccount(1).get(0);
         String accountId = account.getId();
 
         AccountGroupInfoUpdate accountGroupInfoUpdate = AccountGroupInfoUpdate.builder()
@@ -80,11 +80,11 @@ public class AccountGroupServiceUpdateTest extends IricomTestSuite {
     @DisplayName("게시판이 등록되지 않은 그룹에 게시판 추가")
     public void updateBoardEmptyAccountGroup() throws Exception {
         // 계정 그룹 생성
-        TestAccountGroupInfo accountGroup = this.setRandomAccountGroup(1).get(0);
+        TestAccountGroupInfo accountGroup = setRandomAccountGroup(1).get(0);
         String accountGroupId = accountGroup.getId();
 
         // 게시판 생성
-        TestBoardInfo board = this.setRandomBoard(1).get(0);
+        TestBoardInfo board = setRandomBoard(1).get(0);
         String boardId = board.getId();
 
         AccountGroupInfoUpdate accountGroupInfoUpdate = AccountGroupInfoUpdate.builder()
@@ -102,12 +102,12 @@ public class AccountGroupServiceUpdateTest extends IricomTestSuite {
     @DisplayName("계정이 등록된 그룹에 다른 계정 목록으로 수정")
     public void updateAccountAlreadyAccountGroup() throws Exception {
         // 계정 생성
-        List<TestAccountInfo> preAccountList = this.setRandomAccount(2);
+        List<TestAccountInfo> preAccountList = setRandomAccount(2);
         List<String> preAccountIdList = preAccountList.stream()
                 .map(TestAccountInfo::getId)
                 .sorted()
                 .collect(Collectors.toList());
-        List<TestAccountInfo> postAccountList = this.setRandomAccount(3);
+        List<TestAccountInfo> postAccountList = setRandomAccount(3);
         List<String> postAccountIdList = postAccountList.stream()
                 .map(TestAccountInfo::getId)
                 .sorted()
@@ -154,12 +154,12 @@ public class AccountGroupServiceUpdateTest extends IricomTestSuite {
     @DisplayName("게시판이 등록된 그룹에 다른 게시판 목록으로 수정")
     public void updateBoardAlreadyAccountGroup() throws Exception {
         // 게시판 생성
-        List<TestBoardInfo> preBoardList = this.setRandomBoard(2);
+        List<TestBoardInfo> preBoardList = setRandomBoard(2);
         List<String> preBoardIdList = preBoardList.stream()
                 .map(TestBoardInfo::getId)
                 .sorted()
                 .collect(Collectors.toList());
-        List<TestBoardInfo> postBoardList = this.setRandomBoard(3);
+        List<TestBoardInfo> postBoardList = setRandomBoard(3);
         List<String> postBoardIdList = postBoardList.stream()
                 .map(TestBoardInfo::getId)
                 .sorted()
@@ -206,7 +206,7 @@ public class AccountGroupServiceUpdateTest extends IricomTestSuite {
     @Test
     @DisplayName("존재하지 않는 계정 그룹")
     public void updateNotExistAccountGroup() throws Exception {
-        this.setRandomAccountGroup(5);
+        setRandomAccountGroup(5);
 
         String accountGroupId = "NOT_EXIST_ACCOUNT_GROUP";
 
@@ -223,7 +223,7 @@ public class AccountGroupServiceUpdateTest extends IricomTestSuite {
     @Test
     @DisplayName("존재하지 않는 계정을 추가")
     public void updateNotExistAccount() throws Exception {
-        TestAccountGroupInfo accountGroup = this.setRandomAccountGroup(1).get(0);
+        TestAccountGroupInfo accountGroup = setRandomAccountGroup(1).get(0);
         String accountGroupId = accountGroup.getId();
 
         AccountGroupInfoUpdate accountGroupInfoUpdate = AccountGroupInfoUpdate.builder()
@@ -238,7 +238,7 @@ public class AccountGroupServiceUpdateTest extends IricomTestSuite {
     @Test
     @DisplayName("존재하지 않는 게시판을 추가")
     public void updateNotExistBoard() throws Exception {
-        TestAccountGroupInfo accountGroup = this.setRandomAccountGroup(1).get(0);
+        TestAccountGroupInfo accountGroup = setRandomAccountGroup(1).get(0);
         String accountGroupId = accountGroup.getId();
 
         AccountGroupInfoUpdate accountGroupInfoUpdate = AccountGroupInfoUpdate.builder()

@@ -29,10 +29,10 @@ public class PersonalMessageServiceGetTest extends IricomTestSuite {
     @DisplayName("조회")
     public void getPersonalMessage() throws Exception {
         // 계정 생성
-        TestAccountInfo sender = this.setRandomAccount();
-        TestAccountInfo receiver = this.setRandomAccount();
+        TestAccountInfo sender = setRandomAccount();
+        TestAccountInfo receiver = setRandomAccount();
         // 개인 쪽지 생성
-        TestPersonalMessageInfo personalMessage = this.setRandomPersonalMessage(sender, receiver);
+        TestPersonalMessageInfo personalMessage = setRandomPersonalMessage(sender, receiver);
 
         PersonalMessageInfo personalMessageInfo = this.personalMessageService.getPersonalMessageInfo(sender.getId(), personalMessage.getId());
 
@@ -45,10 +45,10 @@ public class PersonalMessageServiceGetTest extends IricomTestSuite {
     @DisplayName("존재하지 않는 개인 쪽지 조회")
     public void getNotExistPersonalMessage() throws Exception {
         // 계정 생성
-        TestAccountInfo sender = this.setRandomAccount();
-        TestAccountInfo receiver = this.setRandomAccount();
+        TestAccountInfo sender = setRandomAccount();
+        TestAccountInfo receiver = setRandomAccount();
         // 개인 쪽지 생성
-        this.setRandomPersonalMessage(sender, receiver);
+        setRandomPersonalMessage(sender, receiver);
 
         IricomException iricomException = Assertions.assertThrows(IricomException.class, () -> {
             this.personalMessageService.getPersonalMessageInfo(sender.getId(), "NOT_EXIST_ID");
@@ -61,11 +61,11 @@ public class PersonalMessageServiceGetTest extends IricomTestSuite {
     @DisplayName("다른 계정이 보내거나 받은 개인 쪽지 조회")
     public void getOtherPersonalMessage() throws Exception {
         // 계정 생성
-        TestAccountInfo sender = this.setRandomAccount();
-        TestAccountInfo receiver = this.setRandomAccount();
-        TestAccountInfo other = this.setRandomAccount();
+        TestAccountInfo sender = setRandomAccount();
+        TestAccountInfo receiver = setRandomAccount();
+        TestAccountInfo other = setRandomAccount();
         // 개인 쪽지 생성
-        TestPersonalMessageInfo personalMessage = this.setRandomPersonalMessage(sender, receiver);
+        TestPersonalMessageInfo personalMessage = setRandomPersonalMessage(sender, receiver);
 
         IricomException iricomException = Assertions.assertThrows(IricomException.class, () -> {
             this.personalMessageService.getPersonalMessageInfo(other.getId(), personalMessage.getId());
@@ -78,10 +78,10 @@ public class PersonalMessageServiceGetTest extends IricomTestSuite {
     @DisplayName("수신자가 내용 확인 시 수신 확인")
     public void getPersonalMessageReceivedConfirm() throws Exception {
         // 계정 생성
-        TestAccountInfo sender = this.setRandomAccount();
-        TestAccountInfo receiver = this.setRandomAccount();
+        TestAccountInfo sender = setRandomAccount();
+        TestAccountInfo receiver = setRandomAccount();
         // 개인 쪽지 생성
-        TestPersonalMessageInfo personalMessage = this.setRandomPersonalMessage(sender, receiver);
+        TestPersonalMessageInfo personalMessage = setRandomPersonalMessage(sender, receiver);
 
         // 수신자가 확인 하기전 발신자가 조회
         PersonalMessageInfo senderPersonalMessageInfo = this.personalMessageService.getPersonalMessageInfo(sender.getId(), personalMessage.getId());
@@ -100,10 +100,10 @@ public class PersonalMessageServiceGetTest extends IricomTestSuite {
     @DisplayName("발신 메시지 조회")
     public void getReceivePersonalMessage() throws Exception {
         // 계정 생성
-        TestAccountInfo sender = this.setRandomAccount();
-        TestAccountInfo receiver = this.setRandomAccount();
+        TestAccountInfo sender = setRandomAccount();
+        TestAccountInfo receiver = setRandomAccount();
         // 개인 쪽지 생성
-        TestPersonalMessageInfo personalMessage = this.setRandomPersonalMessage(sender, receiver);
+        TestPersonalMessageInfo personalMessage = setRandomPersonalMessage(sender, receiver);
 
         PersonalMessageInfo personalMessageInfo = this.personalMessageService.getSendPersonalMessageInfo(sender.getId(), personalMessage.getId());
         Assertions.assertNotNull(personalMessageInfo);
@@ -114,10 +114,10 @@ public class PersonalMessageServiceGetTest extends IricomTestSuite {
     @DisplayName("존재하지 않는 발신 메시지 조회")
     public void getNotExistReceivePersonalMessage() throws Exception {
         // 계정 생성
-        TestAccountInfo sender = this.setRandomAccount();
-        TestAccountInfo receiver = this.setRandomAccount();
+        TestAccountInfo sender = setRandomAccount();
+        TestAccountInfo receiver = setRandomAccount();
         // 개인 쪽지 생성
-        this.setRandomPersonalMessage(sender, receiver);
+        setRandomPersonalMessage(sender, receiver);
 
         IricomException iricomException = Assertions.assertThrows(IricomException.class, () -> {
             this.personalMessageService.getSendPersonalMessageInfo(sender.getId(), "NOT_EXIST_PERSONAL_MESSAGE_ID");
@@ -129,11 +129,11 @@ public class PersonalMessageServiceGetTest extends IricomTestSuite {
     @DisplayName("발신하지 않은 발신 메시지 조회")
     public void getNotReceivePersonalMessage() throws Exception {
         // 계정 생성
-        TestAccountInfo sender = this.setRandomAccount();
-        TestAccountInfo receiver = this.setRandomAccount();
-        TestAccountInfo other = this.setRandomAccount();
+        TestAccountInfo sender = setRandomAccount();
+        TestAccountInfo receiver = setRandomAccount();
+        TestAccountInfo other = setRandomAccount();
         // 개인 쪽지 생성
-        TestPersonalMessageInfo personalMessage = this.setRandomPersonalMessage(sender, receiver);
+        TestPersonalMessageInfo personalMessage = setRandomPersonalMessage(sender, receiver);
 
         IricomException iricomException = Assertions.assertThrows(IricomException.class, () -> {
             this.personalMessageService.getReceivePersonalMessageInfo(other.getId(), personalMessage.getId());
@@ -145,10 +145,10 @@ public class PersonalMessageServiceGetTest extends IricomTestSuite {
     @DisplayName("수신 메시지 조회")
     public void getSendPersonalMessage() throws Exception {
         // 계정 생성
-        TestAccountInfo sender = this.setRandomAccount();
-        TestAccountInfo receiver = this.setRandomAccount();
+        TestAccountInfo sender = setRandomAccount();
+        TestAccountInfo receiver = setRandomAccount();
         // 개인 쪽지 생성
-        TestPersonalMessageInfo personalMessage = this.setRandomPersonalMessage(sender, receiver);
+        TestPersonalMessageInfo personalMessage = setRandomPersonalMessage(sender, receiver);
 
         PersonalMessageInfo personalMessageInfo = this.personalMessageService.getReceivePersonalMessageInfo(receiver.getId(), personalMessage.getId());
         Assertions.assertNotNull(personalMessageInfo);
@@ -159,10 +159,10 @@ public class PersonalMessageServiceGetTest extends IricomTestSuite {
     @DisplayName("존재하지 않는 수신 메시지 조회")
     public void getNotExistSendPersonalMessage() throws Exception {
         // 계정 생성
-        TestAccountInfo sender = this.setRandomAccount();
-        TestAccountInfo receiver = this.setRandomAccount();
+        TestAccountInfo sender = setRandomAccount();
+        TestAccountInfo receiver = setRandomAccount();
         // 개인 쪽지 생성
-        this.setRandomPersonalMessage(sender, receiver);
+        setRandomPersonalMessage(sender, receiver);
 
         IricomException iricomException = Assertions.assertThrows(IricomException.class, () -> {
             this.personalMessageService.getSendPersonalMessageInfo(receiver.getId(), "NOT_EXIST_PERSONAL_MESSAGE_ID");
@@ -174,11 +174,11 @@ public class PersonalMessageServiceGetTest extends IricomTestSuite {
     @DisplayName("수신 하지 않은 수신 메시지 조회")
     public void getNotSendPersonalMessage() throws Exception {
         // 계정 생성
-        TestAccountInfo sender = this.setRandomAccount();
-        TestAccountInfo receiver = this.setRandomAccount();
-        TestAccountInfo other = this.setRandomAccount();
+        TestAccountInfo sender = setRandomAccount();
+        TestAccountInfo receiver = setRandomAccount();
+        TestAccountInfo other = setRandomAccount();
         // 개인 쪽지 생성
-        TestPersonalMessageInfo personalMessage = this.setRandomPersonalMessage(sender, receiver);
+        TestPersonalMessageInfo personalMessage = setRandomPersonalMessage(sender, receiver);
 
         IricomException iricomException = Assertions.assertThrows(IricomException.class, () -> {
             this.personalMessageService.getSendPersonalMessageInfo(other.getId(), personalMessage.getId());

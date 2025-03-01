@@ -33,13 +33,13 @@ public class CommentServiceDeleteTest extends IricomTestSuite {
     @DisplayName("삭제")
     public void deleteComment() throws Exception {
         // 계정 생성
-        TestAccountInfo account = this.setRandomAccount();
+        TestAccountInfo account = setRandomAccount();
         // 게시판 생성
-        TestBoardInfo board = this.setRandomBoard();
+        TestBoardInfo board = setRandomBoard();
         // 게시물 생성
-        TestPostInfo post = this.setRandomPost(board, account);
+        TestPostInfo post = setRandomPost(board, account);
         // 댓글 생성
-        TestCommentInfo comment = this.setRandomComment(post, account);
+        TestCommentInfo comment = setRandomComment(post, account);
 
         CommentInfo commentInfo = this.commentService.deleteComment(account.getId(), board.getId(), post.getId(), comment.getId());
 
@@ -52,15 +52,15 @@ public class CommentServiceDeleteTest extends IricomTestSuite {
     @DisplayName("대댓글이 달린 댓글 삭제")
     public void deleteHasNestedComment() throws Exception {
         // 계정 생성
-        TestAccountInfo account = this.setRandomAccount();
+        TestAccountInfo account = setRandomAccount();
         // 게시판 생성
-        TestBoardInfo board = this.setRandomBoard();
+        TestBoardInfo board = setRandomBoard();
         // 게시물 생성
-        TestPostInfo post = this.setRandomPost(board, account);
+        TestPostInfo post = setRandomPost(board, account);
         // 댓글 생성
-        TestCommentInfo comment00 = this.setRandomComment(post, account);
+        TestCommentInfo comment00 = setRandomComment(post, account);
         // 대댓글 생성
-        TestCommentInfo comment01 = this.setRandomComment(post, comment00, account);
+        TestCommentInfo comment01 = setRandomComment(post, comment00, account);
 
         // 댓글 삭제
         CommentInfo commentInfo00 = this.commentService.deleteComment(account.getId(), board.getId(), post.getId(), comment00.getId());
@@ -79,15 +79,15 @@ public class CommentServiceDeleteTest extends IricomTestSuite {
     @DisplayName("대댓글 삭제")
     public void deleteNestedComment() throws Exception {
         // 계정 생성
-        TestAccountInfo account = this.setRandomAccount();
+        TestAccountInfo account = setRandomAccount();
         // 게시판 생성
-        TestBoardInfo board = this.setRandomBoard();
+        TestBoardInfo board = setRandomBoard();
         // 게시물 생성
-        TestPostInfo post = this.setRandomPost(board, account);
+        TestPostInfo post = setRandomPost(board, account);
         // 댓글 생성
-        TestCommentInfo comment00 = this.setRandomComment(post, account);
+        TestCommentInfo comment00 = setRandomComment(post, account);
         // 대댓글 생성
-        TestCommentInfo comment01 = this.setRandomComment(post, comment00, account);
+        TestCommentInfo comment01 = setRandomComment(post, comment00, account);
 
         CommentInfo commentInfo = this.commentService.deleteComment(account.getId(), board.getId(), post.getId(), comment01.getId());
 
@@ -100,13 +100,13 @@ public class CommentServiceDeleteTest extends IricomTestSuite {
     @DisplayName("존재하지 않는 댓글 삭제")
     public void notExistComment() throws Exception {
         // 계정 생성
-        TestAccountInfo account = this.setRandomAccount();
+        TestAccountInfo account = setRandomAccount();
         // 게시판 생성
-        TestBoardInfo board = this.setRandomBoard();
+        TestBoardInfo board = setRandomBoard();
         // 게시물 생성
-        TestPostInfo post = this.setRandomPost(board, account);
+        TestPostInfo post = setRandomPost(board, account);
         // 댓글 생성
-        this.setRandomComment(post, account);
+        setRandomComment(post, account);
 
         String commentId = "NOT_EXIST_COMMENT";
 
@@ -122,14 +122,14 @@ public class CommentServiceDeleteTest extends IricomTestSuite {
     @DisplayName("자신이 작성하지 않은 댓글 삭제")
     public void notCreator() throws Exception {
         // 계정 생성
-        TestAccountInfo account00 = this.setRandomAccount();
-        TestAccountInfo account01 = this.setRandomAccount();
+        TestAccountInfo account00 = setRandomAccount();
+        TestAccountInfo account01 = setRandomAccount();
         // 게시판 생성
-        TestBoardInfo board = this.setRandomBoard();
+        TestBoardInfo board = setRandomBoard();
         // 게시물 생성
-        TestPostInfo post = this.setRandomPost(board, account00);
+        TestPostInfo post = setRandomPost(board, account00);
         // 댓글 생성
-        TestCommentInfo comment00 = this.setRandomComment(post, account00);
+        TestCommentInfo comment00 = setRandomComment(post, account00);
 
         IricomException iricomException = Assertions.assertThrows(IricomException.class, () -> {
             this.commentService.deleteComment(account01.getId(), board.getId(), post.getId(), comment00.getId());

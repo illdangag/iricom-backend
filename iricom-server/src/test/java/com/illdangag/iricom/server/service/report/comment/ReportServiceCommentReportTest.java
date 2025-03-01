@@ -34,13 +34,13 @@ public class ReportServiceCommentReportTest extends IricomTestSuite {
     @DisplayName("댓글 신고")
     public void reportComment() throws Exception {
         // 계정 생성
-        TestAccountInfo account = this.setRandomAccount();
+        TestAccountInfo account = setRandomAccount();
         // 게시판 생성
-        TestBoardInfo board = this.setRandomBoard();
+        TestBoardInfo board = setRandomBoard();
         // 게시물 생성
-        TestPostInfo post = this.setRandomPost(board, account);
+        TestPostInfo post = setRandomPost(board, account);
         // 댓글 생성
-        TestCommentInfo comment = this.setRandomComment(post, account);
+        TestCommentInfo comment = setRandomComment(post, account);
 
         CommentReportInfoCreate commentReportInfoCreate = CommentReportInfoCreate.builder()
                 .type(ReportType.ETC)
@@ -54,13 +54,13 @@ public class ReportServiceCommentReportTest extends IricomTestSuite {
     @DisplayName("중복 댓글 신고")
     public void duplicationReportComment() throws Exception {
         // 계정 생성
-        TestAccountInfo account = this.setRandomAccount();
+        TestAccountInfo account = setRandomAccount();
         // 게시판 생성
-        TestBoardInfo board = this.setRandomBoard();
+        TestBoardInfo board = setRandomBoard();
         // 게시물 생성
-        TestPostInfo post = this.setRandomPost(board, account);
+        TestPostInfo post = setRandomPost(board, account);
         // 댓글 생성
-        TestCommentInfo comment = this.setRandomComment(post, account);
+        TestCommentInfo comment = setRandomComment(post, account);
 
         CommentReportInfoCreate commentReportInfoCreate = CommentReportInfoCreate.builder()
                 .type(ReportType.ETC)
@@ -81,14 +81,14 @@ public class ReportServiceCommentReportTest extends IricomTestSuite {
     @DisplayName("댓글의 게시물 불일치")
     public void notMatchPost() throws Exception {
         // 계정 생성
-        TestAccountInfo account = this.setRandomAccount();
+        TestAccountInfo account = setRandomAccount();
         // 게시판 생성
-        TestBoardInfo board = this.setRandomBoard();
+        TestBoardInfo board = setRandomBoard();
         // 게시물 생성
-        TestPostInfo post = this.setRandomPost(board, account);
-        TestPostInfo otherPost = this.setRandomPost(board, account);
+        TestPostInfo post = setRandomPost(board, account);
+        TestPostInfo otherPost = setRandomPost(board, account);
         // 댓글 생성
-        TestCommentInfo comment = this.setRandomComment(post, account);
+        TestCommentInfo comment = setRandomComment(post, account);
 
         CommentReportInfoCreate commentReportInfoCreate = CommentReportInfoCreate.builder()
                 .type(ReportType.ETC)
@@ -107,14 +107,14 @@ public class ReportServiceCommentReportTest extends IricomTestSuite {
     @DisplayName("댓글의 게시물의 게시판 불일치")
     public void notMatchBoard() throws Exception {
         // 계정 생성
-        TestAccountInfo account = this.setRandomAccount();
+        TestAccountInfo account = setRandomAccount();
         // 게시판 생성
-        TestBoardInfo board = this.setRandomBoard();
-        TestBoardInfo otherBoard = this.setRandomBoard();
+        TestBoardInfo board = setRandomBoard();
+        TestBoardInfo otherBoard = setRandomBoard();
         // 게시물 생성
-        TestPostInfo post = this.setRandomPost(board, account);
+        TestPostInfo post = setRandomPost(board, account);
         // 댓글 생성
-        TestCommentInfo comment = this.setRandomComment(post, account);
+        TestCommentInfo comment = setRandomComment(post, account);
 
         CommentReportInfoCreate commentReportInfoCreate = CommentReportInfoCreate.builder()
                 .type(ReportType.ETC)
@@ -133,13 +133,13 @@ public class ReportServiceCommentReportTest extends IricomTestSuite {
     @DisplayName("존재하지 않는 댓글")
     public void notExistComment() throws Exception {
         // 계정 생성
-        TestAccountInfo account = this.setRandomAccount();
+        TestAccountInfo account = setRandomAccount();
         // 게시판 생성
-        TestBoardInfo board = this.setRandomBoard();
+        TestBoardInfo board = setRandomBoard();
         // 게시물 생성
-        TestPostInfo post = this.setRandomPost(board, account);
+        TestPostInfo post = setRandomPost(board, account);
         // 댓글 생성
-        this.setRandomComment(post, account);
+        setRandomComment(post, account);
         String commentId = "NOT_EXIST_COMMENT";
 
         CommentReportInfoCreate commentReportInfoCreate = CommentReportInfoCreate.builder()
@@ -159,13 +159,13 @@ public class ReportServiceCommentReportTest extends IricomTestSuite {
     @DisplayName("존재하지 않는 게시물")
     public void notExistPost() throws Exception {
         // 계정 생성
-        TestAccountInfo account = this.setRandomAccount();
+        TestAccountInfo account = setRandomAccount();
         // 게시판 생성
-        TestBoardInfo board = this.setRandomBoard();
+        TestBoardInfo board = setRandomBoard();
         // 게시물 생성
-        TestPostInfo post = this.setRandomPost(board, account);
+        TestPostInfo post = setRandomPost(board, account);
         // 댓글 생성
-        TestCommentInfo comment = this.setRandomComment(post, account);
+        TestCommentInfo comment = setRandomComment(post, account);
         String postId = "NOT_EXIST_POST";
 
         CommentReportInfoCreate commentReportInfoCreate = CommentReportInfoCreate.builder()
@@ -185,13 +185,13 @@ public class ReportServiceCommentReportTest extends IricomTestSuite {
     @DisplayName("존재하지 않는 게시판")
     public void notExistBoard() throws Exception {
         // 계정 생성
-        TestAccountInfo account = this.setRandomAccount();
+        TestAccountInfo account = setRandomAccount();
         // 게시판 생성
-        TestBoardInfo board = this.setRandomBoard();
+        TestBoardInfo board = setRandomBoard();
         // 게시물 생성
-        TestPostInfo post = this.setRandomPost(board, account);
+        TestPostInfo post = setRandomPost(board, account);
         // 댓글 생성
-        TestCommentInfo comment = this.setRandomComment(post, account);
+        TestCommentInfo comment = setRandomComment(post, account);
         String boardId = "NOT_EXIST_BOARD";
 
         CommentReportInfoCreate commentReportInfoCreate = CommentReportInfoCreate.builder()

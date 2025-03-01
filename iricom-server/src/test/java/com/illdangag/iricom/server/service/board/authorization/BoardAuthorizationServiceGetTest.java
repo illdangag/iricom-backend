@@ -31,9 +31,9 @@ public class BoardAuthorizationServiceGetTest extends IricomTestSuite {
     @DisplayName("게시판 관리자 조회")
     public void getBoardAdmin() {
         // 계정 생성
-        TestAccountInfo account = this.setRandomAccount();
+        TestAccountInfo account = setRandomAccount();
         // 게시판 생성
-        TestBoardInfo board = this.setRandomBoard(Arrays.asList(account));
+        TestBoardInfo board = setRandomBoard(Arrays.asList(account));
 
         // 게시판 관리자 조회
         BoardAdminInfo boardAdminInfo = this.boardAuthorizationService.getBoardAdminInfo(board.getId());

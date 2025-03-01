@@ -35,11 +35,11 @@ public class PostServiceDeleteTest extends IricomTestSuite {
     @DisplayName("게시물 삭제")
     public void deletePost() {
         // 계정 생성
-        TestAccountInfo account = this.setRandomAccount();
+        TestAccountInfo account = setRandomAccount();
         // 게시판 생성
-        TestBoardInfo board = this.setRandomBoard();
+        TestBoardInfo board = setRandomBoard();
         // 게시물 생성
-        TestPostInfo post = this.setRandomPost(board, account);
+        TestPostInfo post = setRandomPost(board, account);
 
         PostInfo postInfo = this.postService.deletePostInfo(account.getId(), board.getId(), post.getId());
 
@@ -52,12 +52,12 @@ public class PostServiceDeleteTest extends IricomTestSuite {
     @DisplayName("자신이 작성하지 않은 게시물 삭제")
     public void notCreator() {
         // 계정 생성
-        TestAccountInfo account = this.setRandomAccount();
-        TestAccountInfo other = this.setRandomAccount();
+        TestAccountInfo account = setRandomAccount();
+        TestAccountInfo other = setRandomAccount();
         // 게시판 생성
-        TestBoardInfo board = this.setRandomBoard();
+        TestBoardInfo board = setRandomBoard();
         // 게시물 생성
-        TestPostInfo post = this.setRandomPost(board, account);
+        TestPostInfo post = setRandomPost(board, account);
 
         IricomException iricomException = Assertions.assertThrows(IricomException.class, () -> {
             this.postService.deletePostInfo(other.getId(), board.getId(), post.getId());
@@ -72,11 +72,11 @@ public class PostServiceDeleteTest extends IricomTestSuite {
     @DisplayName("비활성화 게시판의 게시물 삭제")
     public void disabledBoard() {
         // 계정 생성
-        TestAccountInfo account = this.setRandomAccount();
+        TestAccountInfo account = setRandomAccount();
         // 게시판 생성
-        TestBoardInfo board = this.setRandomBoard();
+        TestBoardInfo board = setRandomBoard();
         // 게시물 생성
-        TestPostInfo post = this.setRandomPost(board, account);
+        TestPostInfo post = setRandomPost(board, account);
         // 게시판 비활성화
         this.setDisabledBoard(Collections.singletonList(board));
 
@@ -92,14 +92,14 @@ public class PostServiceDeleteTest extends IricomTestSuite {
     @DisplayName("권한 없는 비공개 게시판의 게시물 삭제")
     public void noAuthUndisclosedBoard() {
         // 계정 생성
-        TestAccountInfo account = this.setRandomAccount();
-        TestAccountInfo other = this.setRandomAccount();
+        TestAccountInfo account = setRandomAccount();
+        TestAccountInfo other = setRandomAccount();
         // 게시판 생성
-        TestBoardInfo board = this.setRandomBoard(true, true);
+        TestBoardInfo board = setRandomBoard(true, true);
         // 계정 그룹 생성
-        this.setRandomAccountGroup(Collections.singletonList(account), Collections.singletonList(board));
+        setRandomAccountGroup(Collections.singletonList(account), Collections.singletonList(board));
         // 게시물 생성
-        TestPostInfo post = this.setRandomPost(board, account);
+        TestPostInfo post = setRandomPost(board, account);
 
         IricomException iricomException = Assertions.assertThrows(IricomException.class, () -> {
             this.postService.deletePostInfo(other.getId(), board.getId(), post.getId());
@@ -113,13 +113,13 @@ public class PostServiceDeleteTest extends IricomTestSuite {
     @DisplayName("권한이 있는 비공게 게시판의 게시물 삭제")
     public void undisclosedBoard() {
         // 계정 생성
-        TestAccountInfo account = this.setRandomAccount();
+        TestAccountInfo account = setRandomAccount();
         // 게시판 생성
-        TestBoardInfo board = this.setRandomBoard(true, true);
+        TestBoardInfo board = setRandomBoard(true, true);
         // 계정 그룹 생성
-        this.setRandomAccountGroup(Collections.singletonList(account), Collections.singletonList(board));
+        setRandomAccountGroup(Collections.singletonList(account), Collections.singletonList(board));
         // 게시물 생성
-        TestPostInfo post = this.setRandomPost(board, account);
+        TestPostInfo post = setRandomPost(board, account);
 
         PostInfo postInfo = this.postService.deletePostInfo(account.getId(), board.getId(), post.getId());
 
@@ -131,11 +131,11 @@ public class PostServiceDeleteTest extends IricomTestSuite {
     @DisplayName("공지 사항 삭제")
     public void deleteNotification() {
         // 계정 생성
-        TestAccountInfo account = this.setRandomAccount();
+        TestAccountInfo account = setRandomAccount();
         // 게시판 생성
-        TestBoardInfo board = this.setRandomBoard(Collections.singletonList(account));
+        TestBoardInfo board = setRandomBoard(Collections.singletonList(account));
         // 게시물 생성
-        TestPostInfo post = this.setRandomPost(board, account, PostType.NOTIFICATION, PostState.PUBLISH);
+        TestPostInfo post = setRandomPost(board, account, PostType.NOTIFICATION, PostState.PUBLISH);
 
         PostInfo postInfo = this.postService.deletePostInfo(account.getId(), board.getId(), post.getId());
 
@@ -147,11 +147,11 @@ public class PostServiceDeleteTest extends IricomTestSuite {
     @DisplayName("게시판 관리자에서 삭제된 계정이 공지 사항 게시물 삭제")
     public void deleteNoAuthNotification() {
         // 계정 생성
-        TestAccountInfo account = this.setRandomAccount();
+        TestAccountInfo account = setRandomAccount();
         // 게시판 생성
-        TestBoardInfo board = this.setRandomBoard(Collections.singletonList(account));
+        TestBoardInfo board = setRandomBoard(Collections.singletonList(account));
         // 게시물 생성
-        TestPostInfo post = this.setRandomPost(board, account, PostType.NOTIFICATION, PostState.PUBLISH);
+        TestPostInfo post = setRandomPost(board, account, PostType.NOTIFICATION, PostState.PUBLISH);
         // 게시판 관리자 삭제
         this.deleteBoardAdmin(board, Collections.singletonList(account));
 

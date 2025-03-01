@@ -35,7 +35,7 @@ public class BoardServiceGetTest extends IricomTestSuite {
     @DisplayName("공개 게시판 조회")
     public void getDisclosed() throws Exception {
         // 게시판 생성
-        TestBoardInfo board = this.setRandomBoard(Collections.emptyList(), true, false);
+        TestBoardInfo board = setRandomBoard(Collections.emptyList(), true, false);
 
         // 게시판 조회
         BoardInfo boardInfo = boardService.getBoardInfo(board.getId());
@@ -47,7 +47,7 @@ public class BoardServiceGetTest extends IricomTestSuite {
     @DisplayName("권한 없이 비공개 게시판 조회")
     public void getUndisclosed() throws Exception {
         // 게시판 생성
-        TestBoardInfo board = this.setRandomBoard(Collections.emptyList(), true, true);
+        TestBoardInfo board = setRandomBoard(Collections.emptyList(), true, true);
 
         // 권한 없이 게시판 조회
         IricomException exception = Assertions.assertThrows(IricomException.class, () -> {
@@ -60,7 +60,7 @@ public class BoardServiceGetTest extends IricomTestSuite {
     @DisplayName("시스템 관리자 계정으로 비공개 게시판 조회")
     public void getUndisclosedBySystemAdmin() throws Exception {
         // 게시판 생성
-        TestBoardInfo board = this.setRandomBoard(Collections.emptyList(), true, true);
+        TestBoardInfo board = setRandomBoard(Collections.emptyList(), true, true);
 
         BoardInfo boardInfo = boardService.getBoardInfo(systemAdmin.getId(), board.getId());
         Assertions.assertNotNull(boardInfo);
@@ -71,11 +71,11 @@ public class BoardServiceGetTest extends IricomTestSuite {
     @DisplayName("계정 그룹에 포함된 비공개 게시판")
     public void getUndisclosedInAccountGroup() throws Exception {
         // 계정 생성
-        TestAccountInfo account = this.setRandomAccount();
-        TestAccountInfo otherAccount = this.setRandomAccount();
+        TestAccountInfo account = setRandomAccount();
+        TestAccountInfo otherAccount = setRandomAccount();
         // 게시판 생성
-        TestBoardInfo disClosedBoard = this.setRandomBoard();
-        TestBoardInfo undisclosedBoard = this.setRandomBoard(Collections.emptyList(), true, true);
+        TestBoardInfo disClosedBoard = setRandomBoard();
+        TestBoardInfo undisclosedBoard = setRandomBoard(Collections.emptyList(), true, true);
         // 계정 그룹 생성
         TestAccountGroupInfo accountGroup = TestAccountGroupInfo.builder()
                 .title("title").description("description")
@@ -107,11 +107,11 @@ public class BoardServiceGetTest extends IricomTestSuite {
     @DisplayName("계정 그룹에 포함되지 않은 비공개 게시판")
     public void getUndisclosedNotInAccountGroup() throws Exception {
         // 계정 생성
-        TestAccountInfo group0Account = this.setRandomAccount();
-        TestAccountInfo group1Account = this.setRandomAccount();
+        TestAccountInfo group0Account = setRandomAccount();
+        TestAccountInfo group1Account = setRandomAccount();
         // 게시판 생성
-        TestBoardInfo group0Board = this.setRandomBoard(Collections.emptyList(), true, true);
-        TestBoardInfo group1Board = this.setRandomBoard(Collections.emptyList(), true, true);
+        TestBoardInfo group0Board = setRandomBoard(Collections.emptyList(), true, true);
+        TestBoardInfo group1Board = setRandomBoard(Collections.emptyList(), true, true);
         // 계정 그룹 생성
         TestAccountGroupInfo accountGroup0 = TestAccountGroupInfo.builder()
                 .title("title").description("description")
@@ -150,9 +150,9 @@ public class BoardServiceGetTest extends IricomTestSuite {
     @DisplayName("삭제된 계정 그룹에 포함된 비공개 게시판 조회")
     public void getUndisclosedBoardAndDeletedAccountGroup() throws Exception {
         // 계정 생성
-        TestAccountInfo account = this.setRandomAccount();
+        TestAccountInfo account = setRandomAccount();
         // 게시판 생성
-        TestBoardInfo board = this.setRandomBoard(Collections.emptyList(), true, true);
+        TestBoardInfo board = setRandomBoard(Collections.emptyList(), true, true);
         // 계정 그룹 생성
         TestAccountGroupInfo accountGroup = TestAccountGroupInfo.builder()
                 .title("title").description("description")
@@ -179,7 +179,7 @@ public class BoardServiceGetTest extends IricomTestSuite {
     @DisplayName("시스템 관리자가 비공개 게시판 조회")
     public void getUndisclosedBoardBySystemAdmin() throws Exception {
         // 게시판 생성
-        TestBoardInfo board = this.setRandomBoard(Collections.emptyList(), true, true);
+        TestBoardInfo board = setRandomBoard(Collections.emptyList(), true, true);
 
         // 게시판 조회
         Assertions.assertDoesNotThrow(() -> {
@@ -191,9 +191,9 @@ public class BoardServiceGetTest extends IricomTestSuite {
     @DisplayName("게시판 관리자가 비공개 게시판 조회")
     public void getUndisclosedBoardByBoardAdmin() throws Exception {
         // 계정 생성
-        TestAccountInfo account = this.setRandomAccount();
+        TestAccountInfo account = setRandomAccount();
         // 게시판 생성
-        TestBoardInfo board = this.setRandomBoard(Arrays.asList(account), true, true);
+        TestBoardInfo board = setRandomBoard(Arrays.asList(account), true, true);
 
         // 게시판 조회
         Assertions.assertDoesNotThrow(() -> {

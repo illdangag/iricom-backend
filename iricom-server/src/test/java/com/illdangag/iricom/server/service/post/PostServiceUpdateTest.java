@@ -37,11 +37,11 @@ public class PostServiceUpdateTest extends IricomTestSuite {
     @DisplayName("발행하지 않은 게시물")
     public void updateTemporaryPost() {
         // 계정 생성
-        TestAccountInfo account = this.setRandomAccount();
+        TestAccountInfo account = setRandomAccount();
         // 게시판 생성
-        TestBoardInfo board = this.setRandomBoard();
+        TestBoardInfo board = setRandomBoard();
         // 게시물 생성
-        TestPostInfo post = this.setRandomPost(board, account, PostType.POST, PostState.TEMPORARY);
+        TestPostInfo post = setRandomPost(board, account, PostType.POST, PostState.TEMPORARY);
 
         PostInfoUpdate postInfoUpdate = PostInfoUpdate.builder()
                 .title("update title")
@@ -59,11 +59,11 @@ public class PostServiceUpdateTest extends IricomTestSuite {
     @DisplayName("발행한 게시물")
     public void updatePublishPost() {
         // 계정 생성
-        TestAccountInfo account = this.setRandomAccount();
+        TestAccountInfo account = setRandomAccount();
         // 게시판 생성
-        TestBoardInfo board = this.setRandomBoard();
+        TestBoardInfo board = setRandomBoard();
         // 게시물 생성
-        TestPostInfo post = this.setRandomPost(board, account, PostType.POST, PostState.PUBLISH);
+        TestPostInfo post = setRandomPost(board, account, PostType.POST, PostState.PUBLISH);
 
         PostInfoUpdate postInfoUpdate = PostInfoUpdate.builder()
                 .title("update title")
@@ -81,11 +81,11 @@ public class PostServiceUpdateTest extends IricomTestSuite {
     @DisplayName("발행하지 않은 공지사항")
     public void updateTemporaryNotification() {
         // 계정 생성
-        TestAccountInfo account = this.setRandomAccount();
+        TestAccountInfo account = setRandomAccount();
         // 게시판 생성
-        TestBoardInfo board = this.setRandomBoard(Collections.singletonList(account));
+        TestBoardInfo board = setRandomBoard(Collections.singletonList(account));
         // 게시물 생성
-        TestPostInfo post = this.setRandomPost(board, account, PostType.NOTIFICATION, PostState.TEMPORARY);
+        TestPostInfo post = setRandomPost(board, account, PostType.NOTIFICATION, PostState.TEMPORARY);
 
         PostInfoUpdate postInfoUpdate = PostInfoUpdate.builder()
                 .title("update title")
@@ -103,11 +103,11 @@ public class PostServiceUpdateTest extends IricomTestSuite {
     @DisplayName("발행한 공지사항")
     public void updatePublishNotification() {
         // 계정 생성
-        TestAccountInfo account = this.setRandomAccount();
+        TestAccountInfo account = setRandomAccount();
         // 게시판 생성
-        TestBoardInfo board = this.setRandomBoard(Collections.singletonList(account));
+        TestBoardInfo board = setRandomBoard(Collections.singletonList(account));
         // 게시물 생성
-        TestPostInfo post = this.setRandomPost(board, account, PostType.NOTIFICATION, PostState.PUBLISH);
+        TestPostInfo post = setRandomPost(board, account, PostType.NOTIFICATION, PostState.PUBLISH);
 
         PostInfoUpdate postInfoUpdate = PostInfoUpdate.builder()
                 .title("update title")
@@ -125,12 +125,12 @@ public class PostServiceUpdateTest extends IricomTestSuite {
     @DisplayName("작성자가 다른 게시물")
     public void updateOtherCreator() {
         // 계정 생성
-        TestAccountInfo account = this.setRandomAccount();
-        TestAccountInfo other = this.setRandomAccount();
+        TestAccountInfo account = setRandomAccount();
+        TestAccountInfo other = setRandomAccount();
         // 게시판 생성
-        TestBoardInfo board = this.setRandomBoard();
+        TestBoardInfo board = setRandomBoard();
         // 게시물 생성
-        TestPostInfo post = this.setRandomPost(board, account);
+        TestPostInfo post = setRandomPost(board, account);
 
         PostInfoUpdate postInfoUpdate = PostInfoUpdate.builder()
                 .title("update title")
@@ -149,11 +149,11 @@ public class PostServiceUpdateTest extends IricomTestSuite {
     @DisplayName("제목이 빈 문자열")
     public void emptyTitle() {
         // 계정 생성
-        TestAccountInfo account = this.setRandomAccount();
+        TestAccountInfo account = setRandomAccount();
         // 게시판 생성
-        TestBoardInfo board = this.setRandomBoard();
+        TestBoardInfo board = setRandomBoard();
         // 게시물 생성
-        TestPostInfo post = this.setRandomPost(board, account);
+        TestPostInfo post = setRandomPost(board, account);
 
         PostInfoUpdate postInfoUpdate = PostInfoUpdate.builder()
                 .title("")
@@ -168,11 +168,11 @@ public class PostServiceUpdateTest extends IricomTestSuite {
     @DisplayName("제목이 긴 문자열")
     public void overflowTitle() {
         // 계정 생성
-        TestAccountInfo account = this.setRandomAccount();
+        TestAccountInfo account = setRandomAccount();
         // 게시판 생성
-        TestBoardInfo board = this.setRandomBoard();
+        TestBoardInfo board = setRandomBoard();
         // 게시물 생성
-        TestPostInfo post = this.setRandomPost(board, account);
+        TestPostInfo post = setRandomPost(board, account);
 
         PostInfoUpdate postInfoUpdate = PostInfoUpdate.builder()
                 .title(TEXT_10 + TEXT_10 + TEXT_10 + TEXT_10 + "0")
@@ -187,11 +187,11 @@ public class PostServiceUpdateTest extends IricomTestSuite {
     @DisplayName("존재하지 않는 게시판")
     public void notExistBoard() {
         // 계정 생성
-        TestAccountInfo account = this.setRandomAccount();
+        TestAccountInfo account = setRandomAccount();
         // 게시판 생성
-        TestBoardInfo board = this.setRandomBoard();
+        TestBoardInfo board = setRandomBoard();
         // 게시물 생성
-        TestPostInfo post = this.setRandomPost(board, account);
+        TestPostInfo post = setRandomPost(board, account);
 
         String boardId = "NOT_EXIST_BOARD";
 
@@ -212,12 +212,12 @@ public class PostServiceUpdateTest extends IricomTestSuite {
     @DisplayName("일치하지 않는 게시판")
     public void notMatchBoard() {
         // 계정 생성
-        TestAccountInfo account = this.setRandomAccount();
+        TestAccountInfo account = setRandomAccount();
         // 게시판 생성
-        TestBoardInfo board = this.setRandomBoard();
-        TestBoardInfo otherBoard = this.setRandomBoard();
+        TestBoardInfo board = setRandomBoard();
+        TestBoardInfo otherBoard = setRandomBoard();
         // 게시물 생성
-        TestPostInfo post = this.setRandomPost(board, account);
+        TestPostInfo post = setRandomPost(board, account);
 
         PostInfoUpdate postInfoUpdate = PostInfoUpdate.builder()
                 .title("not matched board")
@@ -236,11 +236,11 @@ public class PostServiceUpdateTest extends IricomTestSuite {
     @DisplayName("비활성화 게시판")
     public void disabledBoard() {
         // 계정 생성
-        TestAccountInfo account = this.setRandomAccount();
+        TestAccountInfo account = setRandomAccount();
         // 게시판 생성
-        TestBoardInfo board = this.setRandomBoard();
+        TestBoardInfo board = setRandomBoard();
         // 게시물 생성
-        TestPostInfo post = this.setRandomPost(board, account);
+        TestPostInfo post = setRandomPost(board, account);
         // 게시판 비활성화
         this.setDisabledBoard(Collections.singletonList(board));
 
@@ -261,11 +261,11 @@ public class PostServiceUpdateTest extends IricomTestSuite {
     @DisplayName("공지사항 전용 게시판의 일반 게시물")
     public void updatePostOnlyNotification() {
         // 계정 생성
-        TestAccountInfo account = this.setRandomAccount();
+        TestAccountInfo account = setRandomAccount();
         // 게시판 생성
-        TestBoardInfo board = this.setRandomBoard();
+        TestBoardInfo board = setRandomBoard();
         // 게시물 생성 후 공지사항 전용 게시판으로 변경
-        TestPostInfo post = this.setRandomPost(board, account);
+        TestPostInfo post = setRandomPost(board, account);
         this.setNotificationOnlyBoard(Collections.singletonList(board));
 
         PostInfoUpdate postInfoUpdate = PostInfoUpdate.builder()
@@ -285,11 +285,11 @@ public class PostServiceUpdateTest extends IricomTestSuite {
     @DisplayName("공지 사항 전용 게시판에 공지 사항 게시물")
     public void updateNotificationOnlyNotification() {
         // 계정 생성
-        TestAccountInfo account = this.setRandomAccount();
+        TestAccountInfo account = setRandomAccount();
         // 게시판 생성
-        TestBoardInfo board = this.setRandomBoard(Collections.singletonList(account));
+        TestBoardInfo board = setRandomBoard(Collections.singletonList(account));
         // 게시물 생성
-        TestPostInfo post = this.setRandomPost(board, account, PostType.NOTIFICATION, PostState.PUBLISH);
+        TestPostInfo post = setRandomPost(board, account, PostType.NOTIFICATION, PostState.PUBLISH);
         // 공지사항 전용 게시판으로 변경
         this.setNotificationOnlyBoard(Collections.singletonList(board));
 
@@ -308,11 +308,11 @@ public class PostServiceUpdateTest extends IricomTestSuite {
     @DisplayName("일반 계정이 일반 게시판의 일반 게시물을 공지 사항으로 변경")
     public void switchPostToNotificationByAccount() {
         // 계정 생성
-        TestAccountInfo account = this.setRandomAccount();
+        TestAccountInfo account = setRandomAccount();
         // 게시판 생성
-        TestBoardInfo board = this.setRandomBoard();
+        TestBoardInfo board = setRandomBoard();
         // 게시물 생성
-        TestPostInfo post = this.setRandomPost(board, account, PostType.POST, PostState.PUBLISH);
+        TestPostInfo post = setRandomPost(board, account, PostType.POST, PostState.PUBLISH);
 
         PostInfoUpdate postInfoUpdate = PostInfoUpdate.builder()
                 .title("switch post to notification")
@@ -332,11 +332,11 @@ public class PostServiceUpdateTest extends IricomTestSuite {
     @DisplayName("게시판 관리자가 일반 게시판의 일반 게시물을 공지 사항으로 변경")
     public void switchPostToNotificationByBoardAdmin() {
         // 계정 생성
-        TestAccountInfo account = this.setRandomAccount();
+        TestAccountInfo account = setRandomAccount();
         // 게시판 생성
-        TestBoardInfo board = this.setRandomBoard(Collections.singletonList(account));
+        TestBoardInfo board = setRandomBoard(Collections.singletonList(account));
         // 게시물 생성
-        TestPostInfo post = this.setRandomPost(board, account, PostType.POST, PostState.PUBLISH);
+        TestPostInfo post = setRandomPost(board, account, PostType.POST, PostState.PUBLISH);
 
         PostInfoUpdate postInfoUpdate = PostInfoUpdate.builder()
                 .title("switch post to notification")
@@ -356,11 +356,11 @@ public class PostServiceUpdateTest extends IricomTestSuite {
     @DisplayName("공지 사항 전용 게시판의 일반 게시물을 공지 사항으로 변경")
     public void switchPostToNotificationNotificationOnlyBoard() {
         // 계정 생성
-        TestAccountInfo account = this.setRandomAccount();
+        TestAccountInfo account = setRandomAccount();
         // 게시판 생성
-        TestBoardInfo board = this.setRandomBoard(Collections.singletonList(account));
+        TestBoardInfo board = setRandomBoard(Collections.singletonList(account));
         // 게시물 생성
-        TestPostInfo post = this.setRandomPost(board, account, PostType.POST, PostState.PUBLISH);
+        TestPostInfo post = setRandomPost(board, account, PostType.POST, PostState.PUBLISH);
         this.setNotificationOnlyBoard(Collections.singletonList(board));
 
         PostInfoUpdate postInfoUpdate = PostInfoUpdate.builder()

@@ -37,8 +37,8 @@ public class BoardServiceSearchTest extends IricomTestSuite {
     @DisplayName("공개 개시판 목록 조회")
     public void searchDisclosedBoardList() throws Exception {
         // 게시판 생성
-        List<TestBoardInfo> boardList = this.setRandomBoard(5);
-        List<TestBoardInfo> undisclosedBoardList = this.setRandomBoard(Collections.emptyList(), true, true, 5);
+        List<TestBoardInfo> boardList = setRandomBoard(5);
+        List<TestBoardInfo> undisclosedBoardList = setRandomBoard(Collections.emptyList(), true, true, 5);
 
         // 게시판 조회
         List<String> boardIdList = getAllList(BoardInfoSearch.builder().build(), (searchRequest -> {
@@ -63,9 +63,9 @@ public class BoardServiceSearchTest extends IricomTestSuite {
     @DisplayName("삭제된 계정 그룹에 포함된 게시판 목록 조회")
     public void searchDisclosedBoardAndDeletedAccountGroupBoardList() throws Exception {
         // 계정 생성
-        TestAccountInfo account = this.setRandomAccount();
+        TestAccountInfo account = setRandomAccount();
         // 게시판 생성
-        TestBoardInfo board = this.setRandomBoard(Collections.emptyList(), true, true);
+        TestBoardInfo board = setRandomBoard(Collections.emptyList(), true, true);
         // 계정 그룹 생성
         TestAccountGroupInfo accountGroup = TestAccountGroupInfo.builder()
                 .title("title").description("description")
@@ -91,9 +91,9 @@ public class BoardServiceSearchTest extends IricomTestSuite {
     @DisplayName("비공개 게시판 관리자가 비공개 게시판 목록 조회")
     public void searchDisclosedBoardListByBoardAdmin() throws Exception {
         // 계정 생성
-        TestAccountInfo account = this.setRandomAccount();
+        TestAccountInfo account = setRandomAccount();
         // 게시판 생성
-        TestBoardInfo board = this.setRandomBoard(Arrays.asList(account), true, true);
+        TestBoardInfo board = setRandomBoard(Arrays.asList(account), true, true);
 
         List<String> list = getAllList(BoardInfoSearch.builder().build(), searchRequest -> {
             BoardInfoSearch boardInfoSearch = (BoardInfoSearch) searchRequest;

@@ -30,7 +30,7 @@ public class BoardServiceUpdateTest extends IricomTestSuite {
     @DisplayName("수정")
     public void updateBoard() throws Exception {
         // 게시판 생성
-        TestBoardInfo board = this.setRandomBoard();
+        TestBoardInfo board = setRandomBoard();
 
         // 게시판 수정
         BoardInfoUpdate boardInfoUpdate = BoardInfoUpdate.builder()
@@ -51,7 +51,7 @@ public class BoardServiceUpdateTest extends IricomTestSuite {
     @DisplayName("제목을 빈 문자열로 설정")
     public void emptyTitle() throws Exception {
         // 게시판 생성
-        TestBoardInfo board = this.setRandomBoard();
+        TestBoardInfo board = setRandomBoard();
 
         // 게시판 수정
         BoardInfoUpdate boardInfoUpdate = BoardInfoUpdate.builder()
@@ -67,7 +67,7 @@ public class BoardServiceUpdateTest extends IricomTestSuite {
     @DisplayName("제목을 긴 문자열로 설정")
     public void overflowTitle() throws Exception {
         // 게시판 생성
-        TestBoardInfo board = this.setRandomBoard();
+        TestBoardInfo board = setRandomBoard();
 
         // 게시판 수정
         BoardInfoUpdate boardInfoUpdate = BoardInfoUpdate.builder()
@@ -82,7 +82,7 @@ public class BoardServiceUpdateTest extends IricomTestSuite {
     @DisplayName("설명을 빈 문자열로 설정")
     public void emptyDescription() throws Exception {
         // 게시판 생성
-        TestBoardInfo board = this.setRandomBoard();
+        TestBoardInfo board = setRandomBoard();
 
         // 게시판 수정
         BoardInfoUpdate boardInfoUpdate = BoardInfoUpdate.builder()
@@ -96,7 +96,7 @@ public class BoardServiceUpdateTest extends IricomTestSuite {
     @DisplayName("설명을 긴 문자열로 설정")
     public void overflowDescription() throws Exception {
         // 게시판 생성
-        TestBoardInfo board = this.setRandomBoard();
+        TestBoardInfo board = setRandomBoard();
 
         // 게시판 수정
         BoardInfoUpdate boardInfoUpdate = BoardInfoUpdate.builder()
@@ -111,7 +111,7 @@ public class BoardServiceUpdateTest extends IricomTestSuite {
     @DisplayName("비활성화")
     public void disabledBoard() throws Exception {
         // 게시판 생성
-        TestBoardInfo board = this.setRandomBoard(Collections.emptyList(), true, false);
+        TestBoardInfo board = setRandomBoard(Collections.emptyList(), true, false);
 
         // 게시판 수정
         BoardInfoUpdate boardInfoUpdate = BoardInfoUpdate.builder()
@@ -125,7 +125,7 @@ public class BoardServiceUpdateTest extends IricomTestSuite {
     @DisplayName("비공개")
     public void undisclosedBoard() throws Exception {
         // 게시판 생성
-        TestBoardInfo board = this.setRandomBoard(Collections.emptyList(), true, false);
+        TestBoardInfo board = setRandomBoard(Collections.emptyList(), true, false);
 
         // 게시판 수정
         BoardInfoUpdate boardInfoUpdate = BoardInfoUpdate.builder()
@@ -139,7 +139,7 @@ public class BoardServiceUpdateTest extends IricomTestSuite {
     @DisplayName("공지 사항 전용")
     public void notificationOnlyBoard() throws Exception {
         // 게시판 생성
-        TestBoardInfo board = this.setRandomBoard(Collections.emptyList(), true, false);
+        TestBoardInfo board = setRandomBoard(Collections.emptyList(), true, false);
 
         // 게시판 수정
         BoardInfoUpdate boardInfoUpdate = BoardInfoUpdate.builder()

@@ -36,6 +36,8 @@ public interface BlockService {
     /**
      * 차단된 게시물 목록 조회
      */
+    PostBlockInfoList getPostBlockInfoList(String accountId, @Valid PostBlockInfoSearch postBlockInfoSearch);
+
     PostBlockInfoList getPostBlockInfoList(Account account, @Valid PostBlockInfoSearch postBlockInfoSearch);
 
     PostBlockInfoList getPostBlockInfoList(String accountId, String boardId, @Valid PostBlockInfoSearch postBlockInfoSearch);

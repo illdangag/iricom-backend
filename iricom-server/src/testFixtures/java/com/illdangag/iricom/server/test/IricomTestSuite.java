@@ -82,14 +82,14 @@ public abstract class IricomTestSuite {
     protected List<TestAccountInfo> setRandomAccount(int count) {
         List<TestAccountInfo> accountList = new ArrayList<>();
         for (int i = 0; i < count; i++) {
-            TestAccountInfo testAccountInfo = this.setRandomAccount();
+            TestAccountInfo testAccountInfo = setRandomAccount();
             accountList.add(testAccountInfo);
         }
         return accountList;
     }
 
     protected TestAccountInfo setRandomAccount() {
-        return this.setRandomAccount(false);
+        return setRandomAccount(false);
     }
 
     protected TestAccountInfo setRandomAccount(boolean isUnregistered) {
@@ -140,7 +140,7 @@ public abstract class IricomTestSuite {
     protected List<TestBoardInfo> setRandomBoard(int count) {
         List<TestBoardInfo> boardList = new ArrayList<>();
         for (int i = 0; i < count; i++) {
-            TestBoardInfo testBoardInfo = this.setRandomBoard();
+            TestBoardInfo testBoardInfo = setRandomBoard();
             boardList.add(testBoardInfo);
         }
         return boardList;
@@ -149,7 +149,7 @@ public abstract class IricomTestSuite {
     protected List<TestBoardInfo> setRandomBoard(List<TestAccountInfo> boardAdminTestAccountInfoList, int count) {
         List<TestBoardInfo> boardList = new ArrayList<>();
         for (int i = 0; i < count; i++) {
-            TestBoardInfo testBoardInfo = this.setRandomBoard(boardAdminTestAccountInfoList);
+            TestBoardInfo testBoardInfo = setRandomBoard(boardAdminTestAccountInfoList);
             boardList.add(testBoardInfo);
         }
         return boardList;
@@ -158,22 +158,22 @@ public abstract class IricomTestSuite {
     protected List<TestBoardInfo> setRandomBoard(List<TestAccountInfo> boardAdminTestAccountInfoList, boolean enabled, boolean unDisclosed, int count) {
         List<TestBoardInfo> boardList = new ArrayList<>();
         for (int i = 0; i < count; i++) {
-            TestBoardInfo testBoardInfo = this.setRandomBoard(boardAdminTestAccountInfoList, enabled, unDisclosed);
+            TestBoardInfo testBoardInfo = setRandomBoard(boardAdminTestAccountInfoList, enabled, unDisclosed);
             boardList.add(testBoardInfo);
         }
         return boardList;
     }
 
     protected TestBoardInfo setRandomBoard() {
-        return this.setRandomBoard(true, false);
+        return setRandomBoard(true, false);
     }
 
     protected TestBoardInfo setRandomBoard(List<TestAccountInfo> boardAdminTestAccountInfoList) {
-        return this.setRandomBoard(boardAdminTestAccountInfoList, true, false);
+        return setRandomBoard(boardAdminTestAccountInfoList, true, false);
     }
 
     protected TestBoardInfo setRandomBoard(boolean enabled, boolean undisclosed) {
-        return this.setRandomBoard(Collections.emptyList(), enabled, undisclosed);
+        return setRandomBoard(Collections.emptyList(), enabled, undisclosed);
     }
 
     protected TestBoardInfo setRandomBoard(List<TestAccountInfo> boardAdminTestAccountInfoList, boolean enabled, boolean undisclosed) {
@@ -216,18 +216,18 @@ public abstract class IricomTestSuite {
     protected List<TestPostInfo> setRandomPost(TestBoardInfo testBoardInfo, TestAccountInfo testAccountInfo, int count) {
         List<TestPostInfo> postList = new ArrayList<>();
         for (int i = 0; i < count; i++) {
-            TestPostInfo testPostInfo = this.setRandomPost(testBoardInfo, testAccountInfo);
+            TestPostInfo testPostInfo = setRandomPost(testBoardInfo, testAccountInfo);
             postList.add(testPostInfo);
         }
         return postList;
     }
 
     protected TestPostInfo setRandomPost(TestBoardInfo testBoardInfo, TestAccountInfo testAccountInfo) {
-        return this.setRandomPost(testBoardInfo, testAccountInfo, PostType.POST, PostState.PUBLISH);
+        return setRandomPost(testBoardInfo, testAccountInfo, PostType.POST, PostState.PUBLISH);
     }
 
     protected TestPostInfo setRandomPost(TestBoardInfo testBoardInfo, TestAccountInfo testAccountInfo, PostType postType, PostState postState) {
-        return this.setRandomPost(testBoardInfo, testAccountInfo, postType, postState, true);
+        return setRandomPost(testBoardInfo, testAccountInfo, postType, postState, true);
     }
 
     protected TestPostInfo setRandomPost(TestBoardInfo testBoardInfo, TestAccountInfo testAccountInfo, PostType postType, PostState postState, boolean isAllowComment) {
@@ -267,32 +267,32 @@ public abstract class IricomTestSuite {
      * 댓글 생성
      */
     protected List<TestCommentInfo> setRandomComment(TestPostInfo testPostInfo, TestCommentInfo referenceComment, TestAccountInfo testAccountInfo, int count) {
-        return this.setRandomComment(testPostInfo, referenceComment, testAccountInfo, false, count);
+        return setRandomComment(testPostInfo, referenceComment, testAccountInfo, false, count);
     }
 
     protected List<TestCommentInfo> setRandomComment(TestPostInfo testPostInfo, TestAccountInfo testAccountInfo, int count) {
-        return this.setRandomComment(testPostInfo, null, testAccountInfo, false, count);
+        return setRandomComment(testPostInfo, null, testAccountInfo, false, count);
     }
 
     protected List<TestCommentInfo> setRandomComment(TestPostInfo testPostInfo, TestCommentInfo referenceComment, TestAccountInfo testAccountInfo, boolean deleted, int count) {
         List<TestCommentInfo> commentList = new ArrayList<>();
         for (int i = 0; i < count; i++) {
-            TestCommentInfo testCommentInfo = this.setRandomComment(testPostInfo, referenceComment, testAccountInfo, deleted);
+            TestCommentInfo testCommentInfo = setRandomComment(testPostInfo, referenceComment, testAccountInfo, deleted);
             commentList.add(testCommentInfo);
         }
         return commentList;
     }
 
     protected TestCommentInfo setRandomComment(TestPostInfo testPostInfo, TestAccountInfo testAccountInfo, boolean deleted) {
-        return this.setRandomComment(testPostInfo, null, testAccountInfo, deleted);
+        return setRandomComment(testPostInfo, null, testAccountInfo, deleted);
     }
 
     protected TestCommentInfo setRandomComment(TestPostInfo testPostInfo, TestAccountInfo testAccountInfo) {
-        return this.setRandomComment(testPostInfo, null, testAccountInfo, false);
+        return setRandomComment(testPostInfo, null, testAccountInfo, false);
     }
 
     protected TestCommentInfo setRandomComment(TestPostInfo testPostInfo, TestCommentInfo referenceComment, TestAccountInfo testAccountInfo) {
-        return this.setRandomComment(testPostInfo, referenceComment, testAccountInfo, false);
+        return setRandomComment(testPostInfo, referenceComment, testAccountInfo, false);
     }
 
     protected TestCommentInfo setRandomComment(TestPostInfo testPostInfo, TestCommentInfo referenceComment, TestAccountInfo testAccountInfo, boolean deleted) {
@@ -339,12 +339,12 @@ public abstract class IricomTestSuite {
      * 게시물 신고
      */
     protected TestPostReportInfo setRandomPostReport(TestPostInfo post, TestAccountInfo reportAccount) {
-        return this.setRandomPostReport(post, reportAccount, ReportType.ETC);
+        return setRandomPostReport(post, reportAccount, ReportType.ETC);
     }
 
     protected TestPostReportInfo setRandomPostReport(TestPostInfo post, TestAccountInfo reportAccount, ReportType reportType) {
         String randomText = UUID.randomUUID().toString();
-        return this.setRandomPostReport(post, reportAccount, reportType, randomText);
+        return setRandomPostReport(post, reportAccount, reportType, randomText);
     }
 
     protected TestPostReportInfo setRandomPostReport(TestPostInfo post, TestAccountInfo reportAccount, ReportType reportType, String reason) {
@@ -371,12 +371,12 @@ public abstract class IricomTestSuite {
      * 댓글 신고
      */
     protected TestCommentReportInfo setRandomCommentReport(TestCommentInfo comment, TestAccountInfo reportAccount) {
-        return this.setRandomCommentReport(comment, reportAccount, ReportType.ETC);
+        return setRandomCommentReport(comment, reportAccount, ReportType.ETC);
     }
 
     protected TestCommentReportInfo setRandomCommentReport(TestCommentInfo comment, TestAccountInfo reportAccount, ReportType reportType) {
         String randomText = UUID.randomUUID().toString();
-        return this.setRandomCommentReport(comment, reportAccount, reportType, randomText);
+        return setRandomCommentReport(comment, reportAccount, reportType, randomText);
     }
 
     protected TestCommentReportInfo setRandomCommentReport(TestCommentInfo comment, TestAccountInfo reportAccount, ReportType reportType, String reason) {
@@ -447,7 +447,7 @@ public abstract class IricomTestSuite {
      */
     protected TestPostBlockInfo setRandomPostBlock(TestPostInfo post) {
         String randomText = UUID.randomUUID().toString();
-        return this.setRandomPostBlock(post, randomText);
+        return setRandomPostBlock(post, randomText);
     }
 
     protected TestPostBlockInfo setRandomPostBlock(TestPostInfo post, String reason) {
@@ -470,13 +470,13 @@ public abstract class IricomTestSuite {
      * 계정 그룹 생성
      */
     protected List<TestAccountGroupInfo> setRandomAccountGroup(int count) {
-        return this.setRandomAccountGroup(Collections.emptyList(), Collections.emptyList(), count);
+        return setRandomAccountGroup(Collections.emptyList(), Collections.emptyList(), count);
     }
 
     protected List<TestAccountGroupInfo> setRandomAccountGroup(List<TestAccountInfo> testAccountInfoList, List<TestBoardInfo> testBoardInfoList, int count) {
         List<TestAccountGroupInfo> accountGroupList = new ArrayList<>();
         for (int i = 0; i < count; i++) {
-            TestAccountGroupInfo testAccountGroupInfo = this.setRandomAccountGroup(testAccountInfoList, testBoardInfoList);
+            TestAccountGroupInfo testAccountGroupInfo = setRandomAccountGroup(testAccountInfoList, testBoardInfoList);
             accountGroupList.add(testAccountGroupInfo);
         }
         return accountGroupList;
@@ -552,14 +552,14 @@ public abstract class IricomTestSuite {
     }
 
     protected List<TestPersonalMessageInfo> setRandomPersonalMessage(TestAccountInfo sender, TestAccountInfo receiver, int count) {
-        return this.setRandomPersonalMessage(sender, receiver, false, false, count);
+        return setRandomPersonalMessage(sender, receiver, false, false, count);
     }
 
     protected List<TestPersonalMessageInfo> setRandomPersonalMessage(TestAccountInfo sender, TestAccountInfo receiver, boolean sendDeleted, boolean receiveDelete, int count) {
         List<TestPersonalMessageInfo> personalMessageList = new ArrayList<>();
 
         for (int i = 0; i < count; i++) {
-            TestPersonalMessageInfo testPersonalMessageInfo = this.setRandomPersonalMessage(sender, receiver, sendDeleted, receiveDelete);
+            TestPersonalMessageInfo testPersonalMessageInfo = setRandomPersonalMessage(sender, receiver, sendDeleted, receiveDelete);
             personalMessageList.add(testPersonalMessageInfo);
         }
 
@@ -567,7 +567,7 @@ public abstract class IricomTestSuite {
     }
 
     protected TestPersonalMessageInfo setRandomPersonalMessage(TestAccountInfo sender, TestAccountInfo receiver) {
-        return this.setRandomPersonalMessage(sender, receiver, false, false);
+        return setRandomPersonalMessage(sender, receiver, false, false);
     }
 
     protected TestPersonalMessageInfo setRandomPersonalMessage(TestAccountInfo sender, TestAccountInfo receiver, boolean sendDeleted, boolean receiveDeleted) {

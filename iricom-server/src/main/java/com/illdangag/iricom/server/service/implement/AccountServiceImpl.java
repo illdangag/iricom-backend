@@ -22,9 +22,7 @@ import org.springframework.validation.annotation.Validated;
 import javax.transaction.Transactional;
 import javax.validation.Valid;
 import java.time.LocalDateTime;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -128,15 +126,5 @@ public class AccountServiceImpl extends IricomService implements AccountService 
 
         this.accountRepository.saveAccount(account);
         return new AccountInfo(account);
-    }
-
-    @Override
-    public Map<Account, AccountInfo> getAccountInfoMap(List<Account> accountList) {
-        Map<Account, AccountInfo> accountAccountInfoMap = new HashMap<>();
-        accountList.forEach(account -> {
-            AccountInfo accountInfo = new AccountInfo(account);
-            accountAccountInfoMap.put(account, accountInfo);
-        });
-        return accountAccountInfoMap;
     }
 }

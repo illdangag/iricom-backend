@@ -124,6 +124,12 @@ public class BlockServiceImpl extends IricomService implements BlockService {
     }
 
     @Override
+    public PostBlockInfoList getPostBlockInfoList(String accountId, PostBlockInfoSearch postBlockInfoSearch) {
+        Account account = this.getAccount(accountId);
+        return this.getPostBlockInfoList(account, postBlockInfoSearch);
+    }
+
+    @Override
     public PostBlockInfoList getPostBlockInfoList(Account account, PostBlockInfoSearch postBlockInfoSearch) {
         if (!account.getAuth().equals(AccountAuth.SYSTEM_ADMIN)) {
             throw new IricomException(IricomErrorCode.INVALID_AUTHORIZATION_TO_BLOCK_POST);

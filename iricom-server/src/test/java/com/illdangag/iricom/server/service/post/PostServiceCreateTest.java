@@ -37,9 +37,9 @@ public class PostServiceCreateTest extends IricomTestSuite {
     @DisplayName("닉네임이 등록되지 않은 사용자")
     public void postUnregisteredAccount() {
         // 계정 생성
-        TestAccountInfo account = this.setRandomAccount(true);
+        TestAccountInfo account = setRandomAccount(true);
         // 게시판 생성
-        TestBoardInfo board = this.setRandomBoard();
+        TestBoardInfo board = setRandomBoard();
 
         PostInfoCreate postInfoCreate = PostInfoCreate.builder()
                 .title("Unregistered account post title")
@@ -56,12 +56,12 @@ public class PostServiceCreateTest extends IricomTestSuite {
     @DisplayName("계정 그룹에 포함되지 않은 비공개 게시판")
     public void postUndisclosedBoard() {
         // 계정 생성
-        TestAccountInfo account = this.setRandomAccount();
-        TestAccountInfo other = this.setRandomAccount();
+        TestAccountInfo account = setRandomAccount();
+        TestAccountInfo other = setRandomAccount();
         // 게시판 생성
-        TestBoardInfo board = this.setRandomBoard(true, true);
+        TestBoardInfo board = setRandomBoard(true, true);
         // 계정 그룹 생성
-        this.setRandomAccountGroup(Collections.singletonList(account), Collections.singletonList(board));
+        setRandomAccountGroup(Collections.singletonList(account), Collections.singletonList(board));
 
         PostInfoCreate postInfoCreate = PostInfoCreate.builder()
                 .title("Unregistered account post title")
@@ -80,11 +80,11 @@ public class PostServiceCreateTest extends IricomTestSuite {
     @DisplayName("계정 그룹에 포함된 비공개 게시판")
     public void postUndisclosedBoardInAccountGroup() {
         // 계정 생성
-        TestAccountInfo account = this.setRandomAccount();
+        TestAccountInfo account = setRandomAccount();
         // 게시판 생성
-        TestBoardInfo board = this.setRandomBoard(true, true);
+        TestBoardInfo board = setRandomBoard(true, true);
         // 계정 그룹 생성
-        this.setRandomAccountGroup(Collections.singletonList(account), Collections.singletonList(board));
+        setRandomAccountGroup(Collections.singletonList(account), Collections.singletonList(board));
 
         PostInfoCreate postInfoCreate = PostInfoCreate.builder()
                 .title("Unregistered account post title")
@@ -101,9 +101,9 @@ public class PostServiceCreateTest extends IricomTestSuite {
     @DisplayName("게시물 발행 후 포인트 추가")
     public void addPostPoint() {
         // 계정 생성
-        TestAccountInfo account = this.setRandomAccount();
+        TestAccountInfo account = setRandomAccount();
         // 게시판 생성
-        TestBoardInfo board = this.setRandomBoard();
+        TestBoardInfo board = setRandomBoard();
 
         long beforePoint = this.accountService.getAccountInfo(account.getId()).getPoint();
 

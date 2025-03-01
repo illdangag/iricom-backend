@@ -33,15 +33,15 @@ public class CommentServiceGetTest extends IricomTestSuite {
     @DisplayName("조회")
     public void getComment() throws Exception {
         // 계정 생성
-        TestAccountInfo account = this.setRandomAccount();
+        TestAccountInfo account = setRandomAccount();
         // 게시판 생성
-        TestBoardInfo board = this.setRandomBoard();
+        TestBoardInfo board = setRandomBoard();
         // 게시물 생성
-        TestPostInfo post = this.setRandomPost(board, account);
+        TestPostInfo post = setRandomPost(board, account);
         // 댓글 생성
-        TestCommentInfo comment00 = this.setRandomComment(post, account);
+        TestCommentInfo comment00 = setRandomComment(post, account);
         // 대댓글 생성
-        this.setRandomComment(post, comment00, account);
+        setRandomComment(post, comment00, account);
 
         CommentInfo commentInfo = this.commentService.getComment(board.getId(), post.getId(), comment00.getId());
 
@@ -57,15 +57,15 @@ public class CommentServiceGetTest extends IricomTestSuite {
     @DisplayName("대댓글 조회")
     public void getReferenceComment() throws Exception {
         // 계정 생성
-        TestAccountInfo account = this.setRandomAccount();
+        TestAccountInfo account = setRandomAccount();
         // 게시판 생성
-        TestBoardInfo board = this.setRandomBoard();
+        TestBoardInfo board = setRandomBoard();
         // 게시물 생성
-        TestPostInfo post = this.setRandomPost(board, account);
+        TestPostInfo post = setRandomPost(board, account);
         // 댓글 생성
-        TestCommentInfo comment00 = this.setRandomComment(post, account);
+        TestCommentInfo comment00 = setRandomComment(post, account);
         // 대댓글 생성
-        TestCommentInfo comment01 = this.setRandomComment(post, comment00, account);
+        TestCommentInfo comment01 = setRandomComment(post, comment00, account);
 
         CommentInfo commentInfo = this.commentService.getComment(board.getId(), post.getId(), comment01.getId());
 
@@ -77,13 +77,13 @@ public class CommentServiceGetTest extends IricomTestSuite {
     @DisplayName("존재하지 않는 댓글")
     public void notExistComment() throws Exception {
         // 계정 생성
-        TestAccountInfo account = this.setRandomAccount();
+        TestAccountInfo account = setRandomAccount();
         // 게시판 생성
-        TestBoardInfo board = this.setRandomBoard();
+        TestBoardInfo board = setRandomBoard();
         // 게시물 생성
-        TestPostInfo post = this.setRandomPost(board, account);
+        TestPostInfo post = setRandomPost(board, account);
         // 댓글 생성
-        this.setRandomComment(post, account);
+        setRandomComment(post, account);
         String commentId = "NOT_EXIST_COMMENT";
 
         IricomException iricomException = Assertions.assertThrows(IricomException.class, () -> {

@@ -48,14 +48,14 @@ public class AccountGroupServiceGetTest extends IricomTestSuite {
     @DisplayName("그룹에 추가된 게시판 및 멤버 목록 조회")
     void getAddedAccountAndBoardAccountGroup() {
         // 계정 생성
-        List<TestAccountInfo> accountList = this.setRandomAccount(5);
+        List<TestAccountInfo> accountList = setRandomAccount(5);
         String[] accountIds = accountList.stream()
                 .map(TestAccountInfo::getId)
                 .sorted()
                 .toArray(String[]::new);
 
         // 게시판 생성
-        List<TestBoardInfo> boardList = this.setRandomBoard(5);
+        List<TestBoardInfo> boardList = setRandomBoard(5);
         String[] boardIds = boardList.stream()
                 .map(TestBoardInfo::getId)
                 .sorted()
@@ -88,7 +88,7 @@ public class AccountGroupServiceGetTest extends IricomTestSuite {
     @Test
     @DisplayName("존재하지 않는 그룹 조회")
     void getNotExistAccountGroup() throws Exception {
-        List<TestAccountGroupInfo> accountGroupInfoList = this.setRandomAccountGroup(5);
+        List<TestAccountGroupInfo> accountGroupInfoList = setRandomAccountGroup(5);
 
         // 생성한 그룹은 조회 가능
         Assertions.assertDoesNotThrow(() -> {

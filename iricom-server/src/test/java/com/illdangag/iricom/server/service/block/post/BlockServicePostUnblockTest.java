@@ -33,11 +33,11 @@ public class BlockServicePostUnblockTest extends IricomTestSuite {
     @DisplayName("시스템 관리자")
     public void unblockSystemAdmin() throws Exception {
         // 계정 생성
-        TestAccountInfo account = this.setRandomAccount();
+        TestAccountInfo account = setRandomAccount();
         // 게시판 생성
-        TestBoardInfo board = this.setRandomBoard();
+        TestBoardInfo board = setRandomBoard();
         // 게시물 생성
-        TestPostInfo post = this.setRandomPost(board, account);
+        TestPostInfo post = setRandomPost(board, account);
 
         // 게시물 차단
         PostBlockInfoCreate postBlockInfoCreate = PostBlockInfoCreate.builder()
@@ -54,12 +54,12 @@ public class BlockServicePostUnblockTest extends IricomTestSuite {
     @DisplayName("게시판 관리자")
     public void unblockBoardAdmin() throws Exception {
         // 계정 생성
-        TestAccountInfo account = this.setRandomAccount();
-        TestAccountInfo boardAdmin = this.setRandomAccount();
+        TestAccountInfo account = setRandomAccount();
+        TestAccountInfo boardAdmin = setRandomAccount();
         // 게시판 생성
-        TestBoardInfo board = this.setRandomBoard(Arrays.asList(boardAdmin));
+        TestBoardInfo board = setRandomBoard(Arrays.asList(boardAdmin));
         // 게시물 생성
-        TestPostInfo post = this.setRandomPost(board, account);
+        TestPostInfo post = setRandomPost(board, account);
 
         // 게시물 차단
         PostBlockInfoCreate postBlockInfoCreate = PostBlockInfoCreate.builder()
@@ -75,14 +75,14 @@ public class BlockServicePostUnblockTest extends IricomTestSuite {
     @DisplayName("다른 게시판 관리자")
     public void unblockOtherBoardAdmin() throws Exception {
         // 계정 생성
-        TestAccountInfo boardAdmin = this.setRandomAccount();
-        TestAccountInfo otherBoardAdmin = this.setRandomAccount();
-        TestAccountInfo account = this.setRandomAccount();
+        TestAccountInfo boardAdmin = setRandomAccount();
+        TestAccountInfo otherBoardAdmin = setRandomAccount();
+        TestAccountInfo account = setRandomAccount();
         // 게시판 생성
-        TestBoardInfo board = this.setRandomBoard(Arrays.asList(boardAdmin));
-        this.setRandomBoard(Arrays.asList(otherBoardAdmin));
+        TestBoardInfo board = setRandomBoard(Arrays.asList(boardAdmin));
+        setRandomBoard(Arrays.asList(otherBoardAdmin));
         // 게시물 생성
-        TestPostInfo post = this.setRandomPost(board, account);
+        TestPostInfo post = setRandomPost(board, account);
 
         // 게시물 차단
         PostBlockInfoCreate postBlockInfoCreate = PostBlockInfoCreate.builder()
@@ -101,11 +101,11 @@ public class BlockServicePostUnblockTest extends IricomTestSuite {
     @DisplayName("일반 사용자")
     public void unblockAccount() throws Exception {
         // 계정 생성
-        TestAccountInfo account = this.setRandomAccount();
+        TestAccountInfo account = setRandomAccount();
         // 게시판 생성
-        TestBoardInfo board = this.setRandomBoard();
+        TestBoardInfo board = setRandomBoard();
         // 게시물 생성
-        TestPostInfo post = this.setRandomPost(board, account);
+        TestPostInfo post = setRandomPost(board, account);
 
         // 게시물 차단
         PostBlockInfoCreate postBlockInfoCreate = PostBlockInfoCreate.builder()
@@ -124,12 +124,12 @@ public class BlockServicePostUnblockTest extends IricomTestSuite {
     @DisplayName("등록되지 않은 사용자")
     public void unblockUnknown() throws Exception {
         // 계정 생성
-        TestAccountInfo account = this.setRandomAccount();
-        TestAccountInfo unregisteredAccount = this.setRandomAccount(true);
+        TestAccountInfo account = setRandomAccount();
+        TestAccountInfo unregisteredAccount = setRandomAccount(true);
         // 게시판 생성
-        TestBoardInfo board = this.setRandomBoard();
+        TestBoardInfo board = setRandomBoard();
         // 게시물 생성
-        TestPostInfo post = this.setRandomPost(board, account);
+        TestPostInfo post = setRandomPost(board, account);
 
         // 게시물 차단
         PostBlockInfoCreate postBlockInfoCreate = PostBlockInfoCreate.builder()
@@ -148,12 +148,12 @@ public class BlockServicePostUnblockTest extends IricomTestSuite {
     @DisplayName("게시물이 포함된 게시판이 아닌 다른 게시판")
     public void unblockPostInOtherBoard() throws Exception {
         // 계정 생성
-        TestAccountInfo account = this.setRandomAccount();
+        TestAccountInfo account = setRandomAccount();
         // 게시판 생성
-        TestBoardInfo board = this.setRandomBoard();
-        TestBoardInfo otherBoard = this.setRandomBoard();
+        TestBoardInfo board = setRandomBoard();
+        TestBoardInfo otherBoard = setRandomBoard();
         // 게시물 생성
-        TestPostInfo post = this.setRandomPost(board, account);
+        TestPostInfo post = setRandomPost(board, account);
 
         IricomException iricomException = Assertions.assertThrows(IricomException.class, () -> {
             blockService.unblockPost(systemAdmin.getId(), otherBoard.getId(), post.getId());
@@ -161,5 +161,23 @@ public class BlockServicePostUnblockTest extends IricomTestSuite {
 
         Assertions.assertEquals("04000000", iricomException.getErrorCode());
         Assertions.assertEquals("Not exist post.", iricomException.getMessage());
+    }
+
+    @Test
+    @DisplayName("차단 되지 않은 게시물 차단 해제")
+    public void unblockNotBlockPost() {
+        // 계정 생성
+        TestAccountInfo account = setRandomAccount();
+        // 게시판 생성
+        TestBoardInfo board = setRandomBoard();
+        // 게시물 생성
+        TestPostInfo post = setRandomPost(board, account);
+
+        IricomException iricomException = Assertions.assertThrows(IricomException.class, () -> {
+            blockService.unblockPost(systemAdmin.getId(), board.getId(), post.getId());
+        });
+
+        Assertions.assertEquals("04000015", iricomException.getErrorCode());
+        Assertions.assertEquals("This post has not been blocked.", iricomException.getMessage());
     }
 }

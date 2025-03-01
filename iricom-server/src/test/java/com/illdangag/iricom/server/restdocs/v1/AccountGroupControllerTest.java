@@ -39,11 +39,11 @@ public class AccountGroupControllerTest extends IricomTestSuite {
     @DisplayName("계정 그룹 생성")
     public void ag001() throws Exception {
         // 계정 생성
-        TestAccountInfo account00 = this.setRandomAccount();
-        TestAccountInfo account01 = this.setRandomAccount();
+        TestAccountInfo account00 = setRandomAccount();
+        TestAccountInfo account01 = setRandomAccount();
         // 게시판 생성
-        TestBoardInfo board00 = this.setRandomBoard();
-        TestBoardInfo board01 = this.setRandomBoard();
+        TestBoardInfo board00 = setRandomBoard();
+        TestBoardInfo board01 = setRandomBoard();
 
         Map<String, Object> requestBody = new HashMap<>();
         requestBody.put("title", "Account group");
@@ -94,11 +94,11 @@ public class AccountGroupControllerTest extends IricomTestSuite {
     @DisplayName("계정 그룹 목록 조회")
     public void ag002() throws Exception {
         // 계정 생성
-        TestAccountInfo account00 = this.setRandomAccount();
-        TestAccountInfo account01 = this.setRandomAccount();
+        TestAccountInfo account00 = setRandomAccount();
+        TestAccountInfo account01 = setRandomAccount();
         // 게시판 생성
-        TestBoardInfo board00 = this.setRandomBoard();
-        TestBoardInfo board01 = this.setRandomBoard();
+        TestBoardInfo board00 = setRandomBoard();
+        TestBoardInfo board01 = setRandomBoard();
         // 계정 그룹 생성
         setRandomAccountGroup(Arrays.asList(account00, account01), Arrays.asList(board00, board01));
 
@@ -142,11 +142,11 @@ public class AccountGroupControllerTest extends IricomTestSuite {
     @DisplayName("계정 그룹 정보 조회")
     public void ag003() throws Exception {
         // 계정 생성
-        TestAccountInfo account00 = this.setRandomAccount();
-        TestAccountInfo account01 = this.setRandomAccount();
+        TestAccountInfo account00 = setRandomAccount();
+        TestAccountInfo account01 = setRandomAccount();
         // 게시판 생성
-        TestBoardInfo board00 = this.setRandomBoard();
-        TestBoardInfo board01 = this.setRandomBoard();
+        TestBoardInfo board00 = setRandomBoard();
+        TestBoardInfo board01 = setRandomBoard();
         // 계정 그룹 생성
         TestAccountGroupInfo accountGroup = setRandomAccountGroup(Arrays.asList(account00, account01), Arrays.asList(board00, board01));
 
@@ -187,11 +187,11 @@ public class AccountGroupControllerTest extends IricomTestSuite {
     @DisplayName("계정 그룹 정보 수정")
     public void ag004() throws Exception {
         // 계정 생성
-        TestAccountInfo account00 = this.setRandomAccount();
-        TestAccountInfo account01 = this.setRandomAccount();
+        TestAccountInfo account00 = setRandomAccount();
+        TestAccountInfo account01 = setRandomAccount();
         // 게시판 생성
-        TestBoardInfo board00 = this.setRandomBoard();
-        TestBoardInfo board01 = this.setRandomBoard();
+        TestBoardInfo board00 = setRandomBoard();
+        TestBoardInfo board01 = setRandomBoard();
         // 계정 그룹 생성
         TestAccountGroupInfo accountGroup = setRandomAccountGroup(Collections.singletonList(account00), Collections.singletonList(board00));
 
@@ -249,11 +249,11 @@ public class AccountGroupControllerTest extends IricomTestSuite {
     @DisplayName("계정 그룹 정보 삭제")
     public void ag005() throws Exception {
         // 계정 생성
-        TestAccountInfo account00 = this.setRandomAccount();
-        TestAccountInfo account01 = this.setRandomAccount();
+        TestAccountInfo account00 = setRandomAccount();
+        TestAccountInfo account01 = setRandomAccount();
         // 게시판 생성
-        TestBoardInfo board00 = this.setRandomBoard();
-        TestBoardInfo board01 = this.setRandomBoard();
+        TestBoardInfo board00 = setRandomBoard();
+        TestBoardInfo board01 = setRandomBoard();
         // 계정 그룹 생성
         TestAccountGroupInfo accountGroup = setRandomAccountGroup(Arrays.asList(account00, account01), Arrays.asList(board00, board01));
 

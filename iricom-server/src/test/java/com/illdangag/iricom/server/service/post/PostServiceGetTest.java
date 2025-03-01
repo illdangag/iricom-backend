@@ -34,11 +34,11 @@ public class PostServiceGetTest extends IricomTestSuite {
     @DisplayName("공개된 게시판의 게시물을 권한 없이 조회")
     public void getDisclosedBoardPost() {
         // 계정 생성
-        TestAccountInfo account = this.setRandomAccount();
+        TestAccountInfo account = setRandomAccount();
         // 게시판 생성
-        TestBoardInfo board = this.setRandomBoard();
+        TestBoardInfo board = setRandomBoard();
         // 게시물 생성
-        TestPostInfo post = this.setRandomPost(board, account);
+        TestPostInfo post = setRandomPost(board, account);
 
         PostInfo postInfo = postService.getPostInfo(board.getId(), post.getId(), PostState.PUBLISH, true);
 
@@ -49,13 +49,13 @@ public class PostServiceGetTest extends IricomTestSuite {
     @DisplayName("비공개 게시판의 게시물 조회")
     public void getUndisclosedBoardPost() {
         // 계정 생성
-        TestAccountInfo account = this.setRandomAccount();
+        TestAccountInfo account = setRandomAccount();
         // 게시판 생성
-        TestBoardInfo board = this.setRandomBoard(true, true);
+        TestBoardInfo board = setRandomBoard(true, true);
         // 계정 그룹 생성
-        this.setRandomAccountGroup(Collections.singletonList(account), Collections.singletonList(board));
+        setRandomAccountGroup(Collections.singletonList(account), Collections.singletonList(board));
         // 게시물 생성
-        TestPostInfo post = this.setRandomPost(board, account);
+        TestPostInfo post = setRandomPost(board, account);
 
         Assertions.assertThrows(IricomException.class, () -> {
             postService.getPostInfo(board.getId(), post.getId(), PostState.PUBLISH, true);
@@ -66,13 +66,13 @@ public class PostServiceGetTest extends IricomTestSuite {
     @DisplayName("차단된 게시물 조회")
     public void getBlockedPost() {
         // 계정 생성
-        TestAccountInfo account = this.setRandomAccount();
+        TestAccountInfo account = setRandomAccount();
         // 게시판 생성
-        TestBoardInfo board = this.setRandomBoard();
+        TestBoardInfo board = setRandomBoard();
         // 게시물 생성
-        TestPostInfo post = this.setRandomPost(board, account);
+        TestPostInfo post = setRandomPost(board, account);
         // 게시물 차단
-        this.setRandomPostBlock(post);
+        setRandomPostBlock(post);
 
         PostInfo postInfo = postService.getPostInfo(board.getId(), post.getId(), PostState.PUBLISH, true);
         Assertions.assertNotNull(postInfo);
