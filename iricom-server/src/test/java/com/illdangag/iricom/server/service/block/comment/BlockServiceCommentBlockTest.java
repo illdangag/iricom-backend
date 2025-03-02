@@ -1,7 +1,5 @@
 package com.illdangag.iricom.server.service.block.comment;
 
-import com.illdangag.iricom.server.data.entity.type.PostState;
-import com.illdangag.iricom.server.data.entity.type.PostType;
 import com.illdangag.iricom.server.data.request.CommentBlockInfoCreate;
 import com.illdangag.iricom.server.data.request.PostBlockInfoCreate;
 import com.illdangag.iricom.server.data.response.CommentBlockInfo;
@@ -96,7 +94,7 @@ public class BlockServiceCommentBlockTest extends IricomTestSuite {
         TestAccountInfo account = setRandomAccount();
         // 게시판 생성
         TestBoardInfo board00 = setRandomBoard(Collections.singletonList(boardAdmin00));
-         setRandomBoard(Collections.singletonList(boardAdmin01));
+        setRandomBoard(Collections.singletonList(boardAdmin01));
         // 게시물 생성
         TestPostInfo post = setRandomPost(board00, account);
         // 댓글 생성

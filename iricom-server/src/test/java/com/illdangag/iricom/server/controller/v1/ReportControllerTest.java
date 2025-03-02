@@ -1,7 +1,5 @@
 package com.illdangag.iricom.server.controller.v1;
 
-import com.illdangag.iricom.server.data.entity.type.PostState;
-import com.illdangag.iricom.server.data.entity.type.PostType;
 import com.illdangag.iricom.server.test.IricomTestSuite;
 import com.illdangag.iricom.server.test.data.wrapper.TestAccountInfo;
 import com.illdangag.iricom.server.test.data.wrapper.TestBoardInfo;

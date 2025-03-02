@@ -1,7 +1,5 @@
 package com.illdangag.iricom.server.service.block.comment;
 
-import com.illdangag.iricom.server.data.entity.type.PostState;
-import com.illdangag.iricom.server.data.entity.type.PostType;
 import com.illdangag.iricom.server.data.request.CommentBlockInfoCreate;
 import com.illdangag.iricom.server.data.response.CommentBlockInfo;
 import com.illdangag.iricom.server.exception.IricomException;
