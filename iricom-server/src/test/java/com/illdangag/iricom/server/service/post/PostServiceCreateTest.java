@@ -1,5 +1,6 @@
 package com.illdangag.iricom.server.service.post;
 
+import com.illdangag.iricom.server.data.entity.type.PostState;
 import com.illdangag.iricom.server.data.entity.type.PostType;
 import com.illdangag.iricom.server.data.request.PostInfoCreate;
 import com.illdangag.iricom.server.data.response.PostInfo;
@@ -9,6 +10,7 @@ import com.illdangag.iricom.server.service.PostService;
 import com.illdangag.iricom.server.test.IricomTestSuite;
 import com.illdangag.iricom.server.test.data.wrapper.TestAccountInfo;
 import com.illdangag.iricom.server.test.data.wrapper.TestBoardInfo;
+import com.illdangag.iricom.server.test.data.wrapper.TestPostInfo;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
@@ -50,6 +52,24 @@ public class PostServiceCreateTest extends IricomTestSuite {
         Assertions.assertThrows(IricomException.class, () -> {
             postService.createPostInfo(account.getId(), board.getId(), postInfoCreate);
         });
+    }
+
+    @Test
+    @DisplayName("발행되지 않은 공지사항 게시물을 일반 사용자가 발행")
+    void publishPostNotBoardAdmin() {
+        // 계정 생성
+        TestAccountInfo account = setRandomAccount();
+        // 게시판 생성
+        TestBoardInfo board = setRandomBoard(Collections.singletonList(account));
+        // 게시물 생성
+        TestPostInfo post = setRandomPost(board, account, PostType.NOTIFICATION, PostState.TEMPORARY);
+        // 게시판 관리자 삭제
+        deleteBoardAdmin(board, Collections.singletonList(account));
+
+        IricomException exception = Assertions.assertThrows(IricomException.class, () -> {
+            postService.publishPostInfo(account.getId(), board.getId(), post.getId());
+        });
+        Assertions.assertEquals("04000001", exception.getErrorCode());
     }
 
     @Test

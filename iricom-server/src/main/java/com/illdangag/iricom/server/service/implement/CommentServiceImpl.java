@@ -34,20 +34,18 @@ import java.util.stream.Collectors;
 public class CommentServiceImpl extends IricomService implements CommentService {
     private final CommentVoteRepository commentVoteRepository;
     private final ReportRepository reportRepository;
-    private final BlockRepository blockRepository;
     private final AccountService accountService;
     private final AccountPointService accountPointService;
 
     @Autowired
     public CommentServiceImpl(AccountRepository accountRepository, BoardRepository boardRepository,
                               PostRepository postRepository, CommentRepository commentRepository,
-                              CommentVoteRepository commentVoteRepository, BlockRepository blockRepository,
+                              CommentVoteRepository commentVoteRepository,
                               ReportRepository reportRepository, AccountService accountService,
                               AccountPointService accountPointService) {
         super(accountRepository, boardRepository, postRepository, commentRepository);
         this.commentVoteRepository = commentVoteRepository;
         this.reportRepository = reportRepository;
-        this.blockRepository = blockRepository;
         this.accountService = accountService;
         this.accountPointService = accountPointService;
     }

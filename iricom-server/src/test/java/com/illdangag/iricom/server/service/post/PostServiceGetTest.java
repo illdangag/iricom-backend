@@ -1,6 +1,7 @@
 package com.illdangag.iricom.server.service.post;
 
 import com.illdangag.iricom.server.data.entity.type.PostState;
+import com.illdangag.iricom.server.data.entity.type.PostType;
 import com.illdangag.iricom.server.data.response.PostInfo;
 import com.illdangag.iricom.server.exception.IricomException;
 import com.illdangag.iricom.server.service.PostService;
@@ -78,5 +79,36 @@ public class PostServiceGetTest extends IricomTestSuite {
         Assertions.assertNotNull(postInfo);
         Assertions.assertTrue(postInfo.getBlocked());
         Assertions.assertNull(postInfo.getContent());
+    }
+
+    @Test
+    @DisplayName("권한 없이 게시물 조회")
+    public void getPostNotAuth() {
+        // 계정 생성
+        TestAccountInfo account = setRandomAccount();
+        // 게시판 생성
+        TestBoardInfo board = setRandomBoard();
+        // 게시물 생성
+        TestPostInfo post = setRandomPost(board, account);
+
+        PostInfo postInfo = postService.getPostInfo(board.getId(), post.getId(), PostState.PUBLISH);
+        Assertions.assertNotNull(postInfo);
+    }
+
+    @Test
+    @DisplayName("권한 없이 임시 저장 게시물 조회")
+    void getTemporaryPostNotAuth() {
+        // 계정 생성
+        TestAccountInfo account = setRandomAccount();
+        // 게시판 생성
+        TestBoardInfo board = setRandomBoard();
+        // 게시물 생성
+        TestPostInfo post = setRandomPost(board, account, PostType.POST, PostState.TEMPORARY);
+
+        IricomException exception = Assertions.assertThrows(IricomException.class, () -> {
+            postService.getPostInfo(board.getId(), post.getId(), PostState.TEMPORARY);
+        });
+        Assertions.assertEquals("04000007", exception.getErrorCode());
+        Assertions.assertEquals("Invalid authorization.", exception.getMessage());
     }
 }
