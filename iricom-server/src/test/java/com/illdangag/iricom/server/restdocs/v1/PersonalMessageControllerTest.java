@@ -55,6 +55,8 @@ public class PersonalMessageControllerTest extends IricomTestSuite {
 
         List<FieldDescriptor> fieldDescriptorList = new LinkedList<>();
         fieldDescriptorList.addAll(IricomFieldsSnippet.getPersonalMessage(""));
+        fieldDescriptorList.addAll(IricomFieldsSnippet.getAccount("sendAccount."));
+        fieldDescriptorList.addAll(IricomFieldsSnippet.getAccount("receiveAccount."));
 
         mockMvc.perform(requestBuilder)
                 .andExpect(status().is(200))
@@ -97,6 +99,8 @@ public class PersonalMessageControllerTest extends IricomTestSuite {
         List<FieldDescriptor> fieldDescriptorList = new LinkedList<>();
         fieldDescriptorList.addAll(IricomFieldsSnippet.getSearchList(""));
         fieldDescriptorList.addAll(IricomFieldsSnippet.getPersonalMessage("personalMessages.[]."));
+        fieldDescriptorList.addAll(IricomFieldsSnippet.getAccount("personalMessages.[].sendAccount."));
+        fieldDescriptorList.addAll(IricomFieldsSnippet.getAccount("personalMessages.[].receiveAccount."));
 
         mockMvc.perform(requestBuilder)
                 .andExpect(status().is(200))
@@ -137,6 +141,8 @@ public class PersonalMessageControllerTest extends IricomTestSuite {
 
         List<FieldDescriptor> fieldDescriptorList = new LinkedList<>();
         fieldDescriptorList.addAll(IricomFieldsSnippet.getPersonalMessage(""));
+        fieldDescriptorList.addAll(IricomFieldsSnippet.getAccount("sendAccount."));
+        fieldDescriptorList.addAll(IricomFieldsSnippet.getAccount("receiveAccount."));
 
         mockMvc.perform(requestBuilder)
                 .andExpect(status().is(200))
@@ -179,6 +185,8 @@ public class PersonalMessageControllerTest extends IricomTestSuite {
         List<FieldDescriptor> fieldDescriptorList = new LinkedList<>();
         fieldDescriptorList.addAll(IricomFieldsSnippet.getSearchList(""));
         fieldDescriptorList.addAll(IricomFieldsSnippet.getPersonalMessage("personalMessages.[]."));
+        fieldDescriptorList.addAll(IricomFieldsSnippet.getAccount("personalMessages.[].sendAccount."));
+        fieldDescriptorList.addAll(IricomFieldsSnippet.getAccount("personalMessages.[].receiveAccount."));
 
         mockMvc.perform(requestBuilder)
                 .andExpect(status().is(200))
@@ -219,6 +227,8 @@ public class PersonalMessageControllerTest extends IricomTestSuite {
 
         List<FieldDescriptor> fieldDescriptorList = new LinkedList<>();
         fieldDescriptorList.addAll(IricomFieldsSnippet.getPersonalMessage(""));
+        fieldDescriptorList.addAll(IricomFieldsSnippet.getAccount("sendAccount."));
+        fieldDescriptorList.addAll(IricomFieldsSnippet.getAccount("receiveAccount."));
 
         mockMvc.perform(requestBuilder)
                 .andExpect(status().is(200))
@@ -258,6 +268,8 @@ public class PersonalMessageControllerTest extends IricomTestSuite {
 
         List<FieldDescriptor> fieldDescriptorList = new LinkedList<>();
         fieldDescriptorList.addAll(IricomFieldsSnippet.getPersonalMessage(""));
+        fieldDescriptorList.addAll(IricomFieldsSnippet.getAccount("sendAccount."));
+        fieldDescriptorList.addAll(IricomFieldsSnippet.getAccount("receiveAccount."));
 
         mockMvc.perform(requestBuilder)
                 .andExpect(status().is(200))

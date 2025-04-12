@@ -21,6 +21,10 @@ public class PersonalMessageInfo {
 
     private Boolean receivedConfirm;
 
+    private AccountInfo sendAccount;
+
+    private AccountInfo receiveAccount;
+
     public PersonalMessageInfo(PersonalMessage personalMessage, boolean includeMessage) {
         this.id = String.valueOf(personalMessage.getId());
         this.createDate = DateTimeUtils.getLong(personalMessage.getCreateDate());
@@ -30,5 +34,7 @@ public class PersonalMessageInfo {
         if (includeMessage) {
             this.message = personalMessage.getMessage();
         }
+        this.sendAccount = new AccountInfo(personalMessage.getSendAccount());
+        this.receiveAccount = new AccountInfo(personalMessage.getReceiveAccount());
     }
 }
