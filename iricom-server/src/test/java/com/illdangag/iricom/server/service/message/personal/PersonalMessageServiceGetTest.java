@@ -111,6 +111,21 @@ public class PersonalMessageServiceGetTest extends IricomTestSuite {
     }
 
     @Test
+    @DisplayName("발신한 메시지를 수신 메시지 형식으로 조회")
+    public void getReceivePersonalMessageBySendPersonalMessageType() throws Exception {
+        // 계정 생성
+        TestAccountInfo sender = setRandomAccount();
+        TestAccountInfo receiver = setRandomAccount();
+        // 개인 쪽지 생성
+        TestPersonalMessageInfo personalMessage = setRandomPersonalMessage(sender, receiver);
+
+        IricomException iricomException = Assertions.assertThrows(IricomException.class, () -> {
+            this.personalMessageService.getSendPersonalMessageInfo(receiver.getId(), personalMessage.getId());
+        });
+        Assertions.assertEquals(IricomErrorCode.NOT_EXIST_PERSONAL_MESSAGE.getCode(), iricomException.getErrorCode());
+    }
+
+    @Test
     @DisplayName("존재하지 않는 발신 메시지 조회")
     public void getNotExistReceivePersonalMessage() throws Exception {
         // 계정 생성

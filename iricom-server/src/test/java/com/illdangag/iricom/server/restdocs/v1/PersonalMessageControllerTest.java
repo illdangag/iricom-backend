@@ -179,7 +179,8 @@ public class PersonalMessageControllerTest extends IricomTestSuite {
 
         MockHttpServletRequestBuilder requestBuilder = get("/v1/personal/messages/send")
                 .param("skip", "0")
-                .param("limit", "20");
+                .param("limit", "20")
+                .param("status", "ALL");
         setAuthToken(requestBuilder, sender);
 
         List<FieldDescriptor> fieldDescriptorList = new LinkedList<>();
@@ -207,7 +208,8 @@ public class PersonalMessageControllerTest extends IricomTestSuite {
                         ),
                         requestParameters(
                                 parameterWithName("skip").description("건너 뛸 수"),
-                                parameterWithName("limit").description("최대 조회 수")
+                                parameterWithName("limit").description("최대 조회 수"),
+                                parameterWithName("status").description("개인 쪽지 상태 (ALL, UNREAD)")
                         ),
                         responseFields(fieldDescriptorList.toArray(FieldDescriptor[]::new))
                 ));

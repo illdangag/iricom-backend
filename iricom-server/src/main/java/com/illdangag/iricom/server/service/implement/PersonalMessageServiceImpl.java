@@ -4,6 +4,7 @@ import com.illdangag.iricom.server.data.entity.Account;
 import com.illdangag.iricom.server.data.entity.PersonalMessage;
 import com.illdangag.iricom.server.data.request.PersonalMessageInfoCreate;
 import com.illdangag.iricom.server.data.request.PersonalMessageInfoSearch;
+import com.illdangag.iricom.server.data.request.PersonalMessageStatus;
 import com.illdangag.iricom.server.data.response.PersonalMessageInfo;
 import com.illdangag.iricom.server.data.response.PersonalMessageInfoList;
 import com.illdangag.iricom.server.exception.IricomErrorCode;
@@ -122,9 +123,19 @@ public class PersonalMessageServiceImpl extends IricomService implements Persona
     public PersonalMessageInfoList getReceivePersonalMessageInfoList(Account account, @Valid PersonalMessageInfoSearch personalMessageInfoSearch) {
         int skip = personalMessageInfoSearch.getSkip();
         int limit = personalMessageInfoSearch.getLimit();
+        PersonalMessageStatus status = personalMessageInfoSearch.getStatus();
 
-        List<PersonalMessage> personalMessageList = this.personalMessageRepository.getReceivePersonalMessageList(account, skip, limit);
-        long total = this.personalMessageRepository.getReceivePersonalMessageCount(account);
+        List<PersonalMessage> personalMessageList;
+        long total;
+
+        if (status == PersonalMessageStatus.ALL) {
+            personalMessageList = this.personalMessageRepository.getReceivePersonalMessageList(account, skip, limit);
+            total = this.personalMessageRepository.getReceivePersonalMessageCount(account);
+        } else {
+            personalMessageList = this.personalMessageRepository.getUnreadReceivePersonalMessageList(account, skip, limit);
+            total = this.personalMessageRepository.getUnreadReceivePersonalMessageCount(account);
+        }
+
 
         List<PersonalMessageInfo> personalMessageInfoList = personalMessageList.stream()
                 .map((PersonalMessage personalMessage) -> new PersonalMessageInfo(personalMessage, false))

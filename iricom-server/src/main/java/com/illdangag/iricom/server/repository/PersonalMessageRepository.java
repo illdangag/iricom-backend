@@ -17,5 +17,9 @@ public interface PersonalMessageRepository {
 
     long getReceivePersonalMessageCount(Account account);
 
+    List<PersonalMessage> getUnreadReceivePersonalMessageList(Account account, Integer offset, Integer limit);
+
+    long getUnreadReceivePersonalMessageCount(Account account);
+
     void save(PersonalMessage personalMessage);
 }
