@@ -7,6 +7,7 @@ import com.illdangag.iricom.server.configuration.annotation.RequestContext;
 import com.illdangag.iricom.server.data.entity.Account;
 import com.illdangag.iricom.server.data.request.PersonalMessageInfoCreate;
 import com.illdangag.iricom.server.data.request.PersonalMessageInfoSearch;
+import com.illdangag.iricom.server.data.request.PersonalMessageStatus;
 import com.illdangag.iricom.server.data.response.PersonalMessageInfo;
 import com.illdangag.iricom.server.data.response.PersonalMessageInfoList;
 import com.illdangag.iricom.server.exception.IricomErrorCode;
@@ -52,7 +53,7 @@ public class PersonalMessageController {
     @RequestMapping(method = RequestMethod.GET, value = "/receive")
     public ResponseEntity<PersonalMessageInfoList> getReceivePersonalMessageList(@RequestParam(name = "skip", defaultValue = "0", required = false) String skipVariable,
                                                                                  @RequestParam(name = "limit", defaultValue = "20", required = false) String limitVariable,
-                                                                                 @RequestParam(name = "type", defaultValue = "post", required = false) String typeVariable,
+                                                                                 @RequestParam(name = "status", defaultValue = "all", required = false) PersonalMessageStatus status,
                                                                                  @RequestContext Account account) {
         int skip;
         int limit;
@@ -70,6 +71,7 @@ public class PersonalMessageController {
         }
 
         PersonalMessageInfoSearch search = PersonalMessageInfoSearch.builder()
+                .status(status)
                 .skip(skip)
                 .limit(limit)
                 .build();

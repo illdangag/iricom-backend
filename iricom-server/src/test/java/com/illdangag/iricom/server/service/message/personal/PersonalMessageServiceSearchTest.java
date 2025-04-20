@@ -1,10 +1,12 @@
 package com.illdangag.iricom.server.service.message.personal;
 
 import com.illdangag.iricom.server.data.request.PersonalMessageInfoSearch;
+import com.illdangag.iricom.server.data.request.PersonalMessageStatus;
 import com.illdangag.iricom.server.data.response.PersonalMessageInfoList;
 import com.illdangag.iricom.server.service.PersonalMessageService;
 import com.illdangag.iricom.server.test.IricomTestSuite;
 import com.illdangag.iricom.server.test.data.wrapper.TestAccountInfo;
+import com.illdangag.iricom.server.test.data.wrapper.TestPersonalMessageInfo;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -12,6 +14,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 
 import javax.transaction.Transactional;
+import java.util.List;
 
 @DisplayName("Service: 개인 쪽지 - 목록 조회")
 @Transactional
@@ -207,5 +210,28 @@ public class PersonalMessageServiceSearchTest extends IricomTestSuite {
         Assertions.assertEquals(0, personalMessageInfoList.getSkip());
         Assertions.assertEquals(20, personalMessageInfoList.getLimit());
         Assertions.assertEquals(11, personalMessageInfoList.getPersonalMessageInfoList().size());
+    }
+
+    @Test
+    @DisplayName("수신 목록 조회 - 읽지 않은 쪽지")
+    public void getUnreadReceivePersonalMessageList() {
+        // 계정 생성
+        TestAccountInfo sender = setRandomAccount();
+        TestAccountInfo receiver = setRandomAccount();
+        // 개인 쪽지 생성
+        List<TestPersonalMessageInfo> personalMessageList = setRandomPersonalMessage(sender, receiver, 5);
+
+        PersonalMessageInfoSearch search = PersonalMessageInfoSearch.builder()
+                .status(PersonalMessageStatus.UNREAD)
+                .build();
+        PersonalMessageInfoList beforePersonalMessageInfoList = this.personalMessageService.getReceivePersonalMessageInfoList(receiver.getId(), search);
+        Assertions.assertEquals(5, beforePersonalMessageInfoList.getTotal());
+
+        // 2개의 개인 쪽지 조회
+        this.personalMessageService.getPersonalMessageInfo(receiver.getId(), personalMessageList.get(0).getId());
+        this.personalMessageService.getPersonalMessageInfo(receiver.getId(), personalMessageList.get(1).getId());
+
+        PersonalMessageInfoList afterPersonalMessageInfoList = this.personalMessageService.getReceivePersonalMessageInfoList(receiver.getId(), search);
+        Assertions.assertEquals(3, afterPersonalMessageInfoList.getTotal());
     }
 }

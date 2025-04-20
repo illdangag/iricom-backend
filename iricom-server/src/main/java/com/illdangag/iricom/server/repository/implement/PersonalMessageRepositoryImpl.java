@@ -99,6 +99,40 @@ public class PersonalMessageRepositoryImpl implements PersonalMessageRepository 
     }
 
     @Override
+    public List<PersonalMessage> getUnreadReceivePersonalMessageList(Account account, Integer offset, Integer limit) {
+        final String jpql = "SELECT pm FROM PersonalMessage pm" +
+                " WHERE pm.receiveAccount = :account" +
+                " AND pm.receiveDeleted = false" +
+                " AND pm.receivedConfirm = false" +
+                " ORDER BY pm.createDate DESC";
+
+        TypedQuery<PersonalMessage> query = this.entityManager.createQuery(jpql, PersonalMessage.class)
+                .setParameter("account", account);
+
+        if (offset != null) {
+            query.setFirstResult(offset);
+        }
+
+        if (limit != null) {
+            query.setMaxResults(limit);
+        }
+
+        return query.getResultList();
+    }
+
+    @Override
+    public long getUnreadReceivePersonalMessageCount(Account account) {
+        final String jpql = "SELECT COUNT(1) FROM PersonalMessage pm" +
+                " WHERE pm.receiveAccount = :account" +
+                " AND pm.receiveDeleted = false" +
+                " AND pm.receivedConfirm = false";
+
+        TypedQuery<Long> query = this.entityManager.createQuery(jpql, Long.class)
+                .setParameter("account", account);
+        return query.getSingleResult();
+    }
+
+    @Override
     public void save(PersonalMessage personalMessage) {
         if (personalMessage.getId() == null) {
             this.entityManager.persist(personalMessage);

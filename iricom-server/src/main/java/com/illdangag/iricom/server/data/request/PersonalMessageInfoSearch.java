@@ -1,5 +1,6 @@
 package com.illdangag.iricom.server.data.request;
 
+import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.SuperBuilder;
@@ -8,4 +9,6 @@ import lombok.experimental.SuperBuilder;
 @Setter
 @SuperBuilder
 public class PersonalMessageInfoSearch extends SearchRequest {
+    @Builder.Default
+    private PersonalMessageStatus status = PersonalMessageStatus.ALL;
 }

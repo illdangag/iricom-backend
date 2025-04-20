@@ -1,9 +1,11 @@
 package com.illdangag.iricom.server.configuration.config;
 
 import com.illdangag.iricom.server.configuration.resolver.RequestContextResolver;
+import com.illdangag.iricom.server.data.request.PersonalMessageStatus;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.format.FormatterRegistry;
 import org.springframework.web.method.support.HandlerMethodArgumentResolver;
 import org.springframework.web.servlet.HandlerInterceptor;
 import org.springframework.web.servlet.config.annotation.CorsRegistry;
@@ -39,5 +41,10 @@ public class WebMvcConfig implements WebMvcConfigurer {
         registry.addMapping("/**")
                 .allowedOrigins("*")
                 .allowedMethods("*");
+    }
+
+    @Override
+    public void addFormatters(FormatterRegistry registry) {
+        registry.addConverter(new PersonalMessageStatus.PersonalMessageStatusConverter());
     }
 }
