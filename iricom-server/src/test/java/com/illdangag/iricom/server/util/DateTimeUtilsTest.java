@@ -1,4 +1,4 @@
-package com.illdangag.iricom.server.util;
+package com.illdangag.iricom.core.util;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;

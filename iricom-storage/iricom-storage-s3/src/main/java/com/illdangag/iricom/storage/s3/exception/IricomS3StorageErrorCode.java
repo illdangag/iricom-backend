@@ -1,6 +1,6 @@
 package com.illdangag.iricom.storage.s3.exception;
 
-import com.illdangag.iricom.server.exception.IricomError;
+import com.illdangag.iricom.core.exception.IricomError;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 

@@ -1,6 +1,6 @@
 package com.illdangag.iricom.storage.controller;
 
-import com.illdangag.iricom.server.data.response.ServerInfo;
+import com.illdangag.iricom.core.data.response.ServerInfo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.PropertySource;

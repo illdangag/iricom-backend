@@ -1,6 +1,6 @@
 package com.illdangag.iricom.storage.service;
 
-import com.illdangag.iricom.server.data.entity.Account;
+import com.illdangag.iricom.core.data.entity.Account;
 import com.illdangag.iricom.storage.data.IricomFileInputStream;
 import com.illdangag.iricom.storage.data.response.FileMetadataInfo;
 import org.apache.commons.io.FilenameUtils;

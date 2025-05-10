@@ -3,6 +3,7 @@ plugins {
     id 'org.springframework.boot' version "${springBootVersion}"
     id 'io.spring.dependency-management' version "${springDependencyManagementVersion}"
     id 'checkstyle' // code convention
+    id 'com.gorylenko.gradle-git-properties' version '2.4.1' // git 정보
 }
 
 version = '0.2.0'
@@ -13,9 +14,10 @@ repositories {
 
 dependencies {
     // 상위 프로젝트 의존성
-    implementation project(':iricom-server')
-    testImplementation(testFixtures(project(':iricom-server')))
+    implementation project(':iricom-core')
+    testImplementation(testFixtures(project(':iricom-core')))
     implementation project(':iricom-storage')
+    testImplementation(testFixtures(project(':iricom-storage')))
 
     // spring 의존성
     implementation 'org.springframework.boot:spring-boot-starter-web' // spring MVC를 위한 기본적인 종속, 내장 Tomcat 포함

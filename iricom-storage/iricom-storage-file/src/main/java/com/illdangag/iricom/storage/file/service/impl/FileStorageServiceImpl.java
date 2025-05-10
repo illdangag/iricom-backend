@@ -1,10 +1,10 @@
 package com.illdangag.iricom.storage.file.service.impl;
 
-import com.illdangag.iricom.server.data.entity.Account;
-import com.illdangag.iricom.server.data.entity.type.AccountAuth;
-import com.illdangag.iricom.server.exception.IricomErrorCode;
-import com.illdangag.iricom.server.exception.IricomException;
-import com.illdangag.iricom.server.repository.AccountRepository;
+import com.illdangag.iricom.core.data.entity.Account;
+import com.illdangag.iricom.core.data.entity.type.AccountAuth;
+import com.illdangag.iricom.core.exception.IricomErrorCode;
+import com.illdangag.iricom.core.exception.IricomException;
+import com.illdangag.iricom.core.repository.AccountRepository;
 import com.illdangag.iricom.storage.data.IricomFileInputStream;
 import com.illdangag.iricom.storage.data.entity.FileMetadata;
 import com.illdangag.iricom.storage.data.response.FileMetadataInfo;

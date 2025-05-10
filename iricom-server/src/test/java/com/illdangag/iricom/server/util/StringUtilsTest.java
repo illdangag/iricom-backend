@@ -1,4 +1,4 @@
-package com.illdangag.iricom.server.util;
+package com.illdangag.iricom.core.util;
 
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.Assertions;
