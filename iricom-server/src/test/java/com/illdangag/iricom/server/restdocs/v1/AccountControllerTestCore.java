@@ -46,7 +46,7 @@ public class AccountControllerTestCore extends IricomTestServiceSuite {
         MockHttpServletRequestBuilder requestBuilder = get("/v1/accounts/")
                 .param("skip", "0")
                 .param("limit", "5")
-                .param("keyword", "common");
+                .param("keyword", account.getNickname());
         setAuthToken(requestBuilder, account);
 
         List<FieldDescriptor> fieldDescriptorList = new LinkedList<>();

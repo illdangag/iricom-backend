@@ -35,7 +35,7 @@ public class FileStorageServiceImpl implements StorageService {
 
     @Autowired
     public FileStorageServiceImpl(AccountRepository accountRepository, FileRepository fileRepository,
-                                  @Value("${storage.path:}") String storagePath) {
+                                  @Value("${storage.file.path:}") String storagePath) {
         this.accountRepository = accountRepository;
         this.fileRepository = fileRepository;
         this.STORAGE_PATH = storagePath;
