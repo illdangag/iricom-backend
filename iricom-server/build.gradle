@@ -12,6 +12,7 @@ plugins {
 
 version = '0.11.1'
 String profile = project.hasProperty('profile') ? project.property('profile') : 'local'
+String storage = project.hasProperty('storage') ? project.property('storage') : '';
 
 repositories {
     mavenCentral()
@@ -69,6 +70,18 @@ dependencies {
     asciidoctorExtensions 'org.springframework.restdocs:spring-restdocs-asciidoctor'
     testImplementation 'org.springframework.restdocs:spring-restdocs-mockmvc'
     testFixturesImplementation 'org.springframework.restdocs:spring-restdocs-mockmvc'
+
+    if (storage.equals('file')) {
+        implementation project(':iricom-storage')
+        implementation project(':iricom-storage:iricom-storage-file')
+        println 'storage type: file'
+    } else if (storage.equals('s3')) {
+        implementation project(':iricom-storage')
+        implementation project(':iricom-storage:iricom-storage-s3')
+        println 'storage type: s3'
+    } else {
+        println 'storage type: none'
+    }
 }
 
 processResources {
@@ -79,7 +92,8 @@ processResources {
         def contents =
                 'server.version=' + version + '\n' +
                 'server.timestamp=' + sdf.format(new Date()) + '\n' +
-                'server.profile=' + profile
+                'server.profile=' + profile + '\n' +
+                'server.storage=' + storage
         println contents
         file('./build/resources/main/version.properties').text += contents
     }

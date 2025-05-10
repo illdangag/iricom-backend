@@ -22,17 +22,10 @@ repositories {
 
 dependencies {
     implementation project(':iricom-server')
-    implementation project(':iricom-storage')
 
     // spring 의존성
     developmentOnly 'org.springframework.boot:spring-boot-devtools' // classpath의 파일이 변경된 경우 서버 자동 재시작 기능
     implementation 'org.springframework.boot:spring-boot-starter-web' // spring MVC를 위한 기본적인 종속, 내장 Tomcat 포함
-}
-
-if (profile.equals('local')) {
-    project.dependencies.add('implementation', project(':iricom-storage:iricom-storage-s3'))
-} else if (profile.contains('pre-production')) {
-    project.dependencies.add('implementation', project(':iricom-storage:iricom-storage-s3'))
 }
 
 def getDate() {
