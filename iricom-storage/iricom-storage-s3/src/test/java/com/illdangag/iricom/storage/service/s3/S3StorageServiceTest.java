@@ -16,7 +16,7 @@ import java.io.InputStream;
 
 @Slf4j
 @DisplayName("service: S3StorageService")
-public class S3StorageServiceTestCore extends IricomTestS3StorageSuite {
+public class S3StorageServiceTest extends IricomTestS3StorageSuite {
     private final S3StorageServiceImpl s3StorageServiceImpl;
 
     private final String IMAGE_FILE_NAME = "spring_boot_icon.png";
@@ -24,7 +24,7 @@ public class S3StorageServiceTestCore extends IricomTestS3StorageSuite {
     private final String IMAGE_FILE_CONTENT_TYPE = "image/png";
 
     @Autowired
-    public S3StorageServiceTestCore(ApplicationContext context, S3StorageServiceImpl s3StorageServiceImpl) {
+    public S3StorageServiceTest(ApplicationContext context, S3StorageServiceImpl s3StorageServiceImpl) {
         super(context);
         this.s3StorageServiceImpl = s3StorageServiceImpl;
     }
@@ -80,6 +80,6 @@ public class S3StorageServiceTestCore extends IricomTestS3StorageSuite {
     }
 
     protected InputStream getSampleImageInputStream() {
-        return S3StorageServiceTestCore.class.getClassLoader().getResourceAsStream(IMAGE_FILE_NAME);
+        return S3StorageServiceTest.class.getClassLoader().getResourceAsStream(IMAGE_FILE_NAME);
     }
 }

@@ -9,7 +9,7 @@ name: Build, Test
 
 on:
   push:
-    branches: [ "pre-production" ]
+    branches: [ "pre-production", "bug/5-build-error-fix" ]
 
 permissions:
   contents: read
