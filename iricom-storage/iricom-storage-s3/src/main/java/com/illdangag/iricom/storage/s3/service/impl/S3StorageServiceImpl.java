@@ -55,6 +55,13 @@ public class S3StorageServiceImpl implements StorageService {
         this.ACCESS_KEY = accessKey;
         this.SECRET_KEY = secretKey;
         this.BUCKET = bucket;
+
+        log.info("storage: S3");
+        log.info("- endpoint: {}", endpoint);
+        log.info("- region: {}", region);
+        log.info("- accessKey: {}", accessKey);
+        log.info("- secretKey: {}", secretKey);
+        log.info("- bucket: {}", bucket);
     }
 
     @Override

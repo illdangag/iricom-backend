@@ -57,6 +57,9 @@ public class FileStorageServiceImpl implements StorageService {
         if (!storagePathFile.isDirectory()) {
             throw new IricomException(IricomFileStorageErrorCode.INVALID_STORAGE_PATH);
         }
+
+        log.info("storage: file");
+        log.info("- path: {}", storagePathFile.getAbsolutePath());
     }
 
     @Override
