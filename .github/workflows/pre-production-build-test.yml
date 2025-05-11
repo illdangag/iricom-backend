@@ -16,7 +16,6 @@ permissions:
 
 jobs:
   build:
-
     runs-on: ubuntu-latest
 
     steps:
@@ -28,39 +27,48 @@ jobs:
         java-version: '11'
         distribution: 'temurin'
 
-    - name: Make iricom-backend firebase-adminsdk.json for JUnit
+    - name: Make iricom-backend test/resource for JUnit
       run: |
         cd ./src/test/resources
         touch ./firebase-adminsdk.json
         echo "${{ secrets.TEST_FIREBASE_ADMIN_ADK }}" > ./firebase-adminsdk.json
+        touch ./application-database.yml
+        echo "${{ secrets.TEST_APPLICATION_DATABASE_YML }}" > ./application-database.yml
+        touch ./application-storage.yml
+        echo "${{ secrets.TEST_APPLICATION_STORAGE_YML }}" > ./application-storage.yml
       shell: bash
 
-    - name: Make iricom-storage firebase-adminsdk.json for JUnit
+    - name: Make iricom-storage test/resource for JUnit
       run: |
         cd ./iricom-storage/src/test/resources
         touch ./firebase-adminsdk.json
         echo "${{ secrets.TEST_FIREBASE_ADMIN_ADK }}" > ./firebase-adminsdk.json
+        touch ./application-database.yml
+        echo "${{ secrets.TEST_APPLICATION_DATABASE_YML }}" > ./application-database.yml
+        touch ./application-storage.yml
+        echo "${{ secrets.TEST_APPLICATION_STORAGE_YML }}" > ./application-storage.yml
       shell: bash
 
-    - name: Make iricom-storage/iricom-storage-file firebase-adminsdk.json for JUnit
+    - name: Make iricom-storage/iricom-storage-file test/resource for JUnit
       run: |
         cd ./iricom-storage/iricom-storage-file/src/test/resources
         touch ./firebase-adminsdk.json
         echo "${{ secrets.TEST_FIREBASE_ADMIN_ADK }}" > ./firebase-adminsdk.json
+        touch ./application-database.yml
+        echo "${{ secrets.TEST_APPLICATION_DATABASE_YML }}" > ./application-database.yml
+        touch ./application-storage.yml
+        echo "${{ secrets.TEST_APPLICATION_STORAGE_YML }}" > ./application-storage.yml
       shell: bash
 
-    - name: Make iricom-storage/iricom-storage-s3 firebase-adminsdk.json for JUnit
+    - name: Make iricom-storage/iricom-storage-s3 test/resource for JUnit
       run: |
         cd ./iricom-storage/iricom-storage-s3/src/test/resources
         touch ./firebase-adminsdk.json
         echo "${{ secrets.TEST_FIREBASE_ADMIN_ADK }}" > ./firebase-adminsdk.json
-      shell: bash
-
-    - name: Make iricom-storage/iricom-storage-s3 application.yml for JUnit
-      run: |
-        cd ./iricom-storage/iricom-storage-s3/src/test/resources
-        touch ./firebase-adminsdk.json
-        echo "${{ secrets.TEST_MINIO_APPLICATION_YML }}" > ./application.yml
+        touch ./application-database.yml
+        echo "${{ secrets.TEST_APPLICATION_DATABASE_YML }}" > ./application-database.yml
+        touch ./application-storage.yml
+        echo "${{ secrets.TEST_APPLICATION_STORAGE_YML }}" > ./application-storage.yml
       shell: bash
 
     - name: Build with Gradle

@@ -5,7 +5,7 @@
 ## Build
 
 ```shell
-./gradlew clean build bootJar -Pprofile=local -Pstorage=file
+./gradlew clean build bootJar -Pprofile=local
 
-./gradlew clean build bootJar -Pprofile=pre-production -Pstorage=s3
+./gradlew clean build bootJar -Pprofile=pre-production
 ```
