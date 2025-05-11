@@ -1,10 +1,10 @@
 package com.illdangag.iricom.storage.file.service.impl;
 
-import com.illdangag.iricom.server.data.entity.Account;
-import com.illdangag.iricom.server.data.entity.type.AccountAuth;
-import com.illdangag.iricom.server.exception.IricomErrorCode;
-import com.illdangag.iricom.server.exception.IricomException;
-import com.illdangag.iricom.server.repository.AccountRepository;
+import com.illdangag.iricom.core.data.entity.Account;
+import com.illdangag.iricom.core.data.entity.type.AccountAuth;
+import com.illdangag.iricom.core.exception.IricomErrorCode;
+import com.illdangag.iricom.core.exception.IricomException;
+import com.illdangag.iricom.core.repository.AccountRepository;
 import com.illdangag.iricom.storage.data.IricomFileInputStream;
 import com.illdangag.iricom.storage.data.entity.FileMetadata;
 import com.illdangag.iricom.storage.data.response.FileMetadataInfo;
@@ -35,7 +35,7 @@ public class FileStorageServiceImpl implements StorageService {
 
     @Autowired
     public FileStorageServiceImpl(AccountRepository accountRepository, FileRepository fileRepository,
-                                  @Value("${storage.path:}") String storagePath) {
+                                  @Value("${storage.file.path:}") String storagePath) {
         this.accountRepository = accountRepository;
         this.fileRepository = fileRepository;
         this.STORAGE_PATH = storagePath;
@@ -57,6 +57,9 @@ public class FileStorageServiceImpl implements StorageService {
         if (!storagePathFile.isDirectory()) {
             throw new IricomException(IricomFileStorageErrorCode.INVALID_STORAGE_PATH);
         }
+
+        log.info("storage: file");
+        log.info("- path: {}", storagePathFile.getAbsolutePath());
     }
 
     @Override

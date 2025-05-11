@@ -1,11 +1,11 @@
 package com.illdangag.iricom.storage.controller.v1;
 
-import com.illdangag.iricom.server.configuration.annotation.ApiCallLog;
-import com.illdangag.iricom.server.configuration.annotation.Auth;
-import com.illdangag.iricom.server.configuration.annotation.AuthRole;
-import com.illdangag.iricom.server.configuration.annotation.RequestContext;
-import com.illdangag.iricom.server.data.entity.Account;
-import com.illdangag.iricom.server.exception.IricomException;
+import com.illdangag.iricom.core.configuration.annotation.ApiCallLog;
+import com.illdangag.iricom.core.configuration.annotation.Auth;
+import com.illdangag.iricom.core.configuration.annotation.AuthRole;
+import com.illdangag.iricom.core.configuration.annotation.RequestContext;
+import com.illdangag.iricom.core.data.entity.Account;
+import com.illdangag.iricom.core.exception.IricomException;
 import com.illdangag.iricom.storage.data.IricomFileInputStream;
 import com.illdangag.iricom.storage.data.response.FileMetadataInfo;
 import com.illdangag.iricom.storage.exception.IricomStorageErrorCode;

@@ -1,6 +1,6 @@
 package com.illdangag.iricom.storage.data.entity;
 
-import com.illdangag.iricom.server.data.entity.Account;
+import com.illdangag.iricom.core.data.entity.Account;
 import lombok.*;
 import lombok.experimental.SuperBuilder;
 import org.hibernate.annotations.CreationTimestamp;

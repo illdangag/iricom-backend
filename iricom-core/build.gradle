@@ -1,0 +1,70 @@
+plugins {
+    id 'java'
+    id 'java-test-fixtures'
+    id 'org.springframework.boot' version "${springBootVersion}"
+    id 'io.spring.dependency-management' version "${springDependencyManagementVersion}"
+    id 'checkstyle' // code convention
+}
+group = 'com.illdangag.iricom'
+version = '0.2.0'
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    // spring 의존성
+    developmentOnly 'org.springframework.boot:spring-boot-devtools' // classpath의 파일이 변경된 경우 서버 자동 재시작 기능
+    implementation 'org.springframework.boot:spring-boot-starter-web' // spring MVC를 위한 기본적인 종속, 내장 Tomcat 포함
+    testFixturesImplementation 'org.springframework.boot:spring-boot-starter-web'
+    implementation 'org.springframework.boot:spring-boot-starter-data-jpa' // spring jpa
+    testFixturesImplementation 'org.springframework.boot:spring-boot-starter-data-jpa'
+    implementation 'org.springframework.boot:spring-boot-starter-validation' // annotation 기반의 데이터 검증 자동화
+    implementation 'org.springframework.data:spring-data-envers' // JPA history
+
+    // 프로젝트 의존성
+    compileOnly 'org.projectlombok:lombok' // lombok
+    annotationProcessor 'org.projectlombok:lombok' // lombok
+    runtimeOnly 'org.mariadb.jdbc:mariadb-java-client:3.1.0' // mariadb 접속
+    implementation 'com.google.firebase:firebase-admin:9.1.1' // 계정의 인증
+
+    // 프로젝트 테스트 의존성
+    testImplementation('org.springframework.boot:spring-boot-starter-test') {
+        exclude group: 'junit', module: 'junit' // junit 특정 버전을 사용하기 위해서 기본 junit을 포함하지 않도록 함
+    }
+    testImplementation "org.junit.jupiter:junit-jupiter:5.8.1"
+    testFixturesImplementation('org.springframework.boot:spring-boot-starter-test') {
+        exclude group: 'junit', module: 'junit' // junit 특정 버전을 사용하기 위해서 기본 junit을 포함하지 않도록 함
+    }
+    testFixturesImplementation "org.junit.jupiter:junit-jupiter:5.8.1" // junit
+    testCompileOnly 'org.projectlombok:lombok' // lombok
+    testFixturesCompileOnly 'org.projectlombok:lombok' // lombok
+    testAnnotationProcessor 'org.projectlombok:lombok' // lombok
+    testFixturesAnnotationProcessor 'org.projectlombok:lombok' // lombok
+    testImplementation 'com.h2database:h2:2.1.214' // 테스트 환경에서 사용 할 데이터베이스
+    testFixturesImplementation 'org.apache.httpcomponents:httpclient:4.5.14'
+
+    // restdocs
+    testImplementation 'org.springframework.restdocs:spring-restdocs-mockmvc'
+    testFixturesImplementation 'org.springframework.restdocs:spring-restdocs-mockmvc'
+}
+
+checkstyle { // code convention
+    ignoreFailures = true
+    configFile = file("../checkstyle.xml")
+    reportsDir = file("${buildDir}/checkstyle-output")
+}
+
+test {
+    dependsOn checkstyleMain, checkstyleTest
+
+    useJUnitPlatform()
+}
+
+bootJar {
+    enabled = false
+}
+
+jar {
+    enabled = true
+}
