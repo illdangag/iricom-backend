@@ -1,14 +1,9 @@
-# This workflow uses actions that are not certified by GitHub.
-# They are provided by a third-party and are governed by
-# separate terms of service, privacy policy, and support
-# documentation.
-# This workflow will build a Java project with Gradle and cache/restore any dependencies to improve the workflow execution time
-# For more information see: https://docs.github.com/en/actions/automating-builds-and-tests/building-and-testing-java-with-gradle
-
 name: Build, Test
 
 on:
   push:
+    branches: [ "pre-production" ]
+  pull_request:
     branches: [ "pre-production" ]
 
 permissions:
@@ -32,6 +27,8 @@ jobs:
         cd ./src/test/resources
         touch ./firebase-adminsdk.json
         echo "${{ secrets.TEST_FIREBASE_ADMIN_ADK }}" > ./firebase-adminsdk.json
+        touch ./application.yml
+        echo "${{ secrets.TEST_APPLICATION_YML }}" > ./application.yml
         touch ./application-database.yml
         echo "${{ secrets.TEST_APPLICATION_DATABASE_YML }}" > ./application-database.yml
         touch ./application-storage.yml
@@ -43,6 +40,8 @@ jobs:
         cd ./iricom-storage/src/test/resources
         touch ./firebase-adminsdk.json
         echo "${{ secrets.TEST_FIREBASE_ADMIN_ADK }}" > ./firebase-adminsdk.json
+        touch ./application.yml
+        echo "${{ secrets.TEST_APPLICATION_YML }}" > ./application.yml
         touch ./application-database.yml
         echo "${{ secrets.TEST_APPLICATION_DATABASE_YML }}" > ./application-database.yml
         touch ./application-storage.yml
@@ -54,6 +53,8 @@ jobs:
         cd ./iricom-storage/iricom-storage-file/src/test/resources
         touch ./firebase-adminsdk.json
         echo "${{ secrets.TEST_FIREBASE_ADMIN_ADK }}" > ./firebase-adminsdk.json
+        touch ./application.yml
+        echo "${{ secrets.TEST_APPLICATION_YML }}" > ./application.yml
         touch ./application-database.yml
         echo "${{ secrets.TEST_APPLICATION_DATABASE_YML }}" > ./application-database.yml
         touch ./application-storage.yml
@@ -65,6 +66,8 @@ jobs:
         cd ./iricom-storage/iricom-storage-s3/src/test/resources
         touch ./firebase-adminsdk.json
         echo "${{ secrets.TEST_FIREBASE_ADMIN_ADK }}" > ./firebase-adminsdk.json
+        touch ./application.yml
+        echo "${{ secrets.TEST_APPLICATION_YML }}" > ./application.yml
         touch ./application-database.yml
         echo "${{ secrets.TEST_APPLICATION_DATABASE_YML }}" > ./application-database.yml
         touch ./application-storage.yml

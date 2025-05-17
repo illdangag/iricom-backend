@@ -22,6 +22,8 @@ dependencies {
     // spring 의존성
     implementation 'org.springframework.boot:spring-boot-starter-web' // spring MVC를 위한 기본적인 종속, 내장 Tomcat 포함
     implementation 'org.springframework.boot:spring-boot-starter-validation' // annotation 기반의 데이터 검증 자동화
+    implementation 'javax.persistence:javax.persistence-api:2.2'
+    implementation 'org.hibernate:hibernate-envers:5.6.14.Final'
 
     // 프로젝트 의존성
     compileOnly 'org.projectlombok:lombok' // lombok

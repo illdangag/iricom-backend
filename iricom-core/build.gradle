@@ -21,6 +21,10 @@ dependencies {
     testFixturesImplementation 'org.springframework.boot:spring-boot-starter-data-jpa'
     implementation 'org.springframework.boot:spring-boot-starter-validation' // annotation 기반의 데이터 검증 자동화
     implementation 'org.springframework.data:spring-data-envers' // JPA history
+    implementation 'javax.persistence:javax.persistence-api:2.2'
+    testFixturesImplementation 'javax.persistence:javax.persistence-api:2.2'
+    implementation 'org.hibernate:hibernate-envers:5.6.14.Final'
+    testFixturesImplementation 'org.hibernate:hibernate-envers:5.6.14.Final'
 
     // 프로젝트 의존성
     compileOnly 'org.projectlombok:lombok' // lombok
