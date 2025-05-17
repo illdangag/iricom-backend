@@ -1,7 +1,6 @@
 package com.illdangag.iricom.storage.s3.service.impl;
 
 import com.amazonaws.ClientConfiguration;
-import com.amazonaws.Protocol;
 import com.amazonaws.auth.AWSStaticCredentialsProvider;
 import com.amazonaws.auth.BasicAWSCredentials;
 import com.amazonaws.client.builder.AwsClientBuilder;
@@ -77,8 +76,10 @@ public class S3StorageServiceImpl implements StorageService {
         try {
             fileSize = inputStream.available();
         } catch (Exception exception) {
-            throw new IricomException(IricomS3StorageErrorCode.INVALID_UPLOAD_FILE);
+            throw new IricomException(IricomS3StorageErrorCode.INVALID_UPLOAD_FILE, exception);
         }
+
+        log.info("file name: {}, content type: {}, size: {}", fileName, contentType, fileSize);
 
         String newFileName = this.createNewFileName(fileName);
 
@@ -101,7 +102,7 @@ public class S3StorageServiceImpl implements StorageService {
         try {
             amazonS3.putObject(putObjectRequest);
         } catch (Exception exception) {
-            throw new IricomException(IricomS3StorageErrorCode.FAIL_TO_SAVE_OBJECT_STORAGE);
+            throw new IricomException(IricomS3StorageErrorCode.FAIL_TO_SAVE_OBJECT_STORAGE, exception);
         }
 
         return new FileMetadataInfo(fileMetadata);
@@ -114,7 +115,7 @@ public class S3StorageServiceImpl implements StorageService {
         try {
             fileMetadataId = UUID.fromString(id);
         } catch (Exception exception) {
-            throw new IricomException(IricomS3StorageErrorCode.NOT_EXIST_FILE);
+            throw new IricomException(IricomS3StorageErrorCode.NOT_EXIST_FILE, exception);
         }
 
         Optional<FileMetadata> fileMetadataOptional = this.fileRepository.getFileMetadata(fileMetadataId);
@@ -129,7 +130,7 @@ public class S3StorageServiceImpl implements StorageService {
         try {
             s3Object = amazonS3.getObject(getObjectRequest);
         } catch (Exception exception) {
-            throw new IricomException(IricomS3StorageErrorCode.NOT_EXIST_FILE);
+            throw new IricomException(IricomS3StorageErrorCode.NOT_EXIST_FILE, exception);
         }
 
         return new IricomFileInputStream(s3Object.getObjectContent(), fileMetadata);
@@ -177,7 +178,6 @@ public class S3StorageServiceImpl implements StorageService {
 
     private AmazonS3 getAmazonS3() {
         ClientConfiguration clientConfig = new ClientConfiguration();
-        clientConfig.setProtocol(Protocol.HTTP);
 
         AmazonS3ClientBuilder awsClientBuilder = AmazonS3ClientBuilder.standard()
                 .withPathStyleAccessEnabled(true)
@@ -203,7 +203,7 @@ public class S3StorageServiceImpl implements StorageService {
         try {
             accountId = Long.parseLong(id);
         } catch (Exception exception) {
-            throw new IricomException(IricomErrorCode.NOT_EXIST_ACCOUNT);
+            throw new IricomException(IricomErrorCode.NOT_EXIST_ACCOUNT, exception);
         }
         Optional<Account> accountOptional = this.accountRepository.getAccount(accountId);
         return accountOptional.orElseThrow(() -> new IricomException(IricomErrorCode.NOT_EXIST_ACCOUNT));

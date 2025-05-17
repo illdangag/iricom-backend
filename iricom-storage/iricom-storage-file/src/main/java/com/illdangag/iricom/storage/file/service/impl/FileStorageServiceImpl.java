@@ -50,7 +50,7 @@ public class FileStorageServiceImpl implements StorageService {
             try {
                 Files.createDirectories(storagePathFile.toPath());
             } catch (Exception exception) {
-                throw new IricomException(IricomFileStorageErrorCode.INVALID_STORAGE_PATH);
+                throw new IricomException(IricomFileStorageErrorCode.INVALID_STORAGE_PATH, exception);
             }
         }
 
@@ -75,7 +75,7 @@ public class FileStorageServiceImpl implements StorageService {
         try {
             fileSize = inputStream.available();
         } catch (Exception exception) {
-            throw new IricomException(IricomFileStorageErrorCode.INVALID_UPLOAD_FILE);
+            throw new IricomException(IricomFileStorageErrorCode.INVALID_UPLOAD_FILE, exception);
         }
 
         String newFileName = this.createNewFileName(fileName);
@@ -95,7 +95,7 @@ public class FileStorageServiceImpl implements StorageService {
         try {
             FileUtils.copyInputStreamToFile(inputStream, file);
         } catch (Exception exception) {
-            throw new IricomException(IricomFileStorageErrorCode.FAIL_TO_SAVE_LOCAL_FILE);
+            throw new IricomException(IricomFileStorageErrorCode.FAIL_TO_SAVE_LOCAL_FILE, exception);
         }
 
         return new FileMetadataInfo(fileMetadata);
@@ -108,7 +108,7 @@ public class FileStorageServiceImpl implements StorageService {
         try {
             fileMetadataId = UUID.fromString(id);
         } catch (Exception exception) {
-            throw new IricomException(IricomFileStorageErrorCode.NOT_EXIST_FILE);
+            throw new IricomException(IricomFileStorageErrorCode.NOT_EXIST_FILE, exception);
         }
 
         Optional<FileMetadata> fileMetadataOptional = this.fileRepository.getFileMetadata(fileMetadataId);
@@ -127,7 +127,7 @@ public class FileStorageServiceImpl implements StorageService {
         try {
             fileInputStream = new FileInputStream(file);
         } catch (Exception exception) {
-            throw new IricomException(IricomFileStorageErrorCode.INVALID_READ_LOCAL_FILE);
+            throw new IricomException(IricomFileStorageErrorCode.INVALID_READ_LOCAL_FILE, exception);
         }
 
         return new IricomFileInputStream(fileInputStream, fileMetadata);
@@ -146,7 +146,7 @@ public class FileStorageServiceImpl implements StorageService {
         try {
             fileMetadataId = UUID.fromString(fileId);
         } catch (Exception exception) {
-            throw new IricomException(IricomFileStorageErrorCode.NOT_EXIST_FILE);
+            throw new IricomException(IricomFileStorageErrorCode.NOT_EXIST_FILE, exception);
         }
 
         this.fileRepository.getFileMetadata(fileMetadataId);
@@ -185,7 +185,7 @@ public class FileStorageServiceImpl implements StorageService {
         try {
             accountId = Long.parseLong(id);
         } catch (Exception exception) {
-            throw new IricomException(IricomErrorCode.NOT_EXIST_ACCOUNT);
+            throw new IricomException(IricomErrorCode.NOT_EXIST_ACCOUNT, exception);
         }
         Optional<Account> accountOptional = this.accountRepository.getAccount(accountId);
         return accountOptional.orElseThrow(() -> new IricomException(IricomErrorCode.NOT_EXIST_ACCOUNT));
