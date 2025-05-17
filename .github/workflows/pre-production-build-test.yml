@@ -26,7 +26,7 @@ jobs:
         env:
           MINIO_ACCESS_KEY: minio
           MINIO_SECRET_KEY: password
-          options: --entrypoint "minio server /data" --health-cmd "curl -f http://localhost:9000/minio/health/live" --health-interval 10s --health-timeout 5s --health-retries
+          options: --entrypoint "minio server /data --address=0.0.0.0:9000" --health-cmd "curl -f http://localhost:9000/minio/health/live" --health-interval 10s --health-timeout 5s --health-retries
 
     steps:
     - uses: actions/checkout@v3
