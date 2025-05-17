@@ -2,7 +2,9 @@ name: Build, Test
 
 on:
   push:
-    branches: [ "pre-production", "bug/5-build-error-fix" ]
+    branches: [ "pre-production" ]
+  pull_request:
+    branches: [ "pre-production" ]
 
 permissions:
   contents: read
