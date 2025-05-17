@@ -59,6 +59,10 @@ public class S3StorageServiceTest extends IricomTestS3StorageSuite {
             Assertions.assertNotEquals(0, inputStream.available());
             Assertions.assertNotNull(fileName);
             Assertions.assertFalse(fileName.isEmpty());
+
+            byte[] bytes = inputStream.readAllBytes();
+            Assertions.assertNotNull(bytes);
+            Assertions.assertNotEquals(0, bytes.length);
         } catch (Exception exception) {
             log.error("error", exception);
         }
