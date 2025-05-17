@@ -27,11 +27,6 @@ jobs:
           MINIO_ACCESS_KEY: minio
           MINIO_SECRET_KEY: password
           options: --entrypoint "minio server /data" --health-cmd "curl -f http://localhost:9000/minio/health/live" --health-interval 10s --health-timeout 5s --health-retries
-    #        options: >-
-#          --health-cmd "curl http://localhost:9000/minio/health/live"
-#          --health-interval 10s
-#          --health-timeout 5s
-#          --health-retries 5
 
     steps:
     - uses: actions/checkout@v3
@@ -71,6 +66,8 @@ jobs:
         cd ./src/test/resources
         touch ./firebase-adminsdk.json
         echo "${{ secrets.TEST_FIREBASE_ADMIN_ADK }}" > ./firebase-adminsdk.json
+        touch ./application.yml
+        echo "${{ secrets.TEST_APPLICATION_YML }}" > ./application.yml
         touch ./application-database.yml
         echo "${{ secrets.TEST_APPLICATION_DATABASE_YML }}" > ./application-database.yml
         touch ./application-storage.yml
@@ -82,6 +79,8 @@ jobs:
         cd ./iricom-storage/src/test/resources
         touch ./firebase-adminsdk.json
         echo "${{ secrets.TEST_FIREBASE_ADMIN_ADK }}" > ./firebase-adminsdk.json
+        touch ./application.yml
+        echo "${{ secrets.TEST_APPLICATION_YML }}" > ./application.yml
         touch ./application-database.yml
         echo "${{ secrets.TEST_APPLICATION_DATABASE_YML }}" > ./application-database.yml
         touch ./application-storage.yml
@@ -93,6 +92,8 @@ jobs:
         cd ./iricom-storage/iricom-storage-file/src/test/resources
         touch ./firebase-adminsdk.json
         echo "${{ secrets.TEST_FIREBASE_ADMIN_ADK }}" > ./firebase-adminsdk.json
+        touch ./application.yml
+        echo "${{ secrets.TEST_APPLICATION_YML }}" > ./application.yml
         touch ./application-database.yml
         echo "${{ secrets.TEST_APPLICATION_DATABASE_YML }}" > ./application-database.yml
         touch ./application-storage.yml
@@ -104,6 +105,8 @@ jobs:
         cd ./iricom-storage/iricom-storage-s3/src/test/resources
         touch ./firebase-adminsdk.json
         echo "${{ secrets.TEST_FIREBASE_ADMIN_ADK }}" > ./firebase-adminsdk.json
+        touch ./application.yml
+        echo "${{ secrets.TEST_APPLICATION_YML }}" > ./application.yml
         touch ./application-database.yml
         echo "${{ secrets.TEST_APPLICATION_DATABASE_YML }}" > ./application-database.yml
         touch ./application-storage.yml
