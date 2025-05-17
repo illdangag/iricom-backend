@@ -51,8 +51,12 @@ jobs:
 
     - name: Create bucket in MinIO
       run: |
-        mc alias set localminio http://localhost:9000 minio password
-        mc mb localminio/iricom-test
+        for i in {1..10}; do
+          mc alias set localminio http://localhost:9000 minio password && break
+          echo "Waiting for MinIO login..."
+          sleep 3
+        done
+        mc mb localminio/iricom-test || echo "Bucket already exists"
         mc ls localminio
 
     - name: Set up JDK 11
