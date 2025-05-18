@@ -39,6 +39,24 @@ public class FileRepositoryImpl implements FileRepository {
     }
 
     @Override
+    public Optional<FileMetadata> getFileMetadataByFileName(String fileName) {
+        final String jpql = "SELECT fmd FROM FileMetadata fmd" +
+                " WHERE fmd.name = :fileName" +
+                " AND fmd.deleted = false";
+
+        TypedQuery<FileMetadata> query = this.entityManager.createQuery(jpql, FileMetadata.class)
+                .setParameter("fileName", fileName);
+
+        List<FileMetadata> resultList = query.getResultList();
+
+        if (resultList.isEmpty()) {
+            return Optional.empty();
+        } else {
+            return Optional.of(resultList.get(0));
+        }
+    }
+
+    @Override
     public void saveFileMetadata(FileMetadata fileMetadata) {
         if (fileMetadata.getId() == null) {
             this.entityManager.persist(fileMetadata);

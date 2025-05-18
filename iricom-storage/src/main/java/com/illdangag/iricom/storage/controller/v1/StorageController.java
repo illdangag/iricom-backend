@@ -55,12 +55,11 @@ public class StorageController {
 
     @ApiCallLog(apiCode = "FL_002")
     @Auth(role = { AuthRole.NONE, })
-    @RequestMapping(method = RequestMethod.GET, value = "/{fileId}")
-    public ResponseEntity<Resource> getFile(@PathVariable(value = "fileId") String fileId) {
+    @RequestMapping(method = RequestMethod.GET, value = "/{fileName}")
+    public ResponseEntity<Resource> getFile(@PathVariable(value = "fileName") String fileName) {
 
-        IricomFileInputStream inputStream = this.storageService.downloadFile(fileId);
+        IricomFileInputStream inputStream = this.storageService.downloadFile(fileName);
         FileMetadataInfo fileMetadataInfo = inputStream.getFileMetadataInfo();
-        String fileName = fileMetadataInfo.getName();
         String contentType = fileMetadataInfo.getContentType();
 
         InputStreamResource resource = new InputStreamResource(inputStream);

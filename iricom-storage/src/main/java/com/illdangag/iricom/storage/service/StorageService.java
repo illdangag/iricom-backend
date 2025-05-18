@@ -13,7 +13,7 @@ public interface StorageService {
 
     FileMetadataInfo uploadFile(Account account, String fileName, String contentType, InputStream inputStream);
 
-    IricomFileInputStream downloadFile(String id);
+    IricomFileInputStream downloadFile(String fileName);
 
     FileMetadataInfo deleteFile(String accountId, String fileId);
 

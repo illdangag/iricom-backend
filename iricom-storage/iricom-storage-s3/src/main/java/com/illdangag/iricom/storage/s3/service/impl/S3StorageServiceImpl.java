@@ -109,16 +109,8 @@ public class S3StorageServiceImpl implements StorageService {
     }
 
     @Override
-    public IricomFileInputStream downloadFile(String id) {
-        UUID fileMetadataId = null;
-
-        try {
-            fileMetadataId = UUID.fromString(id);
-        } catch (Exception exception) {
-            throw new IricomException(IricomS3StorageErrorCode.NOT_EXIST_FILE, exception);
-        }
-
-        Optional<FileMetadata> fileMetadataOptional = this.fileRepository.getFileMetadata(fileMetadataId);
+    public IricomFileInputStream downloadFile(String fileName) {
+        Optional<FileMetadata> fileMetadataOptional = this.fileRepository.getFileMetadataByFileName(fileName);
         FileMetadata fileMetadata = fileMetadataOptional.orElseThrow(() -> new IricomException(IricomS3StorageErrorCode.NOT_EXIST_FILE));
 
         String filePath = this.getPath(fileMetadata);
