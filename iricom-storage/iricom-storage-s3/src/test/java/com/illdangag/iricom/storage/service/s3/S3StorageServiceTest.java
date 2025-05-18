@@ -51,10 +51,11 @@ public class S3StorageServiceTest extends IricomTestS3StorageSuite {
 
         FileMetadataInfo fileMetadataInfo = this.s3StorageServiceImpl.uploadFile(account.getId(), IMAGE_FILE_NAME, IMAGE_FILE_CONTENT_TYPE, sampleImageInputStream);
 
-        String id = fileMetadataInfo.getId();
+        String fileName = fileMetadataInfo.getName();
 
-        try (IricomFileInputStream inputStream = this.s3StorageServiceImpl.downloadFile(id)) {
-            String fileName = inputStream.getFileMetadataInfo().getName();
+        try (IricomFileInputStream inputStream = this.s3StorageServiceImpl.downloadFile(fileName)) {
+            String id = fileMetadataInfo.getId();
+            Assertions.assertNotNull(id);
             Assertions.assertNotNull(inputStream);
             Assertions.assertNotEquals(0, inputStream.available());
             Assertions.assertNotNull(fileName);

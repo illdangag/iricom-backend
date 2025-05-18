@@ -9,5 +9,7 @@ import java.util.UUID;
 public interface FileRepository {
     Optional<FileMetadata> getFileMetadata(UUID id);
 
+    Optional<FileMetadata> getFileMetadataByFileName(String fileName);
+
     void saveFileMetadata(FileMetadata fileMetadata);
 }

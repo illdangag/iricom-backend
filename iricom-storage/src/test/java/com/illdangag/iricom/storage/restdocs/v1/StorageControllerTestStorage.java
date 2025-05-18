@@ -74,8 +74,8 @@ public class StorageControllerTestStorage extends IricomTestStorageSuite {
                 .andReturn().getResponse().getContentAsString();
         FileMetadataInfo fileMetadataInfo = this.getObject(responseBody, FileMetadataInfo.class);
 
-        String fileId = fileMetadataInfo.getId();
-        MockHttpServletRequestBuilder downloadRequestBuilder = get("/v1/file/{id}", fileId);
+        String fileName = fileMetadataInfo.getName();
+        MockHttpServletRequestBuilder downloadRequestBuilder = get("/v1/file/{fileName}", fileName);
 
         mockMvc.perform(downloadRequestBuilder)
                 .andExpect(status().is(200))
@@ -88,7 +88,7 @@ public class StorageControllerTestStorage extends IricomTestStorageSuite {
                                 prettyPrint()
                         ),
                         pathParameters(
-                                parameterWithName("id").description("아이디")
+                                parameterWithName("fileName").description("파일명")
                         )
                 ));
     }
